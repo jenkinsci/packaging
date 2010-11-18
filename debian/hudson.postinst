@@ -22,15 +22,23 @@ case "$1" in
     configure)
     
         # Create hudson user if it doesn't exist.
+        # sometimes tools that users want Hudson to run need a shell,
+        # so use /bin/bash. See HUDSON-4830
 	    if ! id hudson > /dev/null 2>&1 ; then
 	        adduser --system --home /var/lib/hudson --no-create-home \
-		    --ingroup nogroup --disabled-password --shell /bin/false \
+		    --ingroup nogroup --disabled-password --shell /bin/bash \
 		    hudson
 	    fi
 	
     	# Fix permissions on runtime directories/files.
-    	chown -R hudson:adm /var/run/hudson /var/lib/hudson /var/log/hudson
-    	chmod -R 770 /var/run/hudson /var/lib/hudson
+    	# change group/owner to hudson:adm - exclude jobs directory. See HUDSON-4047
+        # even if it fails on some files, don't let that interfere with the upgrade process
+        # (that can happen on dangling symlinks, for example.)
+    	find /var/lib/hudson -path "*jobs" -prune -o -exec chown hudson:adm {} + || true
+    	chown -R hudson:adm /var/run/hudson /var/log/hudson
+    	# change mode to 750 - exclude jobs and .ssh directories. See HUDSON-4047
+    	find /var/lib/hudson -path "*jobs" -prune -o -path "*.ssh" -prune -o -exec chmod 750 {} + || true
+    	chmod -R 750 /var/run/hudson
     	chmod 750 /var/log/hudson
     ;;
 
