@@ -4,3 +4,4 @@
 *.deb
 *.rpm
 *.log
+build
