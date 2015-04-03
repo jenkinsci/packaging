@@ -1,5 +1,5 @@
 # refers to the definition of a release target
-TARGET:=./def/jenkins-rc.mk
+TARGET:=./def/test.mk
 include ${TARGET}
 
 # refers to the definition of the release process execution environment
