@@ -26,7 +26,7 @@ else
   version="$2"
 fi
 echo Version is $version
-PKG_NAME="jenkins-${version}.pkg"
+PKG_NAME="jenkins.pkg"
 PKG_TITLE="Jenkins ${version}"
 rm $(dirname $0)/jenkins.war.tmp
 
