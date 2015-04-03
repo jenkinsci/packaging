@@ -3,7 +3,7 @@ TARGET:=./def/test.mk
 include ${TARGET}
 
 # refers to the definition of the release process execution environment
-BUILDENV:=./env/kohsuke.mk
+BUILDENV:=./env/test.mk
 include ${BUILDENV}
 
 include ./setup.mk
