@@ -14,8 +14,6 @@ test:
 	@echo RPM_WEBDIR=${RPM_WEBDIR}
 	@echo VERSION=${VERSION}
 
-MSI_ENCODED_VERSION=$(shell ./msi/encode-version.rb ${VERSION})
-
 cli: ${BUILD}/jenkins-cli.jar
 
 ${BUILD}/jenkins-cli.jar:
@@ -24,3 +22,6 @@ ${BUILD}/jenkins-cli.jar:
 
 ${MSI}: ${WAR} cli
 	./msi/build-on-jenkins.sh
+
+msi.deploy: ${MSI}
+	./msi/deploy.sh
