@@ -8,17 +8,15 @@ include ${BUILDENV}
 
 include ./setup.mk
 
-msi: ${MSI}
-
-test:
-	@echo RPM_WEBDIR=${RPM_WEBDIR}
-	@echo VERSION=${VERSION}
+#######################################################
 
 cli: ${BUILD}/jenkins-cli.jar
 
 ${BUILD}/jenkins-cli.jar:
 	@mkdir ${BUILD} || true
 	wget -O $@ ${JENKINS_URL}jnlpJars/jenkins-cli.jar
+
+msi: ${MSI}
 
 ${MSI}: ${WAR} cli
 	./msi/build-on-jenkins.sh
