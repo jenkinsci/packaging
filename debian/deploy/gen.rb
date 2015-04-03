@@ -55,7 +55,7 @@ If you need *.deb for a specific version, use these.
 </tr>
 EOS
 
-$: << File.expand_path(File.dirname(__FILE__)+"/..")
+$: << ENV['BASE']+"/bin"
 require 'list-packages.rb'
 list_packages(ENV['DEBDIR'],"*.deb","binary")
 
