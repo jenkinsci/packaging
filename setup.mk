@@ -10,4 +10,7 @@ export BUILD:=build
 # where to generate MSI file?
 export MSI:=${BUILD}/msi/${ARTIFACTNAME}-${VERSION}.zip
 
+# where to generate OSX PKG file?
+export OSX=${BUILD}/osx/${ARTIFACTNAME}-${VERSION}.pkg
+
 export BASE:=$(CURDIR)

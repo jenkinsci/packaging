@@ -10,5 +10,5 @@ buildsh="$1/osx/build.sh"
 [ -e "$buildsh" ] || buildsh="$(dirname $0)/build.sh"
 java -jar $BUILD/jenkins-cli.jar dist-fork -z $D/script.tgz \
   -f binary/${ARTIFACTNAME}.war="${WAR}" \
-  -f build.sh=$bin/build.sh -l osx -F "$3=$3" /bin/bash -ex build.sh binary/${ARTIFACTNAME}.war $v $ARTIFACTNAME "$PRODUCTNAME"
+  -f build.sh=$bin/build.sh -l osx -F "${OSX}=${ARTIFACTNAME}-${VERSION}.pkg" /bin/bash -ex build.sh binary/${ARTIFACTNAME}.war $VERSION $ARTIFACTNAME "$PRODUCTNAME"
 rm -rf /tmp/$$
