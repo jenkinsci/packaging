@@ -1,1 +1,1 @@
-export JENKINS_URL=http://jenkins.local
+export JENKINS_URL=https://cloudbees.ci.cloudbees.com/
