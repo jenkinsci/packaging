@@ -1,0 +1,6 @@
+*.msi
+*.war
+*.zip
+*.deb
+*.rpm
+*.log
