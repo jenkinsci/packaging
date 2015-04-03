@@ -1,2 +1,2 @@
-RELEASELINE=-rc
+export RELEASELINE=-rc
 include def/common

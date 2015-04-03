@@ -1,2 +1,2 @@
-RELEASELINE=
+export RELEASELINE=
 include ./common

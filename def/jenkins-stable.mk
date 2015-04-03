@@ -1,2 +1,2 @@
-RELEASELINE=-stable
+export RELEASELINE=-stable
 include def/common
