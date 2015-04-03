@@ -1,21 +1,16 @@
 #!/bin/bash -ex
-if [ -z "$1" ]; then
-  echo "Usage: deploy.sh path/to/deb"
-  exit 1
-fi
-deb="$1"
 bin="$(dirname $0)"
 
 sudo apt-get install apt-utils
 
 ssh $PKGSERVER mkdir -p $DEBDIR/
-rsync -avz "$deb" $PKGSERVER:$DEBDIR/
+rsync -avz "${DEB}" $PKGSERVER:$DEBDIR/
 
 # build package index
 # see http://wiki.debian.org/SecureApt for more details
 rm -rf binary || true
 mkdir binary > /dev/null 2>&1 || true
-cp "$deb" binary
+cp "${DEB}" binary
 apt-ftparchive packages binary > binary/Packages
 apt-ftparchive contents binary > binary/Contents
 

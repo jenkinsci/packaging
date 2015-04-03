@@ -13,4 +13,7 @@ export MSI:=${BUILD}/msi/${ARTIFACTNAME}-${VERSION}.zip
 # where to generate OSX PKG file?
 export OSX=${BUILD}/osx/${ARTIFACTNAME}-${VERSION}.pkg
 
+# where to generate Debian/Ubuntu DEB file?
+export DEB=${BUILD}/debian/${ARTIFACTNAME}_${VERSION}_all.deb
+
 export BASE:=$(CURDIR)

@@ -1,33 +1,35 @@
 #!/bin/bash -ex
-# The MIT License
-# 
-# Copyright (c) 2004-2009, Sun Microsystems, Inc., Kohsuke Kawaguchi, Jamie Whitehouse
-# 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-# 
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-# 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
+#
+# build a debian package from a release build
 
-if [ -z "$1" ]; then
-  echo "Usage: build.sh path/to/jenkins.war"
-  exit 1
-fi
+dir=$(dirname $0)
 
-d=$(dirname $0)
-cp "$1" $d/jenkins.war
+# tmp dir
+D=/tmp/$$/$$
+mkdir -p $D
 
-cd $d
-exec debuild -us -uc -A
+# debian packaging needs to touch the file in the source tree, so do this in tmp dir
+# so that multiple builds can go on concurrently
+cp -R $dir/* $D
+
+cat > $D/debian/changelog << EOF
+${ARTIFACTNAME} ($VERSION) unstable; urgency=low
+
+  * Packaged ${VERSION}
+
+ -- Kohsuke Kawaguchi <kk@kohsuke.org>  $(date -R)
+
+EOF
+
+# build the debian package
+sudo apt-get install -y devscripts || true
+
+cp "${WAR}" $D/${ARTIFACTNAME}.war
+pushd $D
+  debuild -us -uc -A
+popd
+
+mkdir "$(dirname "${DEB}")"
+mv $D/../jenkins_${VERSION}_all.deb ${DEB}
+
+rm -rf $D

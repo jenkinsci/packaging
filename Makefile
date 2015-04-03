@@ -33,3 +33,11 @@ ${OSX}: ${WAR} cli
 
 osx.deploy: ${OSX}
 	./osx/deploy.sh
+
+
+
+deb: ${DEB}
+${DEB}: ${WAR}
+	./debian/build/build.sh
+deb.deploy: ${DEB}
+	./debian/deploy/deploy.sh
