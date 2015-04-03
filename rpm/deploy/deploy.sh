@@ -11,10 +11,9 @@ cp "$RPM" $D/RPMS/noarch
 
 $base/gen.rb > $D/index.html
 if $OSS_JENKINS; then
-  cat $base/htaccess     | sed -e "s/@RELEASELINE@/${RELEASELINE}/g" | sed -e "s#@URL@#${RPM_URL}#g" > $D/.htaccess
-else
-  rm $D/.htaccess || true
+  cat $base/htaccess | sed -e "s/@RELEASELINE@/${RELEASELINE}/g" | sed -e "s#@URL@#${RPM_URL}#g" > $D/.htaccess
 fi
+
 cat  > $D/${ARTIFACTNAME}.repo << EOF
 [${ARTIFACTNAME}]
 name=${PRODUCTNAME}${RELEASELINE}
