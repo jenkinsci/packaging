@@ -11,5 +11,6 @@ EOF
 " 2> /dev/null
 
 tar cvzf /tmp/$$.tgz -C $bin FindJava.java build.sh /tmp/$$.wxs jenkins.exe.config bootstrapper.xml
-echo java -jar $BUILD/jenkins-cli.jar dist-fork -z /tmp/$$.tgz -f ${ARTIFACTNAME}.war="${WAR}" -l windows -F "${MSI}=${ARTIFACTNAME}-windows.zip" bash -ex build.sh ${ARTIFACTNAME}.war $encodedv ${ARTIFACTNAME} "${PRODUCTNAME}" ${PORT}
+java -jar $BUILD/jenkins-cli.jar dist-fork -z /tmp/$$.tgz -f ${ARTIFACTNAME}.war="${WAR}" -l windows -F "${MSI}=${ARTIFACTNAME}-windows.zip" \
+	bash -ex build.sh ${ARTIFACTNAME}.war $encodedv ${ARTIFACTNAME} "${PRODUCTNAME}" ${PORT}
 rm /tmp/$$.tgz /tmp/$$.wxs
