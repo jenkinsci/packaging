@@ -10,27 +10,22 @@ include ./setup.mk
 
 #######################################################
 
-cli: ${BUILD}/jenkins-cli.jar
+clean:
+	rm -rf ${BUILD}
 
-${BUILD}/jenkins-cli.jar:
-	@mkdir ${BUILD} || true
-	wget -O $@ ${JENKINS_URL}jnlpJars/jenkins-cli.jar
+
 
 msi: ${MSI}
-
 ${MSI}: ${WAR} cli
 	./msi/build-on-jenkins.sh
-
 msi.deploy: ${MSI}
 	./msi/deploy.sh
 
 
 
 osx: ${OSX}
-
 ${OSX}: ${WAR} cli
 	./osx/build-on-jenkins.sh
-
 osx.deploy: ${OSX}
 	./osx/deploy.sh
 
@@ -41,3 +36,10 @@ ${DEB}: ${WAR}
 	./debian/build/build.sh
 deb.deploy: ${DEB}
 	./debian/deploy/deploy.sh
+
+
+
+cli: ${BUILD}/jenkins-cli.jar
+${BUILD}/jenkins-cli.jar:
+	@mkdir ${BUILD} || true
+	wget -O $@ ${JENKINS_URL}jnlpJars/jenkins-cli.jar
