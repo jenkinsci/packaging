@@ -16,6 +16,10 @@ clean:
 setup:
 	bash -ex -c 'for f in */setup.sh; do $$f; done'
 
+package: msi osx deb rpm suse
+
+deploy: msi.deploy osx.deploy deb.deploy rpm.deploy suse.deploy
+
 msi: ${MSI}
 ${MSI}: ${WAR} cli
 	./msi/build-on-jenkins.sh
