@@ -11,7 +11,7 @@ include ./setup.mk
 #######################################################
 
 clean:
-	rm -rf ${BUILD}
+	rm -rf ${TARGET}
 
 setup:
 	bash -ex -c 'for f in */setup.sh; do $$f; done'
@@ -70,5 +70,5 @@ suse.deploy: ${SUSE}
 
 
 ${CLI}:
-	@mkdir ${BUILD} || true
+	@mkdir ${TARGET} || true
 	wget -O $@ ${JENKINS_URL}jnlpJars/jenkins-cli.jar

@@ -23,7 +23,7 @@ You'll also need a `jenkins.war` file that you are packaging, which comes from t
 Run `make package` to build all the native packages.
 At minimum, you have to specify the `WAR` variable that points to the war file to be packaged.
 
-Packages will be placed into `build/` directory.
+Packages will be placed into `target/` directory.
 See the definition of the `package` goal for how to build individual packages selectively.
 
 # Deploying packages

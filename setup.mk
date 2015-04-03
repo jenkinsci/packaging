@@ -5,24 +5,24 @@ export WAR?=$(error Required variable WAR must point to the jenkins.war file you
 export VERSION:=$(shell unzip -p "${WAR}" META-INF/MANIFEST.MF | grep Implementation-Version | cut -d ' ' -f2 | tr -d '\r' | sed -e "s/-SNAPSHOT//" | sed -e "s/-beta-.*//")
 
 # directory to place marker files for build artifacts
-export BUILD:=build
+export TARGET:=target
 
 # jenkins-cli.jar
-export CLI:=${BUILD}/jenkins-cli.jar
+export CLI:=${TARGET}/jenkins-cli.jar
 
 # where to generate MSI file?
-export MSI:=${BUILD}/msi/${ARTIFACTNAME}-${VERSION}.zip
+export MSI:=${TARGET}/msi/${ARTIFACTNAME}-${VERSION}.zip
 
 # where to generate OSX PKG file?
-export OSX=${BUILD}/osx/${ARTIFACTNAME}-${VERSION}.pkg
+export OSX=${TARGET}/osx/${ARTIFACTNAME}-${VERSION}.pkg
 
 # where to generate Debian/Ubuntu DEB file?
-export DEB=${BUILD}/debian/${ARTIFACTNAME}_${VERSION}_all.deb
+export DEB=${TARGET}/debian/${ARTIFACTNAME}_${VERSION}_all.deb
 
 # where to generate RHEL/CentOS RPM file?
-export RPM=${BUILD}/rpm/${ARTIFACTNAME}-${VERSION}-1.1.noarch.rpm
+export RPM=${TARGET}/rpm/${ARTIFACTNAME}-${VERSION}-1.1.noarch.rpm
 
 # where to generate SUSE RPM file?
-export SUSE=${BUILD}/suse/${ARTIFACTNAME}-${VERSION}-1.2.noarch.rpm
+export SUSE=${TARGET}/suse/${ARTIFACTNAME}-${VERSION}-1.2.noarch.rpm
 
 export BASE:=$(CURDIR)
