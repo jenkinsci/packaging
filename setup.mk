@@ -1,5 +1,5 @@
 # war file to release
-export WAR:=jenkins.war
+export WAR?=$(error Required variable WAR must point to the jenkins.war file you are packaging)
 
 # sanitized version number
 export VERSION:=$(shell unzip -p "${WAR}" META-INF/MANIFEST.MF | grep Implementation-Version | cut -d ' ' -f2 | tr -d '\r' | sed -e "s/-SNAPSHOT//" | sed -e "s/-beta-.*//")
