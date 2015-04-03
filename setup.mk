@@ -19,4 +19,7 @@ export DEB=${BUILD}/debian/${ARTIFACTNAME}_${VERSION}_all.deb
 # where to generate RHEL/CentOS RPM file?
 export RPM=${BUILD}/rpm/${ARTIFACTNAME}-${VERSION}-1.1.noarch.rpm
 
+# where to generate SUSE RPM file?
+export SUSE=${BUILD}/rpm/${ARTIFACTNAME}-${VERSION}-1.2.noarch.rpm
+
 export BASE:=$(CURDIR)

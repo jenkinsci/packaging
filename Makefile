@@ -48,6 +48,14 @@ rpm.deploy: ${RPM}
 
 
 
+suse: ${SUSE}
+${SUSE}: ${WAR}
+	./suse/build/build.sh
+suse.deploy: ${SUSE}
+	./suse/deploy/deploy.sh
+
+
+
 cli: ${BUILD}/jenkins-cli.jar
 ${BUILD}/jenkins-cli.jar:
 	@mkdir ${BUILD} || true
