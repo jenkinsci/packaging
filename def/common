@@ -3,6 +3,7 @@
 export PRODUCTNAME=Jenkins
 export ARTIFACTNAME=jenkins
 export VENDOR=Jenkins project
+export SUMMARY=Jenkins Continuous Integration Server
 export PORT=8080
 
 # the host to deploy bits to
@@ -27,6 +28,8 @@ export SUSE_URL=http://pkg.jenkins-ci.org/opensuse${RELEASELINE}
 export  DEB_URL=http://pkg.jenkins-ci.org/debian${RELEASELINE}
 
 # Windows packaging details
-export MSI_PRODUCT_CODE=415933d8-4104-47c3-aee9-66b31de07a57
+export MSI_PRODUCTCODE=415933d8-4104-47c3-aee9-66b31de07a57
+export MSI_PRODUCTDIR=Jenkins
+export MSI_SERVICENAME=JenkinsService
 
 export OSS_JENKINS=true

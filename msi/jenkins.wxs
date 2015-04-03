@@ -1,39 +1,46 @@
 <?xml version="1.0"?>
+<!--
+  This file gets processed twice. Once by shell on the release machine, then
+  once more by WiX toolkit on Windows build box.
+  
+  WiX variables are supposed to look like <DOLLAR>(var.VARNAME), which means
+  it has to be written like <DOLLAR><DOLLAR>(var.VARNAME) to survive the first processing
+-->
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'
      xmlns:fire="http://schemas.microsoft.com/wix/FirewallExtension">
-  <Product Name='Jenkins $(var.VERSION)' Id='*' UpgradeCode='415933d8-4104-47c3-aee9-66b31de07a57'
-    Language='1033' Codepage='1252' Version='0.$(var.ENCODEDVERSION)' Manufacturer='Jenkins project'>
+  <Product Name='${PRODUCTNAME} ${VERSION}' Id='*' UpgradeCode='${MSI_PRODUCTCODE}'
+    Language='1033' Codepage='1252' Version='0.${encodedv}' Manufacturer='${VENDOR}'>
 
-    <Package Id='*' Keywords='Installer' Description="Jenkins"
-      Comments='Continuous Integration Server' InstallScope="perMachine"
+    <Package Id='*' Keywords='Installer' Description="${PRODUCTNAME}"
+      Comments='${SUMMARY}' InstallScope="perMachine"
       InstallerVersion='100' Compressed='yes' SummaryCodepage='1252' />
-      <Media Id='1' Cabinet='jenkins.cab' EmbedCab='yes'/>
+      <Media Id='1' Cabinet='${ARTIFACTNAME}.cab' EmbedCab='yes'/>
       <Directory Id='TARGETDIR' Name='SourceDir'>
         <Directory Id='ProgramFilesFolder' Name='PFiles'>
-          <Directory Id='JENKINSDIR' Name='Jenkins' FileSource=".">
+          <Directory Id='JENKINSDIR' Name='${MSI_PRODUCTDIR}' FileSource=".">
               <Directory Id='JreDir' Name='jre'/>
               <Component Id='Main' Guid='e4a652bf-c210-4a45-95c4-5dc875b4880b'>
                 <File Name="jenkins.exe" Source='tmp/jenkins.exe' KeyPath='yes' Id="JenkinsExe"/>
-                <fire:FirewallException Id="FwEx" File="$(var.JavaExeId)" Name="Jenkins" Scope="any" IgnoreFailure="yes" />
+                <fire:FirewallException Id="FwEx" File="$$(var.JavaExeId)" Name="Jenkins" Scope="any" IgnoreFailure="yes" />
                 <File Name="jenkins.xml" Source='tmp/jenkins.xml' DiskId='1' />
                 <File Name="jenkins.exe.config" Source='jenkins.exe.config' DiskId='1' />
-                <File Name="jenkins.war" Source='$(var.WAR)' DiskId='1' />
-                <ServiceInstall Id="JenkinsService"
-                     Name="Jenkins"
-                     DisplayName="Jenkins"
+                <File Name="${ARTIFACTNAME}.war" Source='$$(var.WAR)' DiskId='1' />
+                <ServiceInstall Id="${MSI_SERVICENAME}"
+                     Name="${PRODUCTNAME}"
+                     DisplayName="${PRODUCTNAME}"
                      Type="ownProcess"
                      Start="auto"
                      ErrorControl="normal"
-                     Description="Jenkins Continuous Integration Server"
+                     Description="${SUMMARY}"
                      Account="[SERVICEACCOUNT]"
                      Password="[SERVICEPASSWORD]" />
-                 <ServiceControl Id="ControlJenkinsService" Name="Jenkins" Start="install" Stop="both" Wait="yes" Remove="uninstall"/>
+                 <ServiceControl Id="ControlJenkinsService" Name="${MSI_SERVICENAME}" Start="install" Stop="both" Wait="yes" Remove="uninstall"/>
               </Component>
           </Directory>
         </Directory>
       </Directory>
     
-    <Upgrade Id="415933d8-4104-47c3-aee9-66b31de07a57">
+    <Upgrade Id="${MSI_PRODUCTCODE}">
       <UpgradeVersion Minimum="0.0.0" Maximum="99.99.99" Property="PREVIOUSVERSIONINSTALLED" />
     </Upgrade>
     <InstallExecuteSequence>
@@ -117,7 +124,7 @@
 
 
     <!-- launch a browser at the end of the installation -->
-    <Property Id="WixShellExecTarget" Value="http://localhost:8080/"/>
+    <Property Id="WixShellExecTarget" Value="http://localhost:${PORT}/"/>
     <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
 
     <Property Id="WIXUI_INSTALLDIR" Value="JENKINSDIR" />

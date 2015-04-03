@@ -28,18 +28,14 @@ heat dir "$JREDIR" -o jre.wxs -sfrag -sreg -nologo -srd -gg -cg JreComponents -d
 # pick up java.exe File ID
 JavaExeId=$(grep java.exe jre.wxs | grep -o "fil[0-9A-F]*")
 
-# version
-v=$(unzip -p "$war" META-INF/MANIFEST.MF | grep Implementation-Version | cut -d ' ' -f2 | tr -d '\r' | sed -e "s/-SNAPSHOT//" | sed -e "s/-beta-.*//")
-echo version=$v
-
-candle -dVERSION=$v -dENCODEDVERSION=${ENCODEDVERSION} -dJreDir="$JREDIR" -dWAR="$war" -dJavaExeId=$JavaExeId -nologo -ext WixUIExtension -ext WixUtilExtension -ext WixFirewallExtension jenkins.wxs jre.wxs
+candle -dJreDir="$JREDIR" -dWAR="$war" -dJavaExeId=$JavaExeId -nologo -ext WixUIExtension -ext WixUtilExtension -ext WixFirewallExtension jenkins.wxs jre.wxs
 # '-sval' skips validation. without this, light somehow doesn't work on automated build environment
 # set to -dcl:low during debug and -dcl:high for release
-light -o ${ARTIFACTNAME}-$v.msi -sval -nologo -dcl:high -ext WixUIExtension -ext WixUtilExtension -ext WixFirewallExtension ${ARTIFACTNAME}.wixobj jre.wixobj
+light -o ${ARTIFACTNAME}.msi -sval -nologo -dcl:high -ext WixUIExtension -ext WixUtilExtension -ext WixFirewallExtension ${ARTIFACTNAME}.wixobj jre.wixobj
 
-msbuild.exe /property:src=${ARTIFACTNAME}-$v.msi "/property:ProductName=${PRODUCTNAME}" bootstrapper.xml
+msbuild.exe /property:src=${ARTIFACTNAME}.msi "/property:ProductName=${PRODUCTNAME}" bootstrapper.xml
 
-zip ${ARTIFACTNAME}-$v-windows.zip ${ARTIFACTNAME}-$v.msi setup.exe
+zip ${ARTIFACTNAME}-windows.zip ${ARTIFACTNAME}.msi setup.exe
 
 # avoid bringing back files that we don't care
 rm -rf tmp *.class *.wixpdb *.wixobj
