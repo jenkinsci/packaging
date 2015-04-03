@@ -22,8 +22,6 @@ ${ARTIFACTNAME} ($VERSION) unstable; urgency=low
 EOF
 
 # build the debian package
-sudo apt-get install -y devscripts || true
-
 cp "${WAR}" $D/${ARTIFACTNAME}.war
 pushd $D
   debuild -us -uc -A

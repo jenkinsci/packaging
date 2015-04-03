@@ -13,7 +13,8 @@ include ./setup.mk
 clean:
 	rm -rf ${BUILD}
 
-
+setup:
+	bash -ex -c 'for f in */setup.sh; do $$f; done'
 
 msi: ${MSI}
 ${MSI}: ${WAR} cli

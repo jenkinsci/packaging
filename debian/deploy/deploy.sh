@@ -1,8 +1,6 @@
 #!/bin/bash -ex
 bin="$(dirname $0)"
 
-sudo apt-get install apt-utils
-
 ssh $PKGSERVER mkdir -p $DEBDIR/
 rsync -avz "${DEB}" $PKGSERVER:$DEBDIR/
 
