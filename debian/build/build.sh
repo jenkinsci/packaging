@@ -13,11 +13,7 @@ mkdir -p $D
 cp -R $dir/* $D
 
 # Expand variables in the definition
-perl -pi -w \
-  -e "s/\@\@ARTIFACTNAME\@\@/${ARTIFACTNAME}/g;" \
-  -e "s/\@\@PRODUCTNAME\@\@/${PRODUCTNAME}/g;" \
-  -e "s/\@\@SUMMARY\@\@/${SUMMARY}/g;" \
-  $D/debian/*
+$BASE/bin/branding.sh $D/debian
 
 cat > $D/debian/changelog << EOF
 ${ARTIFACTNAME} ($VERSION) unstable; urgency=low
