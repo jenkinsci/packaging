@@ -17,7 +17,7 @@
       <Media Id='1' Cabinet='${ARTIFACTNAME}.cab' EmbedCab='yes'/>
       <Directory Id='TARGETDIR' Name='SourceDir'>
         <Directory Id='ProgramFilesFolder' Name='PFiles'>
-          <Directory Id='JENKINSDIR' Name='${MSI_PRODUCTDIR}' FileSource=".">
+          <Directory Id='JENKINSDIR' Name='${CAMELARTIFACTNAME}' FileSource=".">
               <Directory Id='JreDir' Name='jre'/>
               <Component Id='Main' Guid='e4a652bf-c210-4a45-95c4-5dc875b4880b'>
                 <File Name="jenkins.exe" Source='tmp/jenkins.exe' KeyPath='yes' Id="JenkinsExe"/>
@@ -25,7 +25,7 @@
                 <File Name="jenkins.xml" Source='tmp/jenkins.xml' DiskId='1' />
                 <File Name="jenkins.exe.config" Source='jenkins.exe.config' DiskId='1' />
                 <File Name="${ARTIFACTNAME}.war" Source='\$(var.WAR)' DiskId='1' />
-                <ServiceInstall Id="${MSI_SERVICENAME}"
+                <ServiceInstall Id="${CAMELARTIFACTNAME}Service"
                      Name="${PRODUCTNAME}"
                      DisplayName="${PRODUCTNAME}"
                      Type="ownProcess"
@@ -34,7 +34,7 @@
                      Description="${SUMMARY}"
                      Account="[SERVICEACCOUNT]"
                      Password="[SERVICEPASSWORD]" />
-                 <ServiceControl Id="ControlJenkinsService" Name="${MSI_SERVICENAME}" Start="install" Stop="both" Wait="yes" Remove="uninstall"/>
+                 <ServiceControl Id="ControlJenkinsService" Name="${CAMELARTIFACTNAME}Service" Start="install" Stop="both" Wait="yes" Remove="uninstall"/>
               </Component>
           </Directory>
         </Directory>

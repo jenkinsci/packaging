@@ -6,7 +6,5 @@ export VENDOR=Jenkins project
 export SUMMARY=Jenkins Continuous Integration Server
 export PORT=8080
 
-# Windows packaging details
 export MSI_PRODUCTCODE=415933d8-4104-47c3-aee9-66b31de07a57
-export MSI_PRODUCTDIR=Jenkins
-export MSI_SERVICENAME=JenkinsService
+export CAMELARTIFACTNAME=Jenkins
