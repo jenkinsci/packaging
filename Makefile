@@ -16,9 +16,18 @@ clean:
 setup:
 	bash -ex -c 'for f in */setup.sh; do $$f; done'
 
-package: msi osx deb rpm suse
+package: war msi osx deb rpm suse
 
-deploy: msi.deploy osx.deploy deb.deploy rpm.deploy suse.deploy
+deploy: war.deploy msi.deploy osx.deploy deb.deploy rpm.deploy suse.deploy
+
+
+
+war: ${WAR}
+war.deploy: ${WAR}
+	ssh ${PKGSERVER} mkdir -p ${WARDIR}/${VERSION}/
+	rsync -avz "${WAR}" ${PKGSERVER}:${WARDIR}/${VERSION}/${ARTIFACTNAME}.war
+
+
 
 msi: ${MSI}
 ${MSI}: ${WAR} cli

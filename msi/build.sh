@@ -31,7 +31,7 @@ JavaExeId=$(grep java.exe jre.wxs | grep -o "fil[0-9A-F]*")
 candle -dJreDir="$JREDIR" -dWAR="$war" -dJavaExeId=$JavaExeId -nologo -ext WixUIExtension -ext WixUtilExtension -ext WixFirewallExtension jenkins.wxs jre.wxs
 # '-sval' skips validation. without this, light somehow doesn't work on automated build environment
 # set to -dcl:low during debug and -dcl:high for release
-light -o ${ARTIFACTNAME}.msi -sval -nologo -dcl:high -ext WixUIExtension -ext WixUtilExtension -ext WixFirewallExtension ${ARTIFACTNAME}.wixobj jre.wixobj
+light -o ${ARTIFACTNAME}.msi -sval -nologo -dcl:high -ext WixUIExtension -ext WixUtilExtension -ext WixFirewallExtension jenkins.wixobj jre.wixobj
 
 msbuild.exe /property:src=${ARTIFACTNAME}.msi "/property:ProductName=${PRODUCTNAME}" bootstrapper.xml
 
