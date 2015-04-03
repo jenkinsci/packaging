@@ -7,6 +7,9 @@ export VERSION:=$(shell unzip -p "${WAR}" META-INF/MANIFEST.MF | grep Implementa
 # directory to place marker files for build artifacts
 export BUILD:=build
 
+# jenkins-cli.jar
+export CLI:=${BUILD}/jenkins-cli.jar
+
 # where to generate MSI file?
 export MSI:=${BUILD}/msi/${ARTIFACTNAME}-${VERSION}.zip
 

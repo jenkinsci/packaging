@@ -30,7 +30,7 @@ war.deploy: ${WAR}
 
 
 msi: ${MSI}
-${MSI}: ${WAR} cli
+${MSI}: ${WAR} ${CLI}
 	./msi/build-on-jenkins.sh
 msi.deploy: ${MSI}
 	./msi/deploy.sh
@@ -38,7 +38,7 @@ msi.deploy: ${MSI}
 
 
 osx: ${OSX}
-${OSX}: ${WAR} cli
+${OSX}: ${WAR} ${CLI}
 	./osx/build-on-jenkins.sh
 osx.deploy: ${OSX}
 	./osx/deploy.sh
@@ -69,7 +69,6 @@ suse.deploy: ${SUSE}
 
 
 
-cli: ${BUILD}/jenkins-cli.jar
-${BUILD}/jenkins-cli.jar:
+${CLI}:
 	@mkdir ${BUILD} || true
 	wget -O $@ ${JENKINS_URL}jnlpJars/jenkins-cli.jar

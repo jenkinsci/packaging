@@ -1,3 +1,6 @@
+#
+# Profile for testing release process
+#
 export RELEASELINE=
 
 export PRODUCTNAME=JenkinsTest
