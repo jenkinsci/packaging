@@ -19,7 +19,8 @@ MSI_ENCODED_VERSION=$(shell ./msi/encode-version.rb ${VERSION})
 cli: ${BUILD}/jenkins-cli.jar
 
 ${BUILD}/jenkins-cli.jar:
-	wget -o $@ ${JENKINS_URL}jnlpJars/jenkins-cli.jar
+	@mkdir ${BUILD} || true
+	wget -O $@ ${JENKINS_URL}jnlpJars/jenkins-cli.jar
 
-${MSI}: ${WAR}
+${MSI}: ${WAR} cli
 	./msi/build-on-jenkins.sh
