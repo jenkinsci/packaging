@@ -32,6 +32,10 @@ Run `make deploy` to publish all native packages.
 
 See the definition of the `deploy` goal for individual package deployment.
 
+# Customizing
+* `branding/` directory contains `*.mk` files controls the branding of the generated packages.
+  You can create your own branding definition to customize the package generation process.
+  See [branding readme](branding/README.md) for more details.
 
 # TODO (mostly note to myself)
 * Split resource templates to enable customization

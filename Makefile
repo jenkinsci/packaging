@@ -1,6 +1,6 @@
 # refers to the definition of a release target
-TARGET:=./def/test.mk
-include ${TARGET}
+BRAND:=./branding/test.mk
+include ${BRAND}
 
 # refers to the definition of the release process execution environment
 BUILDENV:=./env/test.mk
