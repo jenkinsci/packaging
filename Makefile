@@ -40,6 +40,14 @@ deb.deploy: ${DEB}
 
 
 
+rpm: ${RPM}
+${RPM}: ${WAR}
+	./rpm/build/build.sh
+rpm.deploy: ${RPM}
+	./rpm/deploy/deploy.sh
+
+
+
 cli: ${BUILD}/jenkins-cli.jar
 ${BUILD}/jenkins-cli.jar:
 	@mkdir ${BUILD} || true

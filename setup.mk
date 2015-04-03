@@ -16,4 +16,7 @@ export OSX=${BUILD}/osx/${ARTIFACTNAME}-${VERSION}.pkg
 # where to generate Debian/Ubuntu DEB file?
 export DEB=${BUILD}/debian/${ARTIFACTNAME}_${VERSION}_all.deb
 
+# where to generate RHEL/CentOS RPM file?
+export RPM=${BUILD}/rpm/${ARTIFACTNAME}-${VERSION}-1.1.noarch.rpm
+
 export BASE:=$(CURDIR)
