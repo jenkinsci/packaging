@@ -23,3 +23,13 @@ ${MSI}: ${WAR} cli
 
 msi.deploy: ${MSI}
 	./msi/deploy.sh
+
+
+
+osx: ${OSX}
+
+${OSX}: ${WAR} cli
+	./osx/build-on-jenkins.sh
+
+osx.deploy: ${OSX}
+	./osx/deploy.sh
