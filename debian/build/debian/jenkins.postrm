@@ -4,10 +4,10 @@ set -e
 
 case "$1" in
     purge)
-        userdel jenkins || true
-	groupdel jenkins || true
-        rm -rf /var/lib/jenkins /var/log/jenkins \
-               /var/run/jenkins /var/cache/jenkins
+        userdel @@ARTIFACTNAME@@ || true
+        groupdel @@ARTIFACTNAME@@ || true
+        rm -rf /var/lib/@@ARTIFACTNAME@@ /var/log/@@ARTIFACTNAME@@ \
+               /var/run/@@ARTIFACTNAME@@ /var/cache/@@ARTIFACTNAME@@
     ;;
 
     remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)

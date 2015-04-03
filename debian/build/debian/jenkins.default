@@ -1,7 +1,7 @@
 # defaults for jenkins continuous integration server
 
 # pulled in from the init script; makes things easier.
-NAME=jenkins
+NAME=@@ARTIFACTNAME@@
 
 # location of java
 JAVA=/usr/bin/java
@@ -11,17 +11,17 @@ JAVA_ARGS="-Djava.awt.headless=true"  # Allow graphs etc. to work even when an X
 #JAVA_ARGS="-Xmx256m"
 #JAVA_ARGS="-Djava.net.preferIPv4Stack=true" # make jenkins listen on IPv4 address
 
-PIDFILE=/var/run/jenkins/jenkins.pid
+PIDFILE=/var/run/$NAME/$NAME.pid
 
 # user and group to be invoked as (default to jenkins)
-JENKINS_USER=jenkins
-JENKINS_GROUP=jenkins
+JENKINS_USER=$NAME
+JENKINS_GROUP=$NAME
 
 # location of the jenkins war file
-JENKINS_WAR=/usr/share/jenkins/jenkins.war
+JENKINS_WAR=/usr/share/$NAME/$NAME.war
 
 # jenkins home location
-JENKINS_HOME=/var/lib/jenkins
+JENKINS_HOME=/var/lib/$NAME
 
 # set this to false if you don't want Hudson to run by itself
 # in this set up, you are expected to provide a servlet container
@@ -29,7 +29,7 @@ JENKINS_HOME=/var/lib/jenkins
 RUN_STANDALONE=true
 
 # log location.  this may be a syslog facility.priority
-JENKINS_LOG=/var/log/jenkins/$NAME.log
+JENKINS_LOG=/var/log/$NAME/$NAME.log
 #JENKINS_LOG=daemon.info
 
 # OS LIMITS SETUP
@@ -54,13 +54,13 @@ MAXOPENFILES=8192
 # UMASK=027
 
 # port for HTTP connector (default 8080; disable with -1)
-HTTP_PORT=8080
+HTTP_PORT=@@PORT@@
 
 # port for AJP connector (disabled by default)
 AJP_PORT=-1
 
 # servlet context, important if you want to use apache proxying  
-PREFIX=/jenkins
+PREFIX=/$NAME
 
 # arguments to pass to jenkins.
 # --javahome=$JAVA_HOME
@@ -72,4 +72,4 @@ PREFIX=/jenkins
 # --webroot=~/.jenkins/war
 # --prefix=$PREFIX
 
-JENKINS_ARGS="--webroot=/var/cache/jenkins/war --httpPort=$HTTP_PORT --ajp13Port=$AJP_PORT"
+JENKINS_ARGS="--webroot=/var/cache/$NAME/war --httpPort=$HTTP_PORT --ajp13Port=$AJP_PORT"

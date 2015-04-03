@@ -4,13 +4,13 @@
 # Amelia A Lewis <alewis@ibco.com>
 #
 ### BEGIN INIT INFO
-# Provides:          jenkins
+# Provides:          @@ARTIFACTNAME@@
 # Required-Start:    $remote_fs $syslog $network
 # Required-Stop:     $remote_fs $syslog $network
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Start jenkins at boot time
-# Description:       Controls the jenkins continuous integration engine.
+# Short-Description: Start @@PRODUCTNAME@@ at boot time
+# Description:       Controls @@SUMMARY@@
 ### END INIT INFO
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin

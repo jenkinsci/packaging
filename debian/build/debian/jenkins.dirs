@@ -1,12 +1,12 @@
 # moved from rules install
-usr/share/jenkins
+usr/share/@@ARTIFACTNAME@@
 
 # this is where JENKINS_HOME is stored, so let's leave it as is for now
-var/lib/jenkins
+var/lib/@@ARTIFACTNAME@@
 
 # Store jenkins log file in it's own directory since they can become rather large and in the future
 # rotating logs can be easily added.
-var/log/jenkins
+var/log/@@ARTIFACTNAME@@
 
 # Cache directory for the unpacked jenkins.war file.
-var/cache/jenkins
+var/cache/@@ARTIFACTNAME@@

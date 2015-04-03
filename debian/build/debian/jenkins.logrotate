@@ -1,4 +1,4 @@
-/var/log/jenkins/jenkins.log {
+/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log {
         weekly
         copytruncate
         missingok

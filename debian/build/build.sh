@@ -12,6 +12,13 @@ mkdir -p $D
 # so that multiple builds can go on concurrently
 cp -R $dir/* $D
 
+# Expand variables in the definition
+perl -pi -w \
+  -e "s/\@\@ARTIFACTNAME\@\@/${ARTIFACTNAME}/g;" \
+  -e "s/\@\@PRODUCTNAME\@\@/${PRODUCTNAME}/g;" \
+  -e "s/\@\@SUMMARY\@\@/${SUMMARY}/g;" \
+  $D/debian/*
+
 cat > $D/debian/changelog << EOF
 ${ARTIFACTNAME} ($VERSION) unstable; urgency=low
 
@@ -24,10 +31,17 @@ EOF
 # build the debian package
 cp "${WAR}" $D/${ARTIFACTNAME}.war
 pushd $D
+  pushd debian
+    # rename jenkins.* to artifact.*
+    for f in jenkins.*; do
+      mv $f ${ARTIFACTNAME}$(echo $f | cut -b8-)
+    done
+  popd
+  tree
   debuild -us -uc -A
 popd
 
-mkdir "$(dirname "${DEB}")"
-mv $D/../jenkins_${VERSION}_all.deb ${DEB}
+mkdir "$(dirname "${DEB}")" || true
+mv $D/../${ARTIFACTNAME}_${VERSION}_all.deb ${DEB}
 
 rm -rf $D

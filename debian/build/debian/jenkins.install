@@ -1,1 +1,1 @@
-jenkins.war usr/share/jenkins
+@@ARTIFACTNAME@@.war usr/share/@@ARTIFACTNAME@@

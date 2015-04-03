@@ -46,7 +46,7 @@ osx.deploy: ${OSX}
 
 
 deb: ${DEB}
-${DEB}: ${WAR}
+${DEB}: ${WAR} $(shell find debian/build)
 	./debian/build/build.sh
 deb.deploy: ${DEB}
 	./debian/deploy/deploy.sh

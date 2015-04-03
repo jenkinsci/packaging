@@ -1,4 +1,4 @@
-Source: jenkins
+Source: @@ARTIFACTNAME@@
 Section: devel
 Priority: extra
 Maintainer: Kohsuke Kawaguchi <kk@kohsuke.org>
@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 9)
 Standards-Version: 3.9.4
 Homepage: https://jenkins-ci.org/
 
-Package: jenkins
+Package: @@ARTIFACTNAME@@
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, daemon, adduser, psmisc, default-jre-headless | java-runtime-headless
 Conflicts: hudson
