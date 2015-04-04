@@ -27,4 +27,4 @@ export SUSE_URL=http://pkg.jenkins-ci.org/opensuse${RELEASELINE}
 export  DEB_URL=http://pkg.jenkins-ci.org/debian${RELEASELINE}
 
 # additoinal contents to be overlayed during publishing
-export OVERLAY_CONTENTS=$BASE/env/release
+export OVERLAY_CONTENTS=${BASE}/env/release

@@ -29,4 +29,4 @@ export SUSE_URL=http://${WEBSERVER}/opensuse${RELEASELINE}
 export  DEB_URL=http://${WEBSERVER}/debian${RELEASELINE}
 
 # additoinal contents to be overlayed during publishing
-export OVERLAY_CONTENTS=$BASE/env/release
+export OVERLAY_CONTENTS=${BASE}/env/release
