@@ -6,8 +6,8 @@
     <description/>
     <post-install type="none"/>
     <requireAuthorization/>
-    <installFrom relative="true" includeRoot="true">Library/Application Support/Jenkins</installFrom>
-    <installTo mod="true">/Library/Application Support</installTo>
+    <installFrom relative="true" includeRoot="false">Library/Application Support/Jenkins</installFrom>
+    <installTo mod="true">/Library/Application Support/@@CAMELARTIFACTNAME@@</installTo>
     <flags>
       <followSymbolicLinks/>
     </flags>

@@ -12,7 +12,7 @@
 
 defaults="defaults read /Library/Preferences/org.jenkins-ci"
 
-war=`$defaults war` || war="/Applications/Jenkins/jenkins.war"
+war=`$defaults war` || war="/Applications/@@CAMELARTIFACTNAME@@/@@ARTIFACTNAME@@.war"
 
 javaArgs="-Dfile.encoding=UTF-8"
 
@@ -40,6 +40,6 @@ add_to_args ajp13Port
 add_to_args ajp13ListenAddress
 
 echo "JENKINS_HOME=$JENKINS_HOME"
-echo "Jenkins command line for execution:"
+echo "@@PRODUCTNAME@@ command line for execution:"
 echo /usr/bin/java $javaArgs -jar "$war" $args
 exec /usr/bin/java $javaArgs -jar "$war" $args

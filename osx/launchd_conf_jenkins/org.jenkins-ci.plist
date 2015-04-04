@@ -3,13 +3,13 @@
 <plist version="1.0">
   <dict>
     <key>StandardOutPath</key>
-    <string>/var/log/jenkins/jenkins.log</string>
+    <string>/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log</string>
     <key>StandardErrorPath</key>
-    <string>/var/log/jenkins/jenkins.log</string>
+    <string>/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log</string>
     <key>EnvironmentVariables</key>
     <dict>
       <key>JENKINS_HOME</key>
-      <string>/Users/Shared/Jenkins/Home</string>
+      <string>/Users/Shared/@@CAMELARTIFACTNAME@@/Home</string>
     </dict>
     <key>GroupName</key>
     <string>daemon</string>
@@ -20,12 +20,12 @@
     <key>ProgramArguments</key>
     <array>
       <string>/bin/bash</string>
-      <string>/Library/Application Support/Jenkins/jenkins-runner.sh</string>
+      <string>/Library/Application Support/@@CAMELARTIFACTNAME@@/jenkins-runner.sh</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
     <key>UserName</key>
-    <string>jenkins</string>
+    <string>@@ARTIFACTNAME@@</string>
     <key>SessionCreate</key>
     <true/>
   </dict>

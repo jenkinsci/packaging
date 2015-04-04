@@ -6,7 +6,7 @@
     <post-install type="none"/>
     <requireAuthorization/>
     <installFrom mod="true">/path/to/jenkins.war</installFrom>
-    <installTo mod="true">/Applications/Jenkins</installTo>
+    <installTo mod="true">/Applications/@@CAMELARTIFACTNAME@@</installTo>
     <flags>
       <followSymbolicLinks/>
       <discardResourceForks/>
