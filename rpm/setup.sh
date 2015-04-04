@@ -1,3 +1,3 @@
 #!/bin/bash
-sudo apt-get install -y rpm expect || true
+sudo apt-get install -y rpm expect createrepo || true
 
