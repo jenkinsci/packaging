@@ -7,22 +7,18 @@ def translate(script)
   script+".generated"
 end
 
-Vagrant.configure("2") do |config|
-  config.vm.define(:rpm) do |node|
-    node.vm.box = "chef/fedora-20"
-    node.vm.provision :shell, path:translate("provision/rpm.sh")
+def box(name,image)
+  config.vm.define(name) do |node|
+    node.vm.box = image
+    node.vm.provision :shell, path:translate("provision/#{name}.sh")
     node.vm.provision :serverspec do |spec|
-      spec.pattern = 'spec/rpm/*_spec.rb'
+      spec.pattern = 'spec/#{name}_spec.rb'
     end
   end
+end
 
-  config.vm.define(:suse) do |node|
-    node.vm.box = "chef/opensuse-13.1"
-    node.vm.provision :shell, path:"provision/suse.sh"
-  end
-
-  config.vm.define(:debian) do |node|
-    node.vm.box = "chef/ubuntu-12.04"
-    node.vm.provision :shell, path:"provision/debian.sh"
-  end
+Vagrant.configure("2") do |config|
+  box "rpm",  "chef/fedora-20"
+  box "suse", "chef/opensuse-13.1"
+  box "deb",  "chef/ubuntu-12.04"
 end
