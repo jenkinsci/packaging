@@ -19,7 +19,7 @@ tar cvzf $D/script.tgz -C $D/src .
 
 java -jar $TARGET/jenkins-cli.jar dist-fork -z $D/script.tgz \
   -f binary/${ARTIFACTNAME}.war="${WAR}" \
-  -f build.sh=$bin/build.sh -l osx -F "${OSX}=jenkins.pkg" \
+  -f build.sh=$bin/build.sh -l osx -F "${OSX}=${ARTIFACTNAME}.pkg" \
   /bin/bash -ex build.sh binary/${ARTIFACTNAME}.war $VERSION $ARTIFACTNAME "$PRODUCTNAME"
 touch ${OSX}
 rm -rf $D
