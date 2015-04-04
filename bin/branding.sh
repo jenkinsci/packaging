@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ex
 #
 # Usage:
 #   branding.sh <DIR>
@@ -8,7 +8,7 @@ ARGS=()
 
 for t in $(cat $(dirname "$0")/branding.list);
 do
-  v=`eval echo \\$${t}`
+  v="$(eval echo \\$${t})"
   ARGS+=("-e" "s/\@\@${t}\@\@/${v}/g;")
 done
 

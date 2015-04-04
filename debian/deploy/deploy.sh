@@ -25,7 +25,7 @@ cat merged/Contents | gzip -9c > binary/Contents.gz
 apt-ftparchive -c debian/release.conf release  binary > binary/Release
 # sign the release file
 rm binary/Release.gpg || true
-gpg --no-use-agent --passphrase-file ~/.gpg.passphrase -abs -o binary/Release.gpg binary/Release
+gpg --no-use-agent --passphrase-file $GPG_PASSPHRASE_FILE -abs -o binary/Release.gpg binary/Release
 
 # generate web index
 $bin/gen.rb > $bin/contents/index.html

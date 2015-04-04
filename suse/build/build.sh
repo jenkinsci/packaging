@@ -14,7 +14,7 @@ pushd $D
 
   # sign the results
   for rpm in $(find RPMS -name '*.rpm'); do
-    $BASE/bin/rpm-sign $(cat ~/.gpg.passphrase) $rpm
+    $BASE/bin/rpm-sign $(cat $GPG_PASSPHRASE_FILE) $rpm
   done
 popd
 
