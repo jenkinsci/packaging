@@ -28,11 +28,11 @@ At minimum, you have to specify the `WAR` variable that points to the war file t
 Packages will be placed into `target/` directory.
 See the definition of the `package` goal for how to build individual packages selectively.
 
-# Deploying packages
+# Publishing packages
 This repository contains scripts for copying packages over to a remote web server to publish them.
-Run `make deploy` to publish all native packages.
+Run `make publish` to publish all native packages.
 
-See the definition of the `deploy` goal for individual package deployment.
+See the definition of the `publish` goal for individual package publishment.
 
 # Branding
 `branding/` directory contains `*.mk` files that control the branding of the generated packages.

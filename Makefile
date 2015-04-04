@@ -18,12 +18,12 @@ setup:
 
 package: war msi osx deb rpm suse
 
-deploy: war.deploy msi.deploy osx.deploy deb.deploy rpm.deploy suse.deploy
+publish: war.publish msi.publish osx.publish deb.publish rpm.publish suse.publish
 
 
 
 war: ${WAR}
-war.deploy: ${WAR}
+war.publish: ${WAR}
 	ssh ${PKGSERVER} mkdir -p ${WARDIR}/${VERSION}/
 	rsync -avz "${WAR}" ${PKGSERVER}:${WARDIR}/${VERSION}/${ARTIFACTNAME}.war
 
@@ -32,40 +32,40 @@ war.deploy: ${WAR}
 msi: ${MSI}
 ${MSI}: ${WAR} ${CLI} $(shell find msi -type f)
 	./msi/build-on-jenkins.sh
-msi.deploy: ${MSI}
-	./msi/deploy.sh
+msi.publish: ${MSI}
+	./msi/publish.sh
 
 
 
 osx: ${OSX}
 ${OSX}: ${WAR} ${CLI}  $(shell find osx -type f | sed -e 's/ /\\ /g')
 	./osx/build-on-jenkins.sh
-osx.deploy: ${OSX}
-	./osx/deploy.sh
+osx.publish: ${OSX}
+	./osx/publish.sh
 
 
 
 deb: ${DEB}
 ${DEB}: ${WAR} $(shell find debian/build -type f)
 	./debian/build/build.sh
-deb.deploy: ${DEB} $(shell find debian/deploy -type f)
-	./debian/deploy/deploy.sh
+deb.publish: ${DEB} $(shell find debian/publish -type f)
+	./debian/publish/publish.sh
 
 
 
 rpm: ${RPM}
 ${RPM}: ${WAR}  $(shell find rpm/build -type f)
 	./rpm/build/build.sh
-rpm.deploy: ${RPM} $(shell find rpm/deploy -type f)
-	./rpm/deploy/deploy.sh
+rpm.publish: ${RPM} $(shell find rpm/publish -type f)
+	./rpm/publish/publish.sh
 
 
 
 suse: ${SUSE}
 ${SUSE}: ${WAR}  $(shell find suse/build -type f)
 	./suse/build/build.sh
-suse.deploy: ${SUSE} $(shell find suse/deploy -type f)
-	./suse/deploy/deploy.sh
+suse.publish: ${SUSE} $(shell find suse/publish -type f)
+	./suse/publish/publish.sh
 
 
 

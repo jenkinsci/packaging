@@ -5,7 +5,7 @@
 # JENKINS used to generate OSX/MSI packages
 export JENKINS_URL=https://cloudbees.ci.cloudbees.com/
 
-# the host to deploy bits to
+# the host to publish bits to
 export PKGSERVER=localhost
 
 # where to put binary files
