@@ -4,34 +4,38 @@ bin="$(dirname $0)"
 ssh $PKGSERVER mkdir -p $DEBDIR/
 rsync -avz "${DEB}" $PKGSERVER:$DEBDIR/
 
+D=/tmp/$$
+mkdir -p $D/binary $D/contents
+cp "$bin/contents" $D/contents
+
 # build package index
 # see http://wiki.debian.org/SecureApt for more details
-rm -rf binary || true
-mkdir binary > /dev/null 2>&1 || true
-cp "${DEB}" binary
-apt-ftparchive packages binary > binary/Packages
-apt-ftparchive contents binary > binary/Contents
+cp "${DEB}" $D/binary
+apt-ftparchive packages $D/binary > $D/binary/Packages
+apt-ftparchive contents $D/binary > $D/binary/Contents
 
 # merge the result
-pushd binary
+pushd $D/binary
   mvn org.kohsuke:apt-ftparchive-merge:1.2:merge -Durl=$DEB_URL/binary/ -Dout=../merged
 popd
 
-cat merged/Packages > binary/Packages
-cat merged/Packages | gzip -9c > binary/Packages.gz
-cat merged/Packages | bzip2 > binary/Packages.bz2
-cat merged/Packages | lzma > binary/Packages.lzma
-cat merged/Contents | gzip -9c > binary/Contents.gz
-apt-ftparchive -c debian/release.conf release  binary > binary/Release
+cat $D/merged/Packages > $D/binary/Packages
+cat $D/merged/Packages | gzip -9c > $D/binary/Packages.gz
+cat $D/merged/Packages | bzip2 > $D/binary/Packages.bz2
+cat $D/merged/Packages | lzma > $D/binary/Packages.lzma
+cat $D/merged/Contents | gzip -9c > $D/binary/Contents.gz
+apt-ftparchive -c debian/release.conf release $D/binary > $D/binary/Release
 # sign the release file
-rm binary/Release.gpg || true
-gpg --no-use-agent --passphrase-file $GPG_PASSPHRASE_FILE -abs -o binary/Release.gpg binary/Release
+rm $D/binary/Release.gpg || true
+gpg --no-use-agent --passphrase-file $GPG_PASSPHRASE_FILE -abs -o $D/binary/Release.gpg $D/binary/Release
 
 # generate web index
-$bin/gen.rb > $bin/contents/index.html
+$bin/gen.rb > $D/contents/index.html
 
-[ -d ${OVERLAY_CONTENTS}/debian ] && cp -R ${OVERLAY_CONTENTS}/debian/* $bin/contents
+[ -d ${OVERLAY_CONTENTS}/debian ] && cp -R ${OVERLAY_CONTENTS}/debian/* $D/contents
 
-cp binary/Packages.* binary/Release binary/Release.gpg binary/Contents.gz $bin/contents/binary
+cp $D/binary/Packages.* $D/binary/Release $D/binary/Release.gpg $D/binary/Contents.gz $D/contents/binary
 
-rsync -avz $bin/contents/ $PKGSERVER:$DEB_WEBDIR
+rsync -avz $D/contents/ $PKGSERVER:$DEB_WEBDIR
+
+rm -rf $D
