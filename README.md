@@ -4,7 +4,7 @@ The following platforms are currently supported:
 
   * Windows MSI: `msi/`
   * RedHat/CentOS RPM: `rpm/`
-  * Debian/Ubuntu DEB: `debian/`
+  * Debian/Ubuntu DEB: `deb/`
   * OS X PKG: `osx/`
   * OpenSUSE RPM: `suse/`
 
