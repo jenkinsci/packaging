@@ -5,12 +5,12 @@
 # the java process command line used to run Jenkins.
 # 
 # Customizable parameters are found in
-# /Library/Preferences/org.jenkins-ci.plist
+# /Library/Preferences/@@OSX_IDPREFIX@@.plist
 #
 # You can manipulate it using the "defaults" utility.
 # See "man defaults" for details.
 
-defaults="defaults read /Library/Preferences/org.jenkins-ci"
+defaults="defaults read /Library/Preferences/@@OSX_IDPREFIX@@"
 
 war=`$defaults war` || war="/Applications/@@CAMELARTIFACTNAME@@/@@ARTIFACTNAME@@.war"
 

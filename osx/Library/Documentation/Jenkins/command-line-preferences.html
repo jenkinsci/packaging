@@ -11,18 +11,18 @@
 
 <p>For the Mac, Jenkins is deployed as a launch daemon. (If you want to know more about launchd and daemons, see <a href="http://developer.apple.com/library/mac/#technotes/tn2083/_index.html">here</a> and <a href="http://developer.apple.com/library/mac/#documentation/MacOSX/Conceptual/BPSystemStartup/Articles/LaunchOnDemandDaemons.html">here</a>)
 
-<p>The launch daemon picks up the command line options from a standard preferences file, <tt>/Library/Preferences/org.jenkins-ci.plist</tt>. If the file does not exist, built-in defaults are used. The preference files are manipulated using the standard utility <tt>defaults</tt>.
+<p>The launch daemon picks up the command line options from a standard preferences file, <tt>/Library/Preferences/@@OSX_IDPREFIX@@.plist</tt>. If the file does not exist, built-in defaults are used. The preference files are manipulated using the standard utility <tt>defaults</tt>.
 
 <h4>How To Use the defaults Command</h4>
 
 <p>To view all settings in the file, run:
-<tt>defaults read /Library/Preferences/org.jenkins-ci</tt>
+<tt>defaults read /Library/Preferences/@@OSX_IDPREFIX@@</tt>
 
 <p>To get the value of a single setting, run:
-<tt>defaults read /Library/Preferences/org.jenkins-ci SETTING</tt>
+<tt>defaults read /Library/Preferences/@@OSX_IDPREFIX@@ SETTING</tt>
 
 <p>To set the value of a setting, run:
-<tt>defaults write /Library/Preferences/org.jenkins-ci SETTING VALUE</tt>
+<tt>defaults write /Library/Preferences/@@OSX_IDPREFIX@@ SETTING VALUE</tt>
 
 <p>For more information, see <tt>man defaults</tt>
 

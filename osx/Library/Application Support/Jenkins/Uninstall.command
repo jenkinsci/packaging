@@ -7,8 +7,8 @@ echo "The following commands are executed using sudo, so you need to be logged"
 echo "in as an administrator. Please provide your password when prompted."
 echo
 set -x
-sudo launchctl unload /Library/LaunchDaemons/org.jenkins-ci.plist
-sudo rm /Library/LaunchDaemons/org.jenkins-ci.plist
+sudo launchctl unload /Library/LaunchDaemons/@@OSX_IDPREFIX@@.plist
+sudo rm /Library/LaunchDaemons/@@OSX_IDPREFIX@@.plist
 sudo rm -rf /Applications/@@CAMELARTIFACTNAME@@ "/Library/Application Support/@@CAMELARTIFACTNAME@@" /Library/Documentation/@@CAMELARTIFACTNAME@@
 sudo rm -rf /Users/Shared/@@CAMELARTIFACTNAME@@
 sudo rm -rf /var/log/@@ARTIFACTNAME@@

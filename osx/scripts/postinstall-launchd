@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JENKINS_PLIST="/Library/LaunchDaemons/org.jenkins-ci.plist"
+JENKINS_PLIST="/Library/LaunchDaemons/@@OSX_IDPREFIX@@.plist"
 
 # Because PackageMaker just copies the components, we need to fix the permissions
 chown root:wheel ${JENKINS_PLIST}
