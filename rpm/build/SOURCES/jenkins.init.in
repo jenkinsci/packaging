@@ -37,7 +37,7 @@ test -r "$JENKINS_WAR" || { echo "$JENKINS_WAR not installed";
 	else exit 5; fi; }
 
 # Check for existence of needed config file and read it
-JENKINS_CONFIG=/etc/sysconfig/jenkins
+JENKINS_CONFIG=/etc/sysconfig/@@ARTIFACTNAME@@
 test -e "$JENKINS_CONFIG" || { echo "$JENKINS_CONFIG not existing";
 	if [ "$1" = "stop" ]; then exit 0;
 	else exit 6; fi; }
@@ -45,7 +45,7 @@ test -r "$JENKINS_CONFIG" || { echo "$JENKINS_CONFIG not readable. Perhaps you f
 	if [ "$1" = "stop" ]; then exit 0;
 	else exit 6; fi; }
 
-JENKINS_PID_FILE="/var/run/jenkins.pid"
+JENKINS_PID_FILE="/var/run/@@ARTIFACTNAME@@.pid"
 
 # Source function library.
 . /etc/init.d/functions
@@ -81,7 +81,7 @@ do
 done
 
 JAVA_CMD="$JENKINS_JAVA_CMD $JENKINS_JAVA_OPTIONS -DJENKINS_HOME=$JENKINS_HOME -jar $JENKINS_WAR"
-PARAMS="--logfile=/var/log/jenkins/jenkins.log --webroot=/var/cache/jenkins/war --daemon"
+PARAMS="--logfile=/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log --webroot=/var/cache/@@ARTIFACTNAME@@/war --daemon"
 [ -n "$JENKINS_PORT" ] && PARAMS="$PARAMS --httpPort=$JENKINS_PORT"
 [ -n "$JENKINS_LISTEN_ADDRESS" ] && PARAMS="$PARAMS --httpListenAddress=$JENKINS_LISTEN_ADDRESS"
 [ -n "$JENKINS_HTTPS_PORT" ] && PARAMS="$PARAMS --httpsPort=$JENKINS_HTTPS_PORT"
@@ -97,14 +97,14 @@ PARAMS="--logfile=/var/log/jenkins/jenkins.log --webroot=/var/cache/jenkins/war 
 [ -n "$JENKINS_ARGS" ] && PARAMS="$PARAMS $JENKINS_ARGS"
 
 if [ "$JENKINS_ENABLE_ACCESS_LOG" = "yes" ]; then
-    PARAMS="$PARAMS --accessLoggerClassName=winstone.accesslog.SimpleAccessLogger --simpleAccessLogger.format=combined --simpleAccessLogger.file=/var/log/jenkins/access_log"
+    PARAMS="$PARAMS --accessLoggerClassName=winstone.accesslog.SimpleAccessLogger --simpleAccessLogger.format=combined --simpleAccessLogger.file=/var/log/@@ARTIFACTNAME@@/access_log"
 fi
 
 RETVAL=0
 
 case "$1" in
     start)
-	echo -n "Starting Jenkins "
+	echo -n "Starting @@PRODUCTNAME@@ "
 	daemon --user "$JENKINS_USER" --pidfile "$JENKINS_PID_FILE" $JAVA_CMD $PARAMS > /dev/null
 	RETVAL=$?
 	if [ $RETVAL = 0 ]; then
@@ -128,8 +128,8 @@ case "$1" in
 	echo
 	;;
     stop)
-	echo -n "Shutting down Jenkins "
-	killproc jenkins
+	echo -n "Shutting down @@PRODUCTNAME@@ "
+	killproc @@ARTIFACTNAME@@
 	RETVAL=$?
 	echo
 	;;
@@ -149,14 +149,14 @@ case "$1" in
 	$0 start
 	;;
     force-reload)
-	echo -n "Reload service Jenkins "
+	echo -n "Reload service @@PRODUCTNAME@@ "
 	$0 try-restart
 	;;
     reload)
     	$0 restart
 	;;
     status)
-    	status jenkins
+    	status @@ARTIFACTNAME@@
 	RETVAL=$?
 	;;
     probe)
