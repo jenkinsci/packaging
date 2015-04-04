@@ -80,13 +80,14 @@ test.local.setup:
 	@mkdir -p ${TESTDIR} || true
 	docker run --rm -t -i -p 9200:80 -v ${TESTDIR}:/var/www/html fedora/apache
 %.test.up:
-    # run this target for to set up the test target VM
+	# run this target for to set up the test target VM
 	cd test; vagrant up --provision-with "" $*
 	cd test; vagrant provision --provision-with "shell" $*; sleep 5
 %.test.run:
-    # run this target to just re-run the test against the currently running VM
+	# run this target to just re-run the test against the currently running VM
 	cd test; vagrant provision --provision-with serverspec $*
 %.test.destroy:
-    # run tis target to undo '%.test.up'
+	# run tis target to undo '%.test.up'
 	cd test; vagrant destroy -f $*
 %.test: %.test.up %.test.run %.test.destroy
+	# run all the test goals in the order
