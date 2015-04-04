@@ -1,0 +1,9 @@
+source 'https://rubygems.org'
+
+gem 'serverspec'
+gem 'rspec'
+gem 'rake'
+
+group :plugins do
+  gem 'vagrant-serverspec', :github => 'jvoorhis/vagrant-serverspec'
+end

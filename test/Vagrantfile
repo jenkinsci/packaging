@@ -1,0 +1,28 @@
+# vim: set ft=ruby ts=2 sts=2 sw=2 :
+
+# expand references to parameters in Makefile
+def translate(script)
+  `cp #{script} #{script}.generated`
+  `../bin/branding.sh #{script}.generated`
+  script+".generated"
+end
+
+Vagrant.configure("2") do |config|
+  config.vm.define(:rpm) do |node|
+    node.vm.box = "chef/fedora-20"
+    node.vm.provision :shell, path:translate("provision/rpm.sh")
+    node.vm.provision :serverspec do |spec|
+      spec.pattern = 'spec/rpm/*_spec.rb'
+    end
+  end
+
+  config.vm.define(:suse) do |node|
+    node.vm.box = "chef/opensuse-13.1"
+    node.vm.provision :shell, path:"provision/suse.sh"
+  end
+
+  config.vm.define(:debian) do |node|
+    node.vm.box = "chef/ubuntu-12.04"
+    node.vm.provision :shell, path:"provision/debian.sh"
+  end
+end

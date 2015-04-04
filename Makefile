@@ -58,7 +58,8 @@ ${RPM}: ${WAR}  $(shell find rpm/build -type f)
 	./rpm/build/build.sh
 rpm.publish: ${RPM} $(shell find rpm/publish -type f)
 	./rpm/publish/publish.sh
-
+rpm.test:
+	cd test; vagrant provision rpm
 
 
 suse: ${SUSE}
