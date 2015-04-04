@@ -2,15 +2,16 @@
 
 # expand references to parameters in Makefile
 def translate(script)
-  `cp #{script} #{script}.generated`
-  `../bin/branding.sh #{script}.generated`
-  script+".generated"
 end
+
+`[ -d provision/generated ] || mkdir provision/generated`
+`cp -R provision/*.sh provision/generated`
+`../bin/branding.sh provision/generated`
 
 def box(config,name,image)
   config.vm.define(name) do |node|
     node.vm.box = image
-    node.vm.provision :shell, path:translate("provision/#{name}.sh")
+    node.vm.provision :shell, path:"provision/generated/#{name}.sh"
     node.vm.provision :serverspec do |spec|
       spec.pattern = "spec/#{name}_spec.rb"
     end

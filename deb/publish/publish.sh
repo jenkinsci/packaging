@@ -11,8 +11,10 @@ cp -R "$bin/contents/." $D/contents
 # build package index
 # see http://wiki.debian.org/SecureApt for more details
 cp "${DEB}" $D/binary
-apt-ftparchive packages $D/binary > $D/binary/Packages
-apt-ftparchive contents $D/binary > $D/binary/Contents
+pushd $D
+  apt-ftparchive packages binary > binary/Packages
+  apt-ftparchive contents binary > binary/Contents
+popd
 
 # merge the result
 pushd $D/binary
