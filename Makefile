@@ -20,7 +20,7 @@ package: war msi osx deb rpm suse
 
 publish: war.publish msi.publish osx.publish deb.publish rpm.publish suse.publish
 
-test: rpm.test
+test: deb.test rpm.test suse.test
 
 
 war: ${WAR}
