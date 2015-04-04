@@ -47,6 +47,19 @@ The installation of the package is often time consuming, and you can invoke it w
 Once you do that, you can just rerun serverspec tests with `make FLAVOR.test.run`. When all is done,
 run `make FLAVOR.test.shutdown` to terminate VirtualBox VMs.
 
+## Running local tests
+These tests install packages from a web server where they are published. So if you want to
+run tests prior to publishing them, you need to create a temporary web server that you can mess up.
+
+The default branding & environment (`branding/test.mk` and `env/test.mk`) are designed to support
+this scenario. To make local testing work, you also need to have `/etc/hosts` entry that maps
+`test.pkg.jenkins-ci.org` hostname to `127.0.0.1`, and your computer has to be running ssh that
+lets you login as you.
+
+Once you verified the above prerequisites, open another terminal and run `make test.local.setup`
+This will run a docker container that acts as your throw-away package web server. When done, Ctrl+C
+to kill it.
+
 # Branding
 `branding/` directory contains `*.mk` files that control the branding of the generated packages.
 Specify the branding file via the `BRAND` variable.
