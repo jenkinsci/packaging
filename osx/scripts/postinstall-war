@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JENKINS_APP="/Applications/Jenkins"
+JENKINS_APP="/Applications/@@CAMELARTIFACTNAME@@"
 
 # Fix Jenkins Permissions
 chown -R root:wheel ${JENKINS_APP}

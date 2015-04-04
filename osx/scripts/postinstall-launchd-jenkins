@@ -7,16 +7,16 @@ DEFAULTS_PLIST="/Library/Preferences/org.jenkins-ci.plist"
 chown root:wheel ${JENKINS_PLIST}
 chmod 644 ${JENKINS_PLIST}
 
-JENKINS_HOMEDIR="/Users/Shared/Jenkins"
+JENKINS_HOMEDIR="/Users/Shared/@@CAMELARTIFACTNAME@@"
 mkdir -p $JENKINS_HOMEDIR
 
-if dscl . -list /Users/jenkins; then
-    echo 'jenkins user already exists, attempting to change the shell to /bin/bash'
+if dscl . -list /Users/@@ARTIFACTNAME@@; then
+    echo '@@ARTIFACTNAME@@ user already exists, attempting to change the shell to /bin/bash'
     # Will fail if UserShell is not /usr/bin/false, but that's ok.
     # Then we will assume an admin has changed it.
-    dscl . -change /Users/jenkins UserShell /usr/bin/false /bin/bash
+    dscl . -change /Users/@@ARTIFACTNAME@@ UserShell /usr/bin/false /bin/bash
 else
-    echo 'No jenkins user found, creating jenkins user and group'
+    echo 'No @@ARTIFACTNAME@@ user found, creating @@ARTIFACTNAME@@ user and group'
 
 # Find free uid under 500
     uid=$(dscl . -list /Users uid | sort -nrk 2 | awk '$2 < 500 {print $2 + 1; exit 0}')
@@ -24,27 +24,27 @@ else
         echo 'ERROR: All system uids are in use!'
         exit 1
     fi
-    echo "Using uid $uid for jenkins"
+    echo "Using uid $uid for @@ARTIFACTNAME@@"
 
     gid=$uid
     while dscl -search /Groups gid $gid | grep -q $gid; do
         echo "gid $gid is not free, trying next"
         gid=$(($gid + 1))
     done
-    echo "Using gid $gid for jenkins"
+    echo "Using gid $gid for @@ARTIFACTNAME@@"
 
-    dscl . -create /Groups/jenkins PrimaryGroupID $gid
+    dscl . -create /Groups/@@ARTIFACTNAME@@ PrimaryGroupID $gid
 
-    dscl . -create /Users/jenkins UserShell /bin/bash
-    dscl . -create /Users/jenkins Password '*'
-    dscl . -create /Users/jenkins UniqueID $uid
-    dscl . -create /Users/jenkins PrimaryGroupID $gid
-    dscl . -create /Users/jenkins NFSHomeDirectory "$JENKINS_HOMEDIR"
+    dscl . -create /Users/@@ARTIFACTNAME@@ UserShell /bin/bash
+    dscl . -create /Users/@@ARTIFACTNAME@@ Password '*'
+    dscl . -create /Users/@@ARTIFACTNAME@@ UniqueID $uid
+    dscl . -create /Users/@@ARTIFACTNAME@@ PrimaryGroupID $gid
+    dscl . -create /Users/@@ARTIFACTNAME@@ NFSHomeDirectory "$JENKINS_HOMEDIR"
 
-    dscl . -append /Groups/jenkins GroupMembership jenkins
+    dscl . -append /Groups/@@ARTIFACTNAME@@ GroupMembership @@ARTIFACTNAME@@
 fi
 
-find "$JENKINS_HOMEDIR" \( -not -user jenkins -or -not -group jenkins \) -print0 | xargs -0 chown jenkins:jenkins
+find "$JENKINS_HOMEDIR" \( -not -user @@ARTIFACTNAME@@ -or -not -group @@ARTIFACTNAME@@ \) -print0 | xargs -0 chown @@ARTIFACTNAME@@:@@ARTIFACTNAME@@
 
 # Add defaults for heap sizing
 arch=$(uname -m)
@@ -65,17 +65,17 @@ fi
 JENKINS_TMPDIR="$JENKINS_HOMEDIR/tmp"
 defaults write $DEFAULTS_PLIST tmpdir $JENKINS_TMPDIR
 mkdir -p $JENKINS_TMPDIR
-chown jenkins:jenkins $JENKINS_TMPDIR
+chown @@ARTIFACTNAME@@:@@ARTIFACTNAME@@ $JENKINS_TMPDIR
 
 # Create log directory, which can be written by Jenkins daemon
-mkdir -p /var/log/jenkins
-chown jenkins:jenkins /var/log/jenkins
+mkdir -p /var/log/@@ARTIFACTNAME@@
+chown @@ARTIFACTNAME@@:@@ARTIFACTNAME@@ /var/log/@@ARTIFACTNAME@@
 
 # Enable log rotation by newsyslog
-cat <<_EOT_ > /etc/newsyslog.d/jenkins.conf
+cat <<_EOT_ > /etc/newsyslog.d/@@ARTIFACTNAME@@.conf
 # logfilename          [owner:group]    mode count size when  flags [/pid_file] [sig_num]
-# Rotate jenkins log at midnight, and preserve old logs in 3 days
-/var/log/jenkins/jenkins.log            644  3     *    \$D0   J
+# Rotate @@PRODUCTNAME@@ log at midnight, and preserve old logs in 3 days
+/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log            644  3     *    \$D0   J
 _EOT_
 
 # Load and start the launch daemon
@@ -84,11 +84,11 @@ _EOT_
 # Wait for port 8080 to start accepting connections.
 # But don't wait forever.
 timeout=$(($(date +%s) + 60))
-while [ $(date +%s) -lt $timeout ] && ! curl -s http://localhost:8080 >/dev/null; do
+while [ $(date +%s) -lt $timeout ] && ! curl -s http://localhost:@@PORT@@ >/dev/null; do
     sleep 1
 done
 
 if [ $(date +%s) -ge $timeout ]; then
-    echo "Timed out waiting for Jenkins port 8080 to start listening!"
-    echo "Either Jenkins did not load or this system is very slow."
+    echo "Timed out waiting for @@PRODUCTNAME@@ port @@PORT@@ to start listening!"
+    echo "Either @@PRODUCTNAME@@ did not load or this system is very slow."
 fi
