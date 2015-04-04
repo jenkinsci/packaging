@@ -2,4 +2,5 @@ require_relative 'common.rb'
 
 Vagrant.configure("2") do |config|
   box(config,"ubuntu-12.04","chef/ubuntu-12.04")
+  box(config,"fedora-20","chef/fedora-20")
 end

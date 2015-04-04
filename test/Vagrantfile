@@ -19,7 +19,7 @@ def box(config,name,image)
 end
 
 Vagrant.configure("2") do |config|
-  box(config,"rpm",  "chef/fedora-20")
+  box(config,"rpm",  "kohsuke/fedora-20-java")
   box(config,"suse", "chef/opensuse-13.1")
   box(config,"deb",  "kohsuke/ubuntu-12.04-java")
 end
