@@ -7,7 +7,7 @@ def translate(script)
   script+".generated"
 end
 
-def box(name,image)
+def box(config,name,image)
   config.vm.define(name) do |node|
     node.vm.box = image
     node.vm.provision :shell, path:translate("provision/#{name}.sh")
@@ -18,7 +18,7 @@ def box(name,image)
 end
 
 Vagrant.configure("2") do |config|
-  box "rpm",  "chef/fedora-20"
-  box "suse", "chef/opensuse-13.1"
-  box "deb",  "chef/ubuntu-12.04"
+  box(config,"rpm",  "chef/fedora-20")
+  box(config,"suse", "chef/opensuse-13.1")
+  box(config,"deb",  "chef/ubuntu-12.04")
 end

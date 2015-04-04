@@ -3,7 +3,7 @@
 base=$(dirname $0)
 
 ssh $PKGSERVER mkdir -p $SUSEDIR/
-rsync -avz "$1" $PKGSERVER:$SUSEDIR/
+rsync -avz "${SUSE}" $PKGSERVER:$SUSEDIR/
 
 D=/tmp/$$
 mkdir -p $D/RPMS/noarch $D/repodata
