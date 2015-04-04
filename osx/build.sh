@@ -39,6 +39,10 @@ mv $PACKAGEMAKER_DOC/01jenkins-contents.xml $PACKAGEMAKER_DOC/01jenkins-contents
 sed s,"pt=\".*\" m=","pt=\"${WAR}\" m=",g $PACKAGEMAKER_DOC/01jenkins-contents.xml.orig > $PACKAGEMAKER_DOC/01jenkins-contents.xml
 mv $PACKAGEMAKER_DOC/01jenkins.xml $PACKAGEMAKER_DOC/01jenkins.xml.orig
 sed s,"<installFrom mod=\"true\">.*</installFrom>","<installFrom mod=\"true\">${WAR}</installFrom>",g $PACKAGEMAKER_DOC/01jenkins.xml.orig > $PACKAGEMAKER_DOC/01jenkins.xml
+
+mkdir -p /tmp/test
+cp -R * /tmp/test
+
 # Build the package
 "${PACKAGEMAKER}" \
 	--doc "${PACKAGEMAKER_DOC}" \
