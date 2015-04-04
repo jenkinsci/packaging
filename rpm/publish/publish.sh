@@ -12,7 +12,7 @@ cp "$RPM" $D/RPMS/noarch
 $base/gen.rb > $D/index.html
 cp $base/jenkins-ci.org.key $D/
 
-[ -d ${OVERLAY_CONTENTS}/rpm ] && cp -R ${OVERLAY_CONTENTS}/rpm/* $D
+[ -d ${OVERLAY_CONTENTS}/rpm ] && cp -R ${OVERLAY_CONTENTS}/rpm/. $D
 
 cat  > $D/${ARTIFACTNAME}.repo << EOF
 [${ARTIFACTNAME}]

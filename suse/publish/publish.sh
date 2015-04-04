@@ -11,7 +11,7 @@ cp "$SUSE" $D/RPMS/noarch
 
 $base/gen.rb > $D/index.html
 
-[ -d ${OVERLAY_CONTENTS}/suse ] && cp -R ${OVERLAY_CONTENTS}/suse/* $D
+[ -d ${OVERLAY_CONTENTS}/suse ] && cp -R ${OVERLAY_CONTENTS}/suse/. $D
 
 cp $base/jenkins-ci.org.key $D/repodata/repomd.xml.key
 

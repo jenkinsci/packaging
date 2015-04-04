@@ -32,7 +32,7 @@ gpg --no-use-agent --passphrase-file $GPG_PASSPHRASE_FILE -abs -o $D/binary/Rele
 # generate web index
 $bin/gen.rb > $D/contents/index.html
 
-[ -d ${OVERLAY_CONTENTS}/debian ] && cp -R ${OVERLAY_CONTENTS}/debian/* $D/contents
+[ -d ${OVERLAY_CONTENTS}/debian ] && cp -R ${OVERLAY_CONTENTS}/debian/. $D/contents
 
 cp $D/binary/Packages.* $D/binary/Release $D/binary/Release.gpg $D/binary/Contents.gz $D/contents/binary
 
