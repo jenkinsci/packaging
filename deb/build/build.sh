@@ -33,7 +33,7 @@ pushd $D
       mv $f ${ARTIFACTNAME}$(echo $f | cut -b8-)
     done
   popd
-  debuild -us -uc -A
+  debuild -us -uc -Zgzip -A
 popd
 
 mkdir "$(dirname "${DEB}")" || true
