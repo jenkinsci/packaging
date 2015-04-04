@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#     SUSE system statup script for Jenkins
+#     SUSE system statup script for @@PRODUCTNAME@@
 #     Copyright (C) 2007  Pascal Bleser
 #          
 #     This library is free software; you can redistribute it and/or modify it
@@ -19,15 +19,15 @@
 #     USA.
 #
 ### BEGIN INIT INFO
-# Provides:          jenkins
+# Provides:          @@ARTIFACTNAME@@
 # Required-Start:    $local_fs $remote_fs $network $named
 # Should-Start: $time sendmail
 # Required-Stop:     $local_fs $remote_fs $network $named
 # Should-Stop: $time sendmail
 # Default-Start:     3 5
 # Default-Stop:      0 1 2 6
-# Short-Description: Jenkins continuous build server
-# Description:       Start the Jenkins continuous build server
+# Short-Description: @@SUMMARY@@
+# Description:       @@SUMMARY@@
 ### END INIT INFO
 
 # Check for missing binaries (stale symlinks should not happen)
@@ -37,13 +37,13 @@ test -r "$JENKINS_WAR" || { echo "$JENKINS_WAR not installed";
 	else exit 5; fi; }
 
 # Check for existence of needed config file and read it
-JENKINS_CONFIG=/etc/sysconfig/jenkins
+JENKINS_CONFIG=/etc/sysconfig/@@ARTIFACTNAME@@
 test -r "$JENKINS_CONFIG" || { echo "$JENKINS_CONFIG not existing";
 	if [ "$1" = "stop" ]; then exit 0;
 	else exit 6; fi; }
 
-JENKINS_PID_FILE="/var/run/jenkins.pid"
-JENKINS_USER="jenkins"
+JENKINS_PID_FILE="/var/run/@@ARTIFACTNAME@@.pid"
+JENKINS_USER="@@ARTIFACTNAME@@"
 JENKINS_NICE="0"
 
 # Read config	
@@ -77,7 +77,7 @@ fi
 export JAVA_HOME
 
 JAVA_CMD="$JAVA_HOME/bin/java $JENKINS_JAVA_OPTIONS -DJENKINS_HOME=$JENKINS_HOME -jar $JENKINS_WAR"
-PARAMS="--javaHome=$JAVA_HOME --logfile=/var/log/jenkins/jenkins.log --webroot=/var/cache/jenkins/war"
+PARAMS="--javaHome=$JAVA_HOME --logfile=/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log --webroot=/var/cache/@@ARTIFACTNAME@@/war"
 [ -n "$JENKINS_PORT" ] && PARAMS="$PARAMS --httpPort=$JENKINS_PORT"
 [ -n "$JENKINS_AJP_PORT" ] && PARAMS="$PARAMS --ajp13Port=$JENKINS_AJP_PORT"
 [ -n "$JENKINS_DEBUG_LEVEL" ] && PARAMS="$PARAMS --debug=$JENKINS_DEBUG_LEVEL"
@@ -87,7 +87,7 @@ PARAMS="--javaHome=$JAVA_HOME --logfile=/var/log/jenkins/jenkins.log --webroot=/
 [ -n "$JENKINS_ARGS" ] && PARAMS="$PARAMS $JENKINS_ARGS"
 
 if [ "$JENKINS_ENABLE_ACCESS_LOG" = "yes" ]; then
-    PARAMS="$PARAMS --accessLoggerClassName=winstone.accesslog.SimpleAccessLogger --simpleAccessLogger.format=combined --simpleAccessLogger.file=/var/log/jenkins/access_log"
+    PARAMS="$PARAMS --accessLoggerClassName=winstone.accesslog.SimpleAccessLogger --simpleAccessLogger.format=combined --simpleAccessLogger.file=/var/log/@@ARTIFACTNAME@@/access_log"
 fi
 
 [ -z "$JENKINS_INIT_SHELL" -o -x "$JENKINS_INIT_SHELL" ] || { echo "JENKINS_INIT_SHELL does not refer to a shell: $JENKINS_INIT_SHELL";
@@ -96,15 +96,15 @@ fi
 
 case "$1" in
     start)
-	echo -n "Starting Jenkins "
-        /sbin/checkproc -k -p "$JENKINS_PID_FILE" "$JAVA_HOME/bin/java" >/var/log/jenkins.rc 2>&1
+	echo -n "Starting @@PRODUCTNAME@@ "
+        /sbin/checkproc -k -p "$JENKINS_PID_FILE" "$JAVA_HOME/bin/java" >/var/log/@@ARTIFACTNAME@@.rc 2>&1
         CHECK=$?
         if [ $CHECK -eq 7 ]; then
                 rm -f "$JENKINS_PID_FILE"
                 if [ -x "$JENKINS_INIT_SHELL" ]; then
-                       startproc -n $JENKINS_NICE -s -e -l /var/log/jenkins.rc -p "$JENKINS_PID_FILE" -t 1 /bin/su -l -s "$JENKINS_INIT_SHELL" -c "$JAVA_CMD $PARAMS &" "$JENKINS_USER"
+                       startproc -n $JENKINS_NICE -s -e -l /var/log/@@ARTIFACTNAME@@.rc -p "$JENKINS_PID_FILE" -t 1 /bin/su -l -s "$JENKINS_INIT_SHELL" -c "$JAVA_CMD $PARAMS &" "$JENKINS_USER"
                 else
-                       HOME=$JENKINS_HOME startproc -n $JENKINS_NICE -s -e -l /var/log/jenkins.rc -u "$JENKINS_USER" -p "$JENKINS_PID_FILE" $JAVA_CMD $PARAMS 
+                       HOME=$JENKINS_HOME startproc -n $JENKINS_NICE -s -e -l /var/log/@@ARTIFACTNAME@@.rc -u "$JENKINS_USER" -p "$JENKINS_PID_FILE" $JAVA_CMD $PARAMS
                 fi
                 JPROC=$( find /proc -maxdepth 2 -user $JENKINS_USER -name exe -lname "*/bin/java" )
                 if [ -n "$JPROC" ]; then
@@ -120,7 +120,7 @@ case "$1" in
         fi
 	;;
     stop)
-	echo -n "Shutting down Jenkins "
+	echo -n "Shutting down @@PRODUCTNAME@@ "
 	/sbin/killproc -p "$JENKINS_PID_FILE" "$JAVA_HOME/bin/java"
 	rc_status -v
 	;;
@@ -142,7 +142,7 @@ case "$1" in
 	rc_status
 	;;
     force-reload)
-	echo -n "Reload service Jenkins "
+	echo -n "Reload service @@PRODUCTNAME@@ "
 	$0 try-restart
 	rc_status
 	;;
@@ -151,7 +151,7 @@ case "$1" in
 	rc_status -v
 	;;
     status)
-	echo -n "Checking for service Jenkins "
+	echo -n "Checking for service @@PRODUCTNAME@@ "
 	/sbin/checkproc -p "$JENKINS_PID_FILE" "$JAVA_HOME/bin/java"
 	rc_status -v
 	;;

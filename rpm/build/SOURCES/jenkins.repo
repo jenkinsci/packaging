@@ -1,4 +1,4 @@
-[jenkins]
-name=Jenkins
+[@@ARTIFACTNAME@@]
+name=@@PRODUCTNAME@@
 baseurl=@@RPM_URL@@
 gpgcheck=1

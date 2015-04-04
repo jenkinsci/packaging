@@ -5,8 +5,9 @@ D=/tmp/$$
 mkdir $D
 
 cp -R "$(dirname "$0")"/* $D
+$BASE/bin/branding.sh $D
+
 cp "$WAR" $D/SOURCES/jenkins.war
-cat SOURCES/jenkins.repo.in | sed -e "s#@URL@#${SUSE_URL}/#g" > $D/SOURCES/jenkins.repo
 
 pushd $D
   mkdir -p BUILD RPMS SRPMS
@@ -18,7 +19,7 @@ pushd $D
   done
 popd
 
-mkdir "$(dirname "${SUSE}")" || true
+mkdir -p "$(dirname "${SUSE}")" || true
 mv $D/RPMS/noarch/*.rpm ${SUSE}
 
 rm -rf $D

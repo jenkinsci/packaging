@@ -19,7 +19,7 @@ pushd $D
   done
 popd
 
-mkdir "$(dirname "${RPM}")" || true
+mkdir -p "$(dirname "${RPM}")" || true
 mv $D/RPMS/noarch/*.rpm ${RPM}
 
 rm -rf $D
