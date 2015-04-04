@@ -1,11 +1,11 @@
 <pkgref spec="1.12" uuid="7A4C4EB4-42C7-4E4A-B928-BB5F6E8735A6">
   <config>
-    <identifier>org.jenkins-ci.launchd.pkg</identifier>
+    <identifier>@@OSX_IDPREFIX@@.launchd.pkg</identifier>
     <version>1.0</version>
     <description></description>
     <post-install type="none"/>
     <requireAuthorization/>
-    <installFrom relative="true">launchd_conf_daemon/org.jenkins-ci.plist</installFrom>
+    <installFrom relative="true">launchd_conf_daemon/@@OSX_IDPREFIX@@.plist</installFrom>
     <installTo mod="true">/Library/LaunchDaemons</installTo>
     <flags>
       <followSymbolicLinks/>

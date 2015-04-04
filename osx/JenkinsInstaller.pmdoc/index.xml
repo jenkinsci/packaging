@@ -3,7 +3,7 @@
   <properties>
     <title>@@PRODUCTNAME@@</title>
     <build>/Users/irichter/Desktop/Jenkins.pkg</build>
-    <organization>org.jenkins-ci</organization>
+    <organization>@@OSX_IDPREFIX@@</organization>
     <userSees ui="both"/>
     <min-target os="3"/>
     <domain system="true"/>
@@ -15,19 +15,19 @@
   <description>@@SUMMARY@@</description>
   <contents>
     <choice title="@@PRODUCTNAME@@" id="jenkins-war" tooltip="@@ARTIFACTNAME@@.war file" description="The @@ARTIFACTNAME@@.war file." starts_selected="true" starts_enabled="false" starts_hidden="false">
-      <pkgref id="org.jenkins-ci.jenkins.osx.pkg"/>
+      <pkgref id="@@OSX_IDPREFIX@@.@@ARTIFACTNAME@@.osx.pkg"/>
     </choice>
     <choice title="Start at boot as &quot;daemon&quot;" id="jenkins-launchd" tooltip="Run as daemon" description="Install a launchd config file so Jenkins will start at boot. Jenkins will run as user &quot;daemon&quot;." starts_selected="false" starts_enabled="true" starts_hidden="false">
-      <pkgref id="org.jenkins-ci.launchd.pkg"/>
+      <pkgref id="@@OSX_IDPREFIX@@.launchd.pkg"/>
     </choice>
     <choice title="Start at boot as &quot;jenkins&quot;" id="jenkins-launchd-jenkins" tooltip="Run as @@ARTIFACTNAME@@" description="Install a launchd config file so Jenkins will start at boot. @@PRODUCTNAME@@ will run as user &quot;jenkins&quot;. This user has a writable home dir, which makes it possible to set up things like ssh." starts_selected="true" starts_enabled="true" starts_hidden="false">
-      <pkgref id="org.jenkins-ci.launchd-jenkins.pkg"/>
+      <pkgref id="@@OSX_IDPREFIX@@.launchd-jenkins.pkg"/>
     </choice>
     <choice title="@@PRODUCTNAME@@ Support Files" id="choice6" tooltip="Support files for @@PRODUCTNAME@@" description="Contains files required by the Launch Daemon." starts_selected="true" starts_enabled="true" starts_hidden="false">
-      <pkgref id="org.jenkins-ci.support.pkg"/>
+      <pkgref id="@@OSX_IDPREFIX@@.support.pkg"/>
     </choice>
     <choice title="Documentation" id="choice8" tooltip="@@PRODUCTNAME@@ documentation" description="Document files installed into /Library/Documentation/@@CAMELARTIFACTNAME@@" starts_selected="true" starts_enabled="true" starts_hidden="false">
-      <pkgref id="org.jenkins-ci.documentation.pkg"/>
+      <pkgref id="@@OSX_IDPREFIX@@.documentation.pkg"/>
     </choice>
   </contents>
   <resources bg-scale="none" bg-align="bottomleft">

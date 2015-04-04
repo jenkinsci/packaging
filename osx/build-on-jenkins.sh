@@ -5,6 +5,14 @@ D=/tmp/$$
 mkdir -p $D/src
 
 cp -R $bin/* $D/src
+pushd $D/src
+  pushd launchd_conf_daemon
+    mv org.jenkins-ci.plist $OSX_IDPREFIX.plist
+  popd
+  pushd launchd_conf_jenkins
+    mv org.jenkins-ci.plist $OSX_IDPREFIX.plist
+  popd
+popd
 $BASE/bin/branding.sh $D/src
 
 tar cvzf $D/script.tgz -C $D/src .

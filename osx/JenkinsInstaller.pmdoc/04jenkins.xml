@@ -1,6 +1,6 @@
 <pkgref spec="1.12" uuid="C24B9DDB-3A48-4BCB-9FAF-F45FB0CEBC83">
   <config>
-    <identifier>org.jenkins-ci.documentation.pkg</identifier>
+    <identifier>@@OSX_IDPREFIX@@.documentation.pkg</identifier>
     <version>1.0</version>
     <description></description>
     <post-install type="none"/>
