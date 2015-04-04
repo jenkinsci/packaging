@@ -26,7 +26,7 @@
                 <File Name="jenkins.exe.config" Source='jenkins.exe.config' DiskId='1' />
                 <File Name="${ARTIFACTNAME}.war" Source='\$(var.WAR)' DiskId='1' />
                 <ServiceInstall Id="${CAMELARTIFACTNAME}Service"
-                     Name="${PRODUCTNAME}"
+                     Name="${CAMELARTIFACTNAME}"
                      DisplayName="${PRODUCTNAME}"
                      Type="ownProcess"
                      Start="auto"
@@ -34,7 +34,7 @@
                      Description="${SUMMARY}"
                      Account="[SERVICEACCOUNT]"
                      Password="[SERVICEPASSWORD]" />
-                 <ServiceControl Id="ControlJenkinsService" Name="${CAMELARTIFACTNAME}Service" Start="install" Stop="both" Wait="yes" Remove="uninstall"/>
+                 <ServiceControl Id="Control${CAMELARTIFACTNAME}Service" Name="${CAMELARTIFACTNAME}" Start="install" Stop="both" Wait="yes" Remove="uninstall"/>
               </Component>
           </Directory>
         </Directory>
