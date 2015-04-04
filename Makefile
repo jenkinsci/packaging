@@ -48,9 +48,9 @@ osx.publish: ${OSX}
 
 deb: ${DEB}
 ${DEB}: ${WAR} $(shell find debian/build -type f)
-	./debian/build/build.sh
+	./deb/build/build.sh
 deb.publish: ${DEB} $(shell find debian/publish -type f)
-	./debian/publish/publish.sh
+	./deb/publish/publish.sh
 
 
 
