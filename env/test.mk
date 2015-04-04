@@ -21,10 +21,12 @@ export  RPM_WEBDIR=/tmp/jenkins/www/pkg.jenkins-ci.org.staging/redhat${RELEASELI
 export SUSE_WEBDIR=/tmp/jenkins/www/pkg.jenkins-ci.org.staging/opensuse${RELEASELINE}
 export  DEB_WEBDIR=/tmp/jenkins/www/pkg.jenkins-ci.org.staging/debian${RELEASELINE}
 
-# URL to the aforementioned webdir
-export  RPM_URL=http://localhost:9200/redhat${RELEASELINE}
-export SUSE_URL=http://localhost:9200/opensuse${RELEASELINE}
-export  DEB_URL=http://localhost:9200/debian${RELEASELINE}
+# URL to the aforementioned webdir.
+# you'll need to set WEBSERVER to point to the right location
+WEBSERVER=localhost:9200
+export  RPM_URL=http://${WEBSERVER}/redhat${RELEASELINE}
+export SUSE_URL=http://${WEBSERVER}/opensuse${RELEASELINE}
+export  DEB_URL=http://${WEBSERVER}/debian${RELEASELINE}
 
 # additoinal contents to be overlayed during publishing
 export OVERLAY_CONTENTS=$BASE/env/release
