@@ -12,7 +12,7 @@ def box(config,name,image)
     node.vm.box = image
     node.vm.provision :shell, path:translate("provision/#{name}.sh")
     node.vm.provision :serverspec do |spec|
-      spec.pattern = 'spec/#{name}_spec.rb'
+      spec.pattern = "spec/#{name}_spec.rb"
     end
   end
 end
