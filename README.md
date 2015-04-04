@@ -34,6 +34,19 @@ Run `make publish` to publish all native packages.
 
 See the definition of the `publish` goal for individual package publishment.
 
+# Running tests
+Once packages are published, you can run tests to see if they install correctly.
+Tests are written with VirtualBox + serverspec. You must have `vagrant-serverspec` plugin 1.0.1 or later.
+
+Run `make test` to run all the tests. `test` goal doesn't declare dependency on `publish` goal,
+so run `make publish test` if you need to rebuild packages.
+
+To test just one package, `make FLAVOR.test` where FLAVOR is one of rpm, deb, or suse.
+
+The installation of the package is often time consuming, and you can invoke it with `make FLAVOR.test.prepare`
+Once you do that, you can just rerun serverspec tests with `make FLAVOR.test.run`. When all is done,
+run `make FLAVOR.test.shutdown` to terminate VirtualBox VMs.
+
 # Branding
 `branding/` directory contains `*.mk` files that control the branding of the generated packages.
 Specify the branding file via the `BRAND` variable.
