@@ -27,6 +27,3 @@ export SUSE=${TARGET}/suse/${ARTIFACTNAME}-${VERSION}-1.2.noarch.rpm
 
 # anchored to the root of the repository
 export BASE:=$(CURDIR)
-
-# file that contains GPG passphrase
-export GPG_PASSPHRASE_FILE:=$(shell echo ~/.gpg.passphrase)

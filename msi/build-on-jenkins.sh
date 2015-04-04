@@ -13,9 +13,12 @@ $(<$bin/jenkins.wxs)
 EOF
 " 2> /dev/null
 
+cp ${PKCS12_FILE} $D/key.pkcs12
+cp ${PKCS12_PASSWORD_FILE} $D/key.password
+
 tar cvzf $D/bundle.tgz \
   -C $bin FindJava.java build.sh jenkins.exe.config bootstrapper.xml \
-  -C $D jenkins.wxs
+  -C $D jenkins.wxs key.pkcs12 key.password
 
 java -jar $TARGET/jenkins-cli.jar dist-fork -z $D/bundle.tgz -f ${ARTIFACTNAME}.war="${WAR}" -l windows -F "${MSI}=${ARTIFACTNAME}-windows.zip" \
 	bash -ex build.sh ${ARTIFACTNAME}.war $encodedv ${ARTIFACTNAME} "${PRODUCTNAME}" ${PORT}

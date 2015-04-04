@@ -35,6 +35,10 @@ light -o ${ARTIFACTNAME}.msi -sval -nologo -dcl:high -ext WixUIExtension -ext Wi
 
 msbuild.exe /property:src=${ARTIFACTNAME}.msi "/property:ProductName=${PRODUCTNAME}" bootstrapper.xml
 
+set -x
+signtool sign /v /f key.pkcs12 /p $(cat key.password) /t http://timestamp.verisign.com/scripts/timestamp.dll ${ARTIFACTNAME}.msi setup.exe
+set +x
+
 zip ${ARTIFACTNAME}-windows.zip ${ARTIFACTNAME}.msi setup.exe
 
 # avoid bringing back files that we don't care
