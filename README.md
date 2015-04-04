@@ -43,9 +43,9 @@ so run `make publish test` if you need to rebuild packages.
 
 To test just one package, `make FLAVOR.test` where FLAVOR is one of rpm, deb, or suse.
 
-The installation of the package is often time consuming, and you can invoke it with `make FLAVOR.test.prepare`
+The installation of the package is often time consuming, and you can invoke it with `make FLAVOR.test.up`
 Once you do that, you can just rerun serverspec tests with `make FLAVOR.test.run`. When all is done,
-run `make FLAVOR.test.shutdown` to terminate VirtualBox VMs.
+run `make FLAVOR.test.destroy` to terminate VirtualBox VMs.
 
 ## Running local tests
 These tests install packages from a web server where they are published. So if you want to
