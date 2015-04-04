@@ -127,9 +127,9 @@ exit 0
 %defattr(-,root,root)
 %dir %{_prefix}
 %{_prefix}/%{name}.war
-%attr(0755,jenkins,jenkins) %dir %{workdir}
-%attr(0750,jenkins,jenkins) /var/log/%{name}
-%attr(0750,jenkins,jenkins) /var/cache/%{name}
+%attr(0755,%{name},%{name}) %dir %{workdir}
+%attr(0750,%{name},%{name}) /var/log/%{name}
+%attr(0750,%{name},%{name}) /var/cache/%{name}
 %config(noreplace) /etc/logrotate.d/%{name}
 %config /etc/init.d/%{name}
 %config(noreplace) /etc/sysconfig/%{name}

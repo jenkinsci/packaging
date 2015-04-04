@@ -6,6 +6,7 @@ host=$(echo @@SUSE_URL@@ | tr '/' ':' | cut -d ':' -f4)
 echo $addr $host | tee -a /etc/hosts > /dev/null
 
 zypper addrepo @@SUSE_URL@@ @@ARTIFACTNAME@@
-zypper --gpg-auto-import-keys install -y @@ARTIFACTNAME@@
+zypper --gpg-auto-import-keys refresh
+zypper install -y @@ARTIFACTNAME@@
 
 systemctl start @@ARTIFACTNAME@@
