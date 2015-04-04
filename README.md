@@ -13,11 +13,13 @@ Running the main package script requires a Linux environment (currently Ubuntu, 
 Run `make setup` to install necessary tools.
 
 You also need a Jenkins instance with [dist-fork plugin](https://wiki.jenkins-ci.org/display/JENKINS/DistFork+Plugin)
-installed. This Jenkins needs to have an OSX build agent that has PackageMaker, and Windows build agent whose
+installed. URL of this Jenkins can be fed into `make` via the `JENKINS_URL` variable.
+This Jenkins needs to have an OSX build agent that has PackageMaker, and Windows build agent whose
 pre-requisites need to be clarified. These two build agents are used to build OSX and MSI packages, which
 can be only built on native platforms.
 
 You'll also need a `jenkins.war` file that you are packaging, which comes from the release process.
+The location of this file is set via the `WAR` variable.
 
 # Generating packages
 Run `make package` to build all the native packages.
@@ -33,10 +35,19 @@ Run `make deploy` to publish all native packages.
 See the definition of the `deploy` goal for individual package deployment.
 
 # Branding
-`branding/` directory contains `*.mk` files controls the branding of the generated packages.
+`branding/` directory contains `*.mk` files that control the branding of the generated packages.
+Specify the branding file via the `BRAND` variable.
+
 You can create your own branding definition to customize the package generation process.
 See [branding readme](branding/README.md) for more details. In the rest of the packaging script files,
 these branding parameters are referenced via `@@NAME@@` and get substituted by `bin/branding.sh`
+
+# Environment
+`env/` directory contains `*.mk` files that control the environment into which
+you publish packages.  Specify the environment file via the `BUILDENV` variable.
+
+You can create your own environment definition to customize the package generation process.
+See [environment readme](env/README.md) for more details.
 
 # TODO (mostly note to myself)
 * Split resource templates to enable customization
