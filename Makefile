@@ -80,9 +80,12 @@ test-setup:
 	@mkdir -p ${TESTDIR} || true
 	docker run --name pkg.jenkins-ci.org --rm -t -i -p 9200:80 -v ${TESTDIR}:/var/www/html fedora/apache
 %.test.prepare:
+    # run this target for to set up the test target VM
 	cd test; vagrant up --provision-with shell rpm; sleep 5
 %.test.run:
+    # run this target to just re-run the test against the currently running VM
 	cd test; vagrant provision --provision-with serverspec $*
 %.test.shutdown:
+    # run tis target to undo '%.test.prepare'
 	cd test; vagrant destroy -f $*
 %.test: %.test.prepare %.test.run %.test.shutdown
