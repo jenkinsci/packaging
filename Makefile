@@ -72,3 +72,11 @@ suse.publish: ${SUSE} $(shell find suse/publish -type f)
 ${CLI}:
 	@mkdir ${TARGET} || true
 	wget -O $@ ${JENKINS_URL}jnlpJars/jenkins-cli.jar
+
+
+
+test-setup:
+	# start a test Apache server that acts as package server
+	# we'll refer to this as 'test.pkg.jenkins-ci.org'
+	@mkdir -p ${TESTDIR} || true
+	docker run --name pkg.jenkins-ci.org --rm -t -i -p 9200:80 -v ${TESTDIR}:/var/www/html fedora/apache
