@@ -6,7 +6,7 @@ rsync -avz "${DEB}" $PKGSERVER:$DEBDIR/
 
 D=/tmp/$$
 mkdir -p $D/binary $D/contents
-cp "$bin/contents" $D/contents
+cp -R "$bin/contents" $D/contents
 
 # build package index
 # see http://wiki.debian.org/SecureApt for more details
