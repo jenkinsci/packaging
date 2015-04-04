@@ -8,4 +8,4 @@ echo $addr $host | tee -a /etc/hosts > /dev/null
 wget -O /etc/yum.repos.d/jenkins.repo @@RPM_URL@@/@@ARTIFACTNAME@@.repo
 rpm --import @@RPM_URL@@/jenkins-ci.org.key
 
-yum install @@ARTIFACTNAME@@
+yum -y install @@ARTIFACTNAME@@
