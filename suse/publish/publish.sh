@@ -10,9 +10,8 @@ mkdir -p $D/RPMS/noarch $D/repodata
 cp "$SUSE" $D/RPMS/noarch
 
 $base/gen.rb > $D/index.html
-if $OSS_JENKINS; then
-  cat $base/htaccess | sed -e "s/@RELEASELINE@/${RELEASELINE}/g" > $base/contents/.htaccess
-fi
+
+[ -d ${OVERLAY_CONTENTS}/suse ] && cp -R ${OVERLAY_CONTENTS}/suse/* $D
 
 cp $base/jenkins-ci.org.key $D/repodata/repomd.xml.key
 

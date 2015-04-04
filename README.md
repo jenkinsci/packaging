@@ -51,4 +51,3 @@ See [environment readme](env/README.md) for more details.
 
 # TODO (mostly note to myself)
 * Split resource templates to enable customization
-* `OSS_JENKINS` switch must die, which means we need more pluggability

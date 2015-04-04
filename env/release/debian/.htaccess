@@ -4,7 +4,7 @@ RewriteEngine On
 
 RewriteCond %{HTTP_USER_AGENT}  APT.*\(0\.7\.20     [OR]
 RewriteCond %{HTTP_USER_AGENT}  APT.*\(0\.7\.1[0-9]
-RewriteRule ^binary/(.*)\.deb$  /debian@RELEASELINE@/direct/$1.deb [L]
+RewriteRule ^binary/(.*)\.deb$  /debian@@RELEASELINE@@/direct/$1.deb [L]
 
 # otherwise redirect to mirror
-RewriteRule ^binary/(.*)\.deb$ http://mirrors.jenkins-ci.org/debian@RELEASELINE@/$1.deb [R=302,L]
+RewriteRule ^binary/(.*)\.deb$ http://mirrors.jenkins-ci.org/debian@@RELEASELINE@@/$1.deb [R=302,L]

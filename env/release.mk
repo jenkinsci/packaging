@@ -26,4 +26,5 @@ export  RPM_URL=http://pkg.jenkins-ci.org/redhat${RELEASELINE}
 export SUSE_URL=http://pkg.jenkins-ci.org/opensuse${RELEASELINE}
 export  DEB_URL=http://pkg.jenkins-ci.org/debian${RELEASELINE}
 
-export OSS_JENKINS=true
+# additoinal contents to be overlayed during publishing
+export OVERLAY_CONTENTS=$BASE/env/release

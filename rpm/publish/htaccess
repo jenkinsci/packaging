@@ -1,3 +1,0 @@
-RedirectMatch temp /redhat@RELEASELINE@/RPMS/noarch/(.*)\.rpm$ http://mirrors.jenkins-ci.org/redhat@RELEASELINE@/$1.rpm
-RedirectMatch temp /redhat@RELEASELINE@/(.*)\.rpm$ http://mirrors.jenkins-ci.org/redhat@RELEASELINE@/$1.rpm
-Options -Indexes

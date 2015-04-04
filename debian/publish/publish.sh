@@ -29,10 +29,9 @@ gpg --no-use-agent --passphrase-file $GPG_PASSPHRASE_FILE -abs -o binary/Release
 
 # generate web index
 $bin/gen.rb > $bin/contents/index.html
-echo "#GENERATED" > $bin/contents/.htaccess
-if $OSS_JENKINS; then
-  sed -e "s/@RELEASELINE@/${RELEASELINE}/g" < $bin/htaccess >> $bin/contents/.htaccess
-fi
+
+[ -d ${OVERLAY_CONTENTS}/debian ] && cp -R ${OVERLAY_CONTENTS}/debian/* $bin/contents
+
 cp binary/Packages.* binary/Release binary/Release.gpg binary/Contents.gz $bin/contents/binary
 
 rsync -avz $bin/contents/ $PKGSERVER:$DEB_WEBDIR

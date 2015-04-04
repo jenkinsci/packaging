@@ -26,4 +26,5 @@ export  RPM_URL=http://localhost:9200/redhat${RELEASELINE}
 export SUSE_URL=http://localhost:9200/opensuse${RELEASELINE}
 export  DEB_URL=http://localhost:9200/debian${RELEASELINE}
 
-export OSS_JENKINS=true
+# additoinal contents to be overlayed during publishing
+export OVERLAY_CONTENTS=$BASE/env/release

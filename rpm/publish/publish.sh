@@ -10,9 +10,8 @@ mkdir -p $D/RPMS/noarch
 cp "$RPM" $D/RPMS/noarch
 
 $base/gen.rb > $D/index.html
-if $OSS_JENKINS; then
-  cat $base/htaccess | sed -e "s/@RELEASELINE@/${RELEASELINE}/g" | sed -e "s#@URL@#${RPM_URL}#g" > $D/.htaccess
-fi
+
+[ -d ${OVERLAY_CONTENTS}/rpm ] && cp -R ${OVERLAY_CONTENTS}/rpm/* $D
 
 cat  > $D/${ARTIFACTNAME}.repo << EOF
 [${ARTIFACTNAME}]
