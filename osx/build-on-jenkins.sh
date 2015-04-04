@@ -2,9 +2,12 @@
 
 bin=$(dirname $0)
 D=/tmp/$$
-mkdir $D
+mkdir -p $D/src
 
-tar cvzf $D/script.tgz -C "$bin" .
+cp -R $bin/* $D/src
+$BASE/bin/branding.sh $D/src
+
+tar cvzf $D/script.tgz -C $D/src .
 
 java -jar $TARGET/jenkins-cli.jar dist-fork -z $D/script.tgz \
   -f binary/${ARTIFACTNAME}.war="${WAR}" \
