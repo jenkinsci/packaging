@@ -30,7 +30,7 @@ war.deploy: ${WAR}
 
 
 msi: ${MSI}
-${MSI}: ${WAR} ${CLI}
+${MSI}: ${WAR} ${CLI} $(shell find msi)
 	./msi/build-on-jenkins.sh
 msi.deploy: ${MSI}
 	./msi/deploy.sh
@@ -38,7 +38,7 @@ msi.deploy: ${MSI}
 
 
 osx: ${OSX}
-${OSX}: ${WAR} ${CLI}
+${OSX}: ${WAR} ${CLI}  $(shell find osx)
 	./osx/build-on-jenkins.sh
 osx.deploy: ${OSX}
 	./osx/deploy.sh
@@ -48,23 +48,23 @@ osx.deploy: ${OSX}
 deb: ${DEB}
 ${DEB}: ${WAR} $(shell find debian/build)
 	./debian/build/build.sh
-deb.deploy: ${DEB}
+deb.deploy: ${DEB} $(shell find debian/deploy)
 	./debian/deploy/deploy.sh
 
 
 
 rpm: ${RPM}
-${RPM}: ${WAR}
+${RPM}: ${WAR}  $(shell find rpm/build)
 	./rpm/build/build.sh
-rpm.deploy: ${RPM}
+rpm.deploy: ${RPM} $(shell find rpm/deploy)
 	./rpm/deploy/deploy.sh
 
 
 
 suse: ${SUSE}
-${SUSE}: ${WAR}
+${SUSE}: ${WAR}  $(shell find suse/build)
 	./suse/build/build.sh
-suse.deploy: ${SUSE}
+suse.deploy: ${SUSE} $(shell find suse/deploy)
 	./suse/deploy/deploy.sh
 
 
