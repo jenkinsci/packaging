@@ -5,5 +5,5 @@ gem 'rspec'
 gem 'rake'
 
 group :plugins do
-  gem 'vagrant-serverspec', :github => 'jvoorhis/vagrant-serverspec'
+  gem 'vagrant-serverspec', '1.0.1'
 end
