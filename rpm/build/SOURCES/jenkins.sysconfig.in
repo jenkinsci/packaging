@@ -1,5 +1,5 @@
-## Path:        Development/Jenkins
-## Description: Configuration for the Jenkins continuous build server
+## Path:        Development/@@CAMELARTIFACTNAME@@
+## Description: @@SUMMARY@@
 ## Type:        string
 ## Default:     "@@HOME@@"
 ## ServiceRestart: jenkins
@@ -11,7 +11,7 @@ JENKINS_HOME="@@HOME@@"
 
 ## Type:        string
 ## Default:     ""
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # Java executable to run Jenkins
 # When left empty, we'll try to find the suitable Java.
@@ -19,35 +19,35 @@ JENKINS_HOME="@@HOME@@"
 JENKINS_JAVA_CMD=""
 
 ## Type:        string
-## Default:     "jenkins"
-## ServiceRestart: jenkins
+## Default:     "@@ARTIFACTNAME@@"
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # Unix user account that runs the Jenkins daemon
 # Be careful when you change this, as you need to update
 # permissions of $JENKINS_HOME and /var/log/jenkins.
 #
-JENKINS_USER="jenkins"
+JENKINS_USER="@@ARTIFACTNAME@@"
 
 ## Type:        string
 ## Default:     "-Djava.awt.headless=true"
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # Options to pass to java when running Jenkins.
 #
 JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true"
 
 ## Type:        integer(0:65535)
-## Default:     8080
+## Default:     @@PORT@@
 ## ServiceRestart: jenkins
 #
 # Port Jenkins is listening on.
 # Set to -1 to disable
 #
-JENKINS_PORT="8080"
+JENKINS_PORT="@@PORT@@"
 
 ## Type:        string
 ## Default:     ""
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # IP address Jenkins listens on for HTTP requests.
 # Default is all interfaces (0.0.0.0).
@@ -56,7 +56,7 @@ JENKINS_LISTEN_ADDRESS=""
 
 ## Type:        integer(0:65535)
 ## Default:     ""
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # HTTPS port Jenkins is listening on.
 # Default is disabled.
@@ -65,7 +65,7 @@ JENKINS_HTTPS_PORT=""
 
 ## Type:        string
 ## Default:     ""
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # Path to the keystore in JKS format (as created by the JDK 'keytool').
 # Default is disabled.
@@ -74,7 +74,7 @@ JENKINS_HTTPS_KEYSTORE=""
 
 ## Type:        string
 ## Default:     ""
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # Password to access the keystore defined in JENKINS_HTTPS_KEYSTORE.
 # Default is disabled.
@@ -83,7 +83,7 @@ JENKINS_HTTPS_KEYSTORE_PASSWORD=""
 
 ## Type:        string
 ## Default:     ""
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # IP address Jenkins listens on for HTTPS requests.
 # Default is disabled.
@@ -92,7 +92,7 @@ JENKINS_HTTPS_LISTEN_ADDRESS=""
 
 ## Type:        integer(0:65535)
 ## Default:     8009
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # Ajp13 Port Jenkins is listening on.
 # Set to -1 to disable
@@ -101,7 +101,7 @@ JENKINS_AJP_PORT="8009"
 
 ## Type:        string
 ## Default:     ""
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # IP address Jenkins listens on for Ajp13 requests.
 # Default is all interfaces (0.0.0.0).
@@ -110,7 +110,7 @@ JENKINS_AJP_LISTEN_ADDRESS=""
 
 ## Type:        integer(1:9)
 ## Default:     5
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # Debug level for logs -- the higher the value, the more verbose.
 # 5 is INFO.
@@ -119,7 +119,7 @@ JENKINS_DEBUG_LEVEL="5"
 
 ## Type:        yesno
 ## Default:     no
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # Whether to enable access logging or not.
 #
@@ -127,7 +127,7 @@ JENKINS_ENABLE_ACCESS_LOG="no"
 
 ## Type:        integer
 ## Default:     100
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # Maximum number of HTTP worker threads.
 #
@@ -135,7 +135,7 @@ JENKINS_HANDLER_MAX="100"
 
 ## Type:        integer
 ## Default:     20
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # Maximum number of idle HTTP worker threads.
 #
@@ -143,9 +143,9 @@ JENKINS_HANDLER_IDLE="20"
 
 ## Type:        string
 ## Default:     ""
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # Pass arbitrary arguments to Jenkins.
-# Full option list: java -jar jenkins.war --help
+# Full option list: java -jar @@ARTIFACTNAME@@.war --help
 #
 JENKINS_ARGS=""

@@ -4,11 +4,12 @@
 #   branding.sh <DIR>
 #
 # Recursively replace all the branding placeholders by their actual values
-exec perl -pi -w \
-  -e "s/\@\@ARTIFACTNAME\@\@/${ARTIFACTNAME}/g;" \
-  -e "s/\@\@CAMELARTIFACTNAME\@\@/${CAMELARTIFACTNAME}/g;" \
-  -e "s/\@\@PRODUCTNAME\@\@/${PRODUCTNAME}/g;" \
-  -e "s/\@\@VENDOR\@\@/${VENDOR}/g;" \
-  -e "s/\@\@SUMMARY\@\@/${SUMMARY}/g;" \
-  -e "s/\@\@PORT\@\@/${PORT}/g;" \
-  $(find "$1" -type f)
+ARGS=()
+
+for t in $(cat $(dirname "$0")/branding.list);
+do
+  v=`eval echo \\$${t}`
+  ARGS+=("-e" "s/\@\@${t}\@\@/${v}/g;")
+done
+
+exec perl -pi -w ${ARGS[@]} $(find "$1" -type f)

@@ -5,8 +5,9 @@ D=/tmp/$$
 mkdir $D
 
 cp -R "$(dirname "$0")"/* $D
+$BASE/bin/branding.sh $D
+
 cp "$WAR" $D/SOURCES/jenkins.war
-cat SOURCES/jenkins.repo.in | sed -e "s#@URL@#${RPM_URL}/#g" > $D/SOURCES/jenkins.repo
 
 pushd $D
   mkdir -p BUILD RPMS SRPMS

@@ -1,13 +1,13 @@
 # TODO:
 # - how to add to the trusted service of the firewall?
 
-%define _prefix	%{_usr}/lib/jenkins
-%define workdir	%{_var}/lib/jenkins
+%define _prefix	%{_usr}/lib/@@ARTIFACTNAME@@
+%define workdir	%{_var}/lib/@@ARTIFACTNAME@@
 
-Name:		jenkins
+Name:		@@ARTIFACTNAME@@
 Version:	%{ver}
 Release:	1.1
-Summary:	Continous Build Server
+Summary:	@@SUMMARY@@
 Source:		jenkins.war
 Source1:	jenkins.init.in
 Source2:	jenkins.sysconfig.in
@@ -71,8 +71,8 @@ rm -rf "%{buildroot}"
 %__install -d "%{buildroot}%{workdir}"
 %__install -d "%{buildroot}%{workdir}/plugins"
 
-%__install -d "%{buildroot}/var/log/jenkins"
-%__install -d "%{buildroot}/var/cache/jenkins"
+%__install -d "%{buildroot}/var/log/%{name}"
+%__install -d "%{buildroot}/var/cache/%{name}"
 
 %__install -D -m0755 "%{SOURCE1}" "%{buildroot}/etc/init.d/%{name}"
 %__sed -i 's,@@WAR@@,%{_prefix}/%{name}.war,g' "%{buildroot}/etc/init.d/%{name}"
@@ -85,13 +85,13 @@ rm -rf "%{buildroot}"
 %__install -D -m0644 "%{SOURCE3}" "%{buildroot}/etc/logrotate.d/%{name}"
 
 %pre
-/usr/sbin/groupadd -r jenkins &>/dev/null || :
+/usr/sbin/groupadd -r %{name} &>/dev/null || :
 # SUSE version had -o here, but in Fedora -o isn't allowed without -u
-/usr/sbin/useradd -g jenkins -s /bin/false -r -c "Jenkins Continuous Build server" \
-	-d "%{workdir}" jenkins &>/dev/null || :
+/usr/sbin/useradd -g %{name} -s /bin/false -r -c "@@SUMMARY@@" \
+	-d "%{workdir}" %{name} &>/dev/null || :
 
 %post
-/sbin/chkconfig --add jenkins
+/sbin/chkconfig --add %{name}
 
 # If we have an old hudson install, rename it to jenkins
 if test -d /var/lib/hudson; then
@@ -99,31 +99,31 @@ if test -d /var/lib/hudson; then
     # could be useful down the road
     # This also ensures that the .??* wildcard matches something
     touch /var/lib/hudson/.moving-hudson
-    mv -f /var/lib/hudson/* /var/lib/hudson/.??* /var/lib/jenkins
+    mv -f /var/lib/hudson/* /var/lib/hudson/.??* /var/lib/%{name}
     rmdir /var/lib/hudson
-    find /var/lib/jenkins -user hudson -exec chown jenkins {} + || true
+    find /var/lib/%{name} -user hudson -exec chown %{name} {} + || true
 fi
 if test -d /var/run/hudson; then
-    mv -f /var/run/hudson/* /var/run/jenkins
+    mv -f /var/run/hudson/* /var/run/%{name}
     rmdir /var/run/hudson
 fi
 
 # Ensure the right ownership on files
-. /etc/sysconfig/jenkins
-chown -R ${JENKINS_USER:-jenkins} /var/log/jenkins
-chown -R ${JENKINS_USER:-jenkins} ${JENKINS_HOME:-%{workdir}}
+. /etc/sysconfig/%{name}
+chown -R ${JENKINS_USER:-%{name}} /var/log/%{name}
+chown -R ${JENKINS_USER:-%{name}} ${JENKINS_HOME:-%{workdir}}
 
 %preun
 if [ "$1" = 0 ] ; then
     # if this is uninstallation as opposed to upgrade, delete the service
-    /sbin/service jenkins stop > /dev/null 2>&1
-    /sbin/chkconfig --del jenkins
+    /sbin/service %{name} stop > /dev/null 2>&1
+    /sbin/chkconfig --del %{name}
 fi
 exit 0
 
 %postun
 if [ "$1" -ge 1 ]; then
-    /sbin/service jenkins condrestart > /dev/null 2>&1
+    /sbin/service %{name} condrestart > /dev/null 2>&1
 fi
 exit 0
 
@@ -134,9 +134,9 @@ exit 0
 %defattr(-,root,root)
 %dir %{_prefix}
 %{_prefix}/%{name}.war
-%attr(0755,jenkins,jenkins) %dir %{workdir}
-%attr(0750,jenkins,jenkins) /var/log/jenkins
-%attr(0750,jenkins,jenkins) /var/cache/jenkins
+%attr(0755,%{name},%{name}) %dir %{workdir}
+%attr(0750,%{name},%{name}) /var/log/%{name}
+%attr(0750,%{name},%{name}) /var/cache/%{name}
 %config /etc/logrotate.d/%{name}
 %config(noreplace) /etc/init.d/%{name}
 %config(noreplace) /etc/sysconfig/%{name}

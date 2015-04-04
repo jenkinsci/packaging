@@ -19,7 +19,7 @@
 #     USA.
 #
 ### BEGIN INIT INFO
-# Provides:          jenkins
+# Provides:          @@ARTIFACTNAME@@
 # Required-Start:    $local_fs $remote_fs $network $time $named
 # Should-Start: $time sendmail
 # Required-Stop:     $local_fs $remote_fs $network $time $named
