@@ -12,4 +12,4 @@ do
   ARGS+=("-e" "s%\@\@${t}\@\@%${v}%g;")
 done
 
-exec perl -pi -w "${ARGS[@]}" $(find "$1" -type f)
+find "$1" -type f -print0 | xargs -0 -t perl -pi -w "${ARGS[@]}"
