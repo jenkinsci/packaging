@@ -33,7 +33,6 @@ pushd $D
       mv $f ${ARTIFACTNAME}$(echo $f | cut -b8-)
     done
   popd
-  tree
   debuild -us -uc -A
 popd
 
