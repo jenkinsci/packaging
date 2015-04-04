@@ -6,3 +6,4 @@
 *.log
 target
 *.generated
+*.box
