@@ -13,9 +13,9 @@ export TESTDIR=/tmp/pkg.jenkins-ci.org
 export WARDIR=${TESTDIR}/war${RELEASELINE}
 export MSIDIR=${TESTDIR}/windows${RELEASELINE}
 export OSXDIR=${TESTDIR}/osx${RELEASELINE}
-export DEBDIR=${TESTDIR}/debian${RELEASELINE}
-export RPMDIR=${TESTDIR}/redhat${RELEASELINE}
-export SUSEDIR=${TESTDIR}/opensuse${RELEASELINE}
+export DEBDIR=${TESTDIR}/debian${RELEASELINE}/binary
+export RPMDIR=${TESTDIR}/redhat${RELEASELINE}/RPMS/noarch
+export SUSEDIR=${TESTDIR}/opensuse${RELEASELINE}/RPMS/noarch
 
 # where to put repository index and other web contents
 export  RPM_WEBDIR=${TESTDIR}/redhat${RELEASELINE}
