@@ -20,6 +20,7 @@ package: war msi osx deb rpm suse
 
 publish: war.publish msi.publish osx.publish deb.publish rpm.publish suse.publish
 
+test: rpm.test
 
 
 war: ${WAR}
@@ -58,9 +59,6 @@ ${RPM}: ${WAR}  $(shell find rpm/build -type f)
 	./rpm/build/build.sh
 rpm.publish: ${RPM} $(shell find rpm/publish -type f)
 	./rpm/publish/publish.sh
-rpm.test:
-	cd test; vagrant provision rpm
-
 
 suse: ${SUSE}
 ${SUSE}: ${WAR}  $(shell find suse/build -type f)
@@ -81,3 +79,11 @@ test-setup:
 	# we'll refer to this as 'test.pkg.jenkins-ci.org'
 	@mkdir -p ${TESTDIR} || true
 	docker run --name pkg.jenkins-ci.org --rm -t -i -p 9200:80 -v ${TESTDIR}:/var/www/html fedora/apache
+%.test.prepare:
+	cd test; vagrant up --provision-with shell rpm; sleep 5
+%.test.run:
+	cd test; vagrant provision --provision-with serverspec $*
+%.test.shutdown:
+	cd test; vagrant destroy -f $*
+%.test: %.test.prepare %.test.run %.test.shutdown
+	;
