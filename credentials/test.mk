@@ -5,3 +5,6 @@ export GPG_PASSPHRASE_FILE:=$(shell echo ~/.gpg.passphrase)
 
 export PKCS12_FILE:=$(CURDIR)/credentials/test.pkcs12
 export PKCS12_PASSWORD_FILE:=$(CURDIR)/credentials/test.pkcs12.password.txt
+
+export KEYCHAIN_FILE:=$(CURDIR)/credentials/test.keychain
+export KEYCHAIN_PASSWORD_FILE:=$(CURDIR)/credentials/test.keychain.password.txt
