@@ -29,7 +29,8 @@ cat $D/merged/Contents | gzip -9c > $D/binary/Contents.gz
 apt-ftparchive -c $bin/release.conf release $D/binary > $D/binary/Release
 # sign the release file
 rm $D/binary/Release.gpg || true
-gpg --no-default-keyring --keyring $GPG_KEYRING --no-use-agent --passphrase-file $GPG_PASSPHRASE_FILE -abs -o $D/binary/Release.gpg $D/binary/Release
+gpg --batch --no-use-agent --no-default-keyring --keyring $GPG_KEYRING --secret-keyring=$GPG_SECRET_KEYRING --passphrase-file $GPG_PASSPHRASE_FILE \
+  -abs -o $D/binary/Release.gpg $D/binary/Release
 
 # generate web index
 $bin/gen.rb > $D/contents/index.html
