@@ -4,3 +4,5 @@ spawn ${argv0}.bin [lindex $argv 0]
 expect -exact "Enter pass phrase: "
 send -- "\r"
 expect eof
+lassign [wait] pid spawnid error_flag error_code
+exit $error_code
