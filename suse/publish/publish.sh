@@ -25,6 +25,6 @@ pushd $D
   # sign the final artifact and upload the signature
   scp $PKGSERVER:$SUSE_WEBDIR/repodata/repomd.xml repodata/
 
-  gpg -a --detach-sign --yes --no-use-agent --passphrase-file $GPG_PASSPHRASE_FILE repodata/repomd.xml
+  gpg -a --detach-sign --yes --no-use-agent --keyring ${GPG_KEYRING} --no-default-keyring --passphrase-file $GPG_PASSPHRASE_FILE repodata/repomd.xml
   scp repodata/repomd.xml.asc $PKGSERVER:$SUSE_WEBDIR/repodata/
 popd
