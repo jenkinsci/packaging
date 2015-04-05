@@ -1,5 +1,10 @@
 #!/usr/bin/expect -f
-## rpm-sign.exp -- Sign RPMs by sending the passphrase.
+## rpm-sign.exp -- Sign RPMs in an headless environment
+##
+## rpm --resign internally invokes gpg. We control the way gpg is invoked by
+## setting a custom value to an RPM macro, but rpm still insists on getting passphrase
+## from terminal, even though we use GPG --passphrase-file option. This expect script
+## feeds a dummy NL to make rpm happy.
 spawn ${argv0}.bin [lindex $argv 0]
 expect -exact "Enter pass phrase: "
 send -- "\r"
