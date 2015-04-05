@@ -6,9 +6,9 @@ To correctly sign all the supported formats, you need your keys in the following
 * OS X keychain file that contains a valid installer signing certificate issued from Apple.
   This requires you to be a member of the Mac Developer Program. Create a separate keychain,
   add your code signing key and certificate, and use this keychain file.
-* TODO: gpg key for Linux
+* GPG secret/public keypair in separate GPG public keyring and GPG secret keyring.  
 
-`test.mk` contains the variable definitions to point to those files. 
+`test.mk` contains the variable definitions to point to those files.
 
 ## Creating your own GPG key
 Export your public key & private key
