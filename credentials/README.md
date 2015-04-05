@@ -9,3 +9,14 @@ To correctly sign all the supported formats, you need your keys in the following
 * TODO: gpg key for Linux
 
 `test.mk` contains the variable definitions to point to those files. 
+
+## Creating your own GPG key
+Export your public key & private key
+
+    gpg --export             KEYID > test.gpg
+    gpg --export-secret-keys KEYID > test.secret.gpg
+
+Verify the newly created keyring. Note that the keyring options must have some directory name parts in it, or else it's treated as they are in `~/.gnupg`
+
+    gpg --no-default-keyring --keyring=./test.gpg --secret-keyring=./test.secret.gpg --list-keys
+    gpg --no-default-keyring --keyring=./test.gpg --secret-keyring=./test.secret.gpg --list-secret-keys
