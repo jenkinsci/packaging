@@ -75,5 +75,12 @@ you publish packages.  Specify the environment file via the `BUILDENV` variable.
 You can create your own environment definition to customize the package generation process.
 See [environment readme](env/README.md) for more details.
 
+# Credentials
+`credentials/` directory contains `test.mk` file that controls the locations of code-signing keys,
+their passwords, and certificates. Specify the credentials file via the `CREDENTIAL` variable.
+
+For production use, you need to create your own credentials file. See [credentials readme](credentials/README.md)
+for more details.
+
 # TODO (mostly note to myself)
 * Split resource templates to enable customization
