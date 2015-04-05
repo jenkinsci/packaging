@@ -36,7 +36,7 @@ pushd $D
   debuild -us -uc -Zgzip -A
 popd
 
-mkdir "$(dirname "${DEB}")" || true
+mkdir -p "$(dirname "${DEB}")" || true
 mv $D/../${ARTIFACTNAME}_${VERSION}_all.deb ${DEB}
 
 rm -rf $D
