@@ -61,6 +61,8 @@ else
     defaults write $DEFAULTS_PLIST minPermGen 64m    
 fi
 
+defaults write $DEFAULTS_PLIST httpPort @@PORT@@
+
 # Set tmpdir
 JENKINS_TMPDIR="$JENKINS_HOMEDIR/tmp"
 defaults write $DEFAULTS_PLIST tmpdir $JENKINS_TMPDIR
