@@ -15,8 +15,8 @@ pushd $D/src
 popd
 $BASE/bin/branding.sh $D/src
 
-cp ${PKCS12_FILE} $D/src/jenkins.keychain
-cp ${PKCS12_PASSWORD_FILE} $D/src/jenkins.keychain.password
+cp ${KEYCHAIN_FILE} $D/src/jenkins.keychain
+cp ${KEYCHAIN_PASSWORD_FILE} $D/src/jenkins.keychain.password
 
 tar cvzf $D/script.tgz -C $D/src .
 

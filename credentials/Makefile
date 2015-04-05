@@ -6,7 +6,7 @@ test.pkcs12: test.key test.crt
 
 # generate keychain file to go through the signing process
 test.keychain: test.pkcs12
-	@rm $@ 2>&1 > /dev/null
+	@rm $@ 2>&1 > /dev/null || true
 	security create-keychain -p s3cr3t `pwd`/test.keychain
 	security import test.pkcs12 -k `pwd`/test.keychain -t agg -f pkcs12 -A -P s3cr3t
 

@@ -46,17 +46,18 @@ cp -R * /tmp/test
 # Build the package
 "${PACKAGEMAKER}" \
 	--doc "${PACKAGEMAKER_DOC}" \
-	--out "${PKG_NAME}" \
+	--out "unsigned-${PKG_NAME}" \
 	--version "${VERSION}" \
 	--title "${PKG_TITLE}"
 
 # sign the package. the 'security' tool needs keychain file to be specified in full path
-SIGN_IDENTITY="$(security find-identity -v $PWD/jenkins.keychain | head -n1 | cut -f4 -d' ')"
-security unlock-keychain -p $(cat ./jenkins.keychain.password) $PWD/jenkins.keychain
-productsign --keychain $PWD/jenkins.keychain --sign "$SIGN_IDENTITY" ${PKGNAME} ${PKGNAME}.signed
+SIGN_IDENTITY="$(security find-identity $PWD/jenkins.keychain | grep "1)" | head -n1 | cut -f4 -d' ')"
+set +x
+security unlock-keychain -p $(cat ./jenkins.keychain.password | tr -d '\n') $PWD/jenkins.keychain
+set -x
+productsign --keychain $PWD/jenkins.keychain --sign "$SIGN_IDENTITY" unsigned-${PKG_NAME} ${PKG_NAME}
 security lock-keychain $PWD/jenkins.keychain
 rm jenkins.keychain jenkins.keychain.password
-mv ${PKGNAME}.signed ${PKGNAME}
 
 # Reset the fiddling so git doesn't get confused
 mv $PACKAGEMAKER_DOC/01jenkins.xml.orig $PACKAGEMAKER_DOC/01jenkins.xml
