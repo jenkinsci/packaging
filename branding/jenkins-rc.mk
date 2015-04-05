@@ -1,2 +1,2 @@
 export RELEASELINE=-rc
-include def/common
+include branding/common

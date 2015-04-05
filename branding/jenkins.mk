@@ -1,2 +1,2 @@
 export RELEASELINE=
-include ./common
+include branding/common
