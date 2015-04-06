@@ -74,7 +74,8 @@ suse.publish: ${SUSE} $(shell find suse/publish -type f)
 
 ${CLI}:
 	@mkdir ${TARGET} || true
-	wget -O $@ ${JENKINS_URL}jnlpJars/jenkins-cli.jar
+	wget -O $@.tmp ${JENKINS_URL}jnlpJars/jenkins-cli.jar
+	mv $@.tmp $@
 
 
 
