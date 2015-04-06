@@ -30,7 +30,8 @@ pushd $D
   pushd debian
     # rename jenkins.* to artifact.*
     for f in jenkins.*; do
-      mv $f ${ARTIFACTNAME}$(echo $f | cut -b8-)
+      mv $f ${f}_
+      mv ${f}_ ${ARTIFACTNAME}$(echo $f | cut -b8-)
     done
   popd
   debuild -us -uc -Zgzip -A
