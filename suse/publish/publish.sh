@@ -7,13 +7,14 @@ rsync -avz "${SUSE}" $PKGSERVER:$SUSEDIR/
 
 D=/tmp/$$
 mkdir -p $D/RPMS/noarch $D/repodata
-cp "$SUSE" $D/RPMS/noarch
 
 $base/gen.rb > $D/index.html
+cp $base/jenkins-ci.org.key $D/repodata/repomd.xml.key
 
 [ -d ${OVERLAY_CONTENTS}/suse ] && cp -R ${OVERLAY_CONTENTS}/suse/. $D
+$BASE/bin/branding.sh $D
 
-cp $base/jenkins-ci.org.key $D/repodata/repomd.xml.key
+cp "$SUSE" $D/RPMS/noarch
 
 pushd $D
   rsync -avz --exclude RPMS . $PKGSERVER:$SUSE_WEBDIR
