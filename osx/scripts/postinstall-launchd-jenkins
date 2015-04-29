@@ -77,7 +77,7 @@ chown @@ARTIFACTNAME@@:@@ARTIFACTNAME@@ /var/log/@@ARTIFACTNAME@@
 cat <<_EOT_ > /etc/newsyslog.d/@@ARTIFACTNAME@@.conf
 # logfilename          [owner:group]    mode count size when  flags [/pid_file] [sig_num]
 # Rotate @@PRODUCTNAME@@ log at midnight, and preserve old logs in 3 days
-/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log            644  3     *    \$D0   J
+/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log   @@ARTIFACTNAME@@:@@ARTIFACTNAME@@         644  3     *    \$D0   J
 _EOT_
 
 # Load and start the launch daemon
