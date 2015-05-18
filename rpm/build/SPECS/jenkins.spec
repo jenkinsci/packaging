@@ -110,8 +110,11 @@ fi
 
 # Ensure the right ownership on files
 . /etc/sysconfig/%{name}
-chown -R ${JENKINS_USER:-%{name}} /var/log/%{name}
-chown -R ${JENKINS_USER:-%{name}} ${JENKINS_HOME:-%{workdir}}
+if test ( "x"$JENKINS_INSTALL_SKIP_CHOWN != "xtrue" ); then
+   chown -R ${JENKINS_USER:-%{name}} /var/cache/%{name}
+   chown -R ${JENKINS_USER:-%{name}} /var/log/%{name}
+   chown -R ${JENKINS_USER:-%{name}} ${JENKINS_HOME:-%{workdir}}
+fi
 
 %preun
 if [ "$1" = 0 ] ; then
