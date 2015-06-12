@@ -1,10 +1,10 @@
 Source: @@ARTIFACTNAME@@
 Section: devel
 Priority: extra
-Maintainer: Kohsuke Kawaguchi <kk@kohsuke.org>
+Maintainer: @@AUTHOR@@
 Build-Depends: debhelper (>= 9)
 Standards-Version: 3.9.4
-Homepage: https://jenkins-ci.org/
+Homepage: @@HOMEPAGE@@
 
 Package: @@ARTIFACTNAME@@
 Architecture: all

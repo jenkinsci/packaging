@@ -15,3 +15,7 @@ Branding definition file has the following variables
   If two MSIs have the same UUID, one will overwrite another. So if you are to produce your own MSI,
   you need to use a different UUID.
 * `OSX_IDPREFIX`: prefix of the various IDs in OS X. This follows the reverse domain name format.
+* `AUTHOR`: author line for software
+* `LICENSE`: applicable license
+* `HOMEPAGE`: homepage for this distribution
+* `CHANGELOG_PAGE`: web page for the changelog

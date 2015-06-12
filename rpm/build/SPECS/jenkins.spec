@@ -12,9 +12,9 @@ Source:		jenkins.war
 Source1:	jenkins.init.in
 Source2:	jenkins.sysconfig.in
 Source3:	jenkins.logrotate
-URL:		http://jenkins-ci.org/
+URL:		@@HOMEPAGE@@
 Group:		Development/Tools/Building
-License:	MIT/X License, GPL/CDDL, ASL2
+License:	@@LICENSE@@
 BuildRoot:	%{_tmppath}/build-%{name}-%{version}
 # see the comment below from java-1.6.0-openjdk.spec that explains this dependency
 # java-1.5.0-ibm from jpackage.org set Epoch to 1 for unknown reasons,
@@ -58,7 +58,7 @@ following two jobs:
 
 Authors:
 --------
-    Kohsuke Kawaguchi <Kohsuke.Kawaguchi@sun.com>
+    @@AUTHOR@@
 
 %prep
 %setup -q -T -c
@@ -149,5 +149,5 @@ exit 0
 * Sat Apr 19 2014 mbarr@mbarr.net
 - Removed the jenkins.repo installation.  Per https://issues.jenkins-ci.org/browse/JENKINS-22690
 * Wed Sep 28 2011 kk@kohsuke.org
-- See [http://jenkins-ci.org/changelog] for complete details
+- See [@@CHANGELOG_PAGE@@] for complete details
 
