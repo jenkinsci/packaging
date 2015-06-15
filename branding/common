@@ -13,3 +13,7 @@ export AUTHOR="Kohsuke Kawaguchi <kk@kohsuke.org>"
 export LICENSE="MIT/X License, GPL/CDDL, ASL2"
 export HOMEPAGE=http://jenkins-ci.org/
 export CHANGELOG_PAGE=http://jenkins-ci.org/changelog
+export DESCRIPTION_FILE=`readlink description-file`
+export LICENSE_FILE=`readline license-mit`
+export LICENSE_FILE_DEB=`readline license-deb-mit`
+export LICENSE_FILE_COMMENTED=`readline license-commented-mit`

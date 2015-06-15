@@ -62,6 +62,7 @@ to kill it.
 
 # Branding
 `branding/` directory contains `*.mk` files that control the branding of the generated packages.
+It also include text files which are used for large, branded text blocks (license and descriptions).
 Specify the branding file via the `BRAND` variable.
 
 You can create your own branding definition to customize the package generation process.

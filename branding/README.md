@@ -19,3 +19,12 @@ Branding definition file has the following variables
 * `LICENSE`: applicable license
 * `HOMEPAGE`: homepage for this distribution
 * `CHANGELOG_PAGE`: web page for the changelog
+
+# Branding Files
+Each of these is an (absolute) path to a file containing a larger blob of brand-specific information.
+The file is read tot he environment variable, and then templated in as with the variables above
+
+* `DESCRIPTION_FILE`: description section, used for RPM/Suse specs
+* `LICENSE_FILE`: license file, basic text
+* `LICENSE_FILE_COMMENTED`: commented license file (each line uses # commenting)
+* `LICENSE_FILE_DEB`: license/copyright file formatted for Debian use
