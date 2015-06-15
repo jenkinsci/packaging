@@ -4,4 +4,6 @@ Upstream-Contact: http://jenkins-ci.org/
 Source: https://github.com/jenkinsci/jenkins
 
 Files: *
-@@LICENSE_FILE_DEB@@
+Copyright: 2004-, @@AUTHOR@@, Sun Microsystems, Inc., and a number of other of contributors
+License: @@LICENSE@@
+@@LICENSE_TEXT_DEB@@

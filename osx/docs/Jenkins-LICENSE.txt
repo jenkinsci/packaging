@@ -1,1 +1,1 @@
-@@LICENSE_FILE@@
+@@LICENSE_TEXT@@

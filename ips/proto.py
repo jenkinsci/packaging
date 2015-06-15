@@ -1,4 +1,4 @@
-@@LICENSE_FILE_COMMENTED@@
+@@LICENSE_TEXT_COMMENTED@@
 
 
 # definition of the IPS package.

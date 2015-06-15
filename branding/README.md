@@ -22,9 +22,17 @@ Branding definition file has the following variables
 
 # Branding Files
 Each of these is an (absolute) path to a file containing a larger blob of brand-specific information.
-The file is read tot he environment variable, and then templated in as with the variables above
+The file is read to the environment variable, and then templated in as with the variables above
 
-* `DESCRIPTION_FILE`: description section, used for RPM/Suse specs
-* `LICENSE_FILE`: license file, basic text
-* `LICENSE_FILE_COMMENTED`: commented license file (each line uses # commenting)
-* `LICENSE_FILE_DEB`: license/copyright file formatted for Debian use
+* `DESCRIPTION_FILE`: path to file containing the RPM description section (see 'description-file' in branding for an example)
+
+# Special handling:
+
+License files are handled specially:
+* `LICENSE_FILE` is the path of a file containing the license/copyright text body
+
+This is transformed specially (by setup.mk) for use in branding each different package:
+
+* `LICENSE_TEXT` is the actual file contents
+* `LICENSE_TEXT_COMMENTED` is the license text, split to 80 character lines with #-style comment at the start of each line
+* `LICENSE_TEXT_DEB` is formatted for a Debian copyright file, with a . between each paragraph, and one whitespace before each line
