@@ -14,7 +14,10 @@ export LICENSE="MIT/X License, GPL/CDDL, ASL2"
 export HOMEPAGE=http://jenkins-ci.org/
 export CHANGELOG_PAGE=http://jenkins-ci.org/changelog
 
-export DESCRIPTION_FILE=`readlink -f description-file`
-export LICENSE_FILE=`readlink -f license-mit`
-export LICENSE_FILE_DEB=`readlink -f license-deb-mit`
-export LICENSE_FILE_COMMENTED=`readlink -f license-commented-mit`
+# figure out the directory of this file
+BRANDING_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+
+export DESCRIPTION_FILE=$(BRANDING_DIR)/description-file
+export LICENSE_FILE=$(BRANDING_DIR)/license-mit
+export LICENSE_FILE_DEB=$(BRANDING_DIR)/license-deb-mit
+export LICENSE_FILE_COMMENTED=$(BRANDING_DIR)/license-commented-mit
