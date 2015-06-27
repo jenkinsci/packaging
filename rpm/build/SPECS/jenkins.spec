@@ -12,9 +12,9 @@ Source:		jenkins.war
 Source1:	jenkins.init.in
 Source2:	jenkins.sysconfig.in
 Source3:	jenkins.logrotate
-URL:		http://jenkins-ci.org/
+URL:		@@HOMEPAGE@@
 Group:		Development/Tools/Building
-License:	MIT/X License, GPL/CDDL, ASL2
+License:	@@LICENSE@@
 BuildRoot:	%{_tmppath}/build-%{name}-%{version}
 # see the comment below from java-1.6.0-openjdk.spec that explains this dependency
 # java-1.5.0-ibm from jpackage.org set Epoch to 1 for unknown reasons,
@@ -39,26 +39,11 @@ PreReq:		/usr/sbin/groupadd /usr/sbin/useradd
 BuildArch:	noarch
 
 %description
-Jenkins monitors executions of repeated jobs, such as building a software
-project or jobs run by cron. Among those things, current Jenkins focuses on the
-following two jobs:
-- Building/testing software projects continuously, just like CruiseControl or
-  DamageControl. In a nutshell, Jenkins provides an easy-to-use so-called
-  continuous integration system, making it easier for developers to integrate
-  changes to the project, and making it easier for users to obtain a fresh
-  build. The automated, continuous build increases the productivity.
-- Monitoring executions of externally-run jobs, such as cron jobs and procmail
-  jobs, even those that are run on a remote machine. For example, with cron,
-  all you receive is regular e-mails that capture the output, and it is up to
-  you to look at them diligently and notice when it broke. Jenkins keeps those
-  outputs and makes it easy for you to notice when something is wrong.
-
-
-
+@@DESCRIPTION_FILE@@
 
 Authors:
 --------
-    Kohsuke Kawaguchi <Kohsuke.Kawaguchi@sun.com>
+    @@AUTHOR@@
 
 %prep
 %setup -q -T -c
@@ -149,5 +134,5 @@ exit 0
 * Sat Apr 19 2014 mbarr@mbarr.net
 - Removed the jenkins.repo installation.  Per https://issues.jenkins-ci.org/browse/JENKINS-22690
 * Wed Sep 28 2011 kk@kohsuke.org
-- See [http://jenkins-ci.org/changelog] for complete details
+- See [@@CHANGELOG_PAGE@@] for complete details
 

@@ -20,7 +20,7 @@ ${ARTIFACTNAME} ($VERSION) unstable; urgency=low
 
   * Packaged ${VERSION}
 
- -- Kohsuke Kawaguchi <kk@kohsuke.org>  $(date -R)
+ -- ${AUTHOR}  $(date -R)
 
 EOF
 

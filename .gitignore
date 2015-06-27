@@ -8,3 +8,5 @@ target
 generated
 *.box
 .vagrant
+.iml
+.idea/
