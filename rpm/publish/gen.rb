@@ -37,7 +37,7 @@ yum install #{artifactName}
 </pre>
 
 <p>
-See <a href="https://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+on+RedHat+distributions">Wiki</a> for more information, including how #{productName} is run and where the configuration is stored, etc.
+See <a href="https://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+on+Red+Hat+distributions">Wiki</a> for more information, including how #{productName} is run and where the configuration is stored, etc.
 
 <h2>Individual Package Downloads</h2>
 <p>
