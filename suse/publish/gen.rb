@@ -20,7 +20,7 @@ puts <<-EOS
 To use this repository, run the following command:
 
 <pre style="padding:0.5em; margin:1em; background:black; color:white">
-sudo zypper addrepo #{url}/ #{artifactName}
+sudo zypper addrepo -f #{url}/ #{artifactName}
 </pre>
 
 <p>
