@@ -23,7 +23,13 @@ The location of this file is set via the `WAR` variable.
 
 # Generating packages
 Run `make package` to build all the native packages.
-At minimum, you have to specify the `WAR` variable that points to the war file to be packaged.
+At minimum, you have to specify the `WAR` variable that points to the war file to be packaged and a branding file (for licensing and package descriptions). 
+You will probably need to pass in the build environment and credentials.
+
+For example:
+```shell
+make package BRAND=./branding/jenkins.mk BUILDENV=./env/test.mk CREDENTIAL=./credentials/test.mk
+```
 
 Packages will be placed into `target/` directory.
 See the definition of the `package` goal for how to build individual packages selectively.
