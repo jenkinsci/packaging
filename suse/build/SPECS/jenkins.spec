@@ -119,7 +119,7 @@ exit 0
 %attr(0750,%{name},%{name}) /var/log/%{name}
 %attr(0750,%{name},%{name}) /var/cache/%{name}
 %config(noreplace) /etc/logrotate.d/%{name}
-%config /etc/init.d/%{name}
+%config(noreplace) /etc/init.d/%{name}
 %config(noreplace) /etc/sysconfig/%{name}
 %config(noreplace) /etc/zypp/repos.d/%{name}.repo
 /usr/sbin/rc%{name}
