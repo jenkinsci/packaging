@@ -2,6 +2,7 @@
 # run 'rpm -E '%{__gpg_sign_cmd}' to see how it's expanded on your system.
 # normally it's defined in /usr/lib/rpm/macros
 exec rpm \
+  -D "%_gpg_name ignored" \
   -D "__gpg_check_password_cmd /bin/true" \
   -D "__gpg_sign_cmd %{__gpg} \
       gpg --batch --no-use-agent --no-verbose --no-armor --passphrase-file=$GPG_PASSPHRASE_FILE \
