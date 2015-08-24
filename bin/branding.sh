@@ -11,7 +11,7 @@ ARGS=()
 for t in $(cat $(dirname "$0")/branding-files.list);
 do
   # Keep going if file is not set, otherwise it'll hang on 'cat' command
-  if [ ! -z "$t" ]
+  if [ -n "$t" ]
   then
   	v=""
   else
