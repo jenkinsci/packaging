@@ -18,6 +18,7 @@ Run `make setup` to install necessary tools.  Alternatively you can manually ins
 * rpm
 * expect
 * createrepo
+* ruby
 
 You also need a Jenkins instance with [dist-fork plugin](https://wiki.jenkins-ci.org/display/JENKINS/DistFork+Plugin)
 installed. URL of this Jenkins can be fed into `make` via the `JENKINS_URL` variable.
