@@ -10,7 +10,7 @@ The following platforms are currently supported:
 
 # Pre-requisites
 Running the main package script requires a Linux environment (currently Ubuntu, see [JENKINS-27744](https://issues.jenkins-ci.org/browse/JENKINS-27744).)
-Run `make setup` to install necessary tools.  Alternatively you can manually install the following onto a base install of Ubuntu:
+Run `make setup` to install (most of the) necessary tools.  Alternatively you can manually install the following onto a base install of Ubuntu:
 * make
 * unzip
 * devscripts
@@ -19,6 +19,9 @@ Run `make setup` to install necessary tools.  Alternatively you can manually ins
 * expect
 * createrepo
 * ruby
+  * net-sftp  (`gem install net-sftp`)
+* maven
+* java
 
 You also need a Jenkins instance with [dist-fork plugin](https://wiki.jenkins-ci.org/display/JENKINS/DistFork+Plugin)
 installed. URL of this Jenkins can be fed into `make` via the `JENKINS_URL` variable.
