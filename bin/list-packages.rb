@@ -9,8 +9,7 @@ def list_packages(path,glob,rel)
 	# user name and server name
 	u,s=ENV['PKGSERVER'].split("@")
 
-    options = { :non_interactive => true }
-    Net::SFTP.start(s,u, options) do |sftp|
+    Net::SFTP.start(s,u) do |sftp|
         debs = [];
         sftp.dir.glob(path,glob) { |f| debs << f }
         
