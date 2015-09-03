@@ -25,8 +25,7 @@ Run `make setup` to install (most of the) necessary tools.  Alternatively you ca
 
 You also need a Jenkins instance with [dist-fork plugin](https://wiki.jenkins-ci.org/display/JENKINS/DistFork+Plugin)
 installed. URL of this Jenkins can be fed into `make` via the `JENKINS_URL` variable.
-This Jenkins needs to have an OSX build agent that has PackageMaker, and Windows build agent whose
-pre-requisites need to be clarified. These two build agents are used to build OSX and MSI packages, which
+This Jenkins needs to have an OSX build agent that has PackageMaker, and Windows build agent that has [WiX Toolset](http://wixtoolset.org/) (currently 3.5), msbuild, [cygwin](https://www.cygwin.com/) and .net 2.0. These two build agents are used to build OSX and MSI packages, which
 can be only built on native platforms.
 
 You'll also need a `jenkins.war` file that you are packaging, which comes from the release process.
