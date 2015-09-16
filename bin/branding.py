@@ -3,6 +3,7 @@
 import os
 import string
 import fnmatch
+import sys
 from optparse import OptionParser
 
 path = os.path.dirname(os.path.realpath(__file__))
@@ -16,7 +17,7 @@ with open(os.path.join(path, 'branding.list'), 'r') as branding:
 
 # Read list of environment variables from file, where each is a path to a file
 # And for each read the content of that file to the branding map
-brand-file contents from list of file name env variables and store to branding map as well
+# brand-file contents from list of file name env variables and store to branding map as well
 with open(os.path.join(path, 'branding-files.list'), 'r') as branding:
 	lines = filter(lambda x: x and not x.startswith('--'), branding.read().splitlines())
 	for line in lines:
@@ -32,10 +33,12 @@ with open(os.path.join(path, 'branding-files.list'), 'r') as branding:
 # Do search and replace using string templating for a each file
 # Throws Exceptions if I/O fails or substitution is missing vars (safety check)
 def apply_templating_to_file(path, branding_map):
-	f = open(path, "rw")
+	f = open(path, "r+")
 	f_content = string.Template(f.read()).substitute(branding_map)
+	f.seek(0)
 	f.write(f_content)
-	f.close();
+	f.truncate()
+	del f
 
 if (len(sys.argv) != 2):
 	raise Exception("Usage: branding.py [file or folder name]")
@@ -47,7 +50,8 @@ if os.path.isfile(path):
 	apply_templating_to_file(path, branding_values)
 elif os.path.isdir(path):
 	# Walks through all files in directory	
-	for root, dirnames, filename in os.walk(path):
-		apply_templating_to_file(os.path.join(dirpath, filename))
+	for root, dirnames, filenames in os.walk(path):
+		func = lambda x: apply_templating_to_file(os.path.join(root, x), branding_values)
+		map(func, filenames)
 else:
 	raise Exception("Supplied path must be file or directory")
