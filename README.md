@@ -79,11 +79,12 @@ to kill it.
 # Branding
 `branding/` directory contains `*.mk` files that control the branding of the generated packages.
 It also include text files which are used for large, branded text blocks (license and descriptions).
-Specify the branding file via the `BRAND` variable.
+Specify the branding file via thee `BRAND` variable.
 
 You can create your own branding definition to customize the package generation process.
 See [branding readme](branding/README.md) for more details. In the rest of the packaging script files,
-these branding parameters are referenced via `@@NAME@@` and get substituted by `bin/branding.sh`
+these branding parameters are referenced via `$NAME` and get substituted by `bin/branding.py`.  
+Normal uses of $ signs are substituted by $$ (an additional $ sign).
 
 # Environment
 `env/` directory contains `*.mk` files that control the environment into which

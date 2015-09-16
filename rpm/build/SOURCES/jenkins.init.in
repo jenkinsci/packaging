@@ -20,10 +20,10 @@
 #
 ### BEGIN INIT INFO
 # Provides:          @@ARTIFACTNAME@@
-# Required-Start:    $local_fs $remote_fs $network $time $named
-# Should-Start: $time sendmail
-# Required-Stop:     $local_fs $remote_fs $network $time $named
-# Should-Stop: $time sendmail
+# Required-Start:    $$local_fs $$remote_fs $$network $$time $$named
+# Should-Start: $$time sendmail
+# Required-Stop:     $$local_fs $$remote_fs $$network $$time $$named
+# Should-Stop: $$time sendmail
 # Default-Start:     3 5
 # Default-Stop:      0 1 2 6
 # Short-Description: @@SUMMARY@@
@@ -32,17 +32,17 @@
 
 # Check for missing binaries (stale symlinks should not happen)
 JENKINS_WAR="@@WAR@@"
-test -r "$JENKINS_WAR" || { echo "$JENKINS_WAR not installed"; 
-	if [ "$1" = "stop" ]; then exit 0;
+test -r "$$JENKINS_WAR" || { echo "$$JENKINS_WAR not installed";
+	if [ "$$1" = "stop" ]; then exit 0;
 	else exit 5; fi; }
 
 # Check for existence of needed config file and read it
 JENKINS_CONFIG=/etc/sysconfig/@@ARTIFACTNAME@@
-test -e "$JENKINS_CONFIG" || { echo "$JENKINS_CONFIG not existing";
-	if [ "$1" = "stop" ]; then exit 0;
+test -e "$$JENKINS_CONFIG" || { echo "$$JENKINS_CONFIG not existing";
+	if [ "$$1" = "stop" ]; then exit 0;
 	else exit 6; fi; }
-test -r "$JENKINS_CONFIG" || { echo "$JENKINS_CONFIG not readable. Perhaps you forgot 'sudo'?";
-	if [ "$1" = "stop" ]; then exit 0;
+test -r "$$JENKINS_CONFIG" || { echo "$$JENKINS_CONFIG not readable. Perhaps you forgot 'sudo'?";
+	if [ "$$1" = "stop" ]; then exit 0;
 	else exit 6; fi; }
 
 JENKINS_PID_FILE="/var/run/@@ARTIFACTNAME@@.pid"
@@ -51,14 +51,14 @@ JENKINS_PID_FILE="/var/run/@@ARTIFACTNAME@@.pid"
 . /etc/init.d/functions
 
 # Read config	
-[ -f "$JENKINS_CONFIG" ] && . "$JENKINS_CONFIG"
+[ -f "$$JENKINS_CONFIG" ] && . "$$JENKINS_CONFIG"
 
 # Set up environment accordingly to the configuration settings
-[ -n "$JENKINS_HOME" ] || { echo "JENKINS_HOME not configured in $JENKINS_CONFIG";
-	if [ "$1" = "stop" ]; then exit 0;
+[ -n "$$JENKINS_HOME" ] || { echo "JENKINS_HOME not configured in $$JENKINS_CONFIG";
+	if [ "$$1" = "stop" ]; then exit 0;
 	else exit 6; fi; }
-[ -d "$JENKINS_HOME" ] || { echo "JENKINS_HOME directory does not exist: $JENKINS_HOME";
-	if [ "$1" = "stop" ]; then exit 0;
+[ -d "$$JENKINS_HOME" ] || { echo "JENKINS_HOME directory does not exist: $$JENKINS_HOME";
+	if [ "$$1" = "stop" ]; then exit 0;
 	else exit 1; fi; }
 
 # Search usable Java. We do this because various reports indicated
@@ -74,53 +74,53 @@ candidates="
 /usr/lib/jvm/jre-1.8.0/bin/java
 /usr/bin/java
 "
-for candidate in $candidates
+for candidate in $$candidates
 do
-  [ -x "$JENKINS_JAVA_CMD" ] && break
-  JENKINS_JAVA_CMD="$candidate"
+  [ -x "$$JENKINS_JAVA_CMD" ] && break
+  JENKINS_JAVA_CMD="$$candidate"
 done
 
-JAVA_CMD="$JENKINS_JAVA_CMD $JENKINS_JAVA_OPTIONS -DJENKINS_HOME=$JENKINS_HOME -jar $JENKINS_WAR"
+JAVA_CMD="$$JENKINS_JAVA_CMD $$JENKINS_JAVA_OPTIONS -DJENKINS_HOME=$$JENKINS_HOME -jar $$JENKINS_WAR"
 PARAMS="--logfile=/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log --webroot=/var/cache/@@ARTIFACTNAME@@/war --daemon"
-[ -n "$JENKINS_PORT" ] && PARAMS="$PARAMS --httpPort=$JENKINS_PORT"
-[ -n "$JENKINS_LISTEN_ADDRESS" ] && PARAMS="$PARAMS --httpListenAddress=$JENKINS_LISTEN_ADDRESS"
-[ -n "$JENKINS_HTTPS_PORT" ] && PARAMS="$PARAMS --httpsPort=$JENKINS_HTTPS_PORT"
-[ -n "$JENKINS_HTTPS_KEYSTORE" ] && PARAMS="$PARAMS --httpsKeyStore=$JENKINS_HTTPS_KEYSTORE"
-[ -n "$JENKINS_HTTPS_KEYSTORE_PASSWORD" ] && PARAMS="$PARAMS --httpsKeyStorePassword='$JENKINS_HTTPS_KEYSTORE_PASSWORD'"
-[ -n "$JENKINS_HTTPS_LISTEN_ADDRESS" ] && PARAMS="$PARAMS --httpsListenAddress=$JENKINS_HTTPS_LISTEN_ADDRESS"
-[ -n "$JENKINS_AJP_PORT" ] && PARAMS="$PARAMS --ajp13Port=$JENKINS_AJP_PORT"
-[ -n "$JENKINS_AJP_LISTEN_ADDRESS" ] && PARAMS="$PARAMS --ajp13ListenAddress=$JENKINS_AJP_LISTEN_ADDRESS"
-[ -n "$JENKINS_DEBUG_LEVEL" ] && PARAMS="$PARAMS --debug=$JENKINS_DEBUG_LEVEL"
-[ -n "$JENKINS_HANDLER_STARTUP" ] && PARAMS="$PARAMS --handlerCountStartup=$JENKINS_HANDLER_STARTUP"
-[ -n "$JENKINS_HANDLER_MAX" ] && PARAMS="$PARAMS --handlerCountMax=$JENKINS_HANDLER_MAX"
-[ -n "$JENKINS_HANDLER_IDLE" ] && PARAMS="$PARAMS --handlerCountMaxIdle=$JENKINS_HANDLER_IDLE"
-[ -n "$JENKINS_ARGS" ] && PARAMS="$PARAMS $JENKINS_ARGS"
+[ -n "$$JENKINS_PORT" ] && PARAMS="$$PARAMS --httpPort=$$JENKINS_PORT"
+[ -n "$$JENKINS_LISTEN_ADDRESS" ] && PARAMS="$$PARAMS --httpListenAddress=$$JENKINS_LISTEN_ADDRESS"
+[ -n "$$JENKINS_HTTPS_PORT" ] && PARAMS="$$PARAMS --httpsPort=$$JENKINS_HTTPS_PORT"
+[ -n "$$JENKINS_HTTPS_KEYSTORE" ] && PARAMS="$$PARAMS --httpsKeyStore=$$JENKINS_HTTPS_KEYSTORE"
+[ -n "$$JENKINS_HTTPS_KEYSTORE_PASSWORD" ] && PARAMS="$$PARAMS --httpsKeyStorePassword='$$JENKINS_HTTPS_KEYSTORE_PASSWORD'"
+[ -n "$$JENKINS_HTTPS_LISTEN_ADDRESS" ] && PARAMS="$$PARAMS --httpsListenAddress=$$JENKINS_HTTPS_LISTEN_ADDRESS"
+[ -n "$$JENKINS_AJP_PORT" ] && PARAMS="$$PARAMS --ajp13Port=$$JENKINS_AJP_PORT"
+[ -n "$$JENKINS_AJP_LISTEN_ADDRESS" ] && PARAMS="$$PARAMS --ajp13ListenAddress=$$JENKINS_AJP_LISTEN_ADDRESS"
+[ -n "$$JENKINS_DEBUG_LEVEL" ] && PARAMS="$$PARAMS --debug=$$JENKINS_DEBUG_LEVEL"
+[ -n "$$JENKINS_HANDLER_STARTUP" ] && PARAMS="$$PARAMS --handlerCountStartup=$$JENKINS_HANDLER_STARTUP"
+[ -n "$$JENKINS_HANDLER_MAX" ] && PARAMS="$$PARAMS --handlerCountMax=$$JENKINS_HANDLER_MAX"
+[ -n "$$JENKINS_HANDLER_IDLE" ] && PARAMS="$$PARAMS --handlerCountMaxIdle=$$JENKINS_HANDLER_IDLE"
+[ -n "$$JENKINS_ARGS" ] && PARAMS="$$PARAMS $$JENKINS_ARGS"
 
-if [ "$JENKINS_ENABLE_ACCESS_LOG" = "yes" ]; then
-    PARAMS="$PARAMS --accessLoggerClassName=winstone.accesslog.SimpleAccessLogger --simpleAccessLogger.format=combined --simpleAccessLogger.file=/var/log/@@ARTIFACTNAME@@/access_log"
+if [ "$$JENKINS_ENABLE_ACCESS_LOG" = "yes" ]; then
+    PARAMS="$$PARAMS --accessLoggerClassName=winstone.accesslog.SimpleAccessLogger --simpleAccessLogger.format=combined --simpleAccessLogger.file=/var/log/@@ARTIFACTNAME@@/access_log"
 fi
 
 RETVAL=0
 
-case "$1" in
+case "$$1" in
     start)
 	echo -n "Starting @@PRODUCTNAME@@ "
-	daemon --user "$JENKINS_USER" --pidfile "$JENKINS_PID_FILE" $JAVA_CMD $PARAMS > /dev/null
-	RETVAL=$?
-	if [ $RETVAL = 0 ]; then
+	daemon --user "$$JENKINS_USER" --pidfile "$$JENKINS_PID_FILE" $$JAVA_CMD $$PARAMS > /dev/null
+	RETVAL=$$?
+	if [ $$RETVAL = 0 ]; then
 	    success
-	    echo > "$JENKINS_PID_FILE"  # just in case we fail to find it
-            MY_SESSION_ID=`/bin/ps h -o sess -p $$`
+	    echo > "$$JENKINS_PID_FILE"  # just in case we fail to find it
+            MY_SESSION_ID=`/bin/ps h -o sess -p $$$$`
             # get PID
-            /bin/ps hww -u "$JENKINS_USER" -o sess,ppid,pid,cmd | \
+            /bin/ps hww -u "$$JENKINS_USER" -o sess,ppid,pid,cmd | \
             while read sess ppid pid cmd; do
-		[ "$ppid" = 1 ] || continue
+		[ "$$ppid" = 1 ] || continue
 		# this test doesn't work because Jenkins sets a new Session ID
-                # [ "$sess" = "$MY_SESSION_ID" ] || continue
-	       	echo "$cmd" | grep $JENKINS_WAR > /dev/null
-		[ $? = 0 ] || continue
+                # [ "$$sess" = "$$MY_SESSION_ID" ] || continue
+	       	echo "$$cmd" | grep $$JENKINS_WAR > /dev/null
+		[ $$? = 0 ] || continue
 		# found a PID
-		echo $pid > "$JENKINS_PID_FILE"
+		echo $$pid > "$$JENKINS_PID_FILE"
 	    done
 	else
 	    failure
@@ -130,45 +130,45 @@ case "$1" in
     stop)
 	echo -n "Shutting down @@PRODUCTNAME@@ "
 	killproc @@ARTIFACTNAME@@
-	RETVAL=$?
+	RETVAL=$$?
 	echo
 	;;
     try-restart|condrestart)
-	if test "$1" = "condrestart"; then
-		echo "${attn} Use try-restart ${done}(LSB)${attn} rather than condrestart ${warn}(RH)${norm}"
+	if test "$$1" = "condrestart"; then
+		echo "$${attn} Use try-restart $${done}(LSB)$${attn} rather than condrestart $${warn}(RH)$${norm}"
 	fi
-	$0 status
-	if test $? = 0; then
-		$0 restart
+	$$0 status
+	if test $$? = 0; then
+		$$0 restart
 	else
 		: # Not running is not a failure.
 	fi
 	;;
     restart)
-	$0 stop
-	$0 start
+	$$0 stop
+	$$0 start
 	;;
     force-reload)
 	echo -n "Reload service @@PRODUCTNAME@@ "
-	$0 try-restart
+	$$0 try-restart
 	;;
     reload)
-    	$0 restart
+    	$$0 restart
 	;;
     status)
     	status @@ARTIFACTNAME@@
-	RETVAL=$?
+	RETVAL=$$?
 	;;
     probe)
 	## Optional: Probe for the necessity of a reload, print out the
 	## argument to this init script which is required for a reload.
 	## Note: probe is not (yet) part of LSB (as of 1.9)
 
-	test "$JENKINS_CONFIG" -nt "$JENKINS_PID_FILE" && echo reload
+	test "$$JENKINS_CONFIG" -nt "$$JENKINS_PID_FILE" && echo reload
 	;;
     *)
-	echo "Usage: $0 {start|stop|status|try-restart|restart|force-reload|reload|probe}"
+	echo "Usage: $$0 {start|stop|status|try-restart|restart|force-reload|reload|probe}"
 	exit 1
 	;;
 esac
-exit $RETVAL
+exit $$RETVAL

@@ -95,14 +95,14 @@ fi
 
 # Ensure the right ownership on files
 . /etc/sysconfig/%{name}
-if test x"$JENKINS_INSTALL_SKIP_CHOWN" != "xtrue"; then
-   chown -R ${JENKINS_USER:-%{name}} /var/cache/%{name}
-   chown -R ${JENKINS_USER:-%{name}} /var/log/%{name}
-   chown -R ${JENKINS_USER:-%{name}} ${JENKINS_HOME:-%{workdir}}
+if test x"$$JENKINS_INSTALL_SKIP_CHOWN" != "xtrue"; then
+   chown -R $${JENKINS_USER:-%{name}} /var/cache/%{name}
+   chown -R $${JENKINS_USER:-%{name}} /var/log/%{name}
+   chown -R $${JENKINS_USER:-%{name}} $${JENKINS_HOME:-%{workdir}}
 fi
 
 %preun
-if [ "$1" = 0 ] ; then
+if [ "$$1" = 0 ] ; then
     # if this is uninstallation as opposed to upgrade, delete the service
     /sbin/service %{name} stop > /dev/null 2>&1
     /sbin/chkconfig --del %{name}
@@ -110,7 +110,7 @@ fi
 exit 0
 
 %postun
-if [ "$1" -ge 1 ]; then
+if [ "$$1" -ge 1 ]; then
     /sbin/service %{name} condrestart > /dev/null 2>&1
 fi
 exit 0
