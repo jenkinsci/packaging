@@ -10,7 +10,15 @@ ARGS=()
 # Read branding files to environment variables and convert to search and replace args
 for t in $(cat $(dirname "$0")/branding-files.list);
 do
-  v="$(eval cat \$${t})"
+  # Keep going if file is not set, otherwise it'll hang on 'cat' command
+  if [ -n "$t" ]
+  then
+  	v=""
+  else
+  	v="$(eval cat \$${t})"	
+  fi
+  # Escape the @ signs in the variable as they will do bad things in Perl
+  v="$(echo $v | sed 's#\@#\\\@#g' )"
   ARGS+=("-e" "s%\@\@${t}\@\@%${v}%g;")
 done
 
@@ -18,6 +26,8 @@ done
 for t in $(cat $(dirname "$0")/branding.list);
 do
   v="$(eval echo \$${t})"
+  # Escape the @ signs in the variable as they will do bad things in Perl
+  v="$(echo $v | sed 's#\@#\\\@#g' )"
   ARGS+=("-e" "s%\@\@${t}\@\@%${v}%g;")
 done
 

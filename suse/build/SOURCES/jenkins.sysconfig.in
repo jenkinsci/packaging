@@ -38,7 +38,7 @@ JENKINS_JAVA_HOME=""
 #
 # Unix user account that runs the Jenkins daemon
 # Be careful when you change this, as you need to update
-# permissions of $$JENKINS_HOME and /var/log/@@ARTIFACTNAME@@.
+# permissions of $JENKINS_HOME and /var/log/@@ARTIFACTNAME@@.
 #
 JENKINS_USER="@@ARTIFACTNAME@@"
 

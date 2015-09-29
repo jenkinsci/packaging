@@ -77,7 +77,7 @@ rm -rf "%{buildroot}"
 	-d "%{workdir}" %{name} &>/dev/null || :
 
 %post
-[ $$1 -eq 1 ] && /sbin/chkconfig --add %{name}
+[ $1 -eq 1 ] && /sbin/chkconfig --add %{name}
 
 # If we have an old hudson install, rename it to jenkins
 if test -d /var/lib/hudson; then
@@ -95,7 +95,7 @@ if test -d /var/run/hudson; then
 fi
 
 %preun
-if [ "$$1" = 0 ] ; then
+if [ "$1" = 0 ] ; then
     # if this is uninstallation as opposed to upgrade, delete the service
     /sbin/service %{name} stop > /dev/null 2>&1
     /sbin/chkconfig --del %{name}
@@ -103,7 +103,7 @@ fi
 exit 0
 
 %postun
-if [ "$$1" -ge 1 ]; then
+if [ "$1" -ge 1 ]; then
     /sbin/service %{name} condrestart > /dev/null 2>&1
 fi
 exit 0
