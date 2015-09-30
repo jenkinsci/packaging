@@ -31,9 +31,12 @@ SHORT_VARS = """
 TESTVAR
 """
 
+# NOMATCH is a section that should *not* be treated as a variable for substitution to 
+# Avoid issues with curly braces
 TEMPLATED_CONTENT = "My @@VAR@@ is @@FILECONTENT@@ and I have @@@@ESCAPES@@ and @@{NOMATCH}@@ stuff"
 TEMPLATE_VARS = {'VAR': 'SPECIAL', 'FILECONTENT': 'gooooooober'}
 
+# Shows that substitutions were performed, and NOMATCH does not get handled as a substitution variable
 TEMPLATE_EXPECTED = 'My SPECIAL is gooooooober and I have @@ESCAPES@@ and @@{NOMATCH}@@ stuff'
 
 class TestBranding(unittest.TestCase):
@@ -69,6 +72,15 @@ class TestBranding(unittest.TestCase):
     def test_templating(self):
         output = branding.apply_template(TEMPLATED_CONTENT, TEMPLATE_VARS)
         self.assertEqual(TEMPLATE_EXPECTED, output)
+
+    def test_missing_variable(self):
+        """ Prove branding will fail if branding variable is undefined """
+
+        try:
+            output = branding.apply_template('My @@UNDEFINED_VALUE@@ is going to fail', {'going': 'to fail'})
+            self.fail("Should throw KeyError")
+        except KeyError:
+            pass
 
     def test_in_place_templating(self):
         temp = tempfile.NamedTemporaryFile()
