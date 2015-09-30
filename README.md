@@ -83,7 +83,8 @@ Specify the branding file via the `BRAND` variable.
 
 You can create your own branding definition to customize the package generation process.
 See [branding readme](branding/README.md) for more details. In the rest of the packaging script files,
-these branding parameters are referenced via `@@NAME@@` and get substituted by `bin/branding.sh`
+these branding parameters are referenced via `@@NAME@@` and get substituted by `bin/branding.py`.  
+To escape a string normally like @@VALUE@@, add an additional two @@ symbols as a prefix: @@@@VALUE@@.
 
 # Environment
 `env/` directory contains `*.mk` files that control the environment into which

@@ -31,9 +31,10 @@ SHORT_VARS = """
 TESTVAR
 """
 
-TEMPLATED_CONTENT = """
-My $VAR is $FILECONTENT
-"""
+TEMPLATED_CONTENT = "My @@VAR@@ is @@FILECONTENT@@ and I have @@@@ESCAPES@@ and @@{NOMATCH}@@ stuff"
+TEMPLATE_VARS = {'VAR': 'SPECIAL', 'FILECONTENT': 'gooooooober'}
+
+TEMPLATE_EXPECTED = 'My SPECIAL is gooooooober and I have @@ESCAPES@@ and @@{NOMATCH}@@ stuff'
 
 class TestBranding(unittest.TestCase):
 
@@ -65,15 +66,17 @@ class TestBranding(unittest.TestCase):
         vals = branding.read_file_content({'FILEPATH': temp.name})
         self.assertEqual(RAW_CONTENT, vals['FILEPATH'])
 
+    def test_templating(self):
+        output = branding.apply_template(TEMPLATED_CONTENT, TEMPLATE_VARS)
+        self.assertEqual(TEMPLATE_EXPECTED, output)
+
     def test_in_place_templating(self):
         temp = tempfile.NamedTemporaryFile()
         temp.write(TEMPLATED_CONTENT)
         temp.seek(0)
-
-        branding_vars = {'VAR': 'SPECIAL', 'FILECONTENT': 'gooooooober'}
-        branding.apply_templating_to_file(temp.name, branding_vars)
+        branding.apply_templating_to_file(temp.name, TEMPLATE_VARS)
         temp.seek(0)
-        self.assertEqual(string.Template(TEMPLATED_CONTENT).substitute(branding_vars), temp.read())
+        self.assertEqual(TEMPLATE_EXPECTED, temp.read())
 
 
 if __name__ == '__main__':

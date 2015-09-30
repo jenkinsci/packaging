@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import os
-import string
+from string import Template
 import fnmatch
 import sys
+import re
 from optparse import OptionParser
 
 # Applies branding to files/folders with simple templating
@@ -14,6 +15,15 @@ from optparse import OptionParser
 
 BRANDING_ENV_VARIABLE_LIST = 'branding.list'
 BRANDING_ENV_PATH_LIST = 'branding-files.list'
+
+class CustomTemplate(Template):
+	delimiter = '@@'
+	pattern = r""" %(delim)s(?:
+      (?P<escaped>) |   # Escape sequence of two delimiters
+      (?P<named>%(id)s)      |   # delimiter and a Python identifier
+      (?P<braced>%(id)s)   |   # delimiter and a braced identifier
+      (?P<invalid>)            # never matches (the regex is not multilined)
+    )%(delim)s """ % dict(delim=re.escape('@@'), id=Template.idpattern)
 
 def clean_text_lines(textcontent):
 	""" Splits file content by line boundaries, strips leading/trailing whitespace, 
@@ -50,12 +60,16 @@ def read_branding_variables(base_path, env_variables_list, file_variables_list):
 	raw_variables.update(read_file_content(file_variables))  # Add file content variables
 	return raw_variables
 
+def apply_template(input_string, branding_map):
+	""" Applies templating in a back-compatible fashion """
+	return CustomTemplate(input_string).substitute(branding_map)
+
 def apply_templating_to_file(path, branding_map):
 	""" Do IN-PLACE search and replace using string templating for a each file
 		Throws Exceptions if I/O fails or substitution is missing vars (safety check)
 	"""
 	f = open(path, "r+")
-	f_content = string.Template(f.read()).substitute(branding_map)
+	f_content = apply_template(f.read(), branding_map)
 	f.seek(0)
 	f.write(f_content)
 	f.truncate()  # This removes any original content beyond the end of templated content
