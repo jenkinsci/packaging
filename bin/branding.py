@@ -19,10 +19,10 @@ BRANDING_ENV_PATH_LIST = 'branding-files.list'
 class CustomTemplate(Template):
 	delimiter = '@@'
 	pattern = r""" %(delim)s(?:
-      (?P<escaped>) |   # Escape sequence of two delimiters
+      (?P<escaped>) |   # Nope, taken care of by the delimiter not being a valid id character
       (?P<named>%(id)s)      |   # delimiter and a Python identifier
-      (?P<braced>%(id)s)   |   # delimiter and a braced identifier
-      (?P<invalid>)            # never matches (the regex is not multilined)
+      (?P<braced>%(id)s)   |   # we don't support braced identifiers, since it's surrounded by delimiters
+      (?P<invalid>)            # no matches
     )%(delim)s """ % dict(delim=re.escape('@@'), id=Template.idpattern)
 
 def clean_text_lines(textcontent):
