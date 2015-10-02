@@ -20,7 +20,14 @@ tar cvzf $D/bundle.tgz \
   -C $bin FindJava.java build.sh jenkins.exe.config bootstrapper.xml \
   -C $D jenkins.wxs key.pkcs12 key.password
 
-java -jar $TARGET/jenkins-cli.jar dist-fork -z $D/bundle.tgz -f ${ARTIFACTNAME}.war="${WAR}" -l windows -F "${MSI}=${ARTIFACTNAME}-windows.zip" \
-	bash -ex build.sh ${ARTIFACTNAME}.war $encodedv ${ARTIFACTNAME} "${PRODUCTNAME}" ${PORT}
+case "$(uname)" in
+  CYGWIN*)
+    java -jar $TARGET/jenkins-cli.jar dist-fork -z `cygpath --dos $D/bundle.tgz` -f ${ARTIFACTNAME}.war="${WAR}" -l windows -F "${MSI}=${ARTIFACTNAME}-windows.zip" \
+          bash -ex build.sh ${ARTIFACTNAME}.war $encodedv ${ARTIFACTNAME} "${PRODUCTNAME}" ${PORT} ;;
+  *)
+    java -jar $TARGET/jenkins-cli.jar dist-fork -z $D/bundle.tgz -f ${ARTIFACTNAME}.war="${WAR}" -l windows -F "${MSI}=${ARTIFACTNAME}-windows.zip" \
+          bash -ex build.sh ${ARTIFACTNAME}.war $encodedv ${ARTIFACTNAME} "${PRODUCTNAME}" ${PORT} ;;
+esac
+
 touch ${MSI}
 rm -rf $D
