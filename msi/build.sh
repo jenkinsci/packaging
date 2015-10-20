@@ -33,13 +33,11 @@ candle -dJreDir="$JREDIR" -dWAR="$war" -dJavaExeId=$JavaExeId -nologo -ext WixUI
 # set to -dcl:low during debug and -dcl:high for release
 light -o ${ARTIFACTNAME}.msi -sval -nologo -dcl:high -ext WixUIExtension -ext WixUtilExtension -ext WixFirewallExtension jenkins.wixobj jre.wixobj
 
-msbuild.exe /property:src=${ARTIFACTNAME}.msi "/property:ProductName=${PRODUCTNAME}" bootstrapper.xml
-
 set +x
-signtool sign /v /f key.pkcs12 /p $(cat key.password) /t http://timestamp.verisign.com/scripts/timestamp.dll ${ARTIFACTNAME}.msi setup.exe
+signtool sign /v /f key.pkcs12 /p $(cat key.password) /t http://timestamp.verisign.com/scripts/timestamp.dll ${ARTIFACTNAME}.msi
 set -x
 
-zip ${ARTIFACTNAME}-windows.zip ${ARTIFACTNAME}.msi setup.exe
+zip ${ARTIFACTNAME}-windows.zip ${ARTIFACTNAME}.msi
 
 # avoid bringing back files that we don't care
 rm -rf tmp *.class *.wixpdb *.wixobj
