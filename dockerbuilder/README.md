@@ -8,7 +8,8 @@ To build the image:
 ## To use it: ##
 * Use with Jenkins as a build environment with WAR + packaging mounted in
 * OR: copy the war into your packaging folder and mount it as a volume
-  - `docker run -it --rm -v $PACKAGING_FOLDER:/tmp/packaging jenkins-packaging-builder:0.1 /bin/bash`
-  - Within the container, create a working copy: `cp -rf /tmp/packaging /tmp/packaging-working && cd /tmp/packaging-working`
-  - Set up: `WAR="jenkins.war" make setup`
-  - Make your magic package
+  - Within the packaging folder: `docker run -it --rm -v \`pwd\`:/tmp/packaging jenkins-packaging-builder:0.1 /bin/bash`
+  - Within the container: `cd /tmp/packaging`
+  - Set up (shouldn't be needed, but why not): `WAR="jenkins.war" make setup`
+  - Make your magic package: `make deb BRAND=./branding/jenkins.mk BUILDENV=./env/test.mk CREDENTIAL=./credentials/test.mk WAR=jenkins.war`
+  - Yes, it will work with "make rpm..."  or "make suse..."
