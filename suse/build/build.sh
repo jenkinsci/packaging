@@ -5,7 +5,7 @@ D=/tmp/$$
 mkdir $D
 
 cp -R "$(dirname "$0")"/* $D
-$BASE/bin/branding.sh $D
+"$BASE/bin/branding.py" $D
 
 cp "$WAR" $D/SOURCES/jenkins.war
 
