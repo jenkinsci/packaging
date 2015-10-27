@@ -31,8 +31,8 @@ export BASE:=$(CURDIR)
 # read license file and do reformatting for proper display
 export LICENSE_TEXT:=$(cat LICENSE_FILE)
 export LICENSE_TEXT_COLUMN:=$(shell fold -w 78 -s $(LICENSE_FILE))  # Format to 80 characters
-export LICENSE_TEXT_COMMENTED:=$(shell echo $(LICENSE_TEXT_COLUMN) | sed  's/^/\# /g' )
+export LICENSE_TEXT_COMMENTED:=$(shell echo $(LICENSE_TEXT_COLUMN) | sed  's!^!\# !g' )
 
 # Put a dot in place of an empty line, and prepend a space
-export LICENSE_TEXT_DEB:=$(shell echo "$(LICENSE_TEXT_COLUMN)" | sed -e s/^$/./g -e s/^/ /g )
+export LICENSE_TEXT_DEB:=$(shell echo "$(LICENSE_TEXT_COLUMN)" | sed -e s!^$$!.!g -e s!^! !g )
 
