@@ -5,8 +5,8 @@ MAINTAINER svanoort <samvanoort@gmail.com>
 # Dependencies plus vim for convenience, wget if you're trying to get fancy
 RUN apt-get update \
   && apt-get install -y make unzip devscripts debhelper rpm expect createrepo ruby maven openjdk-7-jre \
-  && apt-get install -y vim \
-#  && apt-get install -y wget \ 
+  && apt-get install -y vim git \
+  && apt-get install -y wget \ 
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
