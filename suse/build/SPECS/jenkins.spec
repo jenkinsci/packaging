@@ -60,7 +60,7 @@ rm -rf "%{buildroot}"
 %__install -d "%{buildroot}/var/cache/%{name}"
 
 %__install -D -m0755 "%{SOURCE1}" "%{buildroot}/etc/init.d/%{name}"
-%__sed -i 's,@@WAR@@,%{_prefix}/%{name}.war,g' "%{buildroot}/etc/init.d/%{name}"
+%__sed -i 's,~~WAR~~,%{_prefix}/%{name}.war,g' "%{buildroot}/etc/init.d/%{name}"
 %__install -d "%{buildroot}/usr/sbin"
 %__ln_s "../../etc/init.d/%{name}" "%{buildroot}/usr/sbin/rc%{name}"
 
