@@ -65,7 +65,7 @@ rm -rf "%{buildroot}"
 %__ln_s "../../etc/init.d/%{name}" "%{buildroot}/usr/sbin/rc%{name}"
 
 %__install -D -m0644 "%{SOURCE2}" "%{buildroot}/etc/sysconfig/%{name}"
-%__sed -i 's,@@HOME@@,%{workdir},g' "%{buildroot}/etc/sysconfig/%{name}"
+%__sed -i 's,~~HOME~~,%{workdir},g' "%{buildroot}/etc/sysconfig/%{name}"
 
 %__install -D -m0644 "%{SOURCE3}" "%{buildroot}/etc/logrotate.d/%{name}"
 
