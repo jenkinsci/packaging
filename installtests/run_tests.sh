@@ -6,4 +6,4 @@ docker run --rm -v $PACKAGING_DIR:/tmp/packaging centos:7 /bin/bash /tmp/packagi
 docker run --rm -v $PACKAGING_DIR:/tmp/packaging centos:6 /bin/bash /tmp/packaging/installtests/centos.sh
 
 #TODO SuSe test
-docker run --rm -v $PACKAGING_DIR:/tmp/packaging opensuse:13.2 /bin/bash /tmp/packaging/installtests/suse.sh
+#docker run --rm -v $PACKAGING_DIR:/tmp/packaging centos:6 /bin/bash /tmp/packaging/installtests/centos.sh

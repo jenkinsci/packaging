@@ -1,0 +1,48 @@
+debian:
+
+-- Startup script issues:
+- ALWAYS returns fixed code
+
+docker run -it --rm -v `pwd`:/tmp/packaging debian:wheezy /bin/bash
+
+
+Needs dependency: net-tools
+(for service script, sigh)
+
+Unfortunately this dep won't cut it:
+Depends: ${misc:Depends}, daemon, adduser, psmisc, net-tools | java7-runtime-headless
+
+
+Image: debian:wheezy 
+apt-get update 
+dpkg -i /tmp/packaging/target/debian/*.deb
+apt-get install -fy
+dpkg -i /tmp/packaging/target/debian/*.deb
+
+# Service check
+mv /usr/share/jenkins/jenkins.war /usr/share/jenkins/jenkins-broken.war
+
+
+# LOTS OF 
+invoke-rc.d: policy-rc.d denied execution of start.
+
+
+Package missing: netstat
+
+# VERIFICATION
+service jenkins status 
+curl http://localhost:8080
+
+
+
+# RPM
+docker run -it --rm -v `pwd`:/tmp/packaging centos:7 /bin/bash
+docker run -it --rm -v `pwd`:/tmp/packaging centos:6 /bin/bash
+
+# Commands
+yum install -y system-config-services java-1.7.0-openjdk  # First is b/c docker does not include service command, second is prereq
+yum -y --nogpgcheck localinstall /tmp/packaging/target/rpm/*.rpm
+service jenkins start
+curl localhost:8080
+
+# NOTE: start jenkins start returns OK and no error code but shows an error
