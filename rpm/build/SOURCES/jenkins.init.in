@@ -31,7 +31,7 @@
 ### END INIT INFO
 
 # Check for missing binaries (stale symlinks should not happen)
-JENKINS_WAR="@@WAR@@"
+JENKINS_WAR="~~WAR~~"
 test -r "$JENKINS_WAR" || { echo "$JENKINS_WAR not installed"; 
 	if [ "$1" = "stop" ]; then exit 0;
 	else exit 5; fi; }

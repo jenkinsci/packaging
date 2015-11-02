@@ -1,13 +1,13 @@
 ## Path:        Development/@@PRODUCTNAME@@
 ## Description: @@SUMMARY@@
 ## Type:        string
-## Default:     "@@HOME@@"
+## Default:     "~~HOME~~"
 ## ServiceRestart: @@ARTIFACTNAME@@
 #
 # Directory where Jenkins store its configuration and working
 # files (checkouts, build reports, artifacts, ...).
 #
-JENKINS_HOME="@@HOME@@"
+JENKINS_HOME="~~HOME~~"
 
 ## Type:        string
 ## Default:     "/bin/bash"
