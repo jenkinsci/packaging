@@ -6,5 +6,5 @@ set -e  # Exit on any command failure
 apt-get update
 # Below will fail because missing dependencies, which apt-get will install
 dpkg -i /tmp/packaging/target/debian/*.deb || true
-apt-get install -fy
+apt-get install -fy && apt-get install -fy curl
 dpkg -i /tmp/packaging/target/debian/*.deb
