@@ -1,9 +1,10 @@
 #!/bin/bash
-# Verify that service correctly handles starting and stopping process
+# Verify that linux init services correctly handle starting and stopping Jenkins
 set -o nounset
 
 #seconds to wait for service operation to finish
 SERVICE_WAIT=2
+ARTIFACT_NAME=jenkins
 
 # Report test results, by looking at status code same as expected
 # Arg 1: test name text
@@ -21,57 +22,49 @@ function report_test {
 }
 
 # Check if jenkins user is present
-getent passwd jenkins
+# TODO add check for jenkins group too...
+getent passwd $ARTIFACT_NAME
 USER_TEST=$?
 report_test "Verify jenkins user created" $USER_TEST 0 $USER_TEST
 
-# Start service & capture standard error and exit code for service command
-SERVICE_OUTPUT=$(service jenkins start 2>&1)
+SERVICE_OUTPUT=$(service $ARTIFACT_NAME start 2>&1)
 SERVICE_EXIT_CODE=$?
 report_test "Jenkins initial service start" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
-# Test that Jenkins is actually working... by doing a basic CurL call
 CURL_OUTPUT=$(curl -sS 127.0.0.1:8080 -o /dev/null 2>&1)
 CURL_EXIT_CODE=$?
 report_test "Curl to jenkins host" $CURL_EXIT_CODE 0 $CURL_OUTPUT
 
-# Check that jenkins status is correctly returned
-SERVICE_OUTPUT=$(service jenkins status 2>&1)
+SERVICE_OUTPUT=$(service $ARTIFACT_NAME status 2>&1)
 SERVICE_EXIT_CODE=$?
 report_test "Jenkins service status after initial start" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
-# Check that jenkins restarts correctly
-SERVICE_OUTPUT=$(service jenkins restart 2>&1)
+SERVICE_OUTPUT=$(service $ARTIFACT_NAME restart 2>&1)
 SERVICE_EXIT_CODE=$?
-report_test "Jenkins service first restart" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
+report_test "Jenkins service first restart from running" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
 sleep $SERVICE_WAIT
 
-# Check that jenkins stops cleanly
-SERVICE_OUTPUT=$(service jenkins stop 2>&1)
+SERVICE_OUTPUT=$(service $ARTIFACT_NAME stop 2>&1)
 SERVICE_EXIT_CODE=$?
 report_test "Jenkins service stop" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
 sleep $SERVICE_WAIT
 
-# Check that jenkins status returns correctly after stop
-SERVICE_OUTPUT=$(service jenkins status 2>&1)
+SERVICE_OUTPUT=$(service $ARTIFACT_NAME status 2>&1)
 SERVICE_EXIT_CODE=$?
 report_test "Jenkins service status check when stopped" $SERVICE_EXIT_CODE 3 $SERVICE_OUTPUT
 
-# Check that jenkins restarts correctly from stopped state
-SERVICE_OUTPUT=$(service jenkins restart 2>&1)
+SERVICE_OUTPUT=$(service $ARTIFACT_NAME restart 2>&1)
 SERVICE_EXIT_CODE=$?
 report_test "Jenkins service restart from stopped state" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
 sleep $SERVICE_WAIT
 
-# Check that jenkins status returns correctly after restart from stop
-SERVICE_OUTPUT=$(service jenkins status 2>&1)
+SERVICE_OUTPUT=$(service $ARTIFACT_NAME status 2>&1)
 SERVICE_EXIT_CODE=$?
 report_test "Jenkins service status after restart from stopped state" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
-# Test that Jenkins is actually working after restart... by doing a basic CurL call
 CURL_OUTPUT=$(curl -sS 127.0.0.1:8080 -o /dev/null 2>&1)
 CURL_EXIT_CODE=$?
 report_test "Curl to jenkins host AFTER restart from stopped" $CURL_EXIT_CODE 0 $CURL_OUTPUT
