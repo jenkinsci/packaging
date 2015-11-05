@@ -1,14 +1,15 @@
 #!/bin/bash
 # Verify that service correctly handles starting and stopping process
-set -e  # Exit on any command failure
 
 #seconds to wait for service response
 SERVICE_WAIT=2  
 
 
 # Check if jenkins user is present
-if [ $(getent passwd jenkins) -ne 0 ]; then 
-    echo "User jenkins not installed!"
+getent passwd jenkins
+USER_TEST=$?
+if [ $USER_TEST -ne 0 ]; then 
+    echo "User jenkins not installed"
     exit 1
 fi
 
