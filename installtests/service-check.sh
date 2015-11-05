@@ -5,6 +5,7 @@ set -o nounset
 #seconds to wait for service operation to finish
 SERVICE_WAIT=2
 ARTIFACT_NAME=jenkins
+error_count=0
 
 # Report test results, by looking at status code same as expected
 # Arg 1: test name text
@@ -16,6 +17,7 @@ function report_test {
         echo "TEST $1 FAILED with status code $2, expected $3"
         echo "Test command output:"
         echo "$4"
+        error_count=$((error_count+1))
     else
         echo "TEST $1 PASSED with expected status code $2"
     fi
@@ -84,6 +86,7 @@ if [ $SERVICE_EXIT_CODE -eq 0 ]; then
     echo "$TESTNAME FAILED with status code $SERVICE_EXIT_CODE, expected NOT 0 (failure)"
     echo "Test command output:"
     echo "$SERVICE_OUTPUT"
+    error_count=$((error_count+1))
 else
     echo "$TESTNAME PASSED with status code $SERVICE_EXIT_CODE"
 fi
@@ -96,8 +99,14 @@ if [ $SERVICE_EXIT_CODE -eq 0 ]; then
     echo "$TESTNAME FAILED with status code $SERVICE_EXIT_CODE, expected NOT 0 (failure)"
     echo "Test command output:"
     echo "$SERVICE_OUTPUT"
+    error_count=$((error_count+1))
 else
     echo "$TESTNAME PASSED with status code $SERVICE_EXIT_CODE"
 fi
 
 mv /usr/share/jenkins/${ARTIFACT_NAME}-broken.war /usr/share/jenkins/${ARTIFACT_NAME}.war
+
+echo "TOTAL service check test failure count: $error_count"
+if [ $error_count -ne 0 ]; then
+    exit $error_count
+fi
