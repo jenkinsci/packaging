@@ -70,5 +70,34 @@ CURL_EXIT_CODE=$?
 report_test "Curl to jenkins host AFTER restart from stopped" $CURL_EXIT_CODE 0 $CURL_OUTPUT
 
 
-## TODO break jenkins then try it
-#mv /usr/share/jenkins/jenkins.war /usr/share/jenkins/jenkins-broken.war
+## BREAK jenkins and then see how the service scripts behave
+service $ARTIFACT_NAME stop
+sleep $SERVICE_WAIT
+
+mv /usr/share/jenkins/${ARTIFACT_NAME}.war /usr/share/jenkins/${ARTIFACT_NAME}-broken.war
+
+# Should fail to start
+SERVICE_OUTPUT=$(service $ARTIFACT_NAME start 2>&1)
+SERVICE_EXIT_CODE=$?
+TESTNAME="Start Jenkins service where Jenkins will fail to start"
+if [ $SERVICE_EXIT_CODE -eq 0 ]; then 
+    echo "$TESTNAME FAILED with status code $SERVICE_EXIT_CODE, expected NOT 0 (failure)"
+    echo "Test command output:"
+    echo "$SERVICE_OUTPUT"
+else
+    echo "$TESTNAME PASSED with status code $SERVICE_EXIT_CODE"
+fi
+
+# Should fail to start
+SERVICE_OUTPUT=$(service $ARTIFACT_NAME restart 2>&1)
+SERVICE_EXIT_CODE=$?
+TESTNAME="Restart Jenkins service where Jenkins will fail to start"
+if [ $SERVICE_EXIT_CODE -eq 0 ]; then 
+    echo "$TESTNAME FAILED with status code $SERVICE_EXIT_CODE, expected NOT 0 (failure)"
+    echo "Test command output:"
+    echo "$SERVICE_OUTPUT"
+else
+    echo "$TESTNAME PASSED with status code $SERVICE_EXIT_CODE"
+fi
+
+mv /usr/share/jenkins/${ARTIFACT_NAME}-broken.war /usr/share/jenkins/${ARTIFACT_NAME}.war
