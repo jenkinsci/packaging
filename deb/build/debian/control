@@ -8,7 +8,7 @@ Homepage: @@HOMEPAGE@@
 
 Package: @@ARTIFACTNAME@@
 Architecture: all
-Depends: ${misc:Depends}, daemon, adduser, psmisc, net-tools, default-jre-headless (>= 2:1.7) | java7-runtime-headless
+Depends: ${misc:Depends}, daemon, adduser, procps, psmisc, net-tools, default-jre-headless (>= 2:1.7) | java7-runtime-headless
 Conflicts: hudson
 Replaces: hudson
 Description: continuous integration system
