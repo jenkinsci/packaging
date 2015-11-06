@@ -60,12 +60,12 @@ rm -rf "%{buildroot}"
 %__install -d "%{buildroot}/var/cache/%{name}"
 
 %__install -D -m0755 "%{SOURCE1}" "%{buildroot}/etc/init.d/%{name}"
-%__sed -i 's,@@WAR@@,%{_prefix}/%{name}.war,g' "%{buildroot}/etc/init.d/%{name}"
+%__sed -i 's,~~WAR~~,%{_prefix}/%{name}.war,g' "%{buildroot}/etc/init.d/%{name}"
 %__install -d "%{buildroot}/usr/sbin"
 %__ln_s "../../etc/init.d/%{name}" "%{buildroot}/usr/sbin/rc%{name}"
 
 %__install -D -m0600 "%{SOURCE2}" "%{buildroot}/etc/sysconfig/%{name}"
-%__sed -i 's,@@HOME@@,%{workdir},g' "%{buildroot}/etc/sysconfig/%{name}"
+%__sed -i 's,~~HOME~~,%{workdir},g' "%{buildroot}/etc/sysconfig/%{name}"
 
 %__install -D -m0644 "%{SOURCE3}" "%{buildroot}/etc/logrotate.d/%{name}"
 

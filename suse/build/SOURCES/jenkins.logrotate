@@ -1,4 +1,4 @@
-/var/log/jenkins/@@ARTIFACTNAME@@.log /var/log/@@ARTIFACTNAME@@/access_log {
+/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log /var/log/@@ARTIFACTNAME@@/access_log {
     compress
     dateext
     maxage 365
