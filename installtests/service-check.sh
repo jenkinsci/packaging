@@ -16,12 +16,12 @@ error_count=0
 # Arg 4: command output variable
 function report_test {
     if [ "$2" -ne "$3" ]; then 
-        echo "TEST $1 FAILED with status code $2, expected $3"
+        echo "TEST FAILED - $1 - with status code $2, expected $3"
         echo "Test command output:"
         echo "$4"
         error_count=$((error_count+1))
     else
-        echo "TEST $1 PASSED with expected status code $2"
+        echo "TEST PASSED - $1  with expected status code $2"
     fi
 }
 
@@ -35,6 +35,8 @@ SERVICE_OUTPUT=$(service $ARTIFACT_NAME start 2>&1)
 SERVICE_EXIT_CODE=$?
 report_test "Jenkins initial service start" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
+echo "Pausing briefly to allow for initial Jenkins startup"
+sleep 5 # Delay for initial startup before server becomes responsive
 CURL_OUTPUT=$(curl -sS 127.0.0.1:8080 -o /dev/null 2>&1)
 CURL_EXIT_CODE=$?
 report_test "Curl to jenkins host" $CURL_EXIT_CODE 0 $CURL_OUTPUT
@@ -69,6 +71,8 @@ SERVICE_OUTPUT=$(service $ARTIFACT_NAME status 2>&1)
 SERVICE_EXIT_CODE=$?
 report_test "Jenkins service status after restart from stopped state" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
+echo "Waiting briefly for service to start before trying to communicate with it"
+sleep 5
 CURL_OUTPUT=$(curl -sS 127.0.0.1:8080 -o /dev/null 2>&1)
 CURL_EXIT_CODE=$?
 report_test "Curl to jenkins host AFTER restart from stopped" $CURL_EXIT_CODE 0 $CURL_OUTPUT
@@ -78,7 +82,7 @@ report_test "Curl to jenkins host AFTER restart from stopped" $CURL_EXIT_CODE 0 
 service $ARTIFACT_NAME stop
 sleep $SERVICE_WAIT
 
-JENKINS_WAR_PATH=$(dirname $(cd / && find -iname $ARTIFACT_NAME.war | grep -v /tmp))
+JENKINS_WAR_PATH=$(dirname $(readlink -f $(cd / && find -iname $ARTIFACT_NAME.war | grep -v /tmp)))
 mv "$JENKINS_WAR_PATH/${ARTIFACT_NAME}.war" "$JENKINS_WAR_PATH/${ARTIFACT_NAME}-broken.war"
 
 # Should fail to start
@@ -107,7 +111,7 @@ else
     echo "$TESTNAME PASSED with status code $SERVICE_EXIT_CODE"
 fi
 
-mv "$JENKINS_WAR_PATH/${ARTIFACT_NAME}-broken.war" "$JENKINS_WAR_PATH/usr/share/jenkins/${ARTIFACT_NAME}.war"
+mv "$JENKINS_WAR_PATH/${ARTIFACT_NAME}-broken.war" "$JENKINS_WAR_PATH/${ARTIFACT_NAME}.war"
 
 echo "TOTAL service check test failure count: $error_count"
 if [ $error_count -ne 0 ]; then
