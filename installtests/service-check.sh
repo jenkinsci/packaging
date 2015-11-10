@@ -4,6 +4,8 @@ set -o nounset
 
 #seconds to wait for service operation to finish
 SERVICE_WAIT=2
+
+# TODO allow passing the artifact name as an arg
 ARTIFACT_NAME=jenkins
 error_count=0
 
@@ -76,7 +78,8 @@ report_test "Curl to jenkins host AFTER restart from stopped" $CURL_EXIT_CODE 0 
 service $ARTIFACT_NAME stop
 sleep $SERVICE_WAIT
 
-mv /usr/share/jenkins/${ARTIFACT_NAME}.war /usr/share/jenkins/${ARTIFACT_NAME}-broken.war
+JENKINS_WAR_PATH=$(dirname $(cd / && find -iname $ARTIFACT_NAME.war | grep -v /tmp))
+mv "$JENKINS_WAR_PATH/${ARTIFACT_NAME}.war" "$JENKINS_WAR_PATH/${ARTIFACT_NAME}-broken.war"
 
 # Should fail to start
 SERVICE_OUTPUT=$(service $ARTIFACT_NAME start 2>&1)
@@ -104,7 +107,7 @@ else
     echo "$TESTNAME PASSED with status code $SERVICE_EXIT_CODE"
 fi
 
-mv /usr/share/jenkins/${ARTIFACT_NAME}-broken.war /usr/share/jenkins/${ARTIFACT_NAME}.war
+mv "$JENKINS_WAR_PATH/${ARTIFACT_NAME}-broken.war" "$JENKINS_WAR_PATH/usr/share/jenkins/${ARTIFACT_NAME}.war"
 
 echo "TOTAL service check test failure count: $error_count"
 if [ $error_count -ne 0 ]; then
