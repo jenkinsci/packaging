@@ -106,7 +106,7 @@ case "$1" in
                 else
                        HOME=$JENKINS_HOME startproc -n $JENKINS_NICE -s -e -l /var/log/@@ARTIFACTNAME@@.rc -u "$JENKINS_USER" -p "$JENKINS_PID_FILE" $JAVA_CMD $PARAMS
                 fi
-                JPROC=$( pgrep java -U jenkins )
+                JPROC=$( pgrep java -U $JENKINS_USER )
                 if [ -n "$JPROC" ]; then
                         echo "$JPROC" >"$JENKINS_PID_FILE"
                         rc_status -v
