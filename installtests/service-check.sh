@@ -6,7 +6,14 @@ set -o nounset
 SERVICE_WAIT=2
 
 # TODO allow passing the artifact name as an arg
-ARTIFACT_NAME=jenkins
+
+# Read artifact name as first arg
+if [ -z "$1"]; then
+    ARTIFACT_NAME=jenkins
+else
+    ARTIFACT_NAME="$1"
+fi
+
 error_count=0
 
 # Report test results, by looking at status code same as expected
