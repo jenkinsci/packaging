@@ -32,7 +32,8 @@ BuildRoot:	%{_tmppath}/build-%{name}-%{version}
 #    that there's no such packages. JRE/JDK RPMs from java.sun.com
 #    do not have this virtual package declarations. So for now,
 #    I'm dropping this requirement.
-# Requires:	java >= 1:1.6.0, procps
+# Requires:	java >= 1:1.6.0
+Requires: procps
 Obsoletes:  hudson
 PreReq:		/usr/sbin/groupadd /usr/sbin/useradd
 #PreReq:		%{fillup_prereq}
