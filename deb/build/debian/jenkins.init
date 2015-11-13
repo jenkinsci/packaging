@@ -180,13 +180,27 @@ do_stop()
     return 0
 }
 
+# Verify the process did in fact start successfully and didn't just bomb out
+do_check_started_ok() {
+    sleep 1
+    if [ "$1" -ne "0" ]; then return $1; fi
+    get_running
+    if [ "$?" -eq "0" ]; then
+        return 2
+    else 
+        return 0
+    fi
+}
+
 case "$1" in
   start)
     log_daemon_msg "Starting $DESC" "$NAME"
     do_start
+    START_STATUS="$?"
+    do_check_started_ok "$START_STATUS"
     case "$?" in
         0|1) log_end_msg 0 ;;
-        2) log_end_msg 1 ;;
+        2) log_end_msg 1 ; exit 7 ;;
     esac
     ;;
   stop)
@@ -194,7 +208,7 @@ case "$1" in
     do_stop
     case "$?" in
         0|1) log_end_msg 0 ;;
-        2) log_end_msg 1 ;;
+        2) log_end_msg 1 ; exit 100 ;;
     esac
     ;;
   restart|force-reload)
@@ -207,10 +221,13 @@ case "$1" in
     case "$?" in
       0|1)
         do_start
+        START_STATUS="$?"
+        sleep 1
+        do_check_started_ok "$START_STATUS"
         case "$?" in
           0) log_end_msg 0 ;;
-          1) log_end_msg 1 ;; # Old process is still running
-          *) log_end_msg 1 ;; # Failed to start
+          1) log_end_msg 1 ; exit 100 ;; # Old process is still running
+          *) log_end_msg 1 ; exit 100 ;; # Failed to start
         esac
         ;;
       *)
