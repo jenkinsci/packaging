@@ -8,7 +8,7 @@ SERVICE_WAIT=2
 # TODO allow passing the artifact name as an arg
 
 # Read artifact name as first arg
-if [ -z "$1"]; then
+if [ -z "$1" ]; then
     ARTIFACT_NAME=jenkins
 else
     ARTIFACT_NAME="$1"
