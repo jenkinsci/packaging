@@ -2,6 +2,7 @@
 
 # Build fast OS docker images that run slower steps ahead of time, to save time running tests
 
+cd "$0"
 sed -i .orig -e "s#@@MYUSERID@@#`id -u`#g" sudo-*/Dockerfile
 docker build -t sudo-debian:wheezy sudo-debian
 docker build -t sudo-centos:6 sudo-centos6
