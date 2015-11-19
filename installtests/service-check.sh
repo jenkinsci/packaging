@@ -89,7 +89,7 @@ report_test "Curl to jenkins host AFTER restart from stopped" $CURL_EXIT_CODE 0 
 service $ARTIFACT_NAME stop
 sleep $SERVICE_WAIT
 
-JENKINS_WAR_PATH=$(dirname $(readlink -f $(cd / && find -iname $ARTIFACT_NAME.war | grep -v /tmp)))
+JENKINS_WAR_PATH=$(dirname $(readlink -f $(cd / && find -iname $ARTIFACT_NAME.war | grep -v /tmp | grep -v Permission)))
 mv "$JENKINS_WAR_PATH/${ARTIFACT_NAME}.war" "$JENKINS_WAR_PATH/${ARTIFACT_NAME}-broken.war"
 
 # Should fail to start
