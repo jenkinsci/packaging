@@ -14,7 +14,10 @@ To build the image:
   - Make your magic package: `make deb BRAND=./branding/jenkins.mk BUILDENV=./env/test.mk CREDENTIAL=./credentials/test.mk WAR=jenkins.war`
   - Yes, it will work with "make rpm..."  or "make suse..."
 
-## To use the sudo containers ##
-* These are versions of base images that enable sudo access for users to do installation tests inside containers
+## The sudo containers ##
+* These images are supply sudo access to enable installation tests (which require root or sudo) with the Jenkins docker-workflow plugin 
+* These **MUST** be built by the build-sudo-images.sh script before use in docker workflow
+* The script reads the local user ID, creates a 'mysudoer' user with sudo access in these containers with no-password sudo
+* For CentOS images, the sudoer requiretty option is turned off to allow-non-terminal use
+* For specific environments additional requirements for services may be added (example: initscripts for CentOS7, since service support is not baked in)
 * An added perk of these is that the debian-based ones update the apt database to save time on future installs
-* To build: build-sudo-images.sh
