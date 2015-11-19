@@ -1,7 +1,6 @@
 #!/bin/bash
 # Verify that linux init services correctly handle starting and stopping Jenkins
 set -o
-set -v  # Echo commands as they are run
 
 #seconds to wait for service operation to finish
 SERVICE_WAIT=5
