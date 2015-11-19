@@ -43,7 +43,7 @@ SERVICE_EXIT_CODE=$?
 report_test "Jenkins initial service start" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
 echo "Pausing briefly to allow for initial Jenkins startup"
-sleep 10 # Delay for initial startup before server becomes responsive
+sleep 15 # Delay for initial startup before server becomes responsive
 CURL_OUTPUT=$(curl -sS 127.0.0.1:8080 -o /dev/null 2>&1)
 CURL_EXIT_CODE=$?
 report_test "Curl to jenkins host" $CURL_EXIT_CODE 0 $CURL_OUTPUT
@@ -79,7 +79,7 @@ SERVICE_EXIT_CODE=$?
 report_test "Jenkins service status after restart from stopped state" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
 echo "Waiting briefly for service to start before trying to communicate with it"
-sleep 10
+sleep 15
 CURL_OUTPUT=$(curl -sS 127.0.0.1:8080 -o /dev/null 2>&1)
 CURL_EXIT_CODE=$?
 report_test "Curl to jenkins host AFTER restart from stopped" $CURL_EXIT_CODE 0 $CURL_OUTPUT
@@ -89,7 +89,7 @@ report_test "Curl to jenkins host AFTER restart from stopped" $CURL_EXIT_CODE 0 
 service $ARTIFACT_NAME stop
 sleep $SERVICE_WAIT
 
-JENKINS_WAR_PATH=$(dirname $(readlink -f $(cd / && find -iname $ARTIFACT_NAME.war | grep -v /tmp | grep -v Permission)))
+JENKINS_WAR_PATH=$(dirname $(readlink -f $(cd / && find -iname $ARTIFACT_NAME.war 2>/dev/null | grep -v /tmp | grep -v workspace | grep -v packaging | grep -v Permission)))
 mv "$JENKINS_WAR_PATH/${ARTIFACT_NAME}.war" "$JENKINS_WAR_PATH/${ARTIFACT_NAME}-broken.war"
 
 # Should fail to start
