@@ -2,6 +2,9 @@
 # Verify that linux init services correctly handle starting and stopping Jenkins
 set -o
 
+# ARGUMENTS: first argument is the artifact name, jenkins by default if not given 
+# Second argument is the port number it will run on for testing
+
 #seconds to wait for service operation to finish
 SERVICE_WAIT=5
 
@@ -12,6 +15,12 @@ if [ -z "$1" ]; then
     ARTIFACT_NAME=jenkins
 else
     ARTIFACT_NAME="$1"
+fi
+
+if [ -z "$2" ]; then
+    PORT=8080
+else
+    PORT="$2"
 fi
 
 error_count=0
@@ -44,7 +53,7 @@ report_test "Jenkins initial service start" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
 echo "Pausing briefly to allow for initial Jenkins startup"
 sleep 15 # Delay for initial startup before server becomes responsive
-CURL_OUTPUT=$(curl -sS 127.0.0.1:8080 -o /dev/null 2>&1)
+CURL_OUTPUT=$(curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1)
 CURL_EXIT_CODE=$?
 report_test "Curl to jenkins host" $CURL_EXIT_CODE 0 $CURL_OUTPUT
 
@@ -80,7 +89,7 @@ report_test "Jenkins service status after restart from stopped state" $SERVICE_E
 
 echo "Waiting briefly for service to start before trying to communicate with it"
 sleep 15
-CURL_OUTPUT=$(curl -sS 127.0.0.1:8080 -o /dev/null 2>&1)
+CURL_OUTPUT=$(curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1)
 CURL_EXIT_CODE=$?
 report_test "Curl to jenkins host AFTER restart from stopped" $CURL_EXIT_CODE 0 $CURL_OUTPUT
 
