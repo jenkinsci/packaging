@@ -2,13 +2,12 @@
 # Verify that linux init services correctly handle starting and stopping Jenkins
 set -o
 
-# ARGUMENTS: first argument is the artifact name, jenkins by default if not given 
+# ARGUMENTS: first argument is the artifact name, jenkins by default if not given
 # Second argument is the port number it will run on for testing
 
-#seconds to wait for service operation to finish
+# Seconds to wait for service operation to finish, and max seconds for a test
 SERVICE_WAIT=5
-
-# TODO allow passing the artifact name as an arg
+MAX_TEST_WAIT=60
 
 # Read artifact name as first arg
 if [ -z "$1" ]; then
@@ -31,7 +30,7 @@ error_count=0
 # Arg 3: test expected status code to pass
 # Arg 4: command output variable
 function report_test {
-    if [ "$2" -ne "$3" ]; then 
+    if [ "$2" -ne "$3" ]; then
         echo "TEST FAILED - $1 - with status code $2, expected $3"
         echo "Test command output:"
         echo "$4"
@@ -39,6 +38,33 @@ function report_test {
     else
         echo "TEST PASSED - $1  with expected status code $2"
     fi
+}
+
+# Run a test and look for a specific result
+# Keep running the test every second until it either passes or timout occurs
+function repeatedly_test {
+    local run_command="$1"
+    local expected_status=$2
+    local max_time=$3
+    local test_name="$4"
+    local elapsed=1
+    local exit_code=0
+    local output=""
+
+    while [ $elapsed -lt $max_time ]; do
+        output=$($run_command)
+        exit_code=$?
+        if [ $exit_code -ne "$expected_status" ]; then
+            # Failed, let's wait and retry if time is left
+            elapsed=$(elapsed+1))
+            sleep 1
+        else  # Success!
+            report_test "$test_name" $exit_code $expected_status "$output"
+            return 0
+        fi
+    done
+    report_test "$test_name - with repeated tests on timeout $max_time" $exit_code $expected_status "$output"
+    return -1
 }
 
 # Check if jenkins user is present
@@ -106,7 +132,7 @@ mv "$JENKINS_WAR_PATH/${ARTIFACT_NAME}.war" "$JENKINS_WAR_PATH/${ARTIFACT_NAME}-
 SERVICE_OUTPUT=$(service $ARTIFACT_NAME start 2>&1)
 SERVICE_EXIT_CODE=$?
 TESTNAME="Start Jenkins service where Jenkins will fail to start"
-if [ $SERVICE_EXIT_CODE -eq 0 ]; then 
+if [ $SERVICE_EXIT_CODE -eq 0 ]; then
     echo "$TESTNAME FAILED with status code $SERVICE_EXIT_CODE, expected NOT 0 (failure)"
     echo "Test command output:"
     echo "$SERVICE_OUTPUT"
@@ -119,7 +145,7 @@ fi
 SERVICE_OUTPUT=$(service $ARTIFACT_NAME restart 2>&1)
 SERVICE_EXIT_CODE=$?
 TESTNAME="Restart Jenkins service where Jenkins will fail to start"
-if [ $SERVICE_EXIT_CODE -eq 0 ]; then 
+if [ $SERVICE_EXIT_CODE -eq 0 ]; then
     echo "$TESTNAME FAILED with status code $SERVICE_EXIT_CODE, expected NOT 0 (failure)"
     echo "Test command output:"
     echo "$SERVICE_OUTPUT"
