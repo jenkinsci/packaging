@@ -52,11 +52,11 @@ function repeatedly_test {
     local output=""
 
     while [ $elapsed -lt $max_time ]; do
-        output=$($run_command)
+        output=$(eval $run_command)
         exit_code=$?
         if [ $exit_code -ne "$expected_status" ]; then
             # Failed, let's wait and retry if time is left
-            elapsed=$(elapsed+1))
+            elapsed=$((elapsed+1))
             sleep 1
         else  # Success!
             report_test "$test_name" $exit_code $expected_status "$output"
@@ -64,18 +64,18 @@ function repeatedly_test {
         fi
     done
     report_test "$test_name - with repeated tests on timeout $max_time" $exit_code $expected_status "$output"
-    return -1
+    return 1
 }
 
 # Check if jenkins user is present
 # TODO add check for jenkins group too...
-getent passwd $ARTIFACT_NAME
+getent passwd "$ARTIFACT_NAME"
 USER_TEST=$?
 report_test "Verify jenkins user created" $USER_TEST 0 $USER_TEST
 
-SERVICE_OUTPUT=$(service $ARTIFACT_NAME start 2>&1)
+SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" start 2>&1)
 SERVICE_EXIT_CODE=$?
-report_test "Jenkins initial service start" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
+report_test "Jenkins initial service start" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
 
 echo "Pausing briefly to allow for initial Jenkins startup"
 sleep 15 # Delay for initial startup before server becomes responsive
@@ -83,41 +83,41 @@ CURL_OUTPUT=$(curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1)
 CURL_EXIT_CODE=$?
 report_test "Curl to jenkins host" $CURL_EXIT_CODE 0 $CURL_OUTPUT
 
-SERVICE_OUTPUT=$(service $ARTIFACT_NAME status 2>&1)
+SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" status 2>&1)
 SERVICE_EXIT_CODE=$?
-report_test "Jenkins service status after initial start" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
+report_test "Jenkins service status after initial start" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
 
-SERVICE_OUTPUT=$(service $ARTIFACT_NAME restart 2>&1)
+SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" restart 2>&1)
 SERVICE_EXIT_CODE=$?
-report_test "Jenkins service first restart from running" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
+report_test "Jenkins service first restart from running" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
 
 sleep $SERVICE_WAIT
 
-SERVICE_OUTPUT=$(service $ARTIFACT_NAME stop 2>&1)
+SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" stop 2>&1)
 SERVICE_EXIT_CODE=$?
 report_test "Jenkins service stop" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
 sleep $SERVICE_WAIT
 
-SERVICE_OUTPUT=$(service $ARTIFACT_NAME status 2>&1)
+SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" status 2>&1)
 SERVICE_EXIT_CODE=$?
-report_test "Jenkins service status check when stopped" $SERVICE_EXIT_CODE 3 $SERVICE_OUTPUT
+report_test "Jenkins service status check when stopped" $SERVICE_EXIT_CODE 3 "$SERVICE_OUTPUT"
 
-SERVICE_OUTPUT=$(service $ARTIFACT_NAME restart 2>&1)
+SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" restart 2>&1)
 SERVICE_EXIT_CODE=$?
-report_test "Jenkins service restart from stopped state" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
+report_test "Jenkins service restart from stopped state" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
 
 sleep $SERVICE_WAIT
 
-SERVICE_OUTPUT=$(service $ARTIFACT_NAME status 2>&1)
+SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" status 2>&1)
 SERVICE_EXIT_CODE=$?
-report_test "Jenkins service status after restart from stopped state" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
+report_test "Jenkins service status after restart from stopped state" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
 
 echo "Waiting briefly for service to start before trying to communicate with it"
 sleep 15
 CURL_OUTPUT=$(curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1)
 CURL_EXIT_CODE=$?
-report_test "Curl to jenkins host AFTER restart from stopped" $CURL_EXIT_CODE 0 $CURL_OUTPUT
+report_test "Curl to jenkins host AFTER restart from stopped" $CURL_EXIT_CODE 0 "$CURL_OUTPUT"
 
 
 ## BREAK jenkins and then see how the service scripts behave
@@ -129,7 +129,7 @@ echo "JENKINS WAR FOUND AT $JENKINS_WAR_PATH"
 mv "$JENKINS_WAR_PATH/${ARTIFACT_NAME}.war" "$JENKINS_WAR_PATH/${ARTIFACT_NAME}-broken.war"
 
 # Should fail to start
-SERVICE_OUTPUT=$(service $ARTIFACT_NAME start 2>&1)
+SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" start 2>&1)
 SERVICE_EXIT_CODE=$?
 TESTNAME="Start Jenkins service where Jenkins will fail to start"
 if [ $SERVICE_EXIT_CODE -eq 0 ]; then
@@ -142,7 +142,7 @@ else
 fi
 
 # Should fail to start
-SERVICE_OUTPUT=$(service $ARTIFACT_NAME restart 2>&1)
+SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" restart 2>&1)
 SERVICE_EXIT_CODE=$?
 TESTNAME="Restart Jenkins service where Jenkins will fail to start"
 if [ $SERVICE_EXIT_CODE -eq 0 ]; then
