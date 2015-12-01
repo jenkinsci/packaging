@@ -7,7 +7,7 @@ set -o
 
 # Seconds to wait for service operation to finish, and max seconds for a test
 SERVICE_WAIT=5
-MAX_TEST_WAIT=60
+MAX_TEST_WAIT=120
 
 # Read artifact name as first arg
 if [ -z "$1" ]; then
@@ -47,7 +47,7 @@ function repeatedly_test {
     local expected_status=$2
     local max_time=$3
     local test_name="$4"
-    local elapsed=1
+    local elapsed=0
     local exit_code=0
     local output=""
 
@@ -77,15 +77,13 @@ SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" start 2>&1)
 SERVICE_EXIT_CODE=$?
 report_test "Jenkins initial service start" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
 
-echo "Pausing briefly to allow for initial Jenkins startup"
-sleep 15 # Delay for initial startup before server becomes responsive
-CURL_OUTPUT=$(curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1)
-CURL_EXIT_CODE=$?
-report_test "Curl to jenkins host" $CURL_EXIT_CODE 0 $CURL_OUTPUT
+# Try to check service status and verify it eventually resolves as running
+COMMAND='service "$ARTIFACT_NAME" status 2>&1'
+repeatedly_test "$COMMAND" 0 "$MAX_TEST_WAIT" "Jenkins service status after initial start"
 
-SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" status 2>&1)
-SERVICE_EXIT_CODE=$?
-report_test "Jenkins service status after initial start" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
+# Try to curl the server and verify status resolves as started
+COMMAND='curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1'
+repeatedly_test "$COMMAND" 0 "$MAX_TEST_WAIT" "Curl to jenkins host"
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" restart 2>&1)
 SERVICE_EXIT_CODE=$?
@@ -99,25 +97,21 @@ report_test "Jenkins service stop" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
 sleep $SERVICE_WAIT
 
-SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" status 2>&1)
-SERVICE_EXIT_CODE=$?
-report_test "Jenkins service status check when stopped" $SERVICE_EXIT_CODE 3 "$SERVICE_OUTPUT"
+# Test status comes up as stopped eventually
+COMMAND='service "$ARTIFACT_NAME" status 2>&1'
+repeatedly_test "$COMMAND" 3 "$MAX_TEST_WAIT" "Jenkins service status check when stopped"
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" restart 2>&1)
 SERVICE_EXIT_CODE=$?
 report_test "Jenkins service restart from stopped state" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
 
-sleep $SERVICE_WAIT
+# Try to check service status and verify it eventually resolves as running
+COMMAND='service "$ARTIFACT_NAME" status 2>&1'
+repeatedly_test "$COMMAND" 0 "$MAX_TEST_WAIT" "Jenkins service status after restart from stopped state"
 
-SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" status 2>&1)
-SERVICE_EXIT_CODE=$?
-report_test "Jenkins service status after restart from stopped state" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
-
-echo "Waiting briefly for service to start before trying to communicate with it"
-sleep 15
-CURL_OUTPUT=$(curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1)
-CURL_EXIT_CODE=$?
-report_test "Curl to jenkins host AFTER restart from stopped" $CURL_EXIT_CODE 0 "$CURL_OUTPUT"
+# Try to curl the server and verify status resolves as started
+COMMAND='curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1'
+repeatedly_test "$COMMAND" 0 "$MAX_TEST_WAIT" "Curl to jenkins host AFTER restart from stopped"
 
 
 ## BREAK jenkins and then see how the service scripts behave
