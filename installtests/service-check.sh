@@ -5,9 +5,9 @@ set -o
 # ARGUMENTS: first argument is the artifact name, jenkins by default if not given
 # Second argument is the port number it will run on for testing
 
-# Seconds to wait for service operation to finish, and max seconds for a test
 SERVICE_WAIT=5
-MAX_TEST_WAIT=120
+MAX_START_WAIT=120
+MAX_STOP_WAIT=45
 
 # Read artifact name as first arg
 if [ -z "$1" ]; then
@@ -79,11 +79,11 @@ report_test "Jenkins initial service start" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPU
 
 # Try to check service status and verify it eventually resolves as running
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
-repeatedly_test "$COMMAND" 0 "$MAX_TEST_WAIT" "Jenkins service status after initial start"
+repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Jenkins service status after initial start"
 
 # Try to curl the server and verify status resolves as started
 COMMAND='curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1'
-repeatedly_test "$COMMAND" 0 "$MAX_TEST_WAIT" "Curl to jenkins host"
+repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Curl to jenkins host"
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" restart 2>&1)
 SERVICE_EXIT_CODE=$?
@@ -95,11 +95,9 @@ SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" stop 2>&1)
 SERVICE_EXIT_CODE=$?
 report_test "Jenkins service stop" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
-sleep $SERVICE_WAIT
-
 # Test status comes up as stopped eventually
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
-repeatedly_test "$COMMAND" 3 "$MAX_TEST_WAIT" "Jenkins service status check when stopped"
+repeatedly_test "$COMMAND" 3 "$MAX_STOP_WAIT" "Jenkins service status check when stopped"
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" restart 2>&1)
 SERVICE_EXIT_CODE=$?
@@ -107,11 +105,11 @@ report_test "Jenkins service restart from stopped state" $SERVICE_EXIT_CODE 0 "$
 
 # Try to check service status and verify it eventually resolves as running
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
-repeatedly_test "$COMMAND" 0 "$MAX_TEST_WAIT" "Jenkins service status after restart from stopped state"
+repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Jenkins service status after restart from stopped state"
 
 # Try to curl the server and verify status resolves as started
 COMMAND='curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1'
-repeatedly_test "$COMMAND" 0 "$MAX_TEST_WAIT" "Curl to jenkins host AFTER restart from stopped"
+repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Curl to jenkins host AFTER restart from stopped"
 
 
 ## BREAK jenkins and then see how the service scripts behave
