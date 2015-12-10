@@ -26,6 +26,14 @@ publish: war.publish msi.publish osx.publish deb.publish rpm.publish suse.publis
 
 test: deb.test rpm.test suse.test
 
+docker.images:
+	docker build -t jenkins-packaging-builder:0.1 ./docker
+	bash ./docker/build-sudo-images.sh
+
+# See ./docker/README.md for how to use the docker containers to run a build in docker
+
+docker.test: docker.images
+	bash ./installtests/run_tests.sh
 
 war: ${WAR}
 war.publish: ${WAR}
