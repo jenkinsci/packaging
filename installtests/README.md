@@ -32,5 +32,5 @@ Currently validation covers:
 **Usage:**
 * sudo service-check.sh jenkins 8080 
 
-Or, for example jenkins-oc if that is the artifact + service packaged ARTIFACTNAME, if omitted it will default to 'jenkins'.
+Or, for example jenkins-super if that is the artifact + service packaged ARTIFACTNAME, if omitted it will default to 'jenkins'.
 The second argument is the port number that jenkins runs on by default, if omitted it will default to 8080.

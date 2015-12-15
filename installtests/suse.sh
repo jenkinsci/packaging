@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e  # Exit on any command failure
+set -ex  # Exit on any command failure
 # Assume packaging is mounted to /tmp/packaging and built
 
 if [ -z "$1" ]; then

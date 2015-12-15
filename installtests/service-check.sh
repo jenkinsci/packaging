@@ -1,7 +1,5 @@
 #!/bin/bash
 # Verify that linux init services correctly handle starting and stopping Jenkins
-set -o
-
 # ARGUMENTS: first argument is the artifact name, jenkins by default if not given
 # Second argument is the port number it will run on for testing
 
@@ -71,45 +69,45 @@ function repeatedly_test {
 # TODO add check for jenkins group too...
 getent passwd "$ARTIFACT_NAME"
 USER_TEST=$?
-report_test "Verify jenkins user created" $USER_TEST 0 $USER_TEST
+report_test "Verify $ARTIFACT_NAME user created" $USER_TEST 0 $USER_TEST
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" start 2>&1)
 SERVICE_EXIT_CODE=$?
-report_test "Jenkins initial service start" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
+report_test "$ARTIFACT_NAME initial service start" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
 
 # Try to check service status and verify it eventually resolves as running
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
-repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Jenkins service status after initial start"
+repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "$ARTIFACT_NAME service status after initial start"
 
 # Try to curl the server and verify status resolves as started
 COMMAND='curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1'
-repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Curl to jenkins host"
+repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Curl to host"
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" restart 2>&1)
 SERVICE_EXIT_CODE=$?
-report_test "Jenkins service first restart from running" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
+report_test "$ARTIFACT_NAME service first restart from running" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
 
 sleep $SERVICE_WAIT
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" stop 2>&1)
 SERVICE_EXIT_CODE=$?
-report_test "Jenkins service stop" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
+report_test "$ARTIFACT_NAME service stop" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
 # Test status comes up as stopped eventually
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
-repeatedly_test "$COMMAND" 3 "$MAX_STOP_WAIT" "Jenkins service status check when stopped"
+repeatedly_test "$COMMAND" 3 "$MAX_STOP_WAIT" "$ARTIFACT_NAME service status check when stopped"
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" restart 2>&1)
 SERVICE_EXIT_CODE=$?
-report_test "Jenkins service restart from stopped state" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
+report_test "$ARTIFACT_NAME service restart from stopped state" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
 
 # Try to check service status and verify it eventually resolves as running
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
-repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Jenkins service status after restart from stopped state"
+repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "$ARTIFACT_NAME service status after restart from stopped state"
 
 # Try to curl the server and verify status resolves as started
 COMMAND='curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1'
-repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Curl to jenkins host AFTER restart from stopped"
+repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Curl to host AFTER restart from stopped"
 
 
 ## BREAK jenkins and then see how the service scripts behave
@@ -123,7 +121,7 @@ mv "$JENKINS_WAR_PATH/${ARTIFACT_NAME}.war" "$JENKINS_WAR_PATH/${ARTIFACT_NAME}-
 # Should fail to start
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" start 2>&1)
 SERVICE_EXIT_CODE=$?
-TESTNAME="Start Jenkins service where Jenkins will fail to start"
+TESTNAME="Start $ARTIFACT_NAME service where it should fail to start"
 if [ $SERVICE_EXIT_CODE -eq 0 ]; then
     echo "$TESTNAME FAILED with status code $SERVICE_EXIT_CODE, expected NOT 0 (failure)"
     echo "Test command output:"
@@ -136,7 +134,7 @@ fi
 # Should fail to start
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" restart 2>&1)
 SERVICE_EXIT_CODE=$?
-TESTNAME="Restart Jenkins service where Jenkins will fail to start"
+TESTNAME="Restart $ARTIFACT_NAME service where it should fail to start"
 if [ $SERVICE_EXIT_CODE -eq 0 ]; then
     echo "$TESTNAME FAILED with status code $SERVICE_EXIT_CODE, expected NOT 0 (failure)"
     echo "Test command output:"

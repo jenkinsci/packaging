@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e  # Exit on any command failure
+set -ex  # Exit on any command failure
 
 if [ -z "$1" ]; then
   PKG_FOLDER='/tmp/packaging/target/debian/*.deb'
