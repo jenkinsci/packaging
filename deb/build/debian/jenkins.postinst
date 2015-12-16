@@ -45,7 +45,7 @@ case "$1" in
             # This also ensures that the .??* wildcard matches something
             touch /var/lib/hudson/.from-hudson
             mv -f /var/lib/hudson/* /var/lib/hudson/.??* /var/lib/@@ARTIFACTNAME@@
-            rmdir /var/lib/@@ARTIFACTNAME@@
+            rmdir /var/lib/hudson
             find /var/lib/@@ARTIFACTNAME@@ -user hudson -exec chown $JENKINS_USER {} + || true
         fi
       
