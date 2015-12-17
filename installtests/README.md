@@ -1,12 +1,36 @@
-# Installation testing scripts
+# Dockerized testing of package behavior
 
-These are two-part, they can be run locally or in CI with docker-workflow
+This lets you test that linux packages work correctly, by doing a full installation inside Docker containers across a range of different distros and versions and then verifying Jenkins behavior.
 
-If running in docker-workflow with imageName.inside() { steps } then you will need the sudo containers to allow installation (see the docker folder README.md)
+They are usable BOTH for integration into Jenkins CI via docker-workflow!
 
-## Installation
+# Great, how do I use it?
+You need docker installed. 
 
-We have installation scripts for the core distro types (RPM, Debian pkg, SUSE RPM, which will create a working Jenkins with JDKs, etc + curl.  THESE MUST RUN AS ROOT OR IN SUDO MODE (using the sudo docker images).
+For convenience, it is helpful to add your current user to the docker group, so scripts can be run without sudo/root access: 
+
+
+```shell
+sudo usermod -a -G docker ${USER}
+```
+
+Next, build the custom sudo images for testing.  This must be done under the user you intend to use in testing (if you're doing this in CI, this should be done within jenkins). 
+
+Note: these use templating on the Dockerfiles to supply the local user, so the Dockerfile will be modified.
+
+```shell
+bash ./docker/build-sudo-images.sh
+```
+
+These images include sudo + packages that are normally part of the OS distribution but may be missing in the base images.  (see the docker subfolder README).
+
+Next, run the tests:
+bash ./run_tests.sh
+
+
+## Installation Scripts
+
+We have installation scripts for the core distro types (RPM, Debian pkg, SUSE RPM, which will create a working Jenkins with JDKs, etc + curl for testing.  THESE MUST RUN AS ROOT OR IN SUDO MODE in the container (the sudo images above achieve this).
 
 Usage:
 
@@ -14,9 +38,9 @@ Usage:
 * sudo suse.sh /path/to/suse/package.rpm
 * sudo debian.sh /path/to/debian/package.deb
 
-## Validation
+## Validation Scripts
 
-Validation currently is a multipstep process, and ALSO requires root/sudo, in addition curl must be installed and working.
+Validation currently is a multipstep process, and ALSO requires root/sudo since you are starting/stopping services. It also depends on curl for validating the ability to handle requests.
 
 Currently validation covers:
 

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Build fast OS docker images that run slower steps ahead of time, to save time running tests
+# Note: this modifies the original Dockerfiles so the current user can sudo
 
 cd "$(dirname "$0")"
 sed -i .orig -e "s#@@MYUSERID@@#`id -u`#g" sudo-*/Dockerfile

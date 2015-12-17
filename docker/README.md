@@ -15,7 +15,7 @@ To build the image:
   - Yes, it will work with "make rpm..."  or "make suse..."
 
 ## The sudo containers ##
-* These images are supply sudo access to enable installation tests (which require root or sudo) with the Jenkins docker-workflow plugin 
+* These images supply sudo access to enable installation tests (which require root or sudo) with the Jenkins docker-workflow plugin.  They use templating to add the current user as a sudoer.
 * These **MUST** be built by the build-sudo-images.sh script before use in docker workflow
 * The script reads the local user ID, creates a 'mysudoer' user with sudo access in these containers with no-password sudo
 * For CentOS images, the sudoer requiretty option is turned off to allow-non-terminal use
