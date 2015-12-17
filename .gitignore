@@ -10,3 +10,4 @@ generated
 .vagrant
 .iml
 .idea/
+*.orig
