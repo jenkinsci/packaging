@@ -23,3 +23,4 @@ Workflows for direct use as a full flow (from SCM) are parameterized workflows, 
 - Depends on the sudo docker images
 - To use this, you will need a set of built debian, rpm, and suse packages uploaded to specific URLs 
 - It is quite easy to customize this workflow if packages are already built locally earlier in the flow
+- Note that you will need some script approvals here

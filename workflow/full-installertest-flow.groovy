@@ -18,7 +18,7 @@
 
 // Basic parameters
 String packagingTestBranch = (binding.hasVariable('packagingTestBranch')) ? packagingTestBranch : 'oss-dockerized-tests'
-String artifactName = (binding.hasVariable('artifactName')) ? artifactName : jenkins
+String artifactName = (binding.hasVariable('artifactName')) ? artifactName : 'jenkins'
 String jenkinsPort = (binding.hasVariable('jenkinsPort')) ? jenkinsPort : '8080'
 
 // Set up
