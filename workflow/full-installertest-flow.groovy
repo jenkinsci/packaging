@@ -1,26 +1,25 @@
 // Full installer test flow, in one file
 // You must parameterize the build with: 
 
-// @stringparameter dockerLabel (node label for docker nodes)
-// @stringparameter packagingBranch - branch to use in packaging build
+// @stringparameter dockerLabel (node label for docker nodes) - MUST be set, otherwise it'll try to run on master...
 
-// **ARTIFACTS URLS**
+// **ARTIFACTS URLS - REQUIRED**
 // Note: you can use an artifact archived in a Job build by an artifact:// URL
 //  Ex: 'artifact://full/path/to/job/buildNr#artifact.ext'
 // @stringparameter debfile URL to Debian package
 // @stringparameter rpmfile URL to CentOS/RHEL RPM package
 // @stringparameter susefile URL to SUSE RPM package
-// @stringparameter testLibraryBranch branchname to load the installertests workflow lib from
 
 // Optional build parameters
-// @stringparameter (optional) port - port number to use in testing jenkins (default 8080)
-// @stringparameter (optional) artifact (jenkins artifactname, defaults to 'jenkins')
+// @stringparameter (optional) packagingTestBranch - branch in packaging repo to use for the workflow 
+//      & the installer tests. (defaults to master)
+// @stringparameter (optional) jenkinsPort - port number to use in testing jenkins (defaults 8080)
+// @stringparameter (optional) artifactName - (jenkins artifactname, defaults to 'jenkins')
 
 // Basic parameters
-String dockerLabel = 'ubuntu-ope01'
-String packagingBranch = 'feature-docker-test-env-fixes'
-String artifactname = (artifact == null ) ? 'jenkins' : artifact
-String jenkinsPort = (port == null ) ? '8080' : "$port"
+String packagingTestBranch = (binding.hasVariable('packagingTestBranch')) ? packagingTestBranch : 'oss-dockerized-tests'
+String artifactName = (binding.hasVariable('artifactName') ? artifactName : jenkins
+String jenkinsPort = binding.hasVariable('jenkinsPort') ? jenkinsPort : '8080'
 
 // Set up
 String scriptPath = 'packaging-docker/installtests'
@@ -40,17 +39,17 @@ node(dockerLabel) {
     stage "Load Lib"
     sh 'rm -rf workflowlib'
     dir ('workflowlib') {
-        git branch: testLibraryBranch, url: 'https://github.com/jenkinsci/packaging.git'
+        git branch: packagingTestBranch, url: 'https://github.com/jenkinsci/packaging.git'
         flow = load 'workflow/installertest.groovy'
     }
     
 
     stage 'Fetch Installer'
-    flow.fetch_installers(debfile, rpmfile, susefile)
+    flow.fetchInstallers(debfile, rpmfile, susefile)
     
     sh 'rm -rf packaging-docker'
     dir('packaging-docker') {
-      git branch: packagingBranch, url: 'https://github.com/jenkinsci/packaging.git'
+      git branch: packagingTestBranch, url: 'https://github.com/jenkinsci/packaging.git'
     }
     
     // Build the sudo dockerfiles

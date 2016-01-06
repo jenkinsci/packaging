@@ -10,7 +10,8 @@ Workflows for direct use as a full flow (from SCM) are parameterized workflows, 
 ## installertest.groovy: shared library of functions to run dockerized tests
 
 - Most people will want to use execute_install_testset to run a set of tests in parallel using multiple containers
-- Each test starts up a slightly customized container mimicking a stripped down linux VM, with the Jenkins user set up as a sudoer
+- Each test starts up a slightly customized container mimicking a stripped down linux VM, with the Jenkins user set up as a sudoer.
+- Containers only exist while the tests are run, and the number of non-cached image builds is limited
 - Installation tests are structured as a series of shell commands to run, with each command run in the container (which has the workspace mounted as a docker volume)
 - Caution: you can't use single quotes in your arguments, you will need to use double quotes because of how commands are passed in
 - Each command may have a name set, and each command's output will be archived to testresults

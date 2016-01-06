@@ -35,7 +35,7 @@ def getComponentsFromArtifactUrl(String url) {
  *              Example: {@code 'artifact://full/path/to/job/buildNr#artifact.ext'}.
  *              Anything else will be downloaded via wget
  */
-def fetch_artifact(String url) {
+def fetchArtifact(String url) {
   if (url == null) {
     fail 'required parameter url is missing'
   } else if (url.startsWith("artifact://")) {
@@ -49,18 +49,18 @@ def fetch_artifact(String url) {
 }
 
 // Pull down the artifacts, must run in a node block
-def fetch_installers(String debFileUrl, String rpmFileUrl, String suseFileUrl) {
+def fetchInstallers(String debFileUrl, String rpmFileUrl, String suseFileUrl) {
  sh 'rm -rf installers'
  dir('installers') {
    sh 'rm -rf deb rpm suse'
    dir('deb') {
-      fetch_artifact(debFileUrl)
+      fetchArtifact(debFileUrl)
    }
    dir('rpm') {
-      fetch_artifact(rpmFileUrl)
+      fetchArtifact(rpmFileUrl)
    }
    dir('suse') {
-      fetch_artifact(suseFileUrl)
+      fetchArtifact(suseFileUrl)
    }
   }
 }
