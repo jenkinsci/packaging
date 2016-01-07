@@ -9,7 +9,7 @@ export JENKINS_URL=https://cloudbees.ci.cloudbees.com/
 export PKGSERVER=${USER}@localhost
 
 # where to put binary files
-export TESTDIR=/tmp/pkg.jenkins-ci.org
+export TESTDIR==$(realpath .)/pkg.jenkins-ci.org
 export WARDIR=${TESTDIR}/war${RELEASELINE}
 export MSIDIR=${TESTDIR}/windows${RELEASELINE}
 export OSXDIR=${TESTDIR}/osx${RELEASELINE}

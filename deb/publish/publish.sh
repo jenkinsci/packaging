@@ -1,8 +1,8 @@
 #!/bin/bash -ex
 bin="$(dirname $0)"
 
-ssh $PKGSERVER mkdir -p $DEBDIR/
-rsync -avz "${DEB}" $PKGSERVER:$DEBDIR/
+ssh $PKGSERVER mkdir -p "'$DEBDIR/'"
+rsync -avz "${DEB}" "$PKGSERVER:$DEBDIR/"
 
 D=/tmp/$$
 mkdir -p $D/binary $D/contents
@@ -25,7 +25,7 @@ popd
 
 # merge the result
 pushd $D/binary
-  mvn org.kohsuke:apt-ftparchive-merge:1.4:merge -Durl=$DEB_URL/binary/ -Dout=../merged
+  mvn org.kohsuke:apt-ftparchive-merge:1.4:merge -Durl="$DEB_URL/binary/" -Dout=../merged
 popd
 
 cat $D/merged/Packages > $D/binary/Packages
@@ -41,6 +41,6 @@ gpg --batch --no-use-agent --no-default-keyring --keyring $GPG_KEYRING --secret-
 
 cp $D/binary/Packages.* $D/binary/Release $D/binary/Release.gpg $D/binary/Contents.gz $D/contents/binary
 
-rsync -avz $D/contents/ $PKGSERVER:$DEB_WEBDIR
+rsync -avz $D/contents/ "$PKGSERVER:$DEB_WEBDIR"
 
 rm -rf $D

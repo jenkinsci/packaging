@@ -15,7 +15,7 @@ pushd $D
 
   # sign the results
   for rpm in $(find RPMS -name '*.rpm'); do
-    $BASE/bin/rpm-sign $rpm
+    "$BASE/bin/rpm-sign" $rpm
   done
 popd
 

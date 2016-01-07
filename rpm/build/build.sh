@@ -15,11 +15,11 @@ pushd $D
 
   # sign the results
   for rpm in $(find RPMS -name '*.rpm'); do
-    $BASE/bin/rpm-sign $rpm
+    "$BASE/bin/rpm-sign" $rpm
   done
 popd
 
 mkdir -p "$(dirname "${RPM}")" || true
-mv $D/RPMS/noarch/*.rpm ${RPM}
+mv $D/RPMS/noarch/*.rpm "${RPM}"
 
 rm -rf $D
