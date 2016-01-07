@@ -12,7 +12,7 @@ cp -R "$bin/contents/." $D/contents
 $bin/gen.rb > $D/contents/index.html
 
 [ -d ${OVERLAY_CONTENTS}/debian ] && cp -R ${OVERLAY_CONTENTS}/debian/. $D/contents
-$BASE/bin/branding.sh $D
+"$BASE/bin/branding.py" $D
 
 
 # build package index
