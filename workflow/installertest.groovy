@@ -9,7 +9,7 @@ String convertImageNameToString(String imageName, String append="") {
  */
 @NonCPS
 def getComponentsFromArtifactUrl(String url) {
-    def pattern = /^artifact:\/\/([\/\w-_ ]+)\/(\d+)\/{0,1}#([\/\w\.]+)$/
+    def pattern = /^artifact:\/\/([\/\w-_\. ]+)\/(\d+)\/{0,1}#([\/\w-_\.]+)$/
     def matcher = url =~ pattern
     if (matcher) {
         return [
@@ -41,7 +41,7 @@ def fetchArtifact(String url) {
   } else if (url.startsWith("artifact://")) {
     echo "Fetching ${url} as artifact."
     def comp = this.getComponentsFromArtifactUrl(url)
-    step([$class: 'CopyArtifact', filter: comp.artifact, projectName: comp.item, selector: [$class: 'SpecificBuildSelector', buildNumber: comp.run]])
+    step([$class: 'CopyArtifact', filter: comp.artifact, projectName: comp.item, flatten: true, selector: [$class: 'SpecificBuildSelector', buildNumber: comp.run]])
   } else {
       echo "Fetching ${url} as URL file."
       sh "wget -q ${url}"
