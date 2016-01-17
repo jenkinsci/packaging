@@ -139,7 +139,7 @@ def executeInstallTestset(def coreTests, def stepNames=null) {
 *  @param jenkinsPort port to use for speaking to jenkins (default 8080)
 */
 void runJenkinsInstallTests(String packagingBranch='master', 
-    String artifactName='jenkins', int jenkinsPort=8080) {
+    String artifactName='jenkins', String jenkinsPort='8080') {
   // Set up
   String scriptPath = 'packaging-docker/installtests'
   String checkCmd = "sudo $scriptPath/service-check.sh $artifactName $jenkinsPort"
@@ -178,7 +178,7 @@ void runJenkinsInstallTests(String packagingBranch='master',
 *  @param rpmUrl, suseUrl, debUrl:  artifact URLs to fetch packes from
 */
 void fetchAndRunJenkinsInstallerTest(String dockerNodeLabel, String rpmUrl, String suseUrl, String debUrl,
-  String packagingBranch='master', String artifactName='jenkins', int jenkinsPort=8080) {
+  String packagingBranch='master', String artifactName='jenkins', String jenkinsPort='8080') {
 
   node(dockerNodeLabel) {
     stage 'Fetch Installer'
