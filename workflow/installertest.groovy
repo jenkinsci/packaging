@@ -73,7 +73,7 @@ def fetchInstallers(String debFileUrl, String rpmFileUrl, String suseFileUrl) {
 * @param stepNames List of names for each shell command step, optional
 *                    (if not supplied, then the step # will be used)
 */
-def run_shell_test(String imageName, def shellCommands, def stepNames=null) {
+def runShellTest(String imageName, def shellCommands, def stepNames=null) {
   withEnv(['HOME='+pwd()]) { // Works around issues not being able to find docker install
     def img = docker.image(imageName)
     def fileName = convertImageNameToString(imageName,"-testOutput-")
@@ -109,7 +109,7 @@ def run_shell_test(String imageName, def shellCommands, def stepNames=null) {
 * They will need sudo-able containers to install
 * @param stepNames Names for each step (if not supplied, the index of the step will be used)
 */
-def execute_install_testset(def coreTests, def stepNames=null) {
+def executeInstallTestset(def coreTests, def stepNames=null) {
   // Within this node, execute our docker tests
   def parallelTests = [:]
   sh 'rm -rf testresults'
@@ -119,7 +119,7 @@ def execute_install_testset(def coreTests, def stepNames=null) {
     def tests = coreTests[i][1]
     parallelTests[imgName] = {
       try {
-       run_shell_test(imgName, tests, stepNames)
+       runShellTest(imgName, tests, stepNames)
       } catch(Exception e) {
         // Keep on trucking so we can see the full failures list
         echo "$e"
@@ -128,6 +128,64 @@ def execute_install_testset(def coreTests, def stepNames=null) {
     }
   }
   parallel parallelTests
+}
+
+/** Runs the Jenkins installer tests
+*   Note: MUST be inside a node block! 
+*   Installers are in installers/deb/*.deb, installers/rpm/*.rpm, installers/suse/*.rpm
+*
+*  @param packagingBranch branch of packaging repo to use for test + docker images
+*  @param artifactName jenkins artifactName
+*  @param jenkinsPort port to use for speaking to jenkins (default 8080)
+*/
+void runJenkinsInstallTests(String packagingBranch='master', 
+    String artifactName='jenkins', int jenkinsPort=8080) {
+  // Set up
+  String scriptPath = 'packaging-docker/installtests'
+  String checkCmd = "sudo $scriptPath/service-check.sh $artifactName $jenkinsPort"
+
+  // Core tests represent the basic supported linuxes, extended tests build out coverage further
+  def coreTests = []
+  def extendedTests = []
+  coreTests[0]=["sudo-ubuntu:14.04",  ["sudo $scriptPath/debian.sh installers/deb/*.deb", checkCmd]]
+  coreTests[1]=["sudo-centos:6",      ["sudo $scriptPath/centos.sh installers/rpm/*.rpm", checkCmd]]
+  coreTests[2]=["sudo-opensuse:13.2", ["sudo $scriptPath/suse.sh installers/suse/*.rpm", checkCmd]]
+  extendedTests[0]=["sudo-debian:wheezy", ["sudo $scriptPath/debian.sh installers/deb/*.deb", checkCmd]]
+  extendedTests[1]=["sudo-centos:7",      ["sudo $scriptPath/centos.sh installers/rpm/*.rpm", checkCmd]]
+  extendedTests[2]=["sudo-ubuntu:15.10",  ["sudo $scriptPath/debian.sh installers/deb/*.deb", checkCmd]]
+
+  // Run the actual work    
+  sh 'rm -rf packaging-docker'
+  dir('packaging-docker') {
+    git branch: packagingTestBranch, url: 'https://github.com/jenkinsci/packaging.git'
+  }
+  
+  // Build the sudo dockerfiles
+  stage 'Build sudo dockerfiles'
+  withEnv(['HOME='+pwd()]) {
+      sh 'packaging-docker/docker/build-sudo-images.sh'
+  }
+  
+  stage 'Run Installation Tests'
+  String[] stepNames = ['install', 'servicecheck']
+  this.execute_install_testset(coreTests, stepNames)
+  this.execute_install_testset(extendedTests, stepNames)
+
+}
+
+/** Fetch jenkins artifacts and run installer tests
+*  @param dockerNodeLabel Docker node label to use to run this flow
+*  @param rpmUrl, suseUrl, debUrl:  artifact URLs to fetch packes from
+*/
+void fetchAndRunJenkinsInstallerTest(String dockerNodeLabel, String rpmUrl, String suseUrl, String debUrl,
+  String packagingBranch='master', String artifactName='jenkins', int jenkinsPort=8080) {
+
+  node(dockerNodeLabel) {
+    stage 'Fetch Installer'
+    this.fetchInstallers(debUrl, rpmUrl, suseUrl)
+
+    this.runJenkinsInstallTests(packagingBranch, artifactName, jenkinsPort)
+  }
 }
 
 return this
