@@ -134,11 +134,11 @@ def executeInstallTestset(def coreTests, def stepNames=null) {
 *   Note: MUST be inside a node block! 
 *   Installers are in installers/deb/*.deb, installers/rpm/*.rpm, installers/suse/*.rpm
 *
-*  @param packagingBranch branch of packaging repo to use for test + docker images
+*  @param packagingTestBranch branch of packaging repo to use for test + docker images
 *  @param artifactName jenkins artifactName
 *  @param jenkinsPort port to use for speaking to jenkins (default 8080)
 */
-void runJenkinsInstallTests(String packagingBranch='master', 
+void runJenkinsInstallTests(String packagingTestBranch='master', 
     String artifactName='jenkins', String jenkinsPort='8080') {
   // Set up
   String scriptPath = 'packaging-docker/installtests'
@@ -178,13 +178,13 @@ void runJenkinsInstallTests(String packagingBranch='master',
 *  @param rpmUrl, suseUrl, debUrl:  artifact URLs to fetch packes from
 */
 void fetchAndRunJenkinsInstallerTest(String dockerNodeLabel, String rpmUrl, String suseUrl, String debUrl,
-  String packagingBranch='master', String artifactName='jenkins', String jenkinsPort='8080') {
+  String packagingTestBranch='master', String artifactName='jenkins', String jenkinsPort='8080') {
 
   node(dockerNodeLabel) {
     stage 'Fetch Installer'
     this.fetchInstallers(debUrl, rpmUrl, suseUrl)
 
-    this.runJenkinsInstallTests(packagingBranch, artifactName, jenkinsPort)
+    this.runJenkinsInstallTests(packagingTestBranch, artifactName, jenkinsPort)
   }
 }
 
