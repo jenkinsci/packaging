@@ -168,8 +168,8 @@ void runJenkinsInstallTests(String packagingTestBranch='master',
   
   stage 'Run Installation Tests'
   String[] stepNames = ['install', 'servicecheck']
-  this.execute_install_testset(coreTests, stepNames)
-  this.execute_install_testset(extendedTests, stepNames)
+  this.executeInstallTestset(coreTests, stepNames)
+  this.executeInstallTestset(extendedTests, stepNames)
 
 }
 
