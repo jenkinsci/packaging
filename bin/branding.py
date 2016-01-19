@@ -90,8 +90,11 @@ if(__name__ == '__main__'):
 	mypath = os.path.dirname(os.path.realpath(__file__))
 	branding_values = read_branding_variables(mypath, BRANDING_ENV_VARIABLE_LIST, BRANDING_ENV_PATH_LIST)
 
+	# List of branding values that are allowed to be blank
+	allowed_blank = ['RELEASELINE']
 	# Remove branding values with nothing set so we fail early if they are used in a template
-	branding_values = dict(filter (lambda x: x[1], branding_values.items()))
+	# except for values where blank is explicitly allows
+	branding_values = dict(filter (lambda x: x[0] in allowed_blank or x[1], branding_values.items()))
 
 	# Apply templating to files or content of folder
 	if os.path.isfile(path):
