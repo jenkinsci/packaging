@@ -62,7 +62,7 @@ case "$1" in
 
         # older installations may use /var/run/jenkins
         # so make sure that they can delete too.
-        if test -d /var/run/jenkins ; then
+        if [ -d "/var/run/@@ARTIFACTNAME@@" ]; then
             chown -R $JENKINS_USER:$JENKINS_GROUP /var/run/@@ARTIFACTNAME@@
             chmod -R 750                          /var/run/@@ARTIFACTNAME@@
         fi
