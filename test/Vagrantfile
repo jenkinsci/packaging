@@ -6,7 +6,7 @@ end
 
 `[ -d provision/generated ] || mkdir provision/generated`
 `cp -R provision/*.sh provision/generated`
-`../bin/branding.sh provision/generated`
+`../bin/branding.py provision/generated`
 
 def box(config,name,image)
   config.vm.define(name) do |node|

@@ -5,7 +5,7 @@ D=/tmp/$$
 mkdir $D
 
 cp -R "$(dirname "$0")"/* $D
-$BASE/bin/branding.sh $D
+"$BASE/bin/branding.py" $D
 
 cp "$WAR" $D/SOURCES/jenkins.war
 
@@ -15,7 +15,7 @@ pushd $D
 
   # sign the results
   for rpm in $(find RPMS -name '*.rpm'); do
-    $BASE/bin/rpm-sign $rpm
+    "$BASE/bin/rpm-sign" $rpm
   done
 popd
 

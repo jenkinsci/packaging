@@ -15,7 +15,7 @@ export HOMEPAGE=http://jenkins-ci.org/
 export CHANGELOG_PAGE=http://jenkins-ci.org/changelog
 
 # figure out the directory of this file
-BRANDING_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+BRANDING_DIR:=$(shell dirname "$(realpath $(lastword $(MAKEFILE_LIST)))")
 
 export DESCRIPTION_FILE=$(BRANDING_DIR)/description-file
 export LICENSE_FILE=$(BRANDING_DIR)/license-mit

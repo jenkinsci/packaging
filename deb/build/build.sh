@@ -13,7 +13,7 @@ mkdir -p $D
 cp -R $dir/* $D
 
 # Expand variables in the definition
-$BASE/bin/branding.sh $D/debian
+"$BASE/bin/branding.py" $D/debian
 
 cat > $D/debian/changelog << EOF
 ${ARTIFACTNAME} ($VERSION) unstable; urgency=low

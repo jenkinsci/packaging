@@ -15,10 +15,10 @@ pushd $D/src
     mv org.jenkins-ci.plis_ $OSX_IDPREFIX.plist
   popd
 popd
-$BASE/bin/branding.sh $D/src
+"$BASE/bin/branding.py" $D/src
 
-cp ${KEYCHAIN_FILE} $D/src/jenkins.keychain
-cp ${KEYCHAIN_PASSWORD_FILE} $D/src/jenkins.keychain.password
+cp "${KEYCHAIN_FILE}" $D/src/jenkins.keychain
+cp "${KEYCHAIN_PASSWORD_FILE}" $D/src/jenkins.keychain.password
 
 tar cvzf $D/script.tgz -C $D/src .
 
