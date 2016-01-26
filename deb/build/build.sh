@@ -10,10 +10,10 @@ mkdir -p $D
 
 # debian packaging needs to touch the file in the source tree, so do this in tmp dir
 # so that multiple builds can go on concurrently
-cp -R $dir/* $D
+cp -R "$dir/*" $D
 
 # Expand variables in the definition
-$BASE/bin/branding.sh $D/debian
+"$BASE/bin/branding.sh" $D/debian
 
 cat > $D/debian/changelog << EOF
 ${ARTIFACTNAME} ($VERSION) unstable; urgency=low
@@ -38,6 +38,6 @@ pushd $D
 popd
 
 mkdir -p "$(dirname "${DEB}")" || true
-mv $D/../${ARTIFACTNAME}_${VERSION}_all.deb ${DEB}
+mv $D/../${ARTIFACTNAME}_${VERSION}_all.deb "${DEB}"
 
 rm -rf $D
