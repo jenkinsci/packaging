@@ -8,11 +8,11 @@ rsync -avz "$RPM" $PKGSERVER:$RPMDIR/
 D=/tmp/$$
 mkdir -p $D/RPMS/noarch
 
-$base/gen.rb > $D/index.html
-cp $base/jenkins-ci.org.key $D/
+"$base/gen.rb" > $D/index.html
+cp "$base/jenkins-ci.org.key" $D/
 
-[ -d ${OVERLAY_CONTENTS}/rpm ] && cp -R ${OVERLAY_CONTENTS}/rpm/. $D
-$BASE/bin/branding.sh $D
+[ -d "${OVERLAY_CONTENTS}/rpm" ] && cp -R "${OVERLAY_CONTENTS}/rpm/". $D
+"$BASE/bin/branding.sh" $D
 
 cp "$RPM" $D/RPMS/noarch
 

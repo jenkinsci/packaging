@@ -9,10 +9,10 @@ mkdir -p $D/binary $D/contents
 cp -R "$bin/contents/." $D/contents
 
 # generate web index
-$bin/gen.rb > $D/contents/index.html
+"$bin/gen.rb" > $D/contents/index.html
 
-[ -d ${OVERLAY_CONTENTS}/debian ] && cp -R ${OVERLAY_CONTENTS}/debian/. $D/contents
-$BASE/bin/branding.sh $D
+[ -d "${OVERLAY_CONTENTS}/debian" ] && cp -R "${OVERLAY_CONTENTS}/debian/." $D/contents
+"$BASE/bin/branding.sh" $D
 
 
 # build package index
@@ -33,10 +33,10 @@ cat $D/merged/Packages | gzip -9c > $D/binary/Packages.gz
 cat $D/merged/Packages | bzip2 > $D/binary/Packages.bz2
 cat $D/merged/Packages | lzma > $D/binary/Packages.lzma
 cat $D/merged/Contents | gzip -9c > $D/binary/Contents.gz
-apt-ftparchive -c $bin/release.conf release $D/binary > $D/binary/Release
+apt-ftparchive -c "$bin/release.conf" release $D/binary > $D/binary/Release
 # sign the release file
 rm $D/binary/Release.gpg || true
-gpg --batch --no-use-agent --no-default-keyring --keyring $GPG_KEYRING --secret-keyring=$GPG_SECRET_KEYRING --passphrase-file $GPG_PASSPHRASE_FILE \
+gpg --batch --no-use-agent --no-default-keyring --keyring "$GPG_KEYRING" --secret-keyring="$GPG_SECRET_KEYRING" --passphrase-file "$GPG_PASSPHRASE_FILE" \
   -abs -o $D/binary/Release.gpg $D/binary/Release
 
 cp $D/binary/Packages.* $D/binary/Release $D/binary/Release.gpg $D/binary/Contents.gz $D/contents/binary
