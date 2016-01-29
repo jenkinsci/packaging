@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 /vagrant/provision/generated/common.sh
 
-wget -q -O /etc/yum.repos.d/@@ARTIFACTNAME@@.repo @@RPM_URL@@/@@ARTIFACTNAME@@.repo
+wget -q -O /etc/yum.repos.d/jenkins.repo @@RPM_URL@@/@@ARTIFACTNAME@@.repo
 rpm --import @@RPM_URL@@/@@ORGANIZATION@@.key
 
 yum check-update || true

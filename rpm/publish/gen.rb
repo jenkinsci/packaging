@@ -22,7 +22,7 @@ puts <<-EOS
 To use this repository, run the following command:
 
 <pre style="padding:0.5em; margin:1em; background:black; color:white">
-sudo wget -O /etc/yum.repos.d/#{artifactName}.repo #{url}/#{artifactName}.repo
+sudo wget -O /etc/yum.repos.d/jenkins.repo #{url}/#{artifactName}.repo
 sudo rpm --import #{url}/#{organization}.key
 </pre>
 
