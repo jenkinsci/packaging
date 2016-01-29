@@ -14,6 +14,7 @@ To correctly sign all the supported formats, you need your keys in the following
 Export your public key & private key
 
     gpg --export             KEYID > test.gpg
+    gpg --export --armor     KEYID > test.ascii.key
     gpg --export-secret-keys KEYID > test.secret.gpg
 
 Verify the newly created keyring. Note that the keyring options must have some directory name parts in it, or else it's treated as they are in `~/.gnupg`
