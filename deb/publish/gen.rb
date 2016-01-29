@@ -3,6 +3,7 @@
 
 productName=ENV['PRODUCTNAME'] || "Jenkins"
 artifactName=ENV['ARTIFACTNAME'] || "jenkins"
+organization=ENV['ORGANIZATION'] || "jenkins-ci.org"
 url=ENV['DEB_URL']
 
 puts <<-EOS
@@ -22,7 +23,7 @@ This is the Debian package repository of #{productName} to automate installation
 To use this repository, first add the key to your system:
  
 <pre style="padding:0.5em; margin:1em; background-color:black; color:white">
-wget -q -O - <a href="jenkins-ci.org.key" style="color:white">#{url}/jenkins-ci.org.key</a> | sudo apt-key add -
+wget -q -O - <a href="#{organization}.key" style="color:white">#{url}/#{organization}.key</a> | sudo apt-key add -
 </pre>
  
 Then add the following entry in your <tt>/etc/apt/sources.list</tt>:

@@ -17,6 +17,8 @@ export LICENSE=MIT/X License, GPL/CDDL, ASL2
 export HOMEPAGE=http://test.jenkins-ci.org/
 export CHANGELOG_PAGE=http://test.jenkins-ci.org/changelog
 
+export ORGANIZATION=example.org
+
 # figure out the directory of this file
 BRANDING_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 

@@ -9,7 +9,7 @@ D=/tmp/$$
 mkdir -p $D/RPMS/noarch $D/repodata
 
 "$base/gen.rb" > $D/index.html
-cp "$base/jenkins-ci.org.key" $D/repodata/repomd.xml.key
+cp "${GPG_PUBLIC_KEY}" $D/repodata/repomd.xml.key
 
 [ -d "${OVERLAY_CONTENTS}/suse" ] && cp -R "${OVERLAY_CONTENTS}/suse/." $D
 "$BASE/bin/branding.py" $D
