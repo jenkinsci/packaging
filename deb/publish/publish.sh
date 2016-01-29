@@ -2,16 +2,16 @@
 bin="$(dirname $0)"
 
 ssh $PKGSERVER mkdir -p "'$DEBDIR/'"
-rsync -avz "${DEB}" "$PKGSERVER:$DEBDIR/"
+rsync -avz "${DEB}" "$PKGSERVER:$(echo $DEBDIR | sed 's/ /\\ /g')/"
 
 D=/tmp/$$
 mkdir -p $D/binary $D/contents
 cp -R "$bin/contents/." $D/contents
 
 # generate web index
-$bin/gen.rb > $D/contents/index.html
+"$bin/gen.rb" > $D/contents/index.html
 
-[ -d ${OVERLAY_CONTENTS}/debian ] && cp -R ${OVERLAY_CONTENTS}/debian/. $D/contents
+[ -d "${OVERLAY_CONTENTS}/debian" ] && cp -R "${OVERLAY_CONTENTS}/debian/." $D/contents
 "$BASE/bin/branding.py" $D
 
 
@@ -41,6 +41,6 @@ gpg --batch --no-use-agent --no-default-keyring --keyring "$GPG_KEYRING" --secre
 
 cp $D/binary/Packages.* $D/binary/Release $D/binary/Release.gpg $D/binary/Contents.gz $D/contents/binary
 
-rsync -avz $D/contents/ "$PKGSERVER:$DEB_WEBDIR"
+rsync -avz $D/contents/ "$PKGSERVER:$(echo $DEB_WEBDIR | sed 's/ /\\ /g')"
 
 rm -rf $D
