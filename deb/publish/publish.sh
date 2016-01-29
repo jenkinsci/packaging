@@ -7,7 +7,7 @@ rsync -avz "${DEB}" "$PKGSERVER:$(echo $DEBDIR | sed 's/ /\\ /g')/"
 D=/tmp/$$
 mkdir -p $D/binary $D/contents
 cp -R "$bin/contents/." $D/contents
-cp "${GPG_PUBLIC_KEY}" $D/${ORGANIZATION}.key
+cp "${GPG_PUBLIC_KEY}" $D/contents/${ORGANIZATION}.key
 
 # generate web index
 "$bin/gen.rb" > $D/contents/index.html
