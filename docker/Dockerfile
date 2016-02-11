@@ -11,4 +11,6 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Requirement, note that v2 or later runs into issues with gem install due to Ruby 2 req
-RUN gem install net-sftp -v 1.1.1    
+RUN gem install net-sftp -v 1.1.1
+
+RUN chsh -s /bin/bash root

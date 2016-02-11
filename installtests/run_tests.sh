@@ -1,6 +1,6 @@
 #!/bin/bash
 set -x 
-set -e 
+
 
 # Get a path to use for absolute docker path to container
 PACKAGING_DIR=$(dirname $(dirname "$0"))

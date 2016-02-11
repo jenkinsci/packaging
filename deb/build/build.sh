@@ -2,6 +2,7 @@
 #
 # build a debian package from a release build
 
+hostname
 dir=$(dirname $0)
 
 # tmp dir
