@@ -41,7 +41,7 @@ war: ${WAR}
 war.publish: ${WAR}
 	ssh ${PKGSERVER} mkdir -p "'${WARDIR}/${VERSION}/'"
 	rsync -avz "${WAR}" "${PKGSERVER}:${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
-
+	ssh ${PKGSERVER} sh -c "cd '${WARDIR}/${VERSION}/..'; ln --force --no-dereference --symbolic '${VERSION}' latest"
 
 
 msi: ${MSI}
