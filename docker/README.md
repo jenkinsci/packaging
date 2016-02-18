@@ -21,4 +21,4 @@ To build the image:
 * For CentOS images, the sudoer requiretty option is turned off to allow-non-terminal use
 * For specific environments additional requirements for services may be added (example: initscripts for CentOS7, since service support is not baked in)
 * An added perk of these is that the debian-based ones update the apt database to save time on future installs
-* 
+
