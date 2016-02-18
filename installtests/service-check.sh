@@ -3,6 +3,8 @@
 # ARGUMENTS: first argument is the artifact name, jenkins by default if not given
 # Second argument is the port number it will run on for testing
 
+. `dirname $0`/sh2ju.sh
+
 SERVICE_WAIT=5
 MAX_START_WAIT=120
 MAX_STOP_WAIT=45
@@ -69,45 +71,45 @@ function repeatedly_test {
 # TODO add check for jenkins group too...
 getent passwd "$ARTIFACT_NAME"
 USER_TEST=$?
-report_test "Verify $ARTIFACT_NAME user created" $USER_TEST 0 $USER_TEST
+juLog -name=createUserTest report_test "Verify $ARTIFACT_NAME user created" $USER_TEST 0 $USER_TEST
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" start 2>&1)
 SERVICE_EXIT_CODE=$?
-report_test "$ARTIFACT_NAME initial service start" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
+juLog -name=initialServiceStartTest report_test "$ARTIFACT_NAME initial service start" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
 
 # Try to check service status and verify it eventually resolves as running
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
-repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "$ARTIFACT_NAME service status after initial start"
+juLog -name=serviceStatusRunningTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "$ARTIFACT_NAME service status after initial start"
 
 # Try to curl the server and verify status resolves as started
 COMMAND='curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1'
-repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Curl to host"
+juLog -name=curlTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Curl to host"
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" restart 2>&1)
 SERVICE_EXIT_CODE=$?
-report_test "$ARTIFACT_NAME service first restart from running" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
+juLog -name=serviceRestartTest report_test "$ARTIFACT_NAME service first restart from running" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
 
 sleep $SERVICE_WAIT
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" stop 2>&1)
 SERVICE_EXIT_CODE=$?
-report_test "$ARTIFACT_NAME service stop" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
+juLog -name=serviceStopTest report_test "$ARTIFACT_NAME service stop" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
 # Test status comes up as stopped eventually
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
-repeatedly_test "$COMMAND" 3 "$MAX_STOP_WAIT" "$ARTIFACT_NAME service status check when stopped"
+juLog -name=serviceStatusStoppedTest repeatedly_test "$COMMAND" 3 "$MAX_STOP_WAIT" "$ARTIFACT_NAME service status check when stopped"
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" restart 2>&1)
 SERVICE_EXIT_CODE=$?
-report_test "$ARTIFACT_NAME service restart from stopped state" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
+juLog -name=serviceRestartFromStoppedTest report_test "$ARTIFACT_NAME service restart from stopped state" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
 
 # Try to check service status and verify it eventually resolves as running
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
-repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "$ARTIFACT_NAME service status after restart from stopped state"
+juLog -name=serviceRestartedCheckTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "$ARTIFACT_NAME service status after restart from stopped state"
 
 # Try to curl the server and verify status resolves as started
 COMMAND='curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1'
-repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Curl to host AFTER restart from stopped"
+juLog -name=curlAfterRestartedTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Curl to host AFTER restart from stopped"
 
 
 ## BREAK jenkins and then see how the service scripts behave
@@ -147,6 +149,3 @@ fi
 mv "$JENKINS_WAR_PATH/${ARTIFACT_NAME}-broken.war" "$JENKINS_WAR_PATH/${ARTIFACT_NAME}.war"
 
 echo "TOTAL service check test failure count: $error_count"
-if [ $error_count -ne 0 ]; then
-    exit $error_count
-fi

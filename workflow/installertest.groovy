@@ -1,3 +1,116 @@
+// CONSTANTS AND CONFIG
+
+/**
+ * Gets the standard, non-platform specific test scripts and args.
+ *
+ * @param artifactName The name of the artifact we'll be testing
+ * @param jenkinsPort the port to test on.
+ *
+ * @return a list of maps of script and args to run after installation on all distros.
+ */
+private List standardScripts(String artifactName, String jenkinsPort) {
+  return [
+      [
+          "generic",
+          "service-check.sh",
+          "${artifactName} ${jenkinsPort}"
+      ]
+  ]
+}
+
+/**
+ * Gets the per-platform scripts and arguments.
+ *
+ * @return a map with platform as key and a list of script/args maps as value.
+ */
+private List platformScripts(String platform) {
+  def platScripts = [
+      [
+          "deb",
+          "debian.sh",
+          "installers/deb/*.deb"
+      ],
+      [
+          "rpm",
+          "centos.sh",
+          "installers/rpm/*.rpm"
+      ],
+      [
+          "suse",
+          "suse.sh",
+          "installers/suse/*.rpm"
+      ]
+  ]
+
+  for (int i = 0; i < platScripts.size(); i++) {
+    if (platScripts.get(i)?.get(0)?.equals(platform)) {
+      return platScripts.get(i)
+    }
+  }
+  return null
+}
+
+/**
+ * Get information on OSes to test that belong to a given category (or all)
+ *
+ * @param category Category of OSes to find - if null, returns all.
+ * @return A map with OS names as keys and information about those OSes (image name, platform and category) as values.
+ */
+private def osesToTest(String category) {
+  def osDefs = [
+      [
+          "ubuntu-14.04",
+          "sudo-ubuntu:14.04",
+          "deb",
+          "core"
+      ],
+      [
+          "ubuntu-15.04",
+          "sudo-ubuntu:15.04",
+          "deb",
+          "extended"
+      ],
+      [
+          "debian-wheezy",
+          "sudo-debian:wheezy",
+          "deb",
+          "extended"
+      ],
+      [
+          "centos-6",
+          "sudo-centos:6",
+          "rpm",
+          "core"
+      ],
+      [
+          "centos-7",
+          "sudo-centos:7",
+          "rpm",
+          "extended"
+      ],
+      [
+          "opensuse-13.2",
+          "sudo-opensuse:13.2",
+          "suse",
+          "core"
+      ]
+  ]
+
+  def matches = []
+  for (int i = 0; i < osDefs.size(); i++) {
+    def thisOs = osDefs.get(i)
+    // We're using lists rather than maps because serializable pain.
+    // Category is the 4th entry in the OS list.
+    if (thisOs[3] == null || thisOs[3].equals(category)) {
+      matches.add(thisOs)
+    }
+  }
+
+  return matches
+}
+
+// END CONSTANTS AND CONFIG
+
 // Replace colons in image with hyphens and append text
 String convertImageNameToString(String imageName, String append="") {
     return (imageName+append).replaceAll(':','-')
@@ -92,41 +205,79 @@ def runShellTest(String imageName, def shellCommands, def stepNames=null) {
           // Second, the sh workflow step often will use the default posix shell
           // The default posix shell does not support pipefail, so we have to invoke bash to get it
           
-          String argument = 'bash -c \'set -o pipefail; '+cmd+" | tee \"testresults/$fileName-$name"+'.log'+'" \''
+          String argument = 'bash -c \''+cmd+" | tee \"testresults/$fileName-$name"+'.log'+'" \''
           sh argument
         }
       } catch (Exception ex) {
+        // And archive the test results once we're done.
+        step([$class: 'JUnitResultArchiver', keepLongStdio: true, testResults: "results/*.xml"])
         archive("testresults/$fileName"+'*.log')
         throw ex
       }
+      // And archive the test results once we're done.
+      step([$class: 'JUnitResultArchiver', keepLongStdio: true, testResults: "results/*.xml"])
       archive("testresults/$fileName"+'*.log')
     }
   } 
 }
 
 
-/** Install tests are a set of ["dockerImage:version", [shellCommand,shellCommand...]] entries
-* They will need sudo-able containers to install
-* @param stepNames Names for each step (if not supplied, the index of the step will be used)
+/**
+ * Install tests are a set of ["dockerImage:version", [shellCommand,shellCommand...]] entries
+ * They will need sudo-able containers to install
+ *
+ * @param testOSList a list of OS information (filtered from osesToTest(category))
+ * @param scriptPath the path to the scripts for replacing
+ * @param artifactName The name of the artifact to test
+ * @param jenkinsPort The port to run the test Jenkins on
+ * @param stepNames Names for each step (if not supplied, the index of the step will be used)
 */
-def executeInstallTestset(def coreTests, def stepNames=null) {
+def executeInstallTestset(List testOSList, String scriptPath, String artifactName, String jenkinsPort, def stepNames=null) {
   // Within this node, execute our docker tests
   def parallelTests = [:]
   sh 'rm -rf testresults'
+  sh 'rm -rf results'
   sh 'mkdir testresults'
-  for (int i=0; i<coreTests.size(); i++) {
-    def imgName = coreTests[i][0]
-    def tests = coreTests[i][1]
-    parallelTests[imgName] = {
-      try {
-       runShellTest(imgName, tests, stepNames)
-      } catch(Exception e) {
-        // Keep on trucking so we can see the full failures list
-        echo "$e"
-        error("Test for $imgName failed")
+  sh 'mkdir results'
+  for (int i = 0; i < testOSList.size(); i++) {
+    def osDef = testOSList.get(i)
+    if (osDef != null) {
+      // OS name is index 0 element.
+      def osName = osDef.get(0)
+      // Image name is index 1 element.
+      def imgName = osDef.get(1)
+      // OS Platform is index 2 element.
+      def osPlatform = osDef.get(2)
+
+      def tests = []
+
+      def scriptsToRun = []
+      scriptsToRun.add(platformScripts(osPlatform))
+      def genericScripts = standardScripts(artifactName, jenkinsPort)
+
+      for (int k = 0; k < genericScripts.size(); k++) {
+        scriptsToRun.add(genericScripts.get(k))
+      }
+
+      for (int j = 0; j < scriptsToRun.size(); j++) {
+        def scriptToRun = scriptsToRun.get(j)
+        // Since we can't use Maps due to serialization fun, we're faking it with lists, so scriptToRun[0] is the "platform", while
+        // scriptToRun[1] and [2] are the script name and arguments, respectively.
+        tests << shellScriptForDistro(osName, scriptPath, scriptToRun[1], scriptToRun[2])
+      }
+
+      parallelTests[osName] = {
+        try {
+          runShellTest(imgName, tests, stepNames)
+        } catch (Exception e) {
+          // Keep on trucking so we can see the full failures list
+          echo "${e}"
+          echo("Test for ${osName} failed")
+        }
       }
     }
   }
+
   parallel parallelTests
 }
 
@@ -144,20 +295,10 @@ void runJenkinsInstallTests(String packagingTestBranch='master',
   String scriptPath = 'packaging-docker/installtests'
   String checkCmd = "sudo $scriptPath/service-check.sh $artifactName $jenkinsPort"
 
-  // Core tests represent the basic supported linuxes, extended tests build out coverage further
-  def coreTests = []
-  def extendedTests = []
-  coreTests[0]=["sudo-ubuntu:14.04",  ["sudo $scriptPath/debian.sh installers/deb/*.deb", checkCmd]]
-  coreTests[1]=["sudo-centos:6",      ["sudo $scriptPath/centos.sh installers/rpm/*.rpm", checkCmd]]
-  coreTests[2]=["sudo-opensuse:13.2", ["sudo $scriptPath/suse.sh installers/suse/*.rpm", checkCmd]]
-  extendedTests[0]=["sudo-debian:wheezy", ["sudo $scriptPath/debian.sh installers/deb/*.deb", checkCmd]]
-  extendedTests[1]=["sudo-centos:7",      ["sudo $scriptPath/centos.sh installers/rpm/*.rpm", checkCmd]]
-  extendedTests[2]=["sudo-ubuntu:15.10",  ["sudo $scriptPath/debian.sh installers/deb/*.deb", checkCmd]]
-
-  // Run the actual work    
+  // Run the actual work
   sh 'rm -rf packaging-docker'
   dir('packaging-docker') {
-    git branch: packagingTestBranch, url: 'https://github.com/jenkinsci/packaging.git'
+    git branch: packagingTestBranch, url: 'https://github.com/abayer/packaging.git'
   }
   
   // Build the sudo dockerfiles
@@ -168,9 +309,8 @@ void runJenkinsInstallTests(String packagingTestBranch='master',
   
   stage 'Run Installation Tests'
   String[] stepNames = ['install', 'servicecheck']
-  this.executeInstallTestset(coreTests, stepNames)
-  this.executeInstallTestset(extendedTests, stepNames)
-
+  this.executeInstallTestset(osesToTest("core"), scriptPath, artifactName, jenkinsPort, stepNames)
+  this.executeInstallTestset(osesToTest("extended"), scriptPath, artifactName, jenkinsPort, stepNames)
 }
 
 /** Fetch jenkins artifacts and run installer tests
@@ -180,12 +320,38 @@ void runJenkinsInstallTests(String packagingTestBranch='master',
 void fetchAndRunJenkinsInstallerTest(String dockerNodeLabel, String rpmUrl, String suseUrl, String debUrl,
   String packagingTestBranch='master', String artifactName='jenkins', String jenkinsPort='8080') {
 
-  node(dockerNodeLabel) {
+  timestampedNode(dockerNodeLabel) {
     stage 'Fetch Installer'
     this.fetchInstallers(debUrl, rpmUrl, suseUrl)
 
     this.runJenkinsInstallTests(packagingTestBranch, artifactName, jenkinsPort)
   }
 }
+
+/**
+ * Generates a properly named, distinct to this platform and test step shell script in the workspace.
+ * This is needed for sh2ju's output to actually be meaningful.
+ *
+ * @param distro
+ * @param scriptPath
+ * @param baseScript
+ * @param args
+ * @return the script to actually execute
+ */
+String shellScriptForDistro(String distro, String scriptPath, String baseScript, String args) {
+    String newPath = "${scriptPath}/${distro}-${baseScript}"
+    sh "cp ${scriptPath}/${baseScript} ${newPath}"
+    return "sudo ${newPath} ${args}"
+}
+
+// Runs the given body within a Timestamper wrapper on the given label.
+def timestampedNode(String label, Closure body) {
+  node(label) {
+    wrap([$class: 'TimestamperBuildWrapper']) {
+      body.call()
+    }
+  }
+}
+
 
 return this
