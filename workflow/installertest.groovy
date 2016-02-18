@@ -205,7 +205,7 @@ def runShellTest(String imageName, def shellCommands, def stepNames=null) {
           // Second, the sh workflow step often will use the default posix shell
           // The default posix shell does not support pipefail, so we have to invoke bash to get it
           
-          String argument = cmd+" | tee \"testresults/${fileName}-${name}.log\""
+          String argument = "${cmd} | tee \"testresults/${fileName}-${name}.log\""
           sh argument
         }
       } catch (Exception ex) {
