@@ -298,7 +298,7 @@ void runJenkinsInstallTests(String packagingTestBranch='master',
   // Run the actual work
   sh 'rm -rf packaging-docker'
   dir('packaging-docker') {
-    git branch: packagingTestBranch, url: 'https://github.com/abayer/packaging.git'
+    git branch: packagingTestBranch, url: 'https://github.com/jenkinsci/packaging.git'
   }
   
   // Build the sudo dockerfiles
