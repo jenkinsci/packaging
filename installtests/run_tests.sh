@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x 
+set -ux  # Exit on any command failure or unset variables.
 
 
 # Get a path to use for absolute docker path to container

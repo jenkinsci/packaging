@@ -1,8 +1,8 @@
 #!/bin/bash
 
-set -x  # Exit on any command failure
+set -ux  # Exit on any command failure or unset variables.
 
-. `dirname $0`/sh2ju.sh
+. $(dirname $0)/sh2ju.sh
 # Assume packaging is mounted to /tmp/packaging and built
 
 if [ -z "$1" ]; then
