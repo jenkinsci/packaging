@@ -17,10 +17,9 @@
 // @stringparameter (optional) artifactName - (jenkins artifactname, defaults to 'jenkins')
 
 // Basic parameters
-String packagingTestBranch = (binding.hasVariable('packagingTestBranch')) ? packagingTestBranch : 'oss-dockerized-tests'
+String packagingTestBranch = (binding.hasVariable('packagingTestBranch')) ? packagingTestBranch : 'master'
 String artifactName = (binding.hasVariable('artifactName')) ? artifactName : 'jenkins'
 String jenkinsPort = (binding.hasVariable('jenkinsPort')) ? jenkinsPort : '8080'
-
 
 node(dockerLabel) {
     stage "Load Lib"
