@@ -67,14 +67,6 @@ JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true"
 #
 JENKINS_PORT="@@PORT@@"
 
-## Type:        integer(0:65535)
-## Default:     8009
-## ServiceRestart: @@ARTIFACTNAME@@
-#
-# Ajp13 Port Jenkins is listening on.
-# Set to -1 to disable
-#
-JENKINS_AJP_PORT="8009"
 
 ## Type:        integer(1:9)
 ## Default:     5
