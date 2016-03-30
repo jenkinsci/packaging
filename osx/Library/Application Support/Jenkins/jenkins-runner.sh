@@ -36,8 +36,6 @@ add_to_args httpPort
 add_to_args httpListenAddress
 add_to_args httpsPort
 add_to_args httpsListenAddress
-add_to_args ajp13Port
-add_to_args ajp13ListenAddress
 
 echo "JENKINS_HOME=$JENKINS_HOME"
 echo "@@PRODUCTNAME@@ command line for execution:"

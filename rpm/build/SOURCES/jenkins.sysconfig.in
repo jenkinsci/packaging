@@ -100,23 +100,6 @@ JENKINS_HTTPS_KEYSTORE_PASSWORD=""
 #
 JENKINS_HTTPS_LISTEN_ADDRESS=""
 
-## Type:        integer(0:65535)
-## Default:     8009
-## ServiceRestart: @@ARTIFACTNAME@@
-#
-# Ajp13 Port Jenkins is listening on.
-# Set to -1 to disable
-#
-JENKINS_AJP_PORT="8009"
-
-## Type:        string
-## Default:     ""
-## ServiceRestart: @@ARTIFACTNAME@@
-#
-# IP address Jenkins listens on for Ajp13 requests.
-# Default is all interfaces (0.0.0.0).
-#
-JENKINS_AJP_LISTEN_ADDRESS=""
 
 ## Type:        integer(1:9)
 ## Default:     5
