@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ux  # Exit on any command failure or unset variables.
 
-. $(dirname $0)/sh2ju.sh
+. "$(dirname $0)/sh2ju.sh"
 
 if [ -z "$1" ]; then
   PKG_FOLDER='/tmp/packaging/target/rpm/*.rpm'
