@@ -5,7 +5,7 @@
 ## setting a custom value to an RPM macro, but rpm still insists on getting passphrase
 ## from terminal, even though we use GPG --passphrase-file option. This expect script
 ## feeds a dummy NL to make rpm happy.
-spawn ${argv0}.bin [lindex $argv 0]
+spawn "${argv0}.bin" [lindex $argv 0]
 expect -exact "Enter pass phrase: "
 send -- "\r"
 expect eof

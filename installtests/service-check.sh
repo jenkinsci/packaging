@@ -3,7 +3,7 @@
 # ARGUMENTS: first argument is the artifact name, jenkins by default if not given
 # Second argument is the port number it will run on for testing
 
-. `dirname $0`/sh2ju.sh
+. "$(dirname $0)/sh2ju.sh"
 
 SERVICE_WAIT=5
 MAX_START_WAIT=120
