@@ -6,7 +6,7 @@
 export JENKINS_URL=https://cloudbees.ci.cloudbees.com/
 
 # the host to publish bits to
-export PKGSERVER=www-data@pkg.jenkins-ci.org
+export PKGSERVER=mirrorbrain@pkg.jenkins-ci.org
 
 # where to put binary files
 export WARDIR=/srv/releases/jenkins/war${RELEASELINE}
