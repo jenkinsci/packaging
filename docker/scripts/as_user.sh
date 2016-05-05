@@ -18,14 +18,14 @@ if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ]; then
     echo 'At least one is missing!'
     exit 1
 else
-    addgroup "$3" --gid "$4"
-    useradd "$1" -m -u "$2" -g "$3"
+    addgroup "$3" --gid "$4" || true
+    useradd "$1" -m -u "$2" -g "$3" || true
     echo "$1 ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
     # 5th argument is a command string to run with that user
-    if [ -z "$5"]; then 
-        su $1 -m /bin/bash "$5" 
+    if [ -z "$5" ]; then 
+        su $1 -m /bin/bash 
     else 
-        su $1 -s /bin/bash
+        su $1 -s /bin/bash -c "$5" 
     fi
 fi
