@@ -36,6 +36,8 @@ add_to_args httpPort
 add_to_args httpListenAddress
 add_to_args httpsPort
 add_to_args httpsListenAddress
+add_to_args httpsKeyStore
+add_to_args httpsKeyStorePassword
 add_to_args ajp13Port
 add_to_args ajp13ListenAddress
 
