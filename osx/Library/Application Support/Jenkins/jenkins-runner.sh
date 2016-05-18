@@ -36,6 +36,8 @@ add_to_args httpPort
 add_to_args httpListenAddress
 add_to_args httpsPort
 add_to_args httpsListenAddress
+add_to_args httpsKeyStore
+add_to_args httpsKeyStorePassword
 
 echo "JENKINS_HOME=$JENKINS_HOME"
 echo "@@PRODUCTNAME@@ command line for execution:"
