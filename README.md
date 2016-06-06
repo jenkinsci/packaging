@@ -69,7 +69,7 @@ run tests prior to publishing them, you need to create a temporary web server th
 
 The default branding & environment (`branding/test.mk` and `env/test.mk`) are designed to support
 this scenario. To make local testing work, you also need to have `/etc/hosts` entry that maps
-`test.pkg.jenkins-ci.org` hostname to `127.0.0.1`, and your computer has to be running ssh that
+`test.pkg.jenkins.io` hostname to `127.0.0.1`, and your computer has to be running ssh that
 lets you login as you.
 
 Once you verified the above prerequisites, open another terminal and run `make test.local.setup`
