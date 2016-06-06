@@ -3,7 +3,7 @@
 
 productName=ENV['PRODUCTNAME'] || "Jenkins"
 artifactName=ENV['ARTIFACTNAME'] || "jenkins"
-organization=ENV['ORGANIZATION'] || "jenkins-ci.org"
+organization=ENV['ORGANIZATION'] || "jenkins.io"
 url=ENV['RPM_URL']
 
 puts <<-EOS

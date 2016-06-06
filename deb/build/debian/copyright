@@ -1,6 +1,6 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Jenkins
-Upstream-Contact: http://jenkins-ci.org/
+Upstream-Contact: http://jenkins.io/
 Source: https://github.com/jenkinsci/jenkins
 
 Files: *

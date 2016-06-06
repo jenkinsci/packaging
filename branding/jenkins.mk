@@ -1,3 +1,3 @@
 export RELEASELINE=
-export ORGANIZATION=jenkins-ci.org
+export ORGANIZATION=jenkins.io
 include branding/common
