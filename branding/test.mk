@@ -14,8 +14,8 @@ export MSI_PRODUCTCODE=e76baa9f-2bb2-49e5-b518-8a5b7d1cd084
 export OSX_IDPREFIX=org.jenkins-ci.test
 export AUTHOR=Bogus user <bogus@example.org>
 export LICENSE=MIT/X License, GPL/CDDL, ASL2
-export HOMEPAGE=http://test.jenkins-ci.org/
-export CHANGELOG_PAGE=http://test.jenkins-ci.org/changelog
+export HOMEPAGE=http://test.jenkins.io/
+export CHANGELOG_PAGE=http://test.jenkins.io/changelog
 
 export ORGANIZATION=example.org
 

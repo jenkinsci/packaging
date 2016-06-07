@@ -6,7 +6,7 @@ You can download the Developer Tools from [Apple's Developer Connection website]
 ## Build the Installer
 
 To build the installer package you will need a copy of the jenkins.war file. You can download it from the
-[Jenkins home page](http://mirrors.jenkins-ci.org/war/latest/). Then open a terminal, navigate to this
+[Jenkins home page](http://mirrors.jenkins.io/war/latest/). Then open a terminal, navigate to this
 directory, and run the build script
 
     ./build.sh /path/to/jenkins.war
