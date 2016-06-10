@@ -7,6 +7,7 @@ The following platforms are currently supported:
   * Debian/Ubuntu DEB: `deb/`
   * OS X PKG: `osx/`
   * OpenSUSE RPM: `suse/`
+  * Snapcraft: `snap/`
 
 # Pre-requisites
 Running the main package script requires a Linux environment (currently Ubuntu, see [JENKINS-27744](https://issues.jenkins-ci.org/browse/JENKINS-27744).)

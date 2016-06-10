@@ -1,0 +1,36 @@
+#!/bin/sh -e
+
+err () {
+    echo "$1" >&2
+}
+
+if [ -z "$SNAP_DATA" ]; then
+    err "SNAP_DATA not set."
+    exit 1
+fi
+
+if [ ! -w "$SNAP_DATA" ]; then
+    err "Please re-run as root:"
+    err "\`cat config.xml | sudo /snap/bin/jenkins.config\`"
+    exit 1
+fi
+
+if [ -t 0 ]; then
+    err "This tool lets you replace the Jenkins configuration file:"
+    err "\`cat config.xml | sudo /snap/bin/jenkins.config\`"
+    err ""
+    err "You will need to restart Jenkins to pick up any changes:"
+    err "\`servicectl restart snap.jenkins.jenkins.service\`"
+    err ""
+    err "You can access Jenkins from your web browser at http://localhost:8080"
+    exit 1
+else
+    if [ -e "$SNAP_DATA/config.xml" ] && [ "-f" != "$1" ]; then
+        err "Sorry, Jenkins already has configuration data."
+        err ""
+        err "If you wish to overwrite it, run:"
+        err "\`cat config.xml | sudo /snap/bin/jenkins.config -f\`"
+        exit 1
+    fi
+    cat - > "$SNAP_DATA/config.xml"
+fi

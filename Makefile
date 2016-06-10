@@ -22,9 +22,9 @@ clean:
 setup:
 	bash -ex -c 'for f in */setup.sh; do $$f; done'
 
-package: war msi osx deb rpm suse
+package: war msi osx deb rpm suse snap
 
-publish: war.publish msi.publish osx.publish deb.publish rpm.publish suse.publish
+publish: war.publish msi.publish osx.publish deb.publish rpm.publish suse.publish snap.publish
 
 test: deb.test rpm.test suse.test
 
@@ -80,6 +80,11 @@ ${SUSE}: ${WAR}  $(shell find suse/build -type f)
 suse.publish: ${SUSE} $(shell find suse/publish -type f)
 	./suse/publish/publish.sh
 
+snap: ${SNAP}
+${SNAP}: ${WAR}  $(shell find snap/build -type f)
+	./snap/build/build.sh
+snap.publish: ${SNAP} $(shell find snap/publish -type f)
+	./snap/publish/publish.sh
 
 
 ${CLI}:

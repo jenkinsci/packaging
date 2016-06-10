@@ -1,0 +1,48 @@
+name: @@ARTIFACTNAME@@
+version: @@VERSION@@
+summary: @@SUMMARY@@
+description: @@SUMMARY@@
+confinement: strict
+apps:
+    @@ARTIFACTNAME@@:
+        command: jenkins-wrapper $SNAP/war/@@ARTIFACTNAME@@.war
+        plugs: [network, network-bind]
+        daemon: simple
+    config:
+        command: jenkins-config
+parts:
+    jenkins:
+        plugin: copy
+        files:
+            jenkins-config: bin/jenkins-config
+            jenkins-wrapper: bin/jenkins-wrapper
+            @@ARTIFACTNAME@@.war: war/@@ARTIFACTNAME@@.war
+    java:
+        plugin: copy
+        stage-packages:
+            # Jenkins wants fonts.
+            - fonts-dejavu-core
+            - default-jdk-headless
+        files:
+            fonts.conf: etc/fonts/fonts.conf
+        snap:
+            - usr/lib/jvm/default-java/bin
+            - usr/lib/jvm/default-java/lib
+            - usr/lib/jvm/default-java/jre/bin
+            - usr/lib/jvm/default-java/jre/lib
+            - etc/java-*
+            # Jenkins wants fonts.
+            - usr/share/fonts
+            - usr/lib/*/libfontconfig*
+            - etc/fonts/fonts.conf
+    git:
+        # Git support.
+        plugin: nil
+        stage-packages:
+            - git
+        snap:
+            - usr/bin/git*
+            - usr/lib/git*
+            - usr/lib/*/*.so*
+
+# vim: set ai et sts=4 tabstop=4 sw=4:

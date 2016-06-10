@@ -1,0 +1,7 @@
+#!/bin/sh -e
+export XDG_DATA_HOME=$SNAP/usr/share
+export FONTCONFIG_PATH=$SNAP/etc/fonts
+export GIT_EXEC_PATH=$SNAP/usr/lib/git-core
+export JAVA_HOME=$SNAP/usr/lib/jvm/default-java
+export PATH=$SNAP/usr/lib/jvm/default-java/bin:$SNAP/usr/lib/jvm/default-java/jre/bin:$PATH
+java -DJENKINS_HOME="$SNAP_DATA" -Djava.awt.headless=true -jar $@
