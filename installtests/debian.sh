@@ -1,10 +1,10 @@
 #!/bin/bash
-set -ux  # Exit on any command failure or unset variables.
+set -x  # Exit on any command failure, can't use -u because of line 6
 
 . "$(dirname $0)/sh2ju.sh"
 
 if [ -z "$1" ]; then
-  PKG_FOLDER='/tmp/packaging/target/debian/*.deb'
+  PKG_FOLDER=$(ls /tmp/packaging/target/debian/*.deb)
 else 
   PKG_FOLDER="$1"
 fi
@@ -19,4 +19,4 @@ dockerInstall() {
     dpkg -i "$PKG_FOLDER"
 }
 
-juLog -name=debianDockerInstall dockerInstall noop
+juLog -name=debianDockerInstall dockerInstall
