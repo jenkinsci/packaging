@@ -19,4 +19,4 @@ dockerInstall() {
     dpkg -i "$PKG_FOLDER"
 }
 
-juLog -name=debianDockerInstall dockerInstall
+juLog -name=debianDockerInstall dockerInstall noop
