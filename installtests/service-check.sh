@@ -76,7 +76,7 @@ function set_pids {
     DAEMON_PID=$(ps -U jenkins aux | grep daemon | grep -v grep | awk '{print $2}')
     JAVA_PID=$(ps -U jenkins aux | grep java | grep -v grep | awk '{print $2}')
     if [ -f "/var/run/$ARTIFACT_NAME/$ARTIFACT_NAME.pid"  ]; then
-        PIDFILE=$(cat "/var/run/$ARTIFACT_NAME/$ARTIFACT_NAME.pid")
+        PIDFILE="$(cat "/var/run/$ARTIFACT_NAME/$ARTIFACT_NAME.pid")"
     else 
         PIDFILE=null
     fi
@@ -97,7 +97,7 @@ COMMAND='service "$ARTIFACT_NAME" status 2>&1'
 juLog -name=serviceStatusRunningTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "$ARTIFACT_NAME service status after initial start"
 
 set_pids()
-juLog -name=initialServiceStartPid report_test "$ARTIFACT_NAME daemon PID/PIDFILE" $DAEMON_PID $PIDFILE "(no output)"
+juLog -name=initialServiceStartPid report_test "$ARTIFACT_NAME daemon PID/PIDFILE" "$DAEMON_PID" "$PIDFILE" "(no output)"
 
 # Try to curl the server and verify status resolves as started
 COMMAND='curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1'
@@ -134,7 +134,7 @@ COMMAND='service "$ARTIFACT_NAME" status 2>&1'
 juLog -name=serviceRestartedCheckTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "$ARTIFACT_NAME service status after restart from stopped state"
 
 set_pids()
-juLog -name=restartServiceAfterStopPid report_test "$ARTIFACT_NAME daemon PID/PIDFILE" $DAEMON_PID $PIDFILE "(no output)"
+juLog -name=restartServiceAfterStopPid report_test "$ARTIFACT_NAME daemon PID/PIDFILE" "$DAEMON_PID" "$PIDFILE" "(no output)"
 
 # Try to curl the server and verify status resolves as started
 COMMAND='curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1'
