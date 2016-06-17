@@ -110,7 +110,7 @@ juLog -name=serviceRestartTest report_test "$ARTIFACT_NAME service first restart
 
 sleep $SERVICE_WAIT
 
-JENKINS_JAVA_PROC_COUNT=$(ps -U $ARTIFACT_NAME aux | grep java | grep -v grep | wc -l)
+JENKINS_JAVA_PROC_COUNT=$(ps -U $ARTIFACT_NAME aux | grep java | grep -v grep | grep -v defunct| wc -l)
 juLog -name=serviceRetartJavaProcessCount report_test "Java process count for user after restart" $JENKINS_JAVA_PROC_COUNT 1 "no output"
 
 set_pids
@@ -120,7 +120,7 @@ SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" stop 2>&1)
 SERVICE_EXIT_CODE=$?
 juLog -name=serviceStopTest report_test "$ARTIFACT_NAME service stop" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
-JENKINS_JAVA_PROC_COUNT=$(ps -U $ARTIFACT_NAME aux | grep java | grep -v grep | wc -l)
+JENKINS_JAVA_PROC_COUNT=$(ps -U $ARTIFACT_NAME aux | grep java | grep -v grep | grep -v defunct | wc -l)
 juLog -name=serviceStopNoJavaProcess report_test "Java process count for user after stop" $JENKINS_JAVA_PROC_COUNT 0 "no output"
 
 # Test status comes up as stopped eventually
