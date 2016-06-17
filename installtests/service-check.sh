@@ -96,7 +96,7 @@ juLog -name=initialServiceStartTest report_test "$ARTIFACT_NAME initial service 
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
 juLog -name=serviceStatusRunningTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "$ARTIFACT_NAME service status after initial start"
 
-set_pids()
+set_pids
 juLog -name=initialServiceStartPid report_test "$ARTIFACT_NAME daemon PID/PIDFILE" "$DAEMON_PID" "$PIDFILE" "(no output)"
 
 # Try to curl the server and verify status resolves as started
@@ -109,7 +109,7 @@ juLog -name=serviceRestartTest report_test "$ARTIFACT_NAME service first restart
 
 sleep $SERVICE_WAIT
 
-set_pids()
+set_pids
 juLog -name=restartStartPid report_test "$ARTIFACT_NAME daemon PID/PIDFILE" $DAEMON_PID $PIDFILE "(no output)"
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" stop 2>&1)
@@ -120,7 +120,7 @@ juLog -name=serviceStopTest report_test "$ARTIFACT_NAME service stop" $SERVICE_E
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
 juLog -name=serviceStatusStoppedTest repeatedly_test "$COMMAND" 3 "$MAX_STOP_WAIT" "$ARTIFACT_NAME service status check when stopped"
 
-set_pids()
+set_pids
 juLog -name=stoppedServiceDaemonPid report_test "$ARTIFACT_NAME daemon PID absent" $DAEMON_PID "" "(no output)"
 juLog -name=stoppedServiceJavaPid report_test "$ARTIFACT_NAME java PID absent" $JAVA_PID "" "(no output)"
 juLog -name=stoppedServicePidFile report_test "$ARTIFACT_NAME pidfile absent" $PIDFILE "null" "(no output)"
@@ -133,7 +133,7 @@ juLog -name=serviceRestartFromStoppedTest report_test "$ARTIFACT_NAME service re
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
 juLog -name=serviceRestartedCheckTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "$ARTIFACT_NAME service status after restart from stopped state"
 
-set_pids()
+set_pids
 juLog -name=restartServiceAfterStopPid report_test "$ARTIFACT_NAME daemon PID/PIDFILE" "$DAEMON_PID" "$PIDFILE" "(no output)"
 
 # Try to curl the server and verify status resolves as started
