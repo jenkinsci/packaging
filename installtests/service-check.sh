@@ -74,6 +74,7 @@ function repeatedly_test {
 # Fetch the PID values
 function set_pids {
     DAEMON_PID=$(ps -U $ARTIFACT_NAME aux | grep daemon | grep -v grep | awk '{print $2}')
+    echo "$(ps aux -U $ARTIFACT_NAME | grep 'java\|daemon' | grep -v grep)"
     JAVA_PID=$(ps -U $ARTIFACT_NAME aux | grep java | grep -v grep | awk '{print $2}')
     if [ -f "/var/run/$ARTIFACT_NAME/$ARTIFACT_NAME.pid"  ]; then
         PIDFILE="$(cat "/var/run/$ARTIFACT_NAME/$ARTIFACT_NAME.pid")"
