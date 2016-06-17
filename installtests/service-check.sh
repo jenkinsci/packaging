@@ -33,7 +33,7 @@ function report_test {
     if [[ -z "$2" && -z "$3" ]]; then
             echo "TEST PASSED - $1  with both inputs empty as expected"
     else
-        if [ "$2" -ne "$3" ]; then
+        if [ "$2" != "$3" ]; then
             echo "TEST FAILED - $1 - with status code $2, expected $3"
             echo "Test command output:"
             echo "$4"
