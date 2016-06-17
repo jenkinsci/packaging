@@ -30,13 +30,17 @@ error_count=0
 # Arg 3: test expected status code to pass
 # Arg 4: command output variable
 function report_test {
-    if [ "$2" -ne "$3" ]; then
-        echo "TEST FAILED - $1 - with status code $2, expected $3"
-        echo "Test command output:"
-        echo "$4"
-        error_count=$((error_count+1))
+    if [[ -z "$2" && -z "$3" ]]; then
+            echo "TEST PASSED - $1  with both inputs empty as expected"
     else
-        echo "TEST PASSED - $1  with expected status code $2"
+        if [ "$2" -ne "$3" ]; then
+            echo "TEST FAILED - $1 - with status code $2, expected $3"
+            echo "Test command output:"
+            echo "$4"
+            error_count=$((error_count+1))
+        else
+            echo "TEST PASSED - $1  with expected status code $2"
+        fi
     fi
 }
 
@@ -67,6 +71,17 @@ function repeatedly_test {
     return 1
 }
 
+# Fetch the PID values
+function set_pids {
+    DAEMON_PID=$(ps -U jenkins aux | grep daemon | grep -v grep | awk '{print $2}')
+    JAVA_PID=$(ps -U jenkins aux | grep java | grep -v grep | awk '{print $2}')
+    if [ -f "/var/run/$ARTIFACT_NAME/$ARTIFACT_NAME.pid"  ]; then
+        PIDFILE=$(cat "/var/run/$ARTIFACT_NAME/$ARTIFACT_NAME.pid")
+    else 
+        PIDFILE=null
+    fi
+}
+
 # Check if jenkins user is present
 # TODO add check for jenkins group too...
 getent passwd "$ARTIFACT_NAME"
@@ -81,6 +96,9 @@ juLog -name=initialServiceStartTest report_test "$ARTIFACT_NAME initial service 
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
 juLog -name=serviceStatusRunningTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "$ARTIFACT_NAME service status after initial start"
 
+set_pids()
+juLog -name=initialServiceStartPid report_test "$ARTIFACT_NAME daemon PID/PIDFILE" $DAEMON_PID $PIDFILE "(no output)"
+
 # Try to curl the server and verify status resolves as started
 COMMAND='curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1'
 juLog -name=curlTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Curl to host"
@@ -91,6 +109,9 @@ juLog -name=serviceRestartTest report_test "$ARTIFACT_NAME service first restart
 
 sleep $SERVICE_WAIT
 
+set_pids()
+juLog -name=restartStartPid report_test "$ARTIFACT_NAME daemon PID/PIDFILE" $DAEMON_PID $PIDFILE "(no output)"
+
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" stop 2>&1)
 SERVICE_EXIT_CODE=$?
 juLog -name=serviceStopTest report_test "$ARTIFACT_NAME service stop" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
@@ -99,6 +120,11 @@ juLog -name=serviceStopTest report_test "$ARTIFACT_NAME service stop" $SERVICE_E
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
 juLog -name=serviceStatusStoppedTest repeatedly_test "$COMMAND" 3 "$MAX_STOP_WAIT" "$ARTIFACT_NAME service status check when stopped"
 
+set_pids()
+juLog -name=stoppedServiceDaemonPid report_test "$ARTIFACT_NAME daemon PID absent" $DAEMON_PID "" "(no output)"
+juLog -name=stoppedServiceJavaPid report_test "$ARTIFACT_NAME java PID absent" $JAVA_PID "" "(no output)"
+juLog -name=stoppedServicePidFile report_test "$ARTIFACT_NAME pidfile absent" $PIDFILE "null" "(no output)"
+
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" restart 2>&1)
 SERVICE_EXIT_CODE=$?
 juLog -name=serviceRestartFromStoppedTest report_test "$ARTIFACT_NAME service restart from stopped state" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
@@ -106,6 +132,9 @@ juLog -name=serviceRestartFromStoppedTest report_test "$ARTIFACT_NAME service re
 # Try to check service status and verify it eventually resolves as running
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
 juLog -name=serviceRestartedCheckTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "$ARTIFACT_NAME service status after restart from stopped state"
+
+set_pids()
+juLog -name=restartServiceAfterStopPid report_test "$ARTIFACT_NAME daemon PID/PIDFILE" $DAEMON_PID $PIDFILE "(no output)"
 
 # Try to curl the server and verify status resolves as started
 COMMAND='curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1'
