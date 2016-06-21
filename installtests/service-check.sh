@@ -110,7 +110,7 @@ juLog -name=serviceRestartTest report_test "$ARTIFACT_NAME service first restart
 
 sleep $SERVICE_WAIT
 
-JENKINS_JAVA_PROC_COUNT=$(ps -U $ARTIFACT_NAME aux | grep java | grep -v grep | grep -v defunct| wc -l)
+JENKINS_JAVA_PROC_COUNT=$(ps -U $ARTIFACT_NAME aux | grep java | grep -v grep | grep -v daemon | grep -v defunct| wc -l)
 juLog -name=serviceRetartJavaProcessCount report_test "Java process count for user after restart" $JENKINS_JAVA_PROC_COUNT 1 "no output"
 
 set_pids
