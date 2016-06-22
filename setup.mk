@@ -2,7 +2,7 @@
 export WAR?=$(error Required variable WAR must point to the jenkins.war file you are packaging)
 
 # sanitized version number
-export VERSION:=$(shell unzip -p "${WAR}" META-INF/MANIFEST.MF | grep Implementation-Version | cut -d ' ' -f2 | tr -d '\r' | sed -e "s/-SNAPSHOT//" | sed -e "s/-alpha-.*//" | sed -e "s/-beta-.*//")
+export VERSION:=$(shell unzip -p "${WAR}" META-INF/MANIFEST.MF | grep Implementation-Version | cut -d ' ' -f2 | tr -d '\r' | sed -e "s/-SNAPSHOT//" | sed -e "s/-alpha-.*//" | sed -e "s/-beta-.*//" | sed -e "s/-rc-.*//")
 
 # directory to place marker files for build artifacts
 export TARGET:=target
@@ -35,4 +35,3 @@ export LICENSE_TEXT_COMMENTED:=$(shell echo "$(LICENSE_TEXT_COLUMN)" | sed  's!^
 
 # Put a dot in place of an empty line, and prepend a space
 export LICENSE_TEXT_DEB:=$(shell echo "$(LICENSE_TEXT_COLUMN)" | sed -e 's!^$$!.!g' -e 's!^! !g' )
-
