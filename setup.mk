@@ -35,3 +35,4 @@ export LICENSE_TEXT_COMMENTED:=$(shell echo "$(LICENSE_TEXT_COLUMN)" | sed  's!^
 
 # Put a dot in place of an empty line, and prepend a space
 export LICENSE_TEXT_DEB:=$(shell echo "$(LICENSE_TEXT_COLUMN)" | sed -e 's!^$$!.!g' -e 's!^! !g' )
+
