@@ -2,8 +2,8 @@
 
 base=$(dirname $0)
 
-ssh $PKGSERVER mkdir -p "'$RPMDIR/'"
-rsync -avz "$RPM" "$PKGSERVER:$(echo $RPMDIR | sed 's/ /\\ /g')/"
+ssh $SSH_OPTS $PKGSERVER mkdir -p "'$RPMDIR/'"
+rsync -avz -e "ssh $SSH_OPTS" "$RPM" "$PKGSERVER:$(echo $RPMDIR | sed 's/ /\\ /g')/"
 
 D=/tmp/$$
 mkdir -p $D/RPMS/noarch
@@ -24,11 +24,11 @@ gpgcheck=1
 EOF
 
 pushd $D
-  rsync -avz --exclude RPMS . "$PKGSERVER:$(echo $RPM_WEBDIR | sed 's/ /\\ /g')"
+  rsync -avz -e "ssh $SSH_OPTS" --exclude RPMS . "$PKGSERVER:$(echo $RPM_WEBDIR | sed 's/ /\\ /g')"
 popd
 
 # generate index on the server
 # server needs 'createrepo' pacakge
-ssh $PKGSERVER createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
+ssh $SSH_OPTS $PKGSERVER createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
 
 rm -rf $D

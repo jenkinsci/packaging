@@ -1,2 +1,2 @@
 #!/bin/bash -ex
-rsync -avz "${OSX}" "$PKGSERVER:$OSXDIR/"
+rsync -avz -e "$SSH_OPTS" "${OSX}" "$PKGSERVER:$OSXDIR/"
