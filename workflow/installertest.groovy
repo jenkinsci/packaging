@@ -309,8 +309,14 @@ void runJenkinsInstallTests(String packagingTestBranch='master',
   
   stage 'Run Installation Tests'
   String[] stepNames = ['install', 'servicecheck']
-  this.executeInstallTestset(osesToTest("core"), scriptPath, artifactName, jenkinsPort, stepNames)
-  this.executeInstallTestset(osesToTest("extended"), scriptPath, artifactName, jenkinsPort, stepNames)
+  try {
+    this.executeInstallTestset(osesToTest("core"), scriptPath, artifactName, jenkinsPort, stepNames)
+    this.executeInstallTestset(osesToTest("extended"), scriptPath, artifactName, jenkinsPort, stepNames)  
+  } catch (Exception ex) {
+    throw ex
+  } finally {
+    sh 'rm -rf installers || true'
+  }
 }
 
 /** Fetch jenkins artifacts and run installer tests
