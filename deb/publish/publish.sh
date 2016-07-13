@@ -1,8 +1,8 @@
 #!/bin/bash -ex
 bin="$(dirname $0)"
 
-ssh $PKGSERVER mkdir -p "'$DEBDIR/'"
-rsync -avz "${DEB}" "$PKGSERVER:$(echo $DEBDIR | sed 's/ /\\ /g')/"
+ssh $SSH_OPTS $PKGSERVER mkdir -p "'$DEBDIR/'"
+rsync -avz -e "ssh $SSH_OPTS" "${DEB}" "$PKGSERVER:$(echo $DEBDIR | sed 's/ /\\ /g')/"
 
 D=/tmp/$$
 mkdir -p $D/binary $D/contents
@@ -42,6 +42,6 @@ gpg --batch --no-use-agent --no-default-keyring --keyring "$GPG_KEYRING" --secre
 
 cp $D/binary/Packages.* $D/binary/Release $D/binary/Release.gpg $D/binary/Contents.gz $D/contents/binary
 
-rsync -avz $D/contents/ "$PKGSERVER:$(echo $DEB_WEBDIR | sed 's/ /\\ /g')"
+rsync -avz -e "ssh $SSH_OPTS" $D/contents/ "$PKGSERVER:$(echo $DEB_WEBDIR | sed 's/ /\\ /g')"
 
 rm -rf $D

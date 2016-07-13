@@ -39,8 +39,8 @@ docker.test: docker.images
 
 war: ${WAR}
 war.publish: ${WAR}
-	ssh ${PKGSERVER} mkdir -p "'${WARDIR}/${VERSION}/'"
-	rsync -avz "${WAR}" "${PKGSERVER}:${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
+	ssh ${SSH_OPTS} ${PKGSERVER} mkdir -p "'${WARDIR}/${VERSION}/'"
+	rsync -avz -e "ssh ${SSH_OPTS}" "${WAR}" "${PKGSERVER}:${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
 
 
 
