@@ -7,7 +7,7 @@ export JENKINS_URL=https://cloudbees.ci.cloudbees.com/
 
 # the host to publish bits to
 export PKGSERVER=${USER}@localhost
-export SSH_OPTS=""
+export SSH_OPTS=
 
 # where to put binary files
 export TESTDIR=$(realpath .)/pkg.jenkins.io
