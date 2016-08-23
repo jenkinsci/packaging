@@ -8,8 +8,12 @@ require 'net/sftp' # gem install net-sftp
 def list_packages(path,glob,rel)
 	# user name and server name
 	u,s=ENV['PKGSERVER'].split("@")
+        # Look for port option
+        portOption = ENV['SSH_OPTS'].scan(/-p [0-9]+/)
+        # Get port if set
+        p = portOption.empty? ? 22 : portOption.first.split(" ").last
 
-    Net::SFTP.start(s,u) do |sftp|
+    Net::SFTP.start(s,u,:port=>p) do |sftp|
         debs = [];
         sftp.dir.glob(path,glob) { |f| debs << f }
         
