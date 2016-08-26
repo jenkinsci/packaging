@@ -30,10 +30,10 @@ fi
 case "$(uname)" in
   CYGWIN*)
     java -jar $TARGET/jenkins-cli.jar $CLI_SSH_ARGS dist-fork -z `cygpath --dos $D/bundle.tgz` -f ${ARTIFACTNAME}.war="${WAR}" -l "windows && packaging" -F "${MSI}=${ARTIFACTNAME}-windows.zip" \
-          bash -ex build.sh ${ARTIFACTNAME}.war $encodedv ${ARTIFACTNAME} "${PRODUCTNAME}" ${PORT} ;;
+          bash -ex build.sh ${ARTIFACTNAME}.war $encodedv ${ARTIFACTNAME} "${PRODUCTNAME}" ${PORT} ${CAMELARTIFACTNAME} ;;
   *)
     java -jar $TARGET/jenkins-cli.jar $CLI_SSH_ARGS dist-fork -z $D/bundle.tgz -f ${ARTIFACTNAME}.war="${WAR}" -l "windows && packaging" -F "${MSI}=${ARTIFACTNAME}-windows.zip" \
-          bash -ex build.sh ${ARTIFACTNAME}.war $encodedv ${ARTIFACTNAME} "${PRODUCTNAME}" ${PORT} ;;
+          bash -ex build.sh ${ARTIFACTNAME}.war $encodedv ${ARTIFACTNAME} "${PRODUCTNAME}" ${PORT} ${CAMELARTIFACTNAME} ;;
 esac
 
 touch ${MSI}
