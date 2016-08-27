@@ -71,18 +71,26 @@ check_tcp_port() {
     local service=$1
     local assigned=$2
     local default=$3
+    local assigned_address=$4
+    local default_address=$5
 
-    if [ -n "$assigned" ]; then 
+    if [ -n "$assigned" ]; then
         port=$assigned
     else
         port=$default
     fi
-    
-    count=`netstat --listen --numeric-ports | grep \:$port[[:space:]] | grep -c . `
+
+    if [ -n "$assigned_address" ]; then
+        address=$assigned_address
+    else
+        address=$default_address
+    fi
+
+    count=`netstat --listen --numeric-ports | grep $address\:$port[[:space:]] | grep -c . `
     
     if [ $count -ne 0 ]; then
-        echo "The selected $service port ($port) seems to be in use by another program "
-        echo "Please select another port to use for $NAME"
+        echo "The selected $service port ($port) on address $address seems to be in use by another program "
+        echo "Please select another address/port combination to use for $NAME"
         return 1
     fi
 }
@@ -103,7 +111,7 @@ do_start()
 
     # Verify that the jenkins port is not already in use, winstone does not exit
     # even for BindException
-    check_tcp_port "http" "$HTTP_PORT" "@@PORT@@" || return 2
+    check_tcp_port "http" "$HTTP_PORT" "@@PORT@@" "$HTTP_HOST" "0.0.0.0" || return 2
     
     # If the var MAXOPENFILES is enabled in /etc/default/jenkins then set the max open files to the 
     # proper value
