@@ -6,8 +6,9 @@ ENCODEDVERSION="$2"
 ARTIFACTNAME="$3"
 PRODUCTNAME="$4"
 PORT="$5"
-if [ "" == "$PORT" ]; then
-  echo "build.sh path/to/jenkins.war version artifactName port"
+SERVICENAME="$6"
+if [ "" == "$SERVICENAME" ]; then
+  echo "build.sh path/to/jenkins.war version artifactName port servicename"
   exit 1
 fi
 
@@ -15,9 +16,25 @@ rm -rf tmp || true
 mkdir tmp || true
 unzip -p "$war" 'WEB-INF/lib/jenkins-core-*.jar' > tmp/core.jar
 unzip -p tmp/core.jar windows-service/jenkins.exe > tmp/jenkins.exe
-unzip -p tmp/core.jar windows-service/jenkins.xml | sed -e "s|\bjenkins\b|${ARTIFACTNAME}|" | sed -e "s|8080|${PORT}|" > tmp/jenkins.xm_
+unzip -p tmp/core.jar windows-service/jenkins.xml > tmp/jenkins.xml 
+
+### replace the hard coded variables
+
+# the WAR argument  ( -jar "%BASE%\jenkins.war") 
+sed -i -e "s|\bjenkins\.war\b|${ARTIFACTNAME}\.war|" tmp/jenkins.xml
+
+# The service id (used to localte the servicce in the SCM <id>jenkins</id>)
+sed -i -e "s|<id>.*</id>|<id>${SERVICENAME}</id>|" tmp/jenkins.xml
+
+# the --httpPort=8080 argument
+sed -i -e "s|8080|${PORT}|" tmp/jenkins.xml
+
 # replace executable name to the bundled JRE
-sed -e 's|executable.*|executable>%BASE%\\jre\\bin\\java</executable>|' < tmp/jenkins.xm_ > tmp/jenkins.xml
+sed -i -e 's|executable.*|executable>%BASE%\\jre\\bin\\java</executable>|' tmp/jenkins.xml
+
+# The service description - not actually used as this is installed by the msi - but people could if they wanted to...
+sed -i -e "s|<description>\.*</description>|<id>${PRODUCTNAME}</id>|" tmp/jenkins.xml
+
 
 # capture JRE
 javac FindJava.java
