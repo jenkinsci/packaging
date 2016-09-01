@@ -129,7 +129,7 @@ do_start()
 # 
 get_running() 
 {
-    return `ps -U $JENKINS_USER --no-headers -f | egrep -e '(java|daemon)' | grep -c . `
+    return `ps -U $JENKINS_USER --no-headers -f | egrep -e '(java)' | grep -v defunct | grep -c . `
 }
 
 force_stop() 

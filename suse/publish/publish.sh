@@ -2,8 +2,8 @@
 
 base=$(dirname $0)
 
-ssh $PKGSERVER mkdir -p "'$SUSEDIR/'"
-rsync -avz "${SUSE}" "$PKGSERVER:$(echo $SUSEDIR | sed 's/ /\\ /g')/"
+ssh $SSH_OPTS $PKGSERVER mkdir -p "'$SUSEDIR/'"
+rsync -avz -e "ssh $SSH_OPTS" "${SUSE}" "$PKGSERVER:$(echo $SUSEDIR | sed 's/ /\\ /g')/"
 
 D=/tmp/$$
 mkdir -p $D/RPMS/noarch $D/repodata
@@ -17,16 +17,16 @@ cp "${GPG_PUBLIC_KEY}" $D/repodata/repomd.xml.key
 cp "$SUSE" $D/RPMS/noarch
 
 pushd $D
-  rsync -avz --exclude RPMS . "$PKGSERVER:$(echo $SUSE_WEBDIR | sed 's/ /\\ /g')"
+  rsync -avz -e "ssh $SSH_OPTS" --exclude RPMS . "$PKGSERVER:$(echo $SUSE_WEBDIR | sed 's/ /\\ /g')"
 
   # generate index on the server
   # server needs 'createrepo' pacakge
-  ssh $PKGSERVER createrepo --update -o "'$SUSE_WEBDIR'" "'$SUSEDIR/'"
+  ssh $SSH_OPTS $PKGSERVER createrepo --update -o "'$SUSE_WEBDIR'" "'$SUSEDIR/'"
 
   # sign the final artifact and upload the signature
-  scp "$PKGSERVER:$(echo $SUSE_WEBDIR | sed 's/ /\\ /g')/repodata/repomd.xml" repodata/
+  scp $SCP_OPTS "$PKGSERVER:$(echo $SUSE_WEBDIR | sed 's/ /\\ /g')/repodata/repomd.xml" repodata/
 
   gpg --batch --no-use-agent --no-default-keyring --keyring "$GPG_KEYRING" --secret-keyring="$GPG_SECRET_KEYRING" --passphrase-file "$GPG_PASSPHRASE_FILE" \
     -a --detach-sign --yes repodata/repomd.xml
-  scp repodata/repomd.xml.asc "$PKGSERVER:$(echo $SUSE_WEBDIR | sed 's/ /\\ /g')/repodata/"
+  scp $SCP_OPTS repodata/repomd.xml.asc "$PKGSERVER:$(echo $SUSE_WEBDIR | sed 's/ /\\ /g')/repodata/"
 popd

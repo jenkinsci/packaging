@@ -1,2 +1,2 @@
 #!/bin/bash -ex
-rsync -avz "$MSI" "$PKGSERVER:$MSIDIR/"
+rsync -avz -e "ssh $SSH_OPTS" "$MSI" "$PKGSERVER:$MSIDIR/"

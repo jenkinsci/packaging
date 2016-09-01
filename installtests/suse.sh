@@ -1,12 +1,12 @@
 #!/bin/bash
 
-set -ux  # Exit on any command failure or unset variables.
+set -x  # Exit on any command failure, can't use -u because of line 8
 
 . "$(dirname $0)/sh2ju.sh"
 # Assume packaging is mounted to /tmp/packaging and built
 
 if [ -z "$1" ]; then
-  PKG_FOLDER='/tmp/packaging/target/suse/*.rpm'
+  PKG_FOLDER=$(ls /tmp/packaging/target/suse/*.rpm)
 else 
   PKG_FOLDER="$1"
 fi
