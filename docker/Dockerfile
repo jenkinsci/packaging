@@ -1,6 +1,15 @@
 FROM ubuntu:14.04
 MAINTAINER svanoort <samvanoort@gmail.com>
 
+# User id of the build user
+ARG uid=4242
+ENV uid $uid
+
+# Group id of the build user
+ARG gid=4242
+ENV gid $gid
+
+RUN groupadd builder -g $gid && useradd builder -u $uid -g $gid -m -d /home/builder
 
 # Dependencies plus vim for convenience, wget if you're trying to get fancy
 RUN apt-get update \
