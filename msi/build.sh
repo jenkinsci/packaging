@@ -51,7 +51,7 @@ candle -dJreDir="$JREDIR" -dWAR="$war" -dJavaExeId=$JavaExeId -nologo -ext WixUI
 light -o ${ARTIFACTNAME}.msi -sval -nologo -dcl:high -ext WixUIExtension -ext WixUtilExtension -ext WixFirewallExtension jenkins.wixobj jre.wixobj
 
 set +x
-signtool sign /v /f key.pkcs12 /p $(cat key.password) /t http://timestamp.verisign.com/scripts/timestamp.dll ${ARTIFACTNAME}.msi
+signtool sign /v /f key.pkcs12 /p $(cat key.password) /t http://timestamp.verisign.com/scripts/timestamp.dll /d "$ARTIFACTNAME" ${ARTIFACTNAME}.msi
 set -x
 
 zip ${ARTIFACTNAME}-windows.zip ${ARTIFACTNAME}.msi
