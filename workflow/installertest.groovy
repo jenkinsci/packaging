@@ -92,7 +92,7 @@ private def osesToTest(String category) {
           "opensuse-13.2",
           "sudo-opensuse:13.2",
           "suse",
-          "core"
+          "extended"
       ]
   ]
 
@@ -290,7 +290,7 @@ def executeInstallTestset(List testOSList, String scriptPath, String artifactNam
 *  @param jenkinsPort port to use for speaking to jenkins (default 8080)
 */
 void runJenkinsInstallTests(String packagingTestBranch='master', 
-    String artifactName='jenkins', String jenkinsPort='8080') {
+    String artifactName='jenkins', String jenkinsPort='8080', boolean runExtended=false) {
   // Set up
   String scriptPath = 'packaging-docker/installtests'
   String checkCmd = "sudo $scriptPath/service-check.sh $artifactName $jenkinsPort"
@@ -311,7 +311,9 @@ void runJenkinsInstallTests(String packagingTestBranch='master',
   String[] stepNames = ['install', 'servicecheck']
   try {
     this.executeInstallTestset(osesToTest("core"), scriptPath, artifactName, jenkinsPort, stepNames)
-    this.executeInstallTestset(osesToTest("extended"), scriptPath, artifactName, jenkinsPort, stepNames)  
+    if (runExtended) {
+      this.executeInstallTestset(osesToTest("extended"), scriptPath, artifactName, jenkinsPort, stepNames)  
+    }
   } catch (Exception ex) {
     throw ex
   } finally {
