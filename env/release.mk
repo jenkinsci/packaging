@@ -24,9 +24,9 @@ export SUSE_WEBDIR=/var/www/pkg.jenkins.io.staging/opensuse${RELEASELINE}
 export  DEB_WEBDIR=/var/www/pkg.jenkins.io.staging/debian${RELEASELINE}
 
 # URL to the aforementioned webdir
-export  RPM_URL=http://pkg.jenkins.io/redhat${RELEASELINE}
-export SUSE_URL=http://pkg.jenkins.io/opensuse${RELEASELINE}
-export  DEB_URL=http://pkg.jenkins.io/debian${RELEASELINE}
+export  RPM_URL=https://pkg.jenkins.io/redhat${RELEASELINE}
+export SUSE_URL=https://pkg.jenkins.io/opensuse${RELEASELINE}
+export  DEB_URL=https://pkg.jenkins.io/debian${RELEASELINE}
 
 # additoinal contents to be overlayed during publishing
 export OVERLAY_CONTENTS=${BASE}/env/release
