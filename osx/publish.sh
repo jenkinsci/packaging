@@ -1,4 +1,5 @@
 #!/bin/bash -ex
-sha256sum ${OSX} > ${OSX_SHASUM}
+rsync -avz -e "ssh $SSH_OPTS" "${OSX}" "$PKGSERVER:$OSXDIR/"
+sha256sum ${OSX} | sed 's, .*/, ,' > ${OSX_SHASUM}
 cat ${OSX_SHASUM}
-rsync -avz -e "ssh $SSH_OPTS" "${OSX}" "${OSX_SHASUM}" "$PKGSERVER:$OSXDIR/"
+cat ${OSX_SHASUM} | ssh ${SSH_OPTS} ${PKGSERVER} "cat >> $OSXDIR/SHA256SUMS"

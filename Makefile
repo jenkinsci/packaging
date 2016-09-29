@@ -40,9 +40,10 @@ docker.test: docker.images
 war: ${WAR}
 war.publish: ${WAR}
 	ssh ${SSH_OPTS} ${PKGSERVER} mkdir -p "'${WARDIR}/${VERSION}/'"
-	sha256sum ${WAR} > ${WAR_SHASUM}
+	rsync -avz -e "ssh ${SSH_OPTS}" "${WAR}" "${PKGSERVER}:${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
+	sha256sum ${WAR} | sed 's, .*/, ,' > ${WAR_SHASUM}
 	cat ${WAR_SHASUM}
-	rsync -avz -e "ssh ${SSH_OPTS}" "${WAR}" "${WAR_SHASUM}" "${PKGSERVER}:${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
+	cat ${WAR_SHASUM} | ssh ${SSH_OPTS} ${PKGSERVER} "cat >> ${WARDIR}/${VERSION}/SHA256SUMS"
 
 
 
