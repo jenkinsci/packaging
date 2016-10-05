@@ -18,5 +18,5 @@ export CHANGELOG_PAGE=http://jenkins.io/changelog
 BRANDING_DIR:=$(shell dirname "$(realpath $(lastword $(MAKEFILE_LIST)))")
 
 export DESCRIPTION_FILE=$(BRANDING_DIR)/description-file
-export DESCRIPTION:=$(shell cat "$(BRANDING_DIR)/description-file")
+export DESCRIPTION_FILE_DEB=$(BRANDING_DIR)/description-file-deb
 export LICENSE_FILE=$(BRANDING_DIR)/license-mit
