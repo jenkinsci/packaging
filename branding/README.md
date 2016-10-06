@@ -25,7 +25,6 @@ Each of these is an (absolute) path to a file containing a larger blob of brand-
 The file is read to the environment variable, and then templated in as with the variables above
 
 * `DESCRIPTION_FILE`: path to file containing the RPM description section (see 'description-file' in branding for an example)
-* `DESCRIPTION_FILE_DEB`: path to file containing the Debian description section (see 'description-file-deb' in branding for an example).  This should be the same as the DESCRIPTION FILE, just following Debian packaging convention.
 
 # Special handling:
 
