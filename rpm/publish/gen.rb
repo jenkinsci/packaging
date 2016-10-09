@@ -9,12 +9,12 @@ url=ENV['RPM_URL']
 puts <<-EOS
 <html>
 <!-- generated. do not manually edit -->
-<head> 
-  <title>RedHat Repository for #{productName}</title> 
-  <style> 
+<head>
+  <title>RedHat Repository for #{productName}</title>
+  <style>
     TH { font-weight: bold; }
     #rpms { border-spacing:3em 0em; margin-top:2em; }
-  </style> 
+  </style>
 </head>
 <body>
 <h1>RedHat Linux RPM packages for #{productName}</h1>

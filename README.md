@@ -33,7 +33,7 @@ The location of this file is set via the `WAR` variable.
 
 # Generating packages
 Run `make package` to build all the native packages.
-At minimum, you have to specify the `WAR` variable that points to the war file to be packaged and a branding file (for licensing and package descriptions). 
+At minimum, you have to specify the `WAR` variable that points to the war file to be packaged and a branding file (for licensing and package descriptions).
 You will probably need to pass in the build environment and credentials.
 
 For example:
@@ -83,7 +83,7 @@ Specify the branding file via the `BRAND` variable.
 
 You can create your own branding definition to customize the package generation process.
 See [branding readme](branding/README.md) for more details. In the rest of the packaging script files,
-these branding parameters are referenced via `@@NAME@@` and get substituted by `bin/branding.py`.  
+these branding parameters are referenced via `@@NAME@@` and get substituted by `bin/branding.py`.
 To escape a string normally like @@VALUE@@, add an additional two @@ symbols as a prefix: @@@@VALUE@@.
 
 # Environment
