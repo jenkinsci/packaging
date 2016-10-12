@@ -13,8 +13,14 @@ mkdir -p $D
 # so that multiple builds can go on concurrently
 cp -R $dir/* $D
 
+# Create a description temp file
+sed -i.bak -e 's/^\s*$/./' -e 's/^/ /' $DESCRIPTION_FILE
+
 # Expand variables in the definition
 "$BASE/bin/branding.py" $D/debian
+
+# Rewrite the file 
+mv "$DESCRIPTION_FILE.bak" "$DESCRIPTION_FILE"
 
 cat > $D/debian/changelog << EOF
 ${ARTIFACTNAME} ($VERSION) unstable; urgency=low
