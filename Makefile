@@ -24,7 +24,9 @@ setup:
 
 package: war msi osx deb rpm suse
 
-publish: war.publish msi.publish osx.publish deb.publish rpm.publish suse.publish
+publish: 
+	bash ./toolAvailability.sh
+	war.publish msi.publish osx.publish deb.publish rpm.publish suse.publish
 
 test: deb.test rpm.test suse.test
 
