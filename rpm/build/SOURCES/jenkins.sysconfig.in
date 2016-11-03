@@ -38,13 +38,45 @@ JENKINS_USER="@@ARTIFACTNAME@@"
 #
 #JENKINS_INSTALL_SKIP_CHOWN="false"
 
-## Type: string
-## Default:     "-Djava.awt.headless=true"
+## Type:        string
+## Default:     "-server -XX:+AlwaysPreTouch -XX:+ParallelRefProcEnabled"
+## ServiceRestart: @@ARTIFACTNAME@@
+# Sensible defaults, server is normally default but we ensure it is on
+# AlwaysPreTouch prezeroes allocated heap pages at startup, which improves runtime performance at slight cost to startup time
+# ParallelRefProcEnabled enables use of concurrent threads to process references, which Jenkins uses heavily for caching
+BASE_JAVA_ARGS=' -server -XX:+AlwaysPreTouch -XX:+ParallelRefProcEnabled '
+
+## Type:        string
+## Default:     "-Xloggc:$JENKINS_HOME/gc-%t.log -XX:NumberOfGCLogFiles=2 -XX:+UseGCLogFileRotation -XX:GCLogFileSize=100m -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintHeapAtGC -XX:+PrintGCCause -XX:+PrintTenuringDistribution -XX:+PrintReferenceGC -XX:+PrintAdaptiveSizePolicy "
+# Turns on GC logging for Jenkins, with log rotation, for diagnostics and tuning use
+GC_LOGGING=" -Xloggc:$JENKINS_HOME/gc-%t.log -XX:NumberOfGCLogFiles=2 -XX:+UseGCLogFileRotation -XX:GCLogFileSize=100m \
+  -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintHeapAtGC -XX:+PrintGCCause \
+  -XX:+PrintTenuringDistribution -XX:+PrintReferenceGC -XX:+PrintAdaptiveSizePolicy "
+
+## Type:        string
+## Default:     "-XX:+UseG1GC -XX:+UnlockDiagnosticVMOptions -XX:G1SummarizeRSetStatsPeriod=1 -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses -XX:+UseStringDeduplication"
+# G1 GC default arguments - if you are using multiple cores and a heap of >= 2 GB then you should use this and tweak it
+# Suggested tweaks: increase region size, especially for small heap sizes i.e. -XX:G1HeapRegionSize=8
+G1GC_ARGS=' -XX:+UseG1GC -XX:+UnlockDiagnosticVMOptions -XX:G1SummarizeRSetStatsPeriod=1 -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses -XX:+UseStringDeduplication '
+
+# Look to see if we should autoselect G1 garbage collection instead of defaults, with more than 2 cores and Java 8 or newer
+CPU_COUNT=$(cat /proc/cpuinfo | grep 'core id' | sort | uniq | wc -l)
+# This is not *guaranteed* to use the same Java version as Jenkins does, but it's a reasonable heuristic
+JAVA_VERSION=$(java -version 2>&1 | grep -Eo '"[0-9]\.[0-9]+.[0-9]*_?[0-9]*"' | sed 's/_/./g' | sed 's/"//g')
+MAJOR_JAVA_VERSION=$(echo $JAVA_VERSION | sed -E 's/[0-9]+\.([0-9]+)\.[0-9]+\.[0-9]+/\1/g')
+if [ -z "$MAJOR_JAVA_VERSION" ]; then MAJOR_JAVA_VERSION=8; fi
+AUTO_GC=""
+if [ $CPU_COUNT -gt 2 ] && [ $MAJOR_JAVA_VERSION -gt 7 ]; then
+    AUTO_GC=$G1GC_ARGS
+fi
+
+## Type:        string
+## Default:     "-Djava.awt.headless=true $BASE_JAVA_ARGS $GC_LOGGING $AUTO_GC"
 ## ServiceRestart: @@ARTIFACTNAME@@
 #
-# Options to pass to java when running Jenkins.
+# Options to pass to java when running Jenkins.  We may remove the variables defined above if needed.
 #
-JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true"
+JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true $BASE_JAVA_ARGS $GC_LOGGING $AUTO_GC"
 
 ## Type:        integer(0:65535)
 ## Default:     @@PORT@@
