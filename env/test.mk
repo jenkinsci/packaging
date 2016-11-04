@@ -29,6 +29,3 @@ WEBSERVER=test.pkg.jenkins.io:9200
 export  RPM_URL=http://${WEBSERVER}/redhat${RELEASELINE}
 export SUSE_URL=http://${WEBSERVER}/opensuse${RELEASELINE}
 export  DEB_URL=http://${WEBSERVER}/debian${RELEASELINE}
-
-# additoinal contents to be overlayed during publishing
-export OVERLAY_CONTENTS=${BASE}/env/release

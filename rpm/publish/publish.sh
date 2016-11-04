@@ -11,7 +11,6 @@ mkdir -p $D/RPMS/noarch
 "$base/gen.rb" > $D/index.html
 cp "${GPG_PUBLIC_KEY}" $D/${ORGANIZATION}.key
 
-[ -d "${OVERLAY_CONTENTS}/rpm" ] && cp -R "${OVERLAY_CONTENTS}/rpm/." $D
 "$BASE/bin/branding.py" $D
 
 cp "$RPM" $D/RPMS/noarch
