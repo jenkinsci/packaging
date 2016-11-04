@@ -12,7 +12,6 @@ cp "${GPG_PUBLIC_KEY}" $D/contents/${ORGANIZATION}.key
 # generate web index
 "$bin/gen.rb" > $D/contents/index.html
 
-[ -d "${OVERLAY_CONTENTS}/debian" ] && cp -R "${OVERLAY_CONTENTS}/debian/." $D/contents
 "$BASE/bin/branding.py" $D
 
 
