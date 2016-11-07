@@ -64,7 +64,7 @@ CPU_COUNT=$(cat /proc/cpuinfo | grep 'core id' | sort | uniq | wc -l)
 # This is not *guaranteed* to use the same Java version as Jenkins does, but it's a reasonable heuristic
 JAVA_VERSION=$(java -version 2>&1 | grep -Eo '"[0-9]\.[0-9]+.[0-9]*_?[0-9]*"' | sed 's/_/./g' | sed 's/"//g')
 MAJOR_JAVA_VERSION=$(echo $JAVA_VERSION | sed -E 's/[0-9]+\.([0-9]+)\.[0-9]+\.[0-9]+/\1/g')
-if [ -z "$MAJOR_JAVA_VERSION" ]; then MAJOR_JAVA_VERSION=8; fi
+if [ -z "$MAJOR_JAVA_VERSION" ]; then MAJOR_JAVA_VERSION=7; fi
 AUTO_GC=""
 if [ $CPU_COUNT -gt 2 ] && [ $MAJOR_JAVA_VERSION -gt 7 ]; then
     AUTO_GC=$G1GC_ARGS
