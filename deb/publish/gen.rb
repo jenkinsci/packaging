@@ -16,31 +16,31 @@ puts <<-EOS
   </style>
 </head>
 <body>
-<h1>#{productName} Debian packages</h1> 
-<p> 
+<h1>#{productName} Debian packages</h1>
+<p>
 This is the Debian package repository of #{productName} to automate installation and upgrade.
- 
+
 To use this repository, first add the key to your system:
- 
+
 <pre style="padding:0.5em; margin:1em; background-color:black; color:white">
 wget -q -O - <a href="#{organization}.key" style="color:white">#{url}/#{organization}.key</a> | sudo apt-key add -
 </pre>
- 
+
 Then add the following entry in your <tt>/etc/apt/sources.list</tt>:
- 
+
 <pre style="padding:0.5em; margin:1em; background-color:black; color:white">
 deb #{url} binary/
-</pre> 
- 
-<p> 
+</pre>
+
+<p>
 Update your local package index, then finally install #{productName}:
- 
+
 <pre style="padding:0.5em; margin:1em; background-color:black; color:white">
 sudo apt-get update
 sudo apt-get install #{artifactName}
-</pre> 
- 
-<p> 
+</pre>
+
+<p>
 See <a href="http://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+on+Ubuntu">Wiki</a> for more information, including notes regarding upgrade from Hudson.
 </p>
 
