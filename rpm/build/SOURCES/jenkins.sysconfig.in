@@ -62,8 +62,7 @@ G1GC_ARGS=' -XX:+UseG1GC -XX:+UnlockDiagnosticVMOptions -XX:G1SummarizeRSetStats
 # Look to see if we should autoselect G1 garbage collection instead of defaults, with more than 2 cores and Java 8 or newer
 CPU_COUNT=$(cat /proc/cpuinfo | grep 'core id' | sort | uniq | wc -l)
 # This is not *guaranteed* to use the same Java version as Jenkins does, but it's a reasonable heuristic
-JAVA_VERSION=$(java -version 2>&1 | grep -Eo '"[0-9]\.[0-9]+.[0-9]*_?[0-9]*"' | sed 's/_/./g' | sed 's/"//g')
-MAJOR_JAVA_VERSION=$(echo $JAVA_VERSION | sed -E 's/[0-9]+\.([0-9]+)\.[0-9]+\.[0-9]+/\1/g')
+MAJOR_JAVA_VERSION=$(java -version 2>&1 | grep -Eo 'version\s+"([0-9]\.)?[0-9]+[^"]+"' | grep -Eo '"(1\.)?[0-9]+' | sed -E 's/"(1\.)?//g')
 if [ -z "$MAJOR_JAVA_VERSION" ]; then MAJOR_JAVA_VERSION=7; fi
 AUTO_GC=""
 if [ $CPU_COUNT -gt 2 ] && [ $MAJOR_JAVA_VERSION -gt 7 ]; then
