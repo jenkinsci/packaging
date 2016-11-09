@@ -18,7 +18,7 @@ GC_LOGGING=" -Xloggc:$JENKINS_HOME/gc-%t.log -XX:NumberOfGCLogFiles=2 -XX:+UseGC
 
 # If you are using multiple cores and a heap of >= 2 GB then you should use this and tweak it
 # Suggested tweaks: increase region size, especially for small heap sizes i.e. -XX:G1HeapRegionSize=8
-G1GC_ARGS=' -XX:+UseG1GC -XX:+UnlockDiagnosticVMOptions -XX:G1SummarizeRSetStatsPeriod=1 -XX:+ExplicitGCInvokesConcurrentAndUnloadsClasses -XX:+UseStringDeduplication '
+G1GC_ARGS=' -XX:+UseG1GC -XX:+UnlockDiagnosticVMOptions -XX:G1SummarizeRSetStatsPeriod=1 -XX:+ExplicitGCInvokesConcurrent -XX:+UseStringDeduplication '
 
 # Look to see if we should suggest G1 garbage collection instead of defaults, with more than 2 cores and Java 8 or newer
 CPU_COUNT=$(cat /proc/cpuinfo | grep 'core id' | sort | uniq | wc -l)
