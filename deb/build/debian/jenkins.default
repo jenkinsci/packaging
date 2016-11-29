@@ -57,7 +57,7 @@ MAXOPENFILES=8192
 HTTP_PORT=@@PORT@@
 
 
-# servlet context, important if you want to use apache proxying  
+# servlet context, important if you want to use apache proxying
 PREFIX=/$NAME
 
 # arguments to pass to jenkins.

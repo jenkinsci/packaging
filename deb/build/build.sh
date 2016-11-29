@@ -19,7 +19,7 @@ sed -i.bak -e 's/^\s*$/./' -e 's/^/ /' $DESCRIPTION_FILE
 # Expand variables in the definition
 "$BASE/bin/branding.py" $D/debian
 
-# Rewrite the file 
+# Rewrite the file
 mv "$DESCRIPTION_FILE.bak" "$DESCRIPTION_FILE"
 
 cat > $D/debian/changelog << EOF
