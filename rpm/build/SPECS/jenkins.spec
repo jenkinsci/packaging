@@ -94,12 +94,21 @@ if test -d /var/run/hudson; then
     rmdir /var/run/hudson
 fi
 
-# Ensure the right ownership on files
+# Ensure the right ownership on files only if not owned by JENKINS_USER
 . /etc/sysconfig/%{name}
 if test x"$JENKINS_INSTALL_SKIP_CHOWN" != "xtrue"; then
-   chown -R ${JENKINS_USER:-%{name}} /var/cache/%{name}
+  owner=$(ls -ld /var/cache/%{name} | awk 'NR==1 {print $3}')
+  if [ "$owner" != "${JENKINS_USER:-%{name}}" ] ; then
+    chown -R ${JENKINS_USER:-%{name}} /var/cache/%{name}
+  fi
+  owner=$(ls -ld /var/log/%{name} | awk 'NR==1 {print $3}')
+  if [ "$owner" != "${JENKINS_USER:-%{name}}" ] ; then
    chown -R ${JENKINS_USER:-%{name}} /var/log/%{name}
-   chown -R ${JENKINS_USER:-%{name}} ${JENKINS_HOME:-%{workdir}}
+  fi
+  owner=$(ls -ld ${JENKINS_HOME:-%{workdir}}| awk 'NR==1 {print $3}')
+  if [ "$owner" != "${JENKINS_USER:-%{name}}" ] ; then
+    chown -R ${JENKINS_USER:-%{name}} ${JENKINS_HOME:-%{workdir}}
+   fi
 fi
 
 %preun
@@ -124,8 +133,8 @@ exit 0
 %dir %{_prefix}
 %{_prefix}/%{name}.war
 %attr(0755,%{name},%{name}) %dir %{workdir}
-%attr(0750,%{name},%{name}) /var/log/%{name}
-%attr(0750,%{name},%{name}) /var/cache/%{name}
+%attr(2750,%{name},%{name}) /var/log/%{name}
+%attr(2750,%{name},%{name}) /var/cache/%{name}
 %config /etc/logrotate.d/%{name}
 %config(noreplace) /etc/init.d/%{name}
 %config(noreplace) /etc/sysconfig/%{name}
@@ -136,4 +145,3 @@ exit 0
 - Removed the jenkins.repo installation.  Per https://issues.jenkins-ci.org/browse/JENKINS-22690
 * Wed Sep 28 2011 kk@kohsuke.org
 - See [@@CHANGELOG_PAGE@@] for complete details
-
