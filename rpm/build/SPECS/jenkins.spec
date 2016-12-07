@@ -34,10 +34,10 @@ BuildRoot:	%{_tmppath}/build-%{name}-%{version}
 #    I'm dropping this requirement.
 # Requires:	java >= 1:1.6.0
 Requires: procps
-Obsoletes:  hudson
-PreReq:		/usr/sbin/groupadd /usr/sbin/useradd
-#PreReq:		%{fillup_prereq}
-BuildArch:	noarch
+Obsoletes: hudson
+Conflicts: hudson
+PreReq: /usr/sbin/groupadd /usr/sbin/useradd
+BuildArch: noarch
 
 %description
 @@DESCRIPTION_FILE@@
