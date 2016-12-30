@@ -85,6 +85,10 @@ if test -d /var/lib/hudson; then
     # could be useful down the road
     # This also ensures that the .??* wildcard matches something
     touch /var/lib/hudson/.moving-hudson
+    # remove the hudson default update site to prevent it to be used by jenkins
+    if test -e /var/lib/hudson/updates/default.json; then
+      rm /var/lib/hudson/updates/default.json
+    fi
     mv -f /var/lib/hudson/* /var/lib/hudson/.??* /var/lib/%{name}
     rmdir /var/lib/hudson
     find /var/lib/%{name} -user hudson -exec chown %{name} {} + || true
