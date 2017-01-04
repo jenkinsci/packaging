@@ -91,6 +91,9 @@ ${CLI}:
 	mv $@.tmp $@
 
 
+cliauth: ${CLI}
+	java -jar jenkins-cli.jar login --username ${JENKINS_USERNAME} --password ${JENKINS_PASSWORD}
+
 
 test.local.setup:
 	# start a test Apache server that acts as package server
