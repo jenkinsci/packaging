@@ -79,6 +79,23 @@ rm -rf "%{buildroot}"
 %post
 /sbin/chkconfig --add %{name}
 
+# Ensure the right ownership on files only if not owned by JENKINS_USER
+. /etc/sysconfig/%{name}
+if test x"$JENKINS_INSTALL_SKIP_CHOWN" != "xtrue"; then
+    owner=$(ls -ld /var/cache/%{name} | awk 'NR==1 {print $3}')
+    if [ "$owner" != "${JENKINS_USER:-%{name}}" ] ; then
+        chown -R ${JENKINS_USER:-%{name}} /var/cache/%{name}
+    fi
+    owner=$(ls -ld /var/log/%{name} | awk 'NR==1 {print $3}')
+    if [ "$owner" != "${JENKINS_USER:-%{name}}" ] ; then
+        chown -R ${JENKINS_USER:-%{name}} /var/log/%{name}
+    fi
+    owner=$(ls -ld ${JENKINS_HOME:-%{workdir}}| awk 'NR==1 {print $3}')
+    if [ "$owner" != "${JENKINS_USER:-%{name}}" ] ; then
+        chown -R ${JENKINS_USER:-%{name}} ${JENKINS_HOME:-%{workdir}}
+    fi
+fi
+
 %preun
 if [ "$1" = 0 ] ; then
     # if this is uninstallation as opposed to upgrade, delete the service
