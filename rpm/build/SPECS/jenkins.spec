@@ -79,42 +79,6 @@ rm -rf "%{buildroot}"
 %post
 /sbin/chkconfig --add %{name}
 
-# If we have an old hudson install, rename it to jenkins
-if test -d /var/lib/hudson; then
-    # leave a marker to indicate this came from Hudson.
-    # could be useful down the road
-    # This also ensures that the .??* wildcard matches something
-    touch /var/lib/hudson/.moving-hudson
-    # remove the hudson default update site to prevent it to be used by jenkins
-    if test -e /var/lib/hudson/updates/default.json; then
-      rm /var/lib/hudson/updates/default.json
-    fi
-    mv -f /var/lib/hudson/* /var/lib/hudson/.??* /var/lib/%{name}
-    rmdir /var/lib/hudson
-    find /var/lib/%{name} -user hudson -exec chown %{name} {} + || true
-fi
-if test -d /var/run/hudson; then
-    mv -f /var/run/hudson/* /var/run/%{name}
-    rmdir /var/run/hudson
-fi
-
-# Ensure the right ownership on files only if not owned by JENKINS_USER
-. /etc/sysconfig/%{name}
-if test x"$JENKINS_INSTALL_SKIP_CHOWN" != "xtrue"; then
-  owner=$(ls -ld /var/cache/%{name} | awk 'NR==1 {print $3}')
-  if [ "$owner" != "${JENKINS_USER:-%{name}}" ] ; then
-    chown -R ${JENKINS_USER:-%{name}} /var/cache/%{name}
-  fi
-  owner=$(ls -ld /var/log/%{name} | awk 'NR==1 {print $3}')
-  if [ "$owner" != "${JENKINS_USER:-%{name}}" ] ; then
-   chown -R ${JENKINS_USER:-%{name}} /var/log/%{name}
-  fi
-  owner=$(ls -ld ${JENKINS_HOME:-%{workdir}}| awk 'NR==1 {print $3}')
-  if [ "$owner" != "${JENKINS_USER:-%{name}}" ] ; then
-    chown -R ${JENKINS_USER:-%{name}} ${JENKINS_HOME:-%{workdir}}
-   fi
-fi
-
 %preun
 if [ "$1" = 0 ] ; then
     # if this is uninstallation as opposed to upgrade, delete the service
