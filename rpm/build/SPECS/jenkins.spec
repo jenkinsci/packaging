@@ -76,22 +76,46 @@ rm -rf "%{buildroot}"
 /usr/sbin/useradd -g %{name} -s /bin/false -r -c "@@SUMMARY@@" \
 	-d "%{workdir}" %{name} &>/dev/null || :
 
+  # Used to decide later if we should perform a chown in case JENKINS_INSTALL_SKIP_CHOWN is false
+  # Check if a previous installation exists, if so use the configured JENKINS_USER to generate a files file for later use
+  # And check the JENKINS_HOME value and existing owners of work, log and cache dir, need to to this check
+  # here because the %files directive overwrites folder owners, I have not found a simple way to make the
+  # files directive to use JENKINS_USER as owner.
+  if [ -f "/etc/sysconfig/%{name}" ]; then
+      . /etc/sysconfig/%{name}
+      touch /tmp/cacheowner
+      ls -ld /var/cache/%{name} | awk 'NR==1 {print $3}' > /tmp/cacheowner
+      touch /tmp/logowner
+      ls -ld /var/log/%{name} | awk 'NR==1 {print $3}' >  /tmp/logowner
+      touch /tmp/workdirowner
+      ls -ld ${JENKINS_HOME:-%{workdir}}| awk 'NR==1 {print $3}'  > /tmp/workdirowner
+  fi
+
 %post
 /sbin/chkconfig --add %{name}
 
 # Ensure the right ownership on files only if not owned by JENKINS_USER
 . /etc/sysconfig/%{name}
 if test x"$JENKINS_INSTALL_SKIP_CHOWN" != "xtrue"; then
-    owner=$(ls -ld /var/cache/%{name} | awk 'NR==1 {print $3}')
-    if [ "$owner" != "${JENKINS_USER:-%{name}}" ] ; then
+    if [ -f "/tmp/cacheowner" ]; then
+      cacheOwner=$(cat /tmp/cacheowner)
+      rm -f /tmp/cacheowner
+    fi
+    if [ "${JENKINS_USER:-%{name}}" != "%{name}" ] || [ "${cacheOwner:-%{name}}" != "${JENKINS_USER:-%{name}}" ] ; then
         chown -R ${JENKINS_USER:-%{name}} /var/cache/%{name}
     fi
-    owner=$(ls -ld /var/log/%{name} | awk 'NR==1 {print $3}')
-    if [ "$owner" != "${JENKINS_USER:-%{name}}" ] ; then
+    if [ -f "/tmp/logowner" ]; then
+      logOwner=$(cat /tmp/logowner)
+      rm -f /tmp/logowner
+    fi
+    if [ "${JENKINS_USER:-%{name}}" != "%{name}" ] || [ "${logOwner:-%{name}}" != "${JENKINS_USER:-%{name}}" ] ; then
         chown -R ${JENKINS_USER:-%{name}} /var/log/%{name}
     fi
-    owner=$(ls -ld ${JENKINS_HOME:-%{workdir}}| awk 'NR==1 {print $3}')
-    if [ "$owner" != "${JENKINS_USER:-%{name}}" ] ; then
+    if [ -f "/tmp/workdirowner" ]; then
+      workdirOwner=$(cat /tmp/workdirowner)
+      rm -f /tmp/workdirowner
+    fi
+    if [ "${JENKINS_USER:-%{name}}" != "%{name}" ] || [ "${workdirOwner:-%{name}}" != "${JENKINS_USER:-%{name}}" ] ; then
         chown -R ${JENKINS_USER:-%{name}} ${JENKINS_HOME:-%{workdir}}
     fi
 fi
