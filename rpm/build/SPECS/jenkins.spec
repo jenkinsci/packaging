@@ -77,8 +77,7 @@ rm -rf "%{buildroot}"
 	-d "%{workdir}" %{name} &>/dev/null || :
 
   # Used to decide later if we should perform a chown in case JENKINS_INSTALL_SKIP_CHOWN is false
-  # Check if a previous installation exists, if so use the configured JENKINS_USER to generate a files file for later use
-  # And check the JENKINS_HOME value and existing owners of work, log and cache dir, need to to this check
+  # Check if a previous installation exists, if so check the JENKINS_HOME value and existing owners of work, log and cache dir, need to to this check
   # here because the %files directive overwrites folder owners, I have not found a simple way to make the
   # files directive to use JENKINS_USER as owner.
   if [ -f "/etc/sysconfig/%{name}" ]; then
@@ -94,7 +93,10 @@ rm -rf "%{buildroot}"
 %post
 /sbin/chkconfig --add %{name}
 
-# Ensure the right ownership on files only if not owned by JENKINS_USER
+# Ensure the right ownership on files only if not owned by JENKINS_USER and JENKINS_USER
+# != %{name}, namely all cases but the default one (configured for %{name} owned by %{name})
+# In any case if JENKINS_INSTALL_SKIP_CHOWN is true we do not chown anything to maintain
+# the existing semantics
 . /etc/sysconfig/%{name}
 if test x"$JENKINS_INSTALL_SKIP_CHOWN" != "xtrue"; then
     if [ -f "/tmp/cacheowner" ]; then
