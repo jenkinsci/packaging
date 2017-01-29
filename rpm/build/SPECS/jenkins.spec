@@ -103,22 +103,29 @@ if test x"$JENKINS_INSTALL_SKIP_CHOWN" != "xtrue"; then
       cacheOwner=$(cat /tmp/cacheowner)
       rm -f /tmp/cacheowner
     fi
-    if [ "${JENKINS_USER:-%{name}}" != "%{name}" ] || [ "${cacheOwner:-%{name}}" != "${JENKINS_USER:-%{name}}" ] ; then
+    if  [ "${cacheOwner:-%{name}}" != "${JENKINS_USER:-%{name}}" ] ; then
         chown -R ${JENKINS_USER:-%{name}} /var/cache/%{name}
+    elif [ "${JENKINS_USER:-%{name}}" != "%{name}" ] ; then
+        # User has changed ownership of files and JENKINS_USER, chown only the folder
+        chown ${JENKINS_USER:-%{name}} /var/cache/%{name}
     fi
     if [ -f "/tmp/logowner" ]; then
       logOwner=$(cat /tmp/logowner)
       rm -f /tmp/logowner
     fi
-    if [ "${JENKINS_USER:-%{name}}" != "%{name}" ] || [ "${logOwner:-%{name}}" != "${JENKINS_USER:-%{name}}" ] ; then
+    if [ "${logOwner:-%{name}}" != "${JENKINS_USER:-%{name}}" ] ; then
         chown -R ${JENKINS_USER:-%{name}} /var/log/%{name}
+    elif [ "${JENKINS_USER:-%{name}}" != "%{name}" ] ; then
+      chown  ${JENKINS_USER:-%{name}} /var/log/%{name}
     fi
     if [ -f "/tmp/workdirowner" ]; then
       workdirOwner=$(cat /tmp/workdirowner)
       rm -f /tmp/workdirowner
     fi
-    if [ "${JENKINS_USER:-%{name}}" != "%{name}" ] || [ "${workdirOwner:-%{name}}" != "${JENKINS_USER:-%{name}}" ] ; then
+    if [ "${workdirOwner:-%{name}}" != "${JENKINS_USER:-%{name}}" ] ; then
         chown -R ${JENKINS_USER:-%{name}} ${JENKINS_HOME:-%{workdir}}
+    elif [ "${JENKINS_USER:-%{name}}" != "%{name}" ] ; then
+        chown ${JENKINS_USER:-%{name}} ${JENKINS_HOME:-%{workdir}}
     fi
 fi
 
