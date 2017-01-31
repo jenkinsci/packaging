@@ -81,17 +81,36 @@ rm -rf "%{buildroot}"
   # here because the %files directive overwrites folder owners, I have not found a simple way to make the
   # files directive to use JENKINS_USER as owner.
   if [ -f "/etc/sysconfig/%{name}" ]; then
+      logger -t %{name}.installer "Found previous config file /etc/sysconfig/%{name}"
       . /etc/sysconfig/%{name}
-      touch /tmp/cacheowner
-      ls -ld /var/cache/%{name} | awk 'NR==1 {print $3}' > /tmp/cacheowner
-      touch /tmp/logowner
-      ls -ld /var/log/%{name} | awk 'NR==1 {print $3}' >  /tmp/logowner
-      touch /tmp/workdirowner
-      ls -ld ${JENKINS_HOME:-%{workdir}}| awk 'NR==1 {print $3}'  > /tmp/workdirowner
+      stat --format=%U /var/cache/%{name} > /tmp/%{name}.installer.cacheowner
+      stat --format=%U /var/log/%{name}  >  /tmp/%{name}.installer.logowner
+      stat --format=%U ${JENKINS_HOME:-%{workdir}}  > /tmp/%{name}.installer.workdirowner
+  else
+      logger -t %{name}.installer "No previous config file /etc/sysconfig/%{name} found"
   fi
 
 %post
 /sbin/chkconfig --add %{name}
+
+function chownIfNeccesary {
+  logger -t %{name}.installer "Checking ${2} ownership"
+  if [ -f "${1}" ] ; then
+    owner=$(cat $1)
+    rm -f $1
+    logger -t %{name}.installer "Found previous owner of ${2}: ${owner} "
+  fi
+  if  [ "${owner:-%{name}}" != "${JENKINS_USER:-%{name}}" ] ; then
+    logger -t %{name}.installer "Previous owner of ${2} is different than configured JENKINS_USER... Doing a recursive chown of ${2} "
+    chown -R ${JENKINS_USER:-%{name}} $2
+  elif [ "${JENKINS_USER:-%{name}}" != "%{name}" ] ; then
+    # User has changed ownership of files and JENKINS_USER, chown only the folder
+    logger -t %{name}.installer "Configured JENKINS_USER is different than default... Doing a non recursive chown of ${2} "
+    chown ${JENKINS_USER:-%{name}} $2
+  else
+    logger -t %{name}.installer "No chown needed for ${2} "
+  fi
+}
 
 # Ensure the right ownership on files only if not owned by JENKINS_USER and JENKINS_USER
 # != %{name}, namely all cases but the default one (configured for %{name} owned by %{name})
@@ -99,34 +118,9 @@ rm -rf "%{buildroot}"
 # the existing semantics
 . /etc/sysconfig/%{name}
 if test x"$JENKINS_INSTALL_SKIP_CHOWN" != "xtrue"; then
-    if [ -f "/tmp/cacheowner" ]; then
-      cacheOwner=$(cat /tmp/cacheowner)
-      rm -f /tmp/cacheowner
-    fi
-    if  [ "${cacheOwner:-%{name}}" != "${JENKINS_USER:-%{name}}" ] ; then
-        chown -R ${JENKINS_USER:-%{name}} /var/cache/%{name}
-    elif [ "${JENKINS_USER:-%{name}}" != "%{name}" ] ; then
-        # User has changed ownership of files and JENKINS_USER, chown only the folder
-        chown ${JENKINS_USER:-%{name}} /var/cache/%{name}
-    fi
-    if [ -f "/tmp/logowner" ]; then
-      logOwner=$(cat /tmp/logowner)
-      rm -f /tmp/logowner
-    fi
-    if [ "${logOwner:-%{name}}" != "${JENKINS_USER:-%{name}}" ] ; then
-        chown -R ${JENKINS_USER:-%{name}} /var/log/%{name}
-    elif [ "${JENKINS_USER:-%{name}}" != "%{name}" ] ; then
-      chown  ${JENKINS_USER:-%{name}} /var/log/%{name}
-    fi
-    if [ -f "/tmp/workdirowner" ]; then
-      workdirOwner=$(cat /tmp/workdirowner)
-      rm -f /tmp/workdirowner
-    fi
-    if [ "${workdirOwner:-%{name}}" != "${JENKINS_USER:-%{name}}" ] ; then
-        chown -R ${JENKINS_USER:-%{name}} ${JENKINS_HOME:-%{workdir}}
-    elif [ "${JENKINS_USER:-%{name}}" != "%{name}" ] ; then
-        chown ${JENKINS_USER:-%{name}} ${JENKINS_HOME:-%{workdir}}
-    fi
+      chownIfNeccesary "/tmp/%{name}.installer.cacheowner"  /var/cache/%{name}
+      chownIfNeccesary "/tmp/%{name}.installer.logowner"  /var/log/%{name}
+      chownIfNeccesary "/tmp/%{name}.installer.workdirowner"  ${JENKINS_HOME:-%{workdir}}
 fi
 
 %preun
