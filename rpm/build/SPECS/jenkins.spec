@@ -93,7 +93,7 @@ rm -rf "%{buildroot}"
 %post
 /sbin/chkconfig --add %{name}
 
-function chownIfNeccesary {
+function chownIfNecessary {
   logger -t %{name}.installer "Checking ${2} ownership"
   if [ -f "${1}" ] ; then
     owner=$(cat $1)
@@ -118,9 +118,9 @@ function chownIfNeccesary {
 # the existing semantics
 . /etc/sysconfig/%{name}
 if test x"$JENKINS_INSTALL_SKIP_CHOWN" != "xtrue"; then
-      chownIfNeccesary "/tmp/%{name}.installer.cacheowner"  /var/cache/%{name}
-      chownIfNeccesary "/tmp/%{name}.installer.logowner"  /var/log/%{name}
-      chownIfNeccesary "/tmp/%{name}.installer.workdirowner"  ${JENKINS_HOME:-%{workdir}}
+      chownIfNecessary "/tmp/%{name}.installer.cacheowner"  /var/cache/%{name}
+      chownIfNecessary "/tmp/%{name}.installer.logowner"  /var/log/%{name}
+      chownIfNecessary "/tmp/%{name}.installer.workdirowner"  ${JENKINS_HOME:-%{workdir}}
 fi
 
 %preun
