@@ -4,7 +4,7 @@ export PRODUCTNAME=Jenkins
 export ARTIFACTNAME=jenkins
 export CAMELARTIFACTNAME=Jenkins
 export VENDOR=Jenkins project
-export SUMMARY=Jenkins Continuous Integration Server
+export SUMMARY=Jenkins Automation Server
 export PORT=8080
 
 export MSI_PRODUCTCODE=415933d8-4104-47c3-aee9-66b31de07a57
