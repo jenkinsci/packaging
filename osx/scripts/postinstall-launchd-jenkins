@@ -19,8 +19,23 @@ else
     echo 'No @@ARTIFACTNAME@@ user found, creating @@ARTIFACTNAME@@ user and group'
 
 # Find free uid under 500
-    uid=$(dscl . -list /Users uid | sort -nrk 2 | awk '$2 < 500 {print $2 + 1; exit 0}')
-    if [ $uid -eq 500 ]; then
+    uids=$(dscl . -list /Users uid | sort -nrk 2 | awk '$2 < 500 {print $2;}')
+    echo "uids: $uids"
+    uid=0
+    prev_uid=500
+    found_uid=false
+    for i in $uids;
+    do
+        uid=$(($i + 1))
+        if [ "$uid" != "$prev" ]
+        then
+            echo "Found an available uid"
+            found_uid=true
+            break
+        fi
+        prev_uid=$i
+    done
+    if [ "$found_uid" = false ]; then
         echo 'ERROR: All system uids are in use!'
         exit 1
     fi
