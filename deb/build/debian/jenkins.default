@@ -67,6 +67,7 @@ PREFIX=/$NAME
 
 # arguments to pass to jenkins.
 # --javahome=$JAVA_HOME
+# --httpListenAddress=$HTTP_HOST (default 0.0.0.0)
 # --httpPort=$HTTP_PORT (default 8080; disable with -1)
 # --httpsPort=$HTTP_PORT
 # --argumentsRealm.passwd.$ADMIN_USER=[password]
