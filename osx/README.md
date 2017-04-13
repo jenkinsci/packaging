@@ -13,7 +13,7 @@ directory, and run the build script
 
 ## Some Links
 
-* [@@PRODUCTNAME@@](@@HOMEPAGE@@)
+* [Jenkins](https://jenkins.io)
 * [Apple Developer Center](http://www.developer.apple.com)
 
 ## License
