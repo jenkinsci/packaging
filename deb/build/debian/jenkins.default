@@ -1,4 +1,4 @@
-# defaults for jenkins continuous integration server
+# defaults for Jenkins automation server
 
 # pulled in from the init script; makes things easier.
 NAME=@@ARTIFACTNAME@@
@@ -28,7 +28,7 @@ JENKINS_WAR=/usr/share/$NAME/$NAME.war
 # jenkins home location
 JENKINS_HOME=/var/lib/$NAME
 
-# set this to false if you don't want Hudson to run by itself
+# set this to false if you don't want Jenkins to run by itself
 # in this set up, you are expected to provide a servlet container
 # to host jenkins.
 RUN_STANDALONE=true
