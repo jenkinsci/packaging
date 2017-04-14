@@ -24,6 +24,10 @@ sudo zypper addrepo -f #{url}/ #{artifactName}
 </pre>
 
 <p>
+You will need to explicitly install a Java runtime environment, because Oracle's Java RPMs are incorrect and fail to register as providing a java dependency. 
+Thus, adding an explicit dependency requirement on Java would have forced installation of the OpenJDK JVM.
+
+<p>
 With that set up, the #{productName} package can be installed with <tt>zypper install #{artifactName}</tt>
 
 <h2>Individual Package Downloads</h2>
