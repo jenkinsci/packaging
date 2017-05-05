@@ -13,7 +13,7 @@ fi
 
 dockerInstall() {
     # Ignore signature verification and default to yes
-    zypper --non-interactive in curl
+    zypper --non-interactive in curl java-1_8_0-openjdk
     zypper --no-gpg-checks --non-interactive in $PKG_FOLDER
 }
 
