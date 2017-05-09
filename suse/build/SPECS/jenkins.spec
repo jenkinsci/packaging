@@ -17,19 +17,11 @@ URL:		@@HOMEPAGE@@
 Group:		Development/Tools/Building
 License:	@@LICENSE@@
 BuildRoot:	%{_tmppath}/build-%{name}-%{version}
-# see the comment below from java-1.6.0-openjdk.spec that explains this dependency
-# java-1.5.0-ibm from jpackage.org set Epoch to 1 for unknown reasons,
-# and this change was brought into RHEL-4.  java-1.5.0-ibm packages
-# also included the epoch in their virtual provides.  This created a
-# situation where in-the-wild java-1.5.0-ibm packages provided "java =
-# 1:1.5.0".  In RPM terms, "1.6.0 < 1:1.5.0" since 1.6.0 is
-# interpreted as 0:1.6.0.  So the "java >= 1.6.0" requirement would be
-# satisfied by the 1:1.5.0 packages.  Thus we need to set the epoch in
-# JDK package >= 1.6.0 to 1, and packages referring to JDK virtual
-# provides >= 1.6.0 must specify the epoch, "java >= 1:1.6.0".
-#
-# java-1_6_0-sun provides this at least
-Requires:	java >= 1.6, procps
+# Unfortunately the Oracle Java RPMs do not register as providing anything (including "java" or "jdk")
+# So either we make a hard requirement on the OpenJDK or none at all
+# Only workaround would be to use a java virtual package, see https://github.com/keystep/virtual-java-rpm
+# Requires: java >= 1:1.8.0
+Requires:	procps
 Obsoletes:  hudson
 PreReq:		/usr/sbin/groupadd /usr/sbin/useradd
 #PreReq:		%{fillup_prereq}
