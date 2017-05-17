@@ -28,7 +28,9 @@ CLI_SSH_ARGS=
 if [ "x$JENKINS_SSH_KEY" != x ]; then
   CLI_SSH_ARGS="-i $JENKINS_SSH_KEY"
 fi
-
+if [ "x$JENKINS_SSH_USER" != x ]; then
+  CLI_SSH_ARGS="$CLI_SSH_ARGS -ssh -user $JENKINS_SSH_USER"
+fi
 
 java -jar $TARGET/jenkins-cli.jar $CLI_SSH_ARGS dist-fork -z $D/script.tgz \
   -f binary/${ARTIFACTNAME}.war="${WAR}" \
