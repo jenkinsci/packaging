@@ -17,9 +17,9 @@ def list_packages(path,glob,rel)
         debs = [];
         sftp.dir.glob(path,glob) { |f| debs << f }
         
-        p=/^[^_-]+/
-        
-        debs.sort {|x,y| y.name.gsub(p,"")<=>x.name.gsub(p,"")}.each do |f|
+        versionRE=/^([^\d]+[-_])(.*)([-_].+)$/
+
+        debs.sort {|x,y| Gem::Version.new(y.name.match(versionRE).captures[1])<=>Gem::Version.new(x.name.match(versionRE).captures[1])}.each do |f|
             puts "<tr><td><a href='#{rel}/#{f.name}'>#{f.name}</a></td>"
             
             t=Time.at(f.attributes.mtime).strftime('%Y/%m/%d')
