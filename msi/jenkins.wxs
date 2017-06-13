@@ -46,16 +46,29 @@
 
     <CustomAction Id="BackupJenkinsXmlFile" Script="vbscript">
       <![CDATA[
+        On Error Resume Next
+        Err.Clear
         jenkinsDirPath = session.Property("JENKINSDIR")
         Set fsObj = CreateObject("Scripting.FileSystemObject")
 
         If fsObj.FolderExists(jenkinsDirPath) Then
-            jenkinsXmlPath = jenkinsDirPath + "jenkins.xml"
+            srcPath = jenkinsDirPath & "jenkins.xml"
 
-            If fsObj.FileExists(jenkinsXmlPath) Then
-                Set shellObj = CreateObject("WScript.Shell")
-                cmdToExecute = "cmd.exe /C copy """ + jenkinsXmlPath + """ """ + jenkinsXmlPath + ".backup"" /Y"
-                shellObj.run(cmdToExecute)
+            If fsObj.FileExists(srcPath) Then
+                dstPath = jenkinsDirPath & "jenkins.xml.backup"
+                If fsObj.FileExists(dstPath) Then
+                    suffix = 1
+
+                    While fsObj.FileExists(dstPath & "_" & suffix)
+                        suffix = suffix + 1
+                    Wend
+
+                    dstPath = dstPath & "_" & suffix
+                End If
+
+                fsObj.CopyFile srcPath, dstPath, True
+                Err.Clear
+                On Error Goto 0
             End If
         End If
       ]]>
