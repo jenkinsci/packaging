@@ -25,7 +25,7 @@ popd
 
 # merge the result
 pushd $D/binary
-  mvn org.kohsuke:apt-ftparchive-merge:1.4:merge -Durl="$DEB_URL/binary/" -Dout=../merged
+  mvn org.kohsuke:apt-ftparchive-merge:1.6:merge -Durl="$DEB_URL/binary/" -Dout=../merged
 popd
 
 cat $D/merged/Packages > $D/binary/Packages

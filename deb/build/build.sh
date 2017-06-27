@@ -23,7 +23,7 @@ sed -i.bak -e 's/^\s*$/./' -e 's/^/ /' $DESCRIPTION_FILE
 mv "$DESCRIPTION_FILE.bak" "$DESCRIPTION_FILE"
 
 cat > $D/debian/changelog << EOF
-${ARTIFACTNAME} ($VERSION) unstable; urgency=low
+${ARTIFACTNAME} ($VERSION${DEB_REVISION}) unstable; urgency=low
 
   * Packaged ${VERSION}
 
@@ -45,6 +45,6 @@ pushd $D
 popd
 
 mkdir -p "$(dirname "${DEB}")" || true
-mv $D/../${ARTIFACTNAME}_${VERSION}_all.deb ${DEB}
+mv $D/../${ARTIFACTNAME}_${VERSION}${DEB_REVISION}_all.deb ${DEB}
 
 rm -rf $D
