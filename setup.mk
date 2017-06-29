@@ -20,7 +20,7 @@ export OSX=${TARGET}/osx/${ARTIFACTNAME}-${VERSION}.pkg
 export OSX_SHASUM=${OSX}.sha256
 
 # where to generate Debian/Ubuntu DEB file?
-export DEB=${TARGET}/debian/${ARTIFACTNAME}_${VERSION}_all.deb
+export DEB=${TARGET}/debian/${ARTIFACTNAME}_${VERSION}${DEB_REVISION}_all.deb
 
 # where to generate RHEL/CentOS RPM file?
 export RPM=${TARGET}/rpm/${ARTIFACTNAME}-${VERSION}-1.1.noarch.rpm
