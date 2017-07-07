@@ -25,6 +25,8 @@ SCRIPTNAME=/etc/init.d/$NAME
 DAEMON=/usr/bin/daemon
 DAEMON_ARGS="--name=$NAME --inherit --env=JENKINS_HOME=$JENKINS_HOME --output=$JENKINS_LOG --pidfile=$PIDFILE"
 
+JAVA_ALLOWED_VERSION="18"
+
 if [ -n "$UMASK" ]; then
     DAEMON_ARGS="$DAEMON_ARGS --umask=$UMASK"
 fi
@@ -40,6 +42,26 @@ fi
 # Exit if not supposed to run standalone
 if [ "$RUN_STANDALONE" = "false" ]; then
     echo "Not configured to run standalone" >&2
+    exit 1
+fi
+
+# Make sure there exists a java executable, it may not be allways the case
+if [ -z "$JAVA" ]; then
+    echo "ERROR: No Java executable found in the system" >&2
+    echo "If you actually have java installed on the system make sure 'which java' returns the java executable path" >&2
+    exit 1
+fi
+
+# Work out the JAVA version we are working with:
+JAVA_VERSION=$($JAVA -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*"/\1\2/p;')
+
+if [ "$JAVA_VERSION" = "$JAVA_ALLOWED_VERSION" ]; then
+    echo "Correct java version found" >&2
+else
+    echo "Found an incorrect Java version" >&2
+    echo "Java version found:" >&2
+    echo $($JAVA -version) >&2
+    echo "Aborting" >&2
     exit 1
 fi
 
