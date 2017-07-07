@@ -47,8 +47,8 @@ fi
 
 # Make sure there exists a java executable, it may not be allways the case
 if [ -z "$JAVA" ]; then
-    echo "ERROR: No Java executable found in the system" >&2
-    echo "If you actually have java installed on the system make sure 'which java' returns the java executable path" >&2
+    echo "ERROR: No Java executable found in current PATH: $PATH" >&2
+    echo "If you actually have java installed on the system make sure the executable is in the aforementioned path and that 'which java' returns the java executable path" >&2
     exit 1
 fi
 
