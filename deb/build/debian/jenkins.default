@@ -3,9 +3,6 @@
 # pulled in from the init script; makes things easier.
 NAME=@@ARTIFACTNAME@@
 
-# location of java
-JAVA=$(which java)
-
 # arguments to pass to java
 
 # Allow graphs etc. to work even when an X server is present
