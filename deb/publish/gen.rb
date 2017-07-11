@@ -31,6 +31,20 @@ Then add the following entry in your <tt>/etc/apt/sources.list</tt>:
 <pre style="padding:0.5em; margin:1em; background-color:black; color:white">
 deb #{url} binary/
 </pre>
+</p>
+
+<p>
+You will need to explicitly install a Java runtime environment, given the current state of Java 9 is the safest way to
+ensure your system ends properly configured. Adding an explicit dependency requirement on Java could force installation
+of undesired versions of the JVM.
+</p>
+
+<p>
+<ul>
+  <li>2.54 (2017-04) and newer: Java 8</li>
+  <li>1.612 (2015-05) and newer: Java 7</li>
+</ul>
+</p>
 
 <p>
 Update your local package index, then finally install #{productName}:
@@ -39,6 +53,7 @@ Update your local package index, then finally install #{productName}:
 sudo apt-get update
 sudo apt-get install #{artifactName}
 </pre>
+</p>
 
 <p>
 See <a href="http://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+on+Ubuntu">Wiki</a> for more information, including notes regarding upgrade from Hudson.
