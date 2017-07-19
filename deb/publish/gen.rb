@@ -34,7 +34,7 @@ deb #{url} binary/
 </p>
 
 <p>
-You will need to explicitly install a Java runtime environment, given the current state of Java 9 is the safest way to
+You will need to explicitly install a Java runtime environment, because Java 9 does not work with Jenkins, this is the safest way to
 ensure your system ends properly configured. Adding an explicit dependency requirement on Java could force installation
 of undesired versions of the JVM.
 </p>
