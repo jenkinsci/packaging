@@ -36,7 +36,8 @@ deb #{url} binary/
 <p>
 You will need to explicitly install a Java runtime environment, <b>because Jenkins does not work with Java 9</b>, this is the safest way to
 ensure your system ends properly configured. Adding an explicit dependency requirement on Java could force installation
-of undesired versions of the JVM.
+of undesired versions of the JVM. Check <a href="https://issues.jenkins-ci.org/browse/JENKINS-40689">JENKINS-40689</a>
+for more details about Jenkins and Java 9 compatibility.
 </p>
 
 <p>
