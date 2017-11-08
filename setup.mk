@@ -1,6 +1,6 @@
 # war file to release
 export WAR?=$(error Required variable WAR must point to the jenkins.war file you are packaging)
-export WAR_SHASUM=${WAR}.sha256
+export WAR_SHASUM=${ARTIFACTNAME}.war.sha256
 
 # sanitized version number
 export VERSION:=$(shell unzip -p "${WAR}" META-INF/MANIFEST.MF | grep Implementation-Version | cut -d ' ' -f2 | tr -d '\r' | sed -e "s/-SNAPSHOT//" | sed -e "s/-alpha-.*//" | sed -e "s/-beta-.*//" | sed -e "s/-rc-.*//" | tr - .)
@@ -20,7 +20,7 @@ export OSX=${TARGET}/osx/${ARTIFACTNAME}-${VERSION}.pkg
 export OSX_SHASUM=${OSX}.sha256
 
 # where to generate Debian/Ubuntu DEB file?
-export DEB=${TARGET}/debian/${ARTIFACTNAME}_${VERSION}_all.deb
+export DEB=${TARGET}/debian/${ARTIFACTNAME}_${VERSION}${DEB_REVISION}_all.deb
 
 # where to generate RHEL/CentOS RPM file?
 export RPM=${TARGET}/rpm/${ARTIFACTNAME}-${VERSION}-1.1.noarch.rpm

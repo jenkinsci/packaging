@@ -43,28 +43,60 @@
     <Upgrade Id="${MSI_PRODUCTCODE}">
       <UpgradeVersion Minimum="0.0.0" Maximum="99.99.99" Property="PREVIOUSVERSIONINSTALLED" />
     </Upgrade>
+
+    <CustomAction Id="BackupJenkinsXmlFile" Script="vbscript">
+      <![CDATA[
+        On Error Resume Next
+        Err.Clear
+        jenkinsDirPath = session.Property("JENKINSDIR")
+        Set fsObj = CreateObject("Scripting.FileSystemObject")
+
+        If fsObj.FolderExists(jenkinsDirPath) Then
+            srcPath = jenkinsDirPath & "jenkins.xml"
+
+            If fsObj.FileExists(srcPath) Then
+                dstPath = jenkinsDirPath & "jenkins.xml.backup"
+                If fsObj.FileExists(dstPath) Then
+                    suffix = 1
+
+                    While fsObj.FileExists(dstPath & "_" & suffix)
+                        suffix = suffix + 1
+                    Wend
+
+                    dstPath = dstPath & "_" & suffix
+                End If
+
+                fsObj.CopyFile srcPath, dstPath, True
+                Err.Clear
+                On Error Goto 0
+            End If
+        End If
+      ]]>
+    </CustomAction>
+
     <InstallExecuteSequence>
       <!--
         Earlier I suffered a problem where after an upgrade, all the JRE files are removed
         (if I then repair the installation, it'll work, so it's not the missing definitions in the msi file.)
-        
+
         I'm still new to MSI/WiX to be able to really understand what's going on, but
         http://www.mail-archive.com/wix-users@lists.sourceforge.net/msg32537.html seems to explain the problem,
         (as caused by the interaction between deferred removal), and the take away from this thread
         as a whole seems to be that for auto-generated wxs files (from heat), it's just not possible
         to get the file updates done right (WTF?!).
-        
+
         The InstallInitialize seems to work. My naive hypothesis is that this stops the service and
         deletes all the files before new ones are added (OTOH, I still get a dialog that some files
         are in use and I need to reboot, so I could be all wrong, or maybe the installer is showing
         this dialog incorrectly as a precaution, as alluded in http://www.mail-archive.com/wix-users@lists.sourceforge.net/msg06878.html)
-        
+
         I remember seeing another e-mail on the wix-users list about <ServiceControl> not actually
         waiting until the full termination of the service, and if so, this still might not work.
-        
+
         In any case, noting my experiments so that future changes to this value will be done very carefully.
       -->
-      <RemoveExistingProducts After="InstallInitialize"/>
+      <Custom Action="BackupJenkinsXmlFile" After='InstallInitialize' />
+      <RemoveExistingProducts After="BackupJenkinsXmlFile"/>
     </InstallExecuteSequence>
 
     <Feature Id='Complete' Level='1'>

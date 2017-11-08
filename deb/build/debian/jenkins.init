@@ -24,6 +24,9 @@ SCRIPTNAME=/etc/init.d/$NAME
 #DAEMON=$JENKINS_SH
 DAEMON=/usr/bin/daemon
 DAEMON_ARGS="--name=$NAME --inherit --env=JENKINS_HOME=$JENKINS_HOME --output=$JENKINS_LOG --pidfile=$PIDFILE"
+JAVA=`type -p java`
+
+JAVA_ALLOWED_VERSION="18"
 
 if [ -n "$UMASK" ]; then
     DAEMON_ARGS="$DAEMON_ARGS --umask=$UMASK"
@@ -40,6 +43,26 @@ fi
 # Exit if not supposed to run standalone
 if [ "$RUN_STANDALONE" = "false" ]; then
     echo "Not configured to run standalone" >&2
+    exit 1
+fi
+
+# Make sure there exists a java executable, it may not be allways the case
+if [ -z "$JAVA" ]; then
+    echo "ERROR: No Java executable found in current PATH: $PATH" >&2
+    echo "If you actually have java installed on the system make sure the executable is in the aforementioned path and that 'type -p java' returns the java executable path" >&2
+    exit 1
+fi
+
+# Work out the JAVA version we are working with:
+JAVA_VERSION=$($JAVA -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*"/\1\2/p;')
+
+if [ "$JAVA_VERSION" = "$JAVA_ALLOWED_VERSION" ]; then
+    echo "Correct java version found" >&2
+else
+    echo "Found an incorrect Java version" >&2
+    echo "Java version found:" >&2
+    echo $($JAVA -version) >&2
+    echo "Aborting" >&2
     exit 1
 fi
 
@@ -87,7 +110,7 @@ check_tcp_port() {
     fi
 
     count=`netstat --listen --numeric-ports | grep $address\:$port[[:space:]] | grep -c . `
-    
+
     if [ $count -ne 0 ]; then
         echo "The selected $service port ($port) on address $address seems to be in use by another program "
         echo "Please select another address/port combination to use for $NAME"
@@ -112,14 +135,14 @@ do_start()
     # Verify that the jenkins port is not already in use, winstone does not exit
     # even for BindException
     check_tcp_port "http" "$HTTP_PORT" "@@PORT@@" "$HTTP_HOST" "0.0.0.0" || return 2
-    
-    # If the var MAXOPENFILES is enabled in /etc/default/jenkins then set the max open files to the 
+
+    # If the var MAXOPENFILES is enabled in /etc/default/jenkins then set the max open files to the
     # proper value
     if [ -n "$MAXOPENFILES" ]; then
         [ "$VERBOSE" != no ] && echo Setting up max open files limit to $MAXOPENFILES
         ulimit -n $MAXOPENFILES
     fi
-    
+
     # notify of explicit umask
     if [ -n "$UMASK" ]; then
         [ "$VERBOSE" != no ] && echo Setting umask to $UMASK
@@ -134,16 +157,16 @@ do_start()
 #
 # Verify that all jenkins processes have been shutdown
 # and if not, then do killall for them
-# 
-get_running() 
+#
+get_running()
 {
     return `ps -U $JENKINS_USER --no-headers -f | egrep -e '(java)' | grep -v defunct | grep -c . `
 }
 
-force_stop() 
+force_stop()
 {
     get_running
-    if [ $? -ne 0 ]; then 
+    if [ $? -ne 0 ]; then
 	killall -u $JENKINS_USER java daemon || return 3
     fi
 }
@@ -165,9 +188,9 @@ do_stop()
     #   1 if daemon was already stopped
     #   2 if daemon could not be stopped
     #   other if a failure occurred
-    get_daemon_status 
+    get_daemon_status
     case "$?" in
-	0) 
+	0)
 	    $DAEMON $DAEMON_ARGS --stop || return 2
         # wait for the process to really terminate
         for n in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do
@@ -195,7 +218,7 @@ do_check_started_ok() {
     get_running
     if [ "$?" -eq "0" ]; then
         return 2
-    else 
+    else
         return 0
     fi
 }
@@ -246,30 +269,30 @@ case "$1" in
     ;;
   status)
 	get_daemon_status
-	case "$?" in 
-	 0) 
+	case "$?" in
+	 0)
 		echo "$DESC is running with the pid `cat $PIDFILE`"
 		rc=0
 		;;
-	*) 
+	*)
 		get_running
 		procs=$?
-		if [ $procs -eq 0 ]; then 
+		if [ $procs -eq 0 ]; then
 			echo -n "$DESC is not running"
-			if [ -f $PIDFILE ]; then 
+			if [ -f $PIDFILE ]; then
 				echo ", but the pidfile ($PIDFILE) still exists"
 				rc=1
-			else 
+			else
 				echo
 				rc=3
 			fi
-		
-		else 
+
+		else
 			echo "$procs instances of jenkins are running at the moment"
 			echo "but the pidfile $PIDFILE is missing"
 			rc=0
 		fi
-		
+
 		exit $rc
 		;;
 	esac

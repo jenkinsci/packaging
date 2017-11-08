@@ -1,13 +1,5 @@
-Jenkins monitors executions of repeated jobs, such as building a software
-project or jobs run by cron. Among those things, current Jenkins focuses on the
-following two jobs:
-- Building/testing software projects continuously, just like CruiseControl or
-  DamageControl. In a nutshell, Jenkins provides an easy-to-use so-called
-  continuous integration system, making it easier for developers to integrate
-  changes to the project, and making it easier for users to obtain a fresh
-  build. The automated, continuous build increases the productivity.
-- Monitoring executions of externally-run jobs, such as cron jobs and procmail
-  jobs, even those that are run on a remote machine. For example, with cron,
-  all you receive is regular e-mails that capture the output, and it is up to
-  you to look at them diligently and notice when it broke. Jenkins keeps those
-  outputs and makes it easy for you to notice when something is wrong.
+Jenkins is an open source automation server which enables developers around the world to reliably automate  their development lifecycle processes of all kinds, including build, document, test, package, stage, deployment, static analysis and many more.
+
+Jenkins is being widely used in areas of Continuos Integration, Continuous Delivery, DevOps, and other areas. And it is not only about software, the same automation techniques can be applied in other areas like Hardware Engineering, Embedded Systems, BioTech, etc. 
+
+For information see https://jenkins.io

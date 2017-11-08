@@ -1,4 +1,4 @@
-# defaults for jenkins continuous integration server
+# defaults for Jenkins automation server
 
 # pulled in from the init script; makes things easier.
 NAME=@@ARTIFACTNAME@@
@@ -9,7 +9,9 @@ JAVA=/usr/bin/java
 # Sensible defaults, server is normally default but we ensure it is on
 # AlwaysPreTouch prezeroes allocated heap pages at startup, which improves runtime performance at slight cost to startup time
 # ParallelRefProcEnabled enables use of concurrent threads to process references, which Jenkins uses heavily for caching
-BASE_JAVA_ARGS=' -server -XX:+AlwaysPreTouch -XX:+ParallelRefProcEnabled '
+# You may wish to add '-Djava.net.preferIPv4Stack=true' to make Jenkins listen on an IPv4 address
+# Headless allows graphs etc. to work even when an X server is not present
+BASE_JAVA_ARGS='-Djava.awt.headless=true -server -XX:+AlwaysPreTouch -XX:+ParallelRefProcEnabled '
 
 # Turns on GC logging for Jenkins, with log rotation, for diagnostics and tuning use
 GC_LOGGING=" -Xloggc:$JENKINS_HOME/gc-%t.log -XX:NumberOfGCLogFiles=2 -XX:+UseGCLogFileRotation -XX:GCLogFileSize=100m \
@@ -20,11 +22,8 @@ GC_LOGGING=" -Xloggc:$JENKINS_HOME/gc-%t.log -XX:NumberOfGCLogFiles=2 -XX:+UseGC
 # Suggested tweaks: increase region size, especially for small heap sizes i.e. -XX:G1HeapRegionSize=8
 G1GC_ARGS=' -XX:+UseG1GC -XX:+UnlockDiagnosticVMOptions -XX:G1SummarizeRSetStatsPeriod=1 -XX:+ExplicitGCInvokesConcurrent -XX:+UseStringDeduplication -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 '
 
-# Headless allows graphs etc. to work even when an X server is present
-# The others apply some sensible defaults -- if you don't want G1 GC to autoselect on multicore systems, remove that
-JAVA_ARGS="-Djava.awt.headless=true $BASE_JAVA_ARGS $GC_LOGGING $G1GC_ARGS"  
-#JAVA_ARGS="-Xmx256m"
-#JAVA_ARGS="-Djava.net.preferIPv4Stack=true" # make jenkins listen on IPv4 address
+# The others apply some sensible defaults -- if you don't want G1 GC, remove that section
+JAVA_ARGS=" $BASE_JAVA_ARGS $GC_LOGGING $G1GC_ARGS"  
 
 PIDFILE=/var/run/$NAME/$NAME.pid
 
@@ -38,7 +37,7 @@ JENKINS_WAR=/usr/share/$NAME/$NAME.war
 # jenkins home location
 JENKINS_HOME=/var/lib/$NAME
 
-# set this to false if you don't want Hudson to run by itself
+# set this to false if you don't want Jenkins to run by itself
 # in this set up, you are expected to provide a servlet container
 # to host jenkins.
 RUN_STANDALONE=true
@@ -72,11 +71,12 @@ MAXOPENFILES=8192
 HTTP_PORT=@@PORT@@
 
 
-# servlet context, important if you want to use apache proxying  
+# servlet context, important if you want to use apache proxying
 PREFIX=/$NAME
 
 # arguments to pass to jenkins.
 # --javahome=$JAVA_HOME
+# --httpListenAddress=$HTTP_HOST (default 0.0.0.0)
 # --httpPort=$HTTP_PORT (default 8080; disable with -1)
 # --httpsPort=$HTTP_PORT
 # --argumentsRealm.passwd.$ADMIN_USER=[password]

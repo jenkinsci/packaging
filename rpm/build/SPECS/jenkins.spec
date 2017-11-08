@@ -16,28 +16,15 @@ URL:		@@HOMEPAGE@@
 Group:		Development/Tools/Building
 License:	@@LICENSE@@
 BuildRoot:	%{_tmppath}/build-%{name}-%{version}
-# see the comment below from java-1.6.0-openjdk.spec that explains this dependency
-# java-1.5.0-ibm from jpackage.org set Epoch to 1 for unknown reasons,
-# and this change was brought into RHEL-4.  java-1.5.0-ibm packages
-# also included the epoch in their virtual provides.  This created a
-# situation where in-the-wild java-1.5.0-ibm packages provided "java =
-# 1:1.5.0".  In RPM terms, "1.6.0 < 1:1.5.0" since 1.6.0 is
-# interpreted as 0:1.6.0.  So the "java >= 1.6.0" requirement would be
-# satisfied by the 1:1.5.0 packages.  Thus we need to set the epoch in
-# JDK package >= 1.6.0 to 1, and packages referring to JDK virtual
-# provides >= 1.6.0 must specify the epoch, "java >= 1:1.6.0".
-#
-# Kohsuke - 2009/09/29
-#    test by mrooney on what he believes to be RHEL 5.2 indicates
-#    that there's no such packages. JRE/JDK RPMs from java.sun.com
-#    do not have this virtual package declarations. So for now,
-#    I'm dropping this requirement.
-# Requires:	java >= 1:1.6.0
+# Unfortunately the Oracle Java RPMs do not register as providing anything (including "java" or "jdk")
+# So either we make a hard requirement on the OpenJDK or none at all
+# Only workaround would be to use a java virtual package, see https://github.com/keystep/virtual-java-rpm
+# Requires: java >= 1:1.8.0
 Requires: procps
-Obsoletes:  hudson
-PreReq:		/usr/sbin/groupadd /usr/sbin/useradd
-#PreReq:		%{fillup_prereq}
-BuildArch:	noarch
+Obsoletes: hudson
+Conflicts: hudson
+PreReq: /usr/sbin/groupadd /usr/sbin/useradd
+BuildArch: noarch
 
 %description
 @@DESCRIPTION_FILE@@
@@ -76,30 +63,51 @@ rm -rf "%{buildroot}"
 /usr/sbin/useradd -g %{name} -s /bin/false -r -c "@@SUMMARY@@" \
 	-d "%{workdir}" %{name} &>/dev/null || :
 
+  # Used to decide later if we should perform a chown in case JENKINS_INSTALL_SKIP_CHOWN is false
+  # Check if a previous installation exists, if so check the JENKINS_HOME value and existing owners of work, log and cache dir, need to to this check
+  # here because the %files directive overwrites folder owners, I have not found a simple way to make the
+  # files directive to use JENKINS_USER as owner.
+  if [ -f "/etc/sysconfig/%{name}" ]; then
+      logger -t %{name}.installer "Found previous config file /etc/sysconfig/%{name}"
+      . "/etc/sysconfig/%{name}"
+      stat --format=%U "/var/cache/%{name}" > "/tmp/%{name}.installer.cacheowner"
+      stat --format=%U "/var/log/%{name}"  >  "/tmp/%{name}.installer.logowner"
+      stat --format=%U ${JENKINS_HOME:-%{workdir}}  > "/tmp/%{name}.installer.workdirowner"
+  else
+      logger -t %{name}.installer "No previous config file /etc/sysconfig/%{name} found"
+  fi
+
 %post
 /sbin/chkconfig --add %{name}
 
-# If we have an old hudson install, rename it to jenkins
-if test -d /var/lib/hudson; then
-    # leave a marker to indicate this came from Hudson.
-    # could be useful down the road
-    # This also ensures that the .??* wildcard matches something
-    touch /var/lib/hudson/.moving-hudson
-    mv -f /var/lib/hudson/* /var/lib/hudson/.??* /var/lib/%{name}
-    rmdir /var/lib/hudson
-    find /var/lib/%{name} -user hudson -exec chown %{name} {} + || true
-fi
-if test -d /var/run/hudson; then
-    mv -f /var/run/hudson/* /var/run/%{name}
-    rmdir /var/run/hudson
-fi
+function chownIfNecessary {
+  logger -t %{name}.installer "Checking ${2} ownership"
+  if [ -f "${1}" ] ; then
+    owner=$(cat "$1")
+    rm -f "$1"
+    logger -t %{name}.installer "Found previous owner of ${2}: ${owner} "
+  fi
+  if  [ "${owner:-%{name}}" != "${JENKINS_USER:-%{name}}" ] ; then
+    logger -t %{name}.installer "Previous owner of ${2} is different than configured JENKINS_USER... Doing a recursive chown of ${2} "
+    chown -R ${JENKINS_USER:-%{name}} "$2"
+  elif [ "${JENKINS_USER:-%{name}}" != "%{name}" ] ; then
+    # User has changed ownership of files and JENKINS_USER, chown only the folder
+    logger -t %{name}.installer "Configured JENKINS_USER is different than default... Doing a non recursive chown of ${2} "
+    chown ${JENKINS_USER:-%{name}} "$2"
+  else
+    logger -t %{name}.installer "No chown needed for ${2} "
+  fi
+}
 
-# Ensure the right ownership on files
+# Ensure the right ownership on files only if not owned by JENKINS_USER and JENKINS_USER
+# != %{name}, namely all cases but the default one (configured for %{name} owned by %{name})
+# In any case if JENKINS_INSTALL_SKIP_CHOWN is true we do not chown anything to maintain
+# the existing semantics
 . /etc/sysconfig/%{name}
 if test x"$JENKINS_INSTALL_SKIP_CHOWN" != "xtrue"; then
-   chown -R ${JENKINS_USER:-%{name}} /var/cache/%{name}
-   chown -R ${JENKINS_USER:-%{name}} /var/log/%{name}
-   chown -R ${JENKINS_USER:-%{name}} ${JENKINS_HOME:-%{workdir}}
+      chownIfNecessary "/tmp/%{name}.installer.cacheowner"  "/var/cache/%{name}"
+      chownIfNecessary "/tmp/%{name}.installer.logowner"  "/var/log/%{name}"
+      chownIfNecessary "/tmp/%{name}.installer.workdirowner"  ${JENKINS_HOME:-%{workdir}}
 fi
 
 %preun
@@ -136,4 +144,3 @@ exit 0
 - Removed the jenkins.repo installation.  Per https://issues.jenkins-ci.org/browse/JENKINS-22690
 * Wed Sep 28 2011 kk@kohsuke.org
 - See [@@CHANGELOG_PAGE@@] for complete details
-

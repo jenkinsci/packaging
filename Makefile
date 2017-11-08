@@ -24,9 +24,7 @@ setup:
 
 package: war msi osx deb rpm suse
 
-publish: 
-	bash ./toolAvailability.sh
-	war.publish msi.publish osx.publish deb.publish rpm.publish suse.publish
+publish: war.publish msi.publish osx.publish deb.publish rpm.publish suse.publish
 
 test: deb.test rpm.test suse.test
 
@@ -42,7 +40,7 @@ docker.test: docker.images
 war: ${WAR}
 war.publish: ${WAR}
 	ssh ${SSH_OPTS} ${PKGSERVER} mkdir -p "'${WARDIR}/${VERSION}/'"
-	sha256sum ${WAR} | sed 's, .*/, ,' > ${WAR_SHASUM}
+	sha256sum ${WAR} | sed 's, .*, ${ARTIFACTNAME}.war,' > ${WAR_SHASUM}
 	cat ${WAR_SHASUM}
 	rsync -avz -e "ssh ${SSH_OPTS}" "${WAR}" "${PKGSERVER}:${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
 	rsync -avz -e "ssh ${SSH_OPTS}" "${WAR_SHASUM}" "${PKGSERVER}:${WARDIR}/${VERSION}/"
