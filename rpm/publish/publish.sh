@@ -16,7 +16,7 @@ cp "${GPG_PUBLIC_KEY}" $D/${ORGANIZATION}.key
 cp "$RPM" $D/RPMS/noarch
 
 cat  > $D/${ARTIFACTNAME}.repo << EOF
-[${ARTIFACTNAME}]
+[${ARTIFACTNAME}${RELEASELINE}]
 name=${PRODUCTNAME}${RELEASELINE}
 baseurl=${RPM_URL}
 gpgcheck=1
