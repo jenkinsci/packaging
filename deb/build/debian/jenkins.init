@@ -160,14 +160,14 @@ do_start()
 #
 get_running()
 {
-    return `ps -U $JENKINS_USER --no-headers -f | egrep -e '(java)' | grep -v defunct | grep -c . `
+    return `ps -U $JENKINS_USER --no-headers -f | egrep -e '(java)' | egrep -e '(@@ARTIFACTNAME@@\.war)' | grep -v defunct | grep -c . `
 }
 
 force_stop()
 {
     get_running
     if [ $? -ne 0 ]; then
-	killall -u $JENKINS_USER java daemon || return 3
+        pkill -u "${JENKINS_USER}" -f '@@ARTIFACTNAME@@.war' || return 3
     fi
 }
 
