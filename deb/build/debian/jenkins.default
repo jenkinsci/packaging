@@ -34,6 +34,10 @@ RUN_STANDALONE=true
 JENKINS_LOG=/var/log/$NAME/$NAME.log
 #JENKINS_LOG=daemon.info
 
+# Whether to enable web access logging or not.
+# Set to "yes" to enable logging to /var/log/$NAME/access_log
+JENKINS_ENABLE_ACCESS_LOG="no"
+
 # OS LIMITS SETUP
 #   comment this out to observe /etc/security/limits.conf
 #   this is on by default because http://github.com/jenkinsci/jenkins/commit/2fb288474e980d0e7ff9c4a3b768874835a3e92e
