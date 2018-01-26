@@ -30,6 +30,7 @@ if [ "x$JENKINS_SSH_USER" != x ]; then
   CLI_SSH_ARGS="$CLI_SSH_ARGS -ssh -user $JENKINS_SSH_USER"
 fi
 
+# TODO switch to non-Remoting-based variant once JENKINS-49205 is released
 case "$(uname)" in
   CYGWIN*)
     java -jar $TARGET/jenkins-cli.jar $CLI_SSH_ARGS dist-fork -z `cygpath --dos $D/bundle.tgz` -f ${ARTIFACTNAME}.war="${WAR}" -l "windows && packaging" -F "${MSI}.tmp=${ARTIFACTNAME}-windows.zip" \
