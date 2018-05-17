@@ -8,7 +8,7 @@ Homepage: @@HOMEPAGE@@
 
 Package: @@ARTIFACTNAME@@
 Architecture: all
-Depends: ${misc:Depends}, daemon, adduser, procps, psmisc, net-tools
+Depends: ${misc:Depends}, daemon, adduser, procps, psmisc, net-tools, openjdk-8-jre-headless | oracle-java8-jre | jenkins-suitable-java8-jre
 Conflicts: hudson
 Replaces: hudson
 Description: @@DESCRIPTION_FILE@@

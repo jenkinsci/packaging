@@ -34,10 +34,37 @@ deb #{url} binary/
 </p>
 
 <p>
-You will need to explicitly install a Java runtime environment, <b>because Jenkins does not work with Java 9</b>, this is the safest way to
-ensure your system ends properly configured. Adding an explicit dependency requirement on Java could force installation
-of undesired versions of the JVM. Check <a href="https://issues.jenkins-ci.org/browse/JENKINS-40689">JENKINS-40689</a>
-for more details about Jenkins and Java 9 compatibility.
+Note that Jenkins currently requires a Java 8 JRE. Check <a href="https://issues.jenkins-ci.org/browse/JENKINS-40689">JENKINS-40689</a>
+for more details about Jenkins and Java 9 incompatibility.
+</p>
+
+<p>
+If you wish to use Oracle's Java 8 JRE with this .deb package, we recommend that you do the following (adjust accordingly if you need a 32bit JRE):
+<ol>
+  <li>apt-get install java-package</li>
+  <li>Download the Oracle Java SE Runtime Environment 8 .tar.gz file for Linux from <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a></li>
+  <li>Build a .deb package from the downloaded JRE: make-jpkg jre-8u181-linux-x64.tar.gz</li>
+  <li>Install the Oracle .deb package: dpkg -i oracle-java8-jre_8u181_amd64.deb</li>
+  <li>Finally, add the jenkins repository as above and apt-get install jenkins</li>
+</ol>
+</p>
+
+<p>
+If you wish to use some JRE other than OpenJDK 8 or Oracle Java SE Runtime Environment 8, install it as you would normally and create a .deb package that satisfies Jenkins' requirements:
+<ol>
+  <li>apt-get install equivs</li>
+  <li>cat << EOF > jenkins-suitable-java8-jre.control
+Package: jenkins-suitable-java8-jre
+Description: A fake JRE to satisfy Jenkins' packaging
+ A package, which can be installed to satisfy the Jenkins' JRE dependency
+ when you have a locally installed suitable JRE.
+
+EOF
+</li>
+  <li>equivs-build jenkins-suitable-java8-jre.control</li>
+  <li>dpkg -i jenkins-suitable-java8-jre_1.0_all.deb</li>
+  <li>Finally, add the jenkins repository as above and apt-get install jenkins</li>
+</ol>
 </p>
 
 <p>
