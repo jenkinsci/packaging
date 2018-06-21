@@ -114,13 +114,7 @@ case "$1" in
                 # [ "$sess" = "$MY_SESSION_ID" ] || continue
 	       	echo "$cmd" | grep $JENKINS_WAR > /dev/null
 		[ $? = 0 ] || continue
-                echo "$cmd" | grep -e "$JENKINS_PORT" > /dev/null
-                [ $? = 0 ] || continue
-                echo "$cmd" | grep -F "$JENKINS_LISTEN_ADDRESS" > /dev/null
-                [ $? = 0 ] || continue
-                echo "$cmd" | grep -e "$JENKINS_HTTPS_PORT" > /dev/null
-                [ $? = 0 ] || continue
-                echo "$cmd" | grep -F "$JENKINS_HTTPS_LISTEN_ADDRESS" > /dev/null
+                echo "$cmd" | grep -e "$JENKINS_HOME" > /dev/null
                 [ $? = 0 ] || continue
 		# found a PID
 		echo $pid > "$JENKINS_PID_FILE"
