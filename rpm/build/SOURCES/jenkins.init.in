@@ -1,6 +1,7 @@
 #!/bin/sh
 #
-#     SUSE system statup script for Jenkins
+#     RedHat system statup script for Jenkins
+#     Based on SUSE system statup script for Jenkins
 #     Copyright (C) 2007  Pascal Bleser
 #
 #     This library is free software; you can redistribute it and/or modify it
@@ -18,6 +19,12 @@
 #     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307,
 #     USA.
 #
+###############################################################################
+#
+# chkconfig: 35 99 01
+# description: @@SUMMARY@@
+#
+###############################################################################
 ### BEGIN INIT INFO
 # Provides:          @@ARTIFACTNAME@@
 # Required-Start:    $local_fs $remote_fs $network $time $named
@@ -46,6 +53,7 @@ test -r "$JENKINS_CONFIG" || { echo "$JENKINS_CONFIG not readable. Perhaps you f
 	else exit 6; fi; }
 
 JENKINS_PID_FILE="/var/run/@@ARTIFACTNAME@@.pid"
+JENKINS_LOCKFILE="/var/lock/subsys/@@ARTIFACTNAME@@"
 
 # Source function library.
 . /etc/init.d/functions
@@ -117,6 +125,7 @@ case "$1" in
 		# found a PID
 		echo $pid > "$JENKINS_PID_FILE"
 	    done
+	    touch $JENKINS_LOCKFILE
 	else
 	    failure
 	fi
@@ -125,6 +134,7 @@ case "$1" in
     stop)
 	echo -n "Shutting down @@PRODUCTNAME@@ "
 	killproc @@ARTIFACTNAME@@
+	rm -rf $JENKINS_LOCKFILE
 	RETVAL=$?
 	echo
 	;;
