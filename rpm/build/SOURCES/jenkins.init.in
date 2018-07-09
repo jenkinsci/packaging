@@ -134,7 +134,7 @@ case "$1" in
     stop)
 	echo -n "Shutting down @@PRODUCTNAME@@ "
 	killproc @@ARTIFACTNAME@@
-	rm -rf $JENKINS_LOCKFILE
+	rm -f $JENKINS_LOCKFILE
 	RETVAL=$?
 	echo
 	;;
