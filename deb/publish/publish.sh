@@ -39,7 +39,7 @@ rm $D/binary/Release.gpg || true
 gpg --batch --no-use-agent --no-default-keyring --digest-algo=sha256 --keyring "$GPG_KEYRING" --secret-keyring="$GPG_SECRET_KEYRING" --passphrase-file "$GPG_PASSPHRASE_FILE" \
   -abs -o $D/binary/Release.gpg $D/binary/Release
 
-cp $D/binary/Packages.* $D/binary/Release $D/binary/Release.gpg $D/binary/Contents.gz $D/contents/binary
+cp $D/binary/Packages* $D/binary/Release $D/binary/Release.gpg $D/binary/Contents* $D/contents/binary
 
 rsync -avz -e "ssh $SSH_OPTS" $D/contents/ "$PKGSERVER:$(echo $DEB_WEBDIR | sed 's/ /\\ /g')"
 
