@@ -34,7 +34,7 @@ deb #{url} binary/
 </p>
 
 <p>
-You will need to explicitly install a Java Runtime Environment, <b>because Jenkins does not support all Java versions</b>, this is the safest way to
+You will need to explicitly install Java, <b>because Jenkins does not support all Java versions</b>, this is the safest way to
 ensure your system ends properly configured. Adding an explicit dependency requirement on Java could force installation
 of undesired versions of the JVM. Check <a href="https://jenkins.io/doc/administration/requirements/java/">Java requirements in Jenkins</a>
 for more details.
