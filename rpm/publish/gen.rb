@@ -36,6 +36,7 @@ Thus, adding an explicit dependency requirement on Java would force installation
 <p>
 
 <ul>
+  <li>2.164 (2019-02) and newer: Java 8 or Java 11</li>
   <li>2.54 (2017-04) and newer: Java 8</li>
   <li>1.612 (2015-05) and newer: Java 7</li>
 </ul>

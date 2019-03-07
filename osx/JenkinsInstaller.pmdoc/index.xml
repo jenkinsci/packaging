@@ -41,7 +41,7 @@
     <requirement id="file" operator="eq" value="true">
       <file>/System/Library/Frameworks/JavaVM.framework/Versions/A/Commands/java</file>
       <message-title>Java Runtime Not Found</message-title>
-      <message>You need Java runtime to run @@PRODUCTNAME@@. Open /Applications/Utilities/Java Preferences, install Java and then run this installer again.</message>
+      <message>You need Java runtime to run @@PRODUCTNAME@@. Open /Applications/Utilities/Java Preferences, install Java and then run this installer again. See https://jenkins.io/doc/administration/requirements/java/ for Java requirements</message>
     </requirement>
   </requirements>
   <flags/>
