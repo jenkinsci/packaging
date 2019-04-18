@@ -100,6 +100,23 @@ JENKINS_HTTPS_KEYSTORE_PASSWORD=""
 #
 JENKINS_HTTPS_LISTEN_ADDRESS=""
 
+## Type:        integer(0:65535)
+## Default:     ""
+## ServiceRestart: @@ARTIFACTNAME@@
+#
+# HTTP2 port Jenkins is listening on.
+# Default is disabled.
+#
+JENKINS_HTTP2_PORT=""
+
+## Type:        string
+## Default:     ""
+## ServiceRestart: @@ARTIFACTNAME@@
+#
+# IP address Jenkins listens on for HTTP2 requests.
+# Default is disabled.
+#
+JENKINS_HTTP2_LISTEN_ADDRESS=""
 
 ## Type:        integer(1:9)
 ## Default:     5
