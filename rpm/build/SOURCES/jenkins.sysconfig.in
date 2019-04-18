@@ -78,6 +78,7 @@ JENKINS_HTTPS_PORT=""
 ## ServiceRestart: @@ARTIFACTNAME@@
 #
 # Path to the keystore in JKS format (as created by the JDK 'keytool').
+# Incompatible with JENKINS_HTTPS_PRIVATE_KEY/JENKINS_HTTPS_CERTIFICATE.
 # Default is disabled.
 #
 JENKINS_HTTPS_KEYSTORE=""
@@ -90,6 +91,28 @@ JENKINS_HTTPS_KEYSTORE=""
 # Default is disabled.
 #
 JENKINS_HTTPS_KEYSTORE_PASSWORD=""
+
+## Type:        string
+## Default:     ""
+## ServiceRestart: @@ARTIFACTNAME@@
+#
+# Path to the private key in PEM format.
+# Must be used with JENKINS_HTTPS_CERTIFICATE.
+# Incompatible with JENKINS_HTTPS_KEYSTORE.
+# Default is disabled.
+#
+JENKINS_HTTPS_PRIVATE_KEY=""
+
+## Type:        string
+## Default:     ""
+## ServiceRestart: @@ARTIFACTNAME@@
+#
+# Path to the X.509 certificate in DER or PEM format.
+# Must be used with JENKINS_HTTPS_PRIVATE_KEY.
+# Incompatible with JENKINS_HTTPS_KEYSTORE.
+# Default is disabled.
+#
+JENKINS_HTTPS_CERTIFICATE=""
 
 ## Type:        string
 ## Default:     ""
