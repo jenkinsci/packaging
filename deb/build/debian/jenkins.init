@@ -30,7 +30,7 @@ if [ -n "$UMASK" ]; then
     DAEMON_ARGS="$DAEMON_ARGS --umask=$UMASK"
 fi
 if [ "$JENKINS_ENABLE_ACCESS_LOG" = "yes" ]; then
-    DAEMON_ARGS="$DAEMON_ARGS --accessLoggerClassName=winstone.accesslog.SimpleAccessLogger --simpleAccessLogger.format=combined --simpleAccessLogger.file=/var/log/$NAME/access_log"
+    JENKINS_ARGS="$JENKINS_ARGS --accessLoggerClassName=winstone.accesslog.SimpleAccessLogger --simpleAccessLogger.format=combined --simpleAccessLogger.file=/var/log/$NAME/access_log"
 fi
 
 SU=/bin/su
