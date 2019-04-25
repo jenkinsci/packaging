@@ -26,8 +26,6 @@ DAEMON=/usr/bin/daemon
 DAEMON_ARGS="--name=$NAME --inherit --env=JENKINS_HOME=$JENKINS_HOME --output=$JENKINS_LOG --pidfile=$PIDFILE"
 JAVA=`type -p java`
 
-JAVA_ALLOWED_VERSION="18"
-
 if [ -n "$UMASK" ]; then
     DAEMON_ARGS="$DAEMON_ARGS --umask=$UMASK"
 fi
@@ -56,10 +54,12 @@ if [ -z "$JAVA" ]; then
     exit 1
 fi
 
+# Which Java versions can be used to run Jenkins
+JAVA_ALLOWED_VERSIONS=( "18" "110" )
 # Work out the JAVA version we are working with:
-JAVA_VERSION=$($JAVA -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*"/\1\2/p;')
+JAVA_VERSION=$($JAVA -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*".*/\1\2/p;')
 
-if [ "$JAVA_VERSION" = "$JAVA_ALLOWED_VERSION" ]; then
+if [[ ${JAVA_ALLOWED_VERSIONS[*]} =~ "$JAVA_VERSION" ]]; then
     echo "Correct java version found" >&2
 else
     echo "Found an incorrect Java version" >&2
