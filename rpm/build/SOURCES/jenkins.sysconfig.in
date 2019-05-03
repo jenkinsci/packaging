@@ -107,6 +107,9 @@ JENKINS_HTTPS_LISTEN_ADDRESS=""
 # HTTP2 port Jenkins is listening on.
 # Default is disabled.
 #
+# Notice: HTTP2 support may require additional configuration, see Winstone
+# documentation for more information.
+#
 JENKINS_HTTP2_PORT=""
 
 ## Type:        string
@@ -115,6 +118,9 @@ JENKINS_HTTP2_PORT=""
 #
 # IP address Jenkins listens on for HTTP2 requests.
 # Default is disabled.
+#
+# Notice: HTTP2 support may require additional configuration, see Winstone
+# documentation for more information.
 #
 JENKINS_HTTP2_LISTEN_ADDRESS=""
 
