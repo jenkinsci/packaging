@@ -155,6 +155,16 @@ JENKINS_HANDLER_IDLE="20"
 ## Default:     ""
 ## ServiceRestart: @@ARTIFACTNAME@@
 #
+# Folder for additional jar files to add to the Jetty class loader.
+# See Winstone documentation for more information.
+# Default is disabled.
+#
+JENKINS_EXTRA_LIB_FOLDER=""
+
+## Type:        string
+## Default:     ""
+## ServiceRestart: @@ARTIFACTNAME@@
+#
 # Pass arbitrary arguments to Jenkins.
 # Full option list: java -jar @@ARTIFACTNAME@@.war --help
 #
