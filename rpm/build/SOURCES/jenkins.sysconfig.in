@@ -107,6 +107,9 @@ JENKINS_HTTPS_LISTEN_ADDRESS=""
 # HTTP2 port Jenkins is listening on.
 # Default is disabled.
 #
+# Notice: HTTP2 support may require additional configuration, see Winstone
+# documentation for more information.
+#
 JENKINS_HTTP2_PORT=""
 
 ## Type:        string
@@ -115,6 +118,9 @@ JENKINS_HTTP2_PORT=""
 #
 # IP address Jenkins listens on for HTTP2 requests.
 # Default is disabled.
+#
+# Notice: HTTP2 support may require additional configuration, see Winstone
+# documentation for more information.
 #
 JENKINS_HTTP2_LISTEN_ADDRESS=""
 
@@ -150,6 +156,16 @@ JENKINS_HANDLER_MAX="100"
 # Maximum number of idle HTTP worker threads.
 #
 JENKINS_HANDLER_IDLE="20"
+
+## Type:        string
+## Default:     ""
+## ServiceRestart: @@ARTIFACTNAME@@
+#
+# Folder for additional jar files to add to the Jetty class loader.
+# See Winstone documentation for more information.
+# Default is disabled.
+#
+JENKINS_EXTRA_LIB_FOLDER=""
 
 ## Type:        string
 ## Default:     ""
