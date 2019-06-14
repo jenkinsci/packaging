@@ -111,7 +111,7 @@ RETVAL=0
 case "$1" in
     start)
 	echo -n "Starting @@PRODUCTNAME@@ "
-	daemon --user "$JENKINS_USER" --pidfile "$JENKINS_PID_FILE" $JAVA_CMD $PARAMS > /dev/null
+	daemon --user "$JENKINS_USER" --pidfile "$JENKINS_PID_FILE" "$JAVA_CMD" $PARAMS > /dev/null
 	RETVAL=$?
 	if [ $RETVAL = 0 ]; then
 	    success
