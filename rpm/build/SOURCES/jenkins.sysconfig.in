@@ -2,7 +2,7 @@
 ## Description: @@SUMMARY@@
 ## Type:        string
 ## Default:     "~~HOME~~"
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # Directory where Jenkins store its configuration and working
 # files (checkouts, build reports, artifacts, ...).
@@ -30,7 +30,7 @@ JENKINS_USER="@@ARTIFACTNAME@@"
 
 ## Type:        string
 ## Default: "false"
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # Whether to skip potentially long-running chown at the
 # $JENKINS_HOME location. Do not enable this, "true", unless
@@ -48,7 +48,7 @@ JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true"
 
 ## Type:        integer(0:65535)
 ## Default:     @@PORT@@
-## ServiceRestart: jenkins
+## ServiceRestart: @@ARTIFACTNAME@@
 #
 # Port Jenkins is listening on.
 # Set to -1 to disable
