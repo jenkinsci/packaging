@@ -1,5 +1,6 @@
 *.msi
 *.war
+*.sha256
 *.zip
 *.deb
 *.rpm
@@ -11,3 +12,7 @@ generated
 .iml
 .idea/
 *.orig
+bin/
+obj/
+tmp/
+packages/
