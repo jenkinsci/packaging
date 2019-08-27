@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+
 <!--
   This file gets processed twice. Once by shell on the release machine, then
   once more by WiX toolkit on Windows build box.
@@ -7,41 +8,243 @@
   it has to be written like <BACKSLASH><DOLLAR>(var.VARNAME) to survive the first processing
 -->
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'
-     xmlns:fire="http://schemas.microsoft.com/wix/FirewallExtension">
-  <Product Name='${PRODUCTNAME} ${VERSION}' Id='*' UpgradeCode='${MSI_PRODUCTCODE}'
-    Language='1033' Codepage='1252' Version='0.${encodedv}' Manufacturer='${VENDOR}'>
+     xmlns:fire="http://schemas.microsoft.com/wix/FirewallExtension"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product Name='$(var.ProductName) $(var.ProductVersion)' Id='*' UpgradeCode='$(var.ProductCode)'
+    Language='1033' Codepage='1252' Version='$(var.EncodedVersion)' Manufacturer='$(var.ProductVendor)'>
 
-    <Package Id='*' Keywords='Installer' Description="${PRODUCTNAME}"
-      Comments='${SUMMARY}' InstallScope="perMachine"
-      InstallerVersion='100' Compressed='yes' SummaryCodepage='1252' />
-      <Media Id='1' Cabinet='${ARTIFACTNAME}.cab' EmbedCab='yes'/>
-      <Directory Id='TARGETDIR' Name='SourceDir'>
-        <Directory Id='ProgramFilesFolder' Name='PFiles'>
-          <Directory Id='JENKINSDIR' Name='${CAMELARTIFACTNAME}' FileSource=".">
-              <Directory Id='JreDir' Name='jre'/>
-              <Component Id='Main' Guid='e4a652bf-c210-4a45-95c4-5dc875b4880b'>
-                <File Name="jenkins.exe" Source='tmp/jenkins.exe' KeyPath='yes' Id="JenkinsExe"/>
-                <fire:FirewallException Id="FwEx" File="\$(var.JavaExeId)" Name="Jenkins" Scope="any" IgnoreFailure="yes" />
-                <File Name="jenkins.xml" Source='tmp/jenkins.xml' DiskId='1' />
-                <File Name="jenkins.exe.config" Source='jenkins.exe.config' DiskId='1' />
-                <File Name="${ARTIFACTNAME}.war" Source='\$(var.WAR)' DiskId='1' />
-                <ServiceInstall Id="${CAMELARTIFACTNAME}Service"
-                     Name="${CAMELARTIFACTNAME}"
-                     DisplayName="${PRODUCTNAME}"
-                     Type="ownProcess"
-                     Start="auto"
-                     ErrorControl="normal"
-                     Description="${SUMMARY}"
-                     Account="[SERVICEACCOUNT]"
-                     Password="[SERVICEPASSWORD]" />
-                 <ServiceControl Id="Control${CAMELARTIFACTNAME}Service" Name="${CAMELARTIFACTNAME}" Start="install" Stop="both" Wait="yes" Remove="uninstall"/>
-              </Component>
-          </Directory>
+    <Package Id='*' Platform="x64" Keywords='Installer' Description="$(var.ProductName)"
+      Comments='$(var.ProductSummary)' InstallScope="perMachine"
+      InstallerVersion='200' Compressed='yes' SummaryCodepage='1252' />
+    <Media Id='1' Cabinet='$(var.ArtifactName).cab' EmbedCab='yes'/>
+      
+    <Icon Id="installer.ico" SourceFile="$(var.InstallerIco)" />
+    <Binary Id="Cryptography" SourceFile="msiext-1.5\CustomActions\Cryptography.dll" />
+      
+      
+    <!-- Save the command line value INSTALLDIR and restore it later in the sequence or it will be overwritten by the value saved to the registry during an upgrade -->
+    <!-- http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/ -->
+    <CustomAction Id='SaveCmdLineValueINSTALLDIR' Property='CMDLINE_INSTALLDIR' Value='[INSTALLDIR]' Execute='firstSequence' />
+    <CustomAction Id='SetFromCmdLineValueINSTALLDIR' Property='INSTALLDIR' Value='[CMDLINE_INSTALLDIR]' Execute='firstSequence' />
+    <InstallUISequence>
+        <Custom Action='SaveCmdLineValueINSTALLDIR' Before='AppSearch' />
+        <Custom Action='SetFromCmdLineValueINSTALLDIR' After='AppSearch'>
+          CMDLINE_INSTALLDIR
+        </Custom>
+    </InstallUISequence>
+    <InstallExecuteSequence>
+        <Custom Action='SaveCmdLineValueINSTALLDIR' Before='AppSearch' />
+        <Custom Action='SetFromCmdLineValueINSTALLDIR' After='AppSearch'>
+          CMDLINE_INSTALLDIR
+        </Custom>
+    </InstallExecuteSequence>
+
+    <!-- Save the command line value PORT and restore it later in the sequence or it will be overwritten by the value saved to the registry during an upgrade -->
+    <!-- http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/ -->
+    <CustomAction Id='SaveCmdLineValuePORT' Property='CMDLINE_PORT' Value='[PORT]' Execute='firstSequence' />
+    <CustomAction Id='SetFromCmdLineValuePORT' Property='PORT' Value='[CMDLINE_PORT]' Execute='firstSequence' />
+    <InstallUISequence>
+        <Custom Action='SaveCmdLineValuePORT' Before='AppSearch' />
+        <Custom Action='SetFromCmdLineValuePORT' After='AppSearch'>
+          CMDLINE_PORT
+        </Custom>
+    </InstallUISequence>
+    <InstallExecuteSequence>
+        <Custom Action='SaveCmdLineValuePORT' Before='AppSearch' />
+        <Custom Action='SetFromCmdLineValuePORT' After='AppSearch'>
+          CMDLINE_PORT
+        </Custom>
+    </InstallExecuteSequence>
+      
+    <!-- Save the command line value JAVA_HOME and restore it later in the sequence or it will be overwritten by the value saved to the registry during an upgrade -->
+    <!-- http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/ -->
+    <CustomAction Id='SaveCmdLineValueJAVA_HOME' Property='CMDLINE_JAVA_HOME' Value='[JAVA_HOME]' Execute='firstSequence' />
+    <CustomAction Id='SetFromCmdLineValueJAVA_HOME' Property='JAVA_HOME' Value='[CMDLINE_JAVA_HOME]' Execute='firstSequence' />
+    <InstallUISequence>
+        <Custom Action='SaveCmdLineValueJAVA_HOME' Before='AppSearch' />
+        <Custom Action='SetFromCmdLineValueJAVA_HOME' After='AppSearch'>
+          CMDLINE_JAVA_HOME
+        </Custom>
+    </InstallUISequence>
+    <InstallExecuteSequence>
+        <Custom Action='SaveCmdLineValueJAVA_HOME' Before='AppSearch' />
+        <Custom Action='SetFromCmdLineValueJAVA_HOME' After='AppSearch'>
+          CMDLINE_JAVA_HOME
+        </Custom>
+    </InstallExecuteSequence>
+      
+    <!-- Save the command line value SERVICE_USERNAME and restore it later in the sequence or it will be overwritten by the value saved to the registry during an upgrade -->
+    <!-- http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/ -->
+    <CustomAction Id='SaveCmdLineValueSERVICE_USERNAME' Property='CMDLINE_SERVICE_USERNAME' Value='[SERVICE_USERNAME]' Execute='firstSequence' />
+    <CustomAction Id='SetFromCmdLineValueSERVICE_USERNAME' Property='SERVICE_USERNAME' Value='[CMDLINE_SERVICE_USERNAME]' Execute='firstSequence' />
+    <InstallUISequence>
+        <Custom Action='SaveCmdLineValueSERVICE_USERNAME' Before='AppSearch' />
+        <Custom Action='SetFromCmdLineValueSERVICE_USERNAME' After='AppSearch'>
+          CMDLINE_SERVICE_USERNAME
+        </Custom>
+    </InstallUISequence>
+    <InstallExecuteSequence>
+        <Custom Action='SaveCmdLineValueSERVICE_USERNAME' Before='AppSearch' />
+        <Custom Action='SetFromCmdLineValueSERVICE_USERNAME' After='AppSearch'>
+          CMDLINE_SERVICE_USERNAME
+        </Custom>
+    </InstallExecuteSequence>
+    
+    <!-- Save the command line value SERVICE_PASSWORD and restore it later in the sequence or it will be overwritten by the value saved to the registry during an upgrade -->
+    <!-- http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/ -->
+    <CustomAction Id='SaveCmdLineValueSERVICE_PASSWORD' Property='CMDLINE_SERVICE_PASSWORD' Value='[SERVICE_PASSWORD]' Execute='firstSequence' HideTarget='yes'/>
+    <CustomAction Id='SetFromCmdLineValueSERVICE_PASSWORD' Property='SERVICE_PASSWORD' Value='[CMDLINE_SERVICE_PASSWORD]' Execute='firstSequence' />
+    <InstallUISequence>
+        <Custom Action='SaveCmdLineValueSERVICE_PASSWORD' Before='AppSearch' />
+        <Custom Action='SetFromCmdLineValueSERVICE_PASSWORD' After='AppSearch'>
+          CMDLINE_SERVICE_PASSWORD
+        </Custom>
+    </InstallUISequence>
+    <InstallExecuteSequence>
+        <Custom Action='SaveCmdLineValueSERVICE_PASSWORD' Before='AppSearch' />
+        <Custom Action='SetFromCmdLineValueSERVICE_PASSWORD' After='AppSearch'>
+          CMDLINE_SERVICE_PASSWORD
+        </Custom>
+    </InstallExecuteSequence>
+ 
+    <!-- Determine the directory of a previous installation (if one exists). If not INSTALLDIR stays empty -->
+    <Property Id="INSTALLDIR">
+        <RegistrySearch Id="DetermineInstallLocation" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="InstallLocation" Win64="yes" />
+    </Property>
+    
+    <!-- Determine the port number of a previous installation -->
+    <Property Id="PORTNUMBER">
+        <RegistrySearch Id="DeterminePort" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="Port" Win64="yes" />
+    </Property>
+    <!-- Set default value if registry search comes up empty -->
+    <SetProperty After='AppSearch' Id='PORTNUMBER' Value='8080'>NOT PORTNUMBER</SetProperty>
+    
+    <!-- Determine the JENKINS_ROOT of a previous installation -->
+    <Property Id="JENKINS_ROOT">
+      <RegistrySearch Id="DetermineJenkinsRoot" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="JenkinsRoot" Win64="yes" />
+    </Property>
+    <SetProperty After='AppSearch' Id='JENKINS_ROOT' Value='%LocalAppData%\Jenkins'>NOT JENKINS_ROOT</SetProperty>
+    
+    <Property Id="SERVICE_USERNAME">
+      <RegistrySearch Id="DetermineServiceUsername" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="SU" Win64="yes" />
+    </Property>
+
+    <Property Id="SERVICE_PASSWORD_ENC">
+      <RegistrySearch Id="DetermineServicePassword" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="SP" Win64="yes" />
+    </Property>
+    
+    <Property Id="CRYPTUNPROTECT_FLAGS" Value="CRYPTPROTECT_LOCAL_MACHINE|CRYPTPROTECT_UI_FORBIDDEN" />
+    <CustomAction Id="SetEncryptedServicePASSWORD" Property="CRYPTUNPROTECT_DATA" Value="[SERVICE_PASSWORD_ENC]" />
+    <CustomAction Id="DecryptServicePassword" BinaryKey="Cryptography" DllEntry="CryptUnprotectDataHex" Execute="immediate" />
+    <CustomAction Id="SetServiceDecryptedPASSWORD" Property="SERVICE_PASSWORD" Value="[CRYPTUNPROTECT_RESULT]" />
+    
+    <Property Id="CRYPTPROTECT_FLAGS" Value="CRYPTPROTECT_LOCAL_MACHINE|CRYPTPROTECT_UI_FORBIDDEN" />
+    <CustomAction Id="EncryptServicePassword" BinaryKey="Cryptography" DllEntry="CryptProtectDataHex" Execute="immediate" />
+    <CustomAction Id="SetServiceEncryptedPASSWORD" Property="SERVICE_PASSWORD_ENC" Value="[CRYPTPROTECT_RESULT]" />
+    
+    <!-- These lock down the permissions for the Jenkins directory (where it's installed) so that normal users can't mess with the files -->
+    
+    <!--
+        S-1-5-19     LocalService
+        S-1-5-32-544 Local Administrators group
+        S-1-5-18     Local System
+    -->
+    <SetProperty
+        Id="SetDirectoryPermissionsLocalSystem"
+        Before="SetDirectoryPermissionsLocalSystem"
+        Sequence="execute"
+        Value ="&quot;[System64Folder]icacls.exe&quot; &quot;[JENKINSDIR_STRIPPED]&quot; /inheritance:r /grant *S-1-5-19:(OI)(CI)(F) /grant *S-1-5-32-544:(OI)(CI)(F) /grant *S-1-5-18:(OI)(CI)(F)" />
+
+    <CustomAction
+        Id="SetDirectoryPermissionsLocalSystem"
+        BinaryKey="WixCA"
+        DllEntry="WixQuietExec64"
+        Execute="deferred"
+        Return="check"
+        Impersonate="no" />
+
+    <SetProperty
+        Id="SetDirectoryPermissionsServiceAccount"
+        Before="SetDirectoryPermissionsServiceAccount"
+        Sequence="execute"
+        Value ="&quot;[System64Folder]icacls.exe&quot; &quot;[JENKINSDIR_STRIPPED]&quot; /inheritance:r /grant *S-1-5-32-544:(OI)(CI)(F) /grant [SERVICE_USERNAME]:(OI)(CI)(F)" />
+
+    <CustomAction
+        Id="SetDirectoryPermissionsServiceAccount"
+        BinaryKey="WixCA"
+        DllEntry="WixQuietExec64"
+        Execute="deferred"
+        Return="check" 
+        Impersonate="no" />
+
+    <!-- Find a Java 8 JRE/JDK installation (by default) -->
+    <Property Id="JDK11_VERSION">
+      <RegistrySearch Id="JDK11_VERSION_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK" Name="CurrentVersion" Type="raw" Win64="yes" />
+    </Property>
+    
+    <!-- these are in reverse preference order...e.g., we look for JDK11, but if JRE8 is available, we use that unless JDK8 is available -->
+    <Property Id="JAVA_HOME">
+      <RegistrySearch Id="JDK11_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK\[JDK11_VERSION]" Name="JavaHome" Type="raw" Win64="yes" />
+      <RegistrySearch Id="JRE8_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\Java Runtime Environment\1.8" Name="JavaHome" Type="raw" Win64="yes"/>
+      <RegistrySearch Id="JDK8_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\Java Development Kit\1.8" Name="JavaHome" Type="raw" Win64="yes"/>
+    </Property>
+
+    <Property Id="ARPPRODUCTICON" Value="installer.ico" />
+    <Property Id="ARPNOREPAIR" Value="yes" Secure="yes" />      <!-- Remove repair -->
+    <Property Id="ARPNOMODIFY" Value="yes" Secure="yes" />      <!-- Remove modify -->
+    
+    <Property Id="INSTALLLEVEL" Value="1" />
+
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFiles64Folder' Name='PFiles'>
+        <Directory Id='JENKINSDIR' Name='$(var.ArtifactName)' FileSource=".">
+          <Component Id='Main' Guid='e4a652bf-c210-4a45-95c4-5dc875b4880b' Win64='yes'>
+            <File Name="jenkins.exe" Source='tmp/jenkins.exe' KeyPath='yes' Id="JenkinsExe"/>
+            <File Id="JenkinsXml" Name="jenkins.xml" Source='tmp/jenkins.xml' DiskId='1' />
+            <File Name="jenkins.exe.config" Source='jenkins.exe.config' DiskId='1' />
+            <File Name="$(var.ArtifactName).war" Source='$(var.WAR)' DiskId='1' />
+            
+            <!-- Update the XML file with the values selected during install -->
+            <util:XmlFile Id='JenkinsXmlJenkinsData' Action='setValue' ElementPath='//service/env/@value' File='[#JenkinsXml]' Value='[JENKINS_ROOT].jenkins' Sequence="1"/>
+            <util:XmlFile Id='JenkinsXmlExecutable' Action='setValue' ElementPath='//service/executable' File='[#JenkinsXml]' Value='[JAVA_HOME]\bin\java.exe' Sequence="1"/>
+            <util:XmlFile Id='JenkinsXmlArguments' Action='setValue' ElementPath='//service/arguments' File='[#JenkinsXml]' Value='-Xrs -Xmx256m -Dhudson.lifecycle=hudson.lifecycle.WindowsServiceLifecycle -jar &quot;[JENKINSDIR]jenkins.war&quot; --httpPort=[PORTNUMBER] --webroot=&quot;[JENKINS_ROOT]war&quot;' Sequence="1"/>
+            <util:XmlFile Id='JenkinsXmlExtensionsPidfile' Action='setValue' ElementPath='//service/extensions/extension/pidfile' File='[#JenkinsXml]' Value='[JENKINS_ROOT]jenkins.pid' Sequence='1'/>
+            <ServiceInstall Id="$(var.ArtifactName)Service"
+                  Name="$(var.ArtifactName)"
+                  DisplayName="$(var.ProductName)"
+                  Type="ownProcess"
+                  Start="auto"
+                  ErrorControl="normal"
+                  Description="$(var.ProductSummary)"
+                  Account="[SERVICE_USERNAME]"
+                  Password="[SERVICE_PASSWORD]" />
+              <ServiceControl Id="Control$(var.ArtifactName)Service" Name="$(var.ArtifactName)" Start="install" Stop="both" Wait="yes" Remove="uninstall"/>
+          </Component>
+
+          <!-- Registry entries -->
+          <Component Id="SettingsRegistryEntries" Guid="">
+              <!-- Do NOT use the application's default registry key here, because THIS key will be removed on uninstall
+                  (important when installing a newer version, because that is uninstall followed by install) -->
+              <RegistryKey Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins">
+                <RegistryValue Name="InstallLocation" Value="[JENKINSDIR]" Type="string" KeyPath="yes" />
+                <RegistryValue Name="Port" Value="[PORTNUMBER]" Type="string" />
+                <RegistryValue Name="SU" Value="[SERVICE_USERNAME]" Type="string" />
+                <RegistryValue Name="SP" Value="[SERVICE_PASSWORD_ENC]" Type="string" />
+                <RegistryValue Name="JenkinsRoot" Value="[JENKINS_ROOT]" Type="string" />
+                <RegistryValue Name="JavaHome" Value="[JAVA_HOME]" Type="string" />
+              </RegistryKey>
+          </Component>
+          
+          <Component Id="FirewallException" Guid="">
+            <CreateFolder/>
+            <fire:FirewallException Id="FwEx" Program="[JAVA_HOME]\bin\java.exe" Port="[PORTNUMBER]" Name="Jenkins" Scope="any" IgnoreFailure="yes" />
+          </Component>
         </Directory>
       </Directory>
-    
-    <Upgrade Id="${MSI_PRODUCTCODE}">
-      <UpgradeVersion Minimum="0.0.0" Maximum="99.99.99" Property="PREVIOUSVERSIONINSTALLED" />
+    </Directory>
+
+    <Upgrade Id="$(var.ProductCode)">
+      <UpgradeVersion Minimum="0.0.0" Maximum="$(var.EncodedVersion)" Property="PREVIOUSVERSIONINSTALLED" />
     </Upgrade>
 
     <CustomAction Id="BackupJenkinsXmlFile" Script="vbscript">
@@ -50,27 +253,55 @@
         Err.Clear
         jenkinsDirPath = session.Property("JENKINSDIR")
         Set fsObj = CreateObject("Scripting.FileSystemObject")
-
         If fsObj.FolderExists(jenkinsDirPath) Then
             srcPath = jenkinsDirPath & "jenkins.xml"
-
             If fsObj.FileExists(srcPath) Then
                 dstPath = jenkinsDirPath & "jenkins.xml.backup"
                 If fsObj.FileExists(dstPath) Then
                     suffix = 1
-
                     While fsObj.FileExists(dstPath & "_" & suffix)
                         suffix = suffix + 1
                     Wend
-
                     dstPath = dstPath & "_" & suffix
                 End If
-
                 fsObj.CopyFile srcPath, dstPath, True
                 Err.Clear
                 On Error Goto 0
             End If
         End If
+        Set fsObj = Nothing
+      ]]>
+    </CustomAction>
+    
+    <CustomAction Id="ValidateJavaHome" Script="vbscript">
+      <![CDATA[
+      On Error Resume Next
+      Err.Clear
+      javaHome = Session.Property("JAVA_HOME")
+      Session.Property("JAVA_EXE_FOUND") = "0"
+      Session.Property("JAVA_EXE_VERSION") = ""
+      Set fsObj = CreateObject("Scripting.FileSystemObject")
+      If fsObj.FolderExists(javaHome) Then
+        javaExe = javaHome & "\bin\java.exe"
+        If fsObj.FileExists(javaExe) Then
+          Session.Property("JAVA_EXE_FOUND") = "1"
+          javaExeVersion = fsObj.GetFileVersion(javaExe)
+          Session.Property("JAVA_EXE_VERSION") = Left(javaExeVersion, InStr(javaExeVersion, ".") - 1)
+        End If
+      End If
+      Set fsObj = Nothing
+      ]]>
+    </CustomAction>
+    
+    <CustomAction Id="StripJenkinsDir" Script="vbscript">
+      <![CDATA[
+      On Error Resume Next
+      Err.Clear
+      value = Session.Property("JENKINSDIR")
+      If Right(value, 1) = "\" Then
+        value = Left(value, Len(value) - 1) 
+      End If
+      Session.Property("JENKINSDIR_STRIPPED") = value
       ]]>
     </CustomAction>
 
@@ -97,50 +328,134 @@
       -->
       <Custom Action="BackupJenkinsXmlFile" After='InstallInitialize' />
       <RemoveExistingProducts After="BackupJenkinsXmlFile"/>
+      
+      <Custom Action="SetEncryptedServicePASSWORD" Before="InstallInitialize">SERVICE_PASSWORD_ENC</Custom>
+      <Custom Action="DecryptServicePassword" After="SetEncryptedServicePASSWORD">SERVICE_PASSWORD_ENC</Custom>
+      <Custom Action="SetServiceDecryptedPASSWORD" After="DecryptServicePassword">SERVICE_PASSWORD_ENC</Custom>
+      
+      <Custom Action="EncryptServicePassword" Before="InstallFiles">SERVICE_PASSWORD</Custom>
+      <Custom Action="SetServiceEncryptedPASSWORD" After="EncryptServicePassword">SERVICE_PASSWORD</Custom>
+      
+      <Custom Action="StripJenkinsDir" After="InstallFiles">NOT REMOVE</Custom>
+      <Custom Action="SetDirectoryPermissionsLocalSystem" After="StripJenkinsDir"><![CDATA[SERVICE_LOGON_TYPE="ServiceLocalSystem" AND NOT REMOVE]]></Custom>
+      <Custom Action="SetDirectoryPermissionsServiceAccount" After="StripJenkinsDir"><![CDATA[SERVICE_LOGON_TYPE<>"ServiceLocalSystem" AND NOT REMOVE]]></Custom>
     </InstallExecuteSequence>
-
-    <Feature Id='Complete' Level='1'>
+    
+    <Feature Id='Complete' Level='1' Title='Jenkins' TypicalDefault="install" InstallDefault="local" Absent="disallow" Display="expand" Description='The required Jenkins components'>
       <ComponentRef Id='Main' />
-      <ComponentGroupRef Id='JreComponents' />
+      <ComponentRef Id='SettingsRegistryEntries' />
+      <Feature Id='FirewallException' Level='10' Title='Firewall Exception' Description='!(loc.FirewallException_Description)'>
+        <ComponentRef Id='FirewallException' />
+      </Feature>
     </Feature>
+    
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.DialogBmp)" />
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.BannerBmp)" />
 
     <UI>
       <UIRef Id="WixUI_Common" />
-      <!-- WixUI_InstallDir + launch app at the end -->
-      <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
-      <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
-      <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+      
+      <Property Id="WixUI_Mode" Value="FeatureTree" />
 
-      <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
-      <Property Id="WixUI_Mode" Value="InstallDir" />
+      <Dialog Id="JavaHomeDlg" Width="370" Height="270" Title="!(loc.JavaHomeDlgTitle)">
+          <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)">
+            <Publish Event="DoAction" Value="ValidateJavaHome" Order="1">1</Publish>
+            
+            <!-- Spawn the error dialog if java.exe can't be found. -->
+            <Publish Property="ERROR_TITLE" Value="!(loc.JavaHomeDlgErrorTitle)" Order="2"><![CDATA[JAVA_EXE_FOUND = "0" OR JAVA_EXE_VERSION = "10" OR JAVA_EXE_VERSION = "9"]]></Publish>
+            <Publish Property="ERROR_MESSAGE" Value="!(loc.JavaJomeDlgErrorMessage)" Order="3"><![CDATA[JAVA_EXE_FOUND = "0" OR JAVA_EXE_VERSION = "10" OR JAVA_EXE_VERSION = "9"]]></Publish>
+            <Publish Event="SpawnDialog" Value="GenericErrorDlg" Order="4"><![CDATA[JAVA_EXE_FOUND = "0" OR JAVA_EXE_VERSION = "10" OR JAVA_EXE_VERSION = "9"]]></Publish>
+            <Publish Property="JAVA_HOME" Value="[JAVA_HOME]">1</Publish>
+          </Control>
+          <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
+          <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+            <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+          </Control>
+          <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.JavaHomeDlgDescription)" />
+          <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.JavaHomeDlgTitle)" />
+          <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
+          <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+          <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+          <Control Id="FolderLabel" Type="Text" X="20" Y="60" Width="290" Height="30" NoPrefix="yes" Text="!(loc.JavaHomeDlgLabel)" />
+          <Control Id="Folder" Type="PathEdit" X="20" Y="100" Width="320" Height="18" Property="JAVA_HOME" />
+          <Control Id="ChangeFolder" Type="PushButton" X="20" Y="120" Width="56" Height="17" Text="!(loc.JavaHomeDlgChange)">
+            <Publish Property="_BrowseProperty" Value="JAVA_HOME" Order="1">1</Publish>
+            <Publish Event="SpawnDialog" Value="JavaBrowseDlg" Order="2">1</Publish>
+          </Control>
+      </Dialog>
+      
+      <Dialog Id="JavaBrowseDlg" Width="370" Height="270" Title="[ProductName] Setup">
+        <Control Id="PathEdit" Type="PathEdit" X="25" Y="202" Width="320" Height="18" Property="_BrowseProperty" Indirect="yes" />
+        <Control Id="OK" Type="PushButton" X="240" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUIOK)">
+            <Publish Event="EndDialog" Value="Return">1</Publish>
+        </Control>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+            <Publish Event="Reset" Value="0">1</Publish>
+            <Publish Event="EndDialog" Value="Return">1</Publish>
+        </Control>
+        <Control Id="ComboLabel" Type="Text" X="25" Y="58" Width="44" Height="10" TabSkip="no" Text="!(loc.BrowseDlgComboLabel)" />
+        <Control Id="DirectoryCombo" Type="DirectoryCombo" X="70" Y="55" Width="247" Height="80" Property="_BrowseProperty" Indirect="yes" Fixed="yes" Remote="yes">
+            <Subscribe Event="IgnoreChange" Attribute="IgnoreChange" />
+        </Control>
+        <Control Id="WixUI_Bmp_Up" Type="PushButton" X="325" Y="55" Width="19" Height="19" ToolTip="!(loc.BrowseDlgWixUI_Bmp_UpTooltip)" Icon="yes" FixedSize="yes" IconSize="16" Text="!(loc.BrowseDlgWixUI_Bmp_Up)">
+            <Publish Event="DirectoryListUp" Value="0">1</Publish>
+        </Control>
+        <Control Id="DirectoryList" Type="DirectoryList" X="25" Y="83" Width="320" Height="98" Property="_BrowseProperty" Sunken="yes" Indirect="yes" TabSkip="no" />
+        <Control Id="PathLabel" Type="Text" X="25" Y="190" Width="320" Height="10" TabSkip="no" Text="!(loc.BrowseDlgPathLabel)" />
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.BrowseDlgBannerBitmap)" />
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.JavaBrowseDlgDescription)" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.JavaBrowseDlgTitle)" />
+      </Dialog>
 
       <DialogRef Id="BrowseDlg" />
       <DialogRef Id="DiskCostDlg" />
       <DialogRef Id="ErrorDlg" />
       <DialogRef Id="FatalError" />
+      <DialogRef Id="CustomizeDlg" />
       <DialogRef Id="FilesInUse" />
       <DialogRef Id="MsiRMFilesInUse" />
       <DialogRef Id="PrepareDlg" />
       <DialogRef Id="ProgressDlg" />
       <DialogRef Id="ResumeDlg" />
       <DialogRef Id="UserExit" />
+      <DialogRef Id="ServiceCredDlg"/>
+      <DialogRef Id="ServicePortDlg"/>
 
       <Publish Dialog="BrowseDlg" Control="OK" Event="DoAction" Value="WixUIValidatePath" Order="3">1</Publish>
       <Publish Dialog="BrowseDlg" Control="OK" Event="SpawnDialog" Value="InvalidDirDlg" Order="4"><![CDATA[WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
 
       <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
 
-      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg">1</Publish>
-
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg">NOT Installed</Publish>
+      
       <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
       <Publish Dialog="InstallDirDlg" Control="Next" Event="SetTargetPath" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
       <Publish Dialog="InstallDirDlg" Control="Next" Event="DoAction" Value="WixUIValidatePath" Order="2">NOT WIXUI_DONTVALIDATEPATH</Publish>
       <Publish Dialog="InstallDirDlg" Control="Next" Event="SpawnDialog" Value="InvalidDirDlg" Order="3"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
-      <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="4">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
+      <Publish Dialog="InstallDirDlg" Control="Next" Property="SERVICE_LOGON_TYPE" Value="ServiceAccount" Order="4">1</Publish>
+      <Publish Dialog="InstallDirDlg" Control="Next" Property="SERVICE_LOGON_TYPE" Value="ServiceLocalSystem" Order="5"><![CDATA[SERVICE_USERNAME="LocalSystem"]]></Publish>
+      <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog" Value="ServiceCredDlg" Order="6">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
       <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
-      <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
+      <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>     
+      
+      
+      <Publish Dialog="ServiceCredDlg" Control="Next" Event="NewDialog" Value="ServicePortDlg" Order="1">NOT Installed</Publish>
+      <Publish Dialog="ServiceCredDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg" Order="1">NOT Installed</Publish>
+      
+      <Publish Dialog="ServicePortDlg" Control="Next" Event="NewDialog" Value="JavaHomeDlg" Order="1">NOT Installed</Publish>
+      <Publish Dialog="ServicePortDlg" Control="Back" Event="NewDialog" Value="ServiceCredDlg" Order="1">NOT Installed</Publish>
+      
+      <Publish Dialog="JavaHomeDlg" Control="Next" Event="NewDialog" Value="CustomizeDlg" Order="1">NOT Installed</Publish>
+      <Publish Dialog="JavaHomeDlg" Control="Back" Event="NewDialog" Value="ServicePortDlg" Order="1">NOT Installed</Publish>
+      
+      <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="JavaHomeDlg" Order="2">NOT Installed</Publish>
+      <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
 
-      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg" Order="1">NOT Installed</Publish>
+
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">NOT Installed</Publish>
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed</Publish>
 
       <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
@@ -149,16 +464,19 @@
       <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
       <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
 
-      <Property Id="ARPNOMODIFY" Value="1" />
-
       <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication">NOT installed</Publish>
     </UI>
 
 
     <!-- launch a browser at the end of the installation -->
-    <Property Id="WixShellExecTarget" Value="http://localhost:${PORT}/"/>
+    <SetProperty Id="WixShellExecTarget" Before="CostFinalize" Value="http://localhost:[PORTNUMBER]/"/>
     <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
 
+    <!-- Set JAVA_HOME to the JAVA_HOME environment variable if it is currently empty -->
+    <SetProperty Id="JAVA_HOME" Action="SetJAVA_HOME_Default" Before="SetJAVA_HOME_Empty" Value="[%JAVA_HOME]">NOT JAVA_HOME</SetProperty>
+    <!-- Set JAVA_HOME to the Program Files directory if it is empty so the JavaHomeDlg doesn't have an issue -->
+    <SetProperty Id="JAVA_HOME" Action="SetJAVA_HOME_Empty" Before="CostFinalize" Value="[ProgramFiles64Folder]">NOT JAVA_HOME</SetProperty>
+    
     <Property Id="WIXUI_INSTALLDIR" Value="JENKINSDIR" />
   </Product>
 </Wix>
