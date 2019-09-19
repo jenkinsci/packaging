@@ -7,7 +7,9 @@
     <ProductVersion>3.5</ProductVersion>
     <ProjectGuid>{49c7ae2b-d9d1-4b32-9d11-474f1be86658}</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>jenkins-$(DisplayVersion)</OutputName>
+    <Stable Condition=" '$(Stable)' == '' ">False</Stable>
+    <OutputName Condition=" '$(Stable)' == 'False' ">jenkins-$(DisplayVersion)</OutputName>
+    <OutputName Condition=" '$(Stable)' == 'True' ">jenkins-$(DisplayVersion)-stable</OutputName>
     <OutputType>Package</OutputType>
     <SuppressPdbOutput>true</SuppressPdbOutput>
     <SetMsiAssemblyNameFileVersion>True</SetMsiAssemblyNameFileVersion>

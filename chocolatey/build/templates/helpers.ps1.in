@@ -54,7 +54,7 @@ function Install-Jenkins {
     Get-ChocolateyWebFile `
         -PackageName "$packageName" `
         -FileFullPath "$zipFile" `
-        -Url "http://mirrors.jenkins-ci.org/%ZIP_LOC%/jenkins-$($env:ChocolateyPackageVersion).zip" `
+        -Url "http://mirrors.jenkins-ci.org/%MSI_LOC%/jenkins-$($env:ChocolateyPackageVersion).msi" `
         -Checksum '%CHECKSUM%' `
         -ChecksumType 'sha256'
 

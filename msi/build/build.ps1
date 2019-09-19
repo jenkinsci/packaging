@@ -61,6 +61,8 @@ $zip.Entries | Where-Object {$_.Name -like 'jenkins.xml'} | ForEach-Object {[Sys
 $zip.Dispose()
 if($UseTracing) { Set-PSDebug -Trace 1 }
 
+$isLts = $JenkinsVersion.Split('.').Length -gt 2
+
 Write-Host "Restoring packages before build"
 # restore the Wix package
 & "./nuget.exe" restore -PackagesDirectory "packages"
@@ -73,7 +75,7 @@ if($MSBuildPath -ne '') {
     $env:PATH = $env:PATH + ";" + $MSBuildPath
 }
 
-msbuild "jenkins.wixproj" /p:WAR="${War}" /p:Configuration=Release /p:DisplayVersion=$JenkinsVersion /p:ProductName="${ProductName}" /p:ProductSummary="${ProductSummary}" /p:ProductVendor="${ProductVendor}" /p:ArtifactName="${ArtifactName}" /p:BannerBmp="${BannerBmp}" /p:DialogBmp="${DialogBmp}" /p:InstallerIco="${InstallerIco}"
+msbuild "jenkins.wixproj" /p:Stable="${isLts}" /p:WAR="${War}" /p:Configuration=Release /p:DisplayVersion=$JenkinsVersion /p:ProductName="${ProductName}" /p:ProductSummary="${ProductSummary}" /p:ProductVendor="${ProductVendor}" /p:ArtifactName="${ArtifactName}" /p:BannerBmp="${BannerBmp}" /p:DialogBmp="${DialogBmp}" /p:InstallerIco="${InstallerIco}"
 
 Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
     Foreach-Object {
@@ -88,6 +90,7 @@ Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
 
     $sha256 = (Get-FileHash -Algorithm SHA256 -Path $_.FullName).Hash.ToString().ToLower()
     Set-Content -Path "$($_.FullName).sha256" -Value "$sha256 $($_.Name)" -Force
+    $env:MSI_SHA256 = $sha256
 }
 
 if ($UseTracing) { Set-PSDebug -Trace 0 }

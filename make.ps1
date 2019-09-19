@@ -25,6 +25,9 @@ Param(
 # clean:
 # 	rm -rf ${TARGET}
 
+$global:msiDone = $false
+$global:chocolateyDone = $false
+
 function Setup() {
     Get-ChildItem -Recurse -Include setup.ps1 -File | ForEach-Object {
         Push-Location (Split-Path -Parent $_)
@@ -37,11 +40,14 @@ function Setup() {
 }
     
 function New-Msi() {
-    Push-Location ./msi/build
-    try {
-        & ./build.ps1
-    } finally {
-        Pop-Location
+    if(-not $global:msiDone) {
+        Push-Location ./msi/build
+        try {
+            & ./build.ps1
+            $global:msiDone = $true
+        } finally {
+            Pop-Location
+        }
     }
 }
 
@@ -55,29 +61,53 @@ function Publish-Msi() {
     }
 }
 
+function New-Chocolatey() {
+    New-Msi
+    if(-not $global:chocolateyDone) {
+        Push-Location ./chocolatey/build
+        try {
+            & ./build.ps1
+            $global:chocolateyDone = $true
+        } finally {
+            Pop-Location
+        }
+    }
+}
+
+function Publish-Chocolatey() {
+    New-Chocolatey
+    Push-Location ./chocolatey/publish
+    try {
+        & ./publish.ps1
+    } finally {
+        Pop-Location
+    }
+}
+
 function Publish() {
-    $publishers = @(
+    @(
         (Get-Item function:Publish-Msi)
-    )
-        
-    $publishers | ForEach-Object {
+    ) | ForEach-Object {
         & $_
     }
 }
 
 function New-Package() {
-    $packagers = @(
+    @(
         (Get-Item function:New-Msi)
-    )
-    $packagers | ForEach-Object {
+    ) | ForEach-Object {
+        Write-Host $_.Name.Replace("New-", "") -BackgroundColor 'White' -ForegroundColor 'Black'
         & $_
+        Write-Host "`n`n"
     }
 }
 
+Setup
 switch -wildcard ($target) {
     # release targets
     "package"       { New-Package }
     "msi"           { New-Msi }
+    "chocolatey"    { New-Chocolatey }
     "clean"         { Clean }
 
     default { Write-Error "No target '$target'" ; Exit -1 }
