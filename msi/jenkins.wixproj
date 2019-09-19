@@ -59,6 +59,9 @@
       <WixConstant Include="WAR" Condition=" '$(WAR)' == '' ">
         <Value>tmp\jenkins.war</Value>
       </WixConstant>
+      <WixConstant Include="WAR" Condition=" '$(WAR)' != '' ">
+        <Value>$(WAR)</Value>
+      </WixConstant>
       
       <WixConstant Include="ProductName" Condition=" '$(ProductName)' == '' ">
         <Value>Jenkins</Value>

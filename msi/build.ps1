@@ -1,7 +1,6 @@
 [CmdletBinding()]
 Param(
-    [Parameter(Mandatory=$true)]
-    [String] $JenkinsVersion,
+    [String] $War = $env:WAR,
     [string] $MSBuildPath = '',
     [bool] $UseTracing = $false,
     [String] $ProductName = '',
@@ -15,43 +14,14 @@ Param(
 
 if($UseTracing) { Set-PSDebug -Trace 1 }
 
+if([String]::IsNullOrWhiteSpace($War)) {
+    Write-Error "Missing jenkins WAR path"
+    exit 1
+}
+
 $ErrorActionPreference = "Stop"
 
-Function Get-Jenkins([String] $JenkinsVersion, [String] $outputPath='.') {
-    $isLts = $JenkinsVersion.Split('.').Length -gt 2
-
-    $warUrl = "http://mirrors.jenkins.io/war/${JenkinsVersion}/jenkins.war"
-    $warSha256Url = "http://mirrors.jenkins.io/war/${JenkinsVersion}/jenkins.war.sha256"
-
-    if($isLts) {
-        $warUrl = "http://mirrors.jenkins.io/war-stable/${JenkinsVersion}/jenkins.war"
-        $warSha256Url = "http://mirrors.jenkins.io/war-stable/${JenkinsVersion}/jenkins.war.sha256"
-    }
-
-    $localWar = (Join-Path $outputPath 'jenkins.war')
-    $localSha256 = (Join-Path $outputPath 'jenkins.war.sha256')
-
-    Invoke-WebRequest -Uri $warSha256Url -OutFile $localSha256
-    $specifiedHash = (Get-Content $localSha256 | %{ $_.Split(' ')[0]; }).ToLower()
-
-    if(Test-Path $localWar) {
-        $computedHash = (Get-FileHash -Algorithm SHA256 -Path $localWar).Hash.ToString().ToLower()
-        if($specifiedHash -ne $computedHash) {
-            Write-Host "Existing WAR file does not match required SHA hash"
-            Remove-Item -Force $localWar
-        }
-    }
-
-    if(-not (Test-Path $localWar)) {
-        Invoke-WebRequest -Uri $warUrl -OutFile $localWar
-        $computedHash = (Get-FileHash -Algorithm SHA256 -Path $localWar).Hash.ToString().ToLower()
-    }
-
-    if($computedHash -ne $specifiedHash) {
-        Write-Error 'Hashes for jenkins.war does not match!'
-        exit 1
-    }
-}
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 Add-Type -Assembly System.IO.Compression.FileSystem
 
@@ -68,14 +38,19 @@ if(!(Test-Path './msiext-1.5/WixExtensions/WixCommonUiExtension.dll')) {
 
 $currDir = Split-Path -parent $MyInvocation.MyCommand.Definition
 
-Write-Host "Retrieving Jenkins WAR file $JenkinsVersion"
-Get-Jenkins $JenkinsVersion (Join-Path $currDir 'tmp')
+
 
 Write-Host "Extracting components"
 if($UseTracing) { Set-PSDebug -Trace 0 }
 # get the components we need from the war file
 
-$zip = [IO.Compression.ZipFile]::OpenRead([System.IO.Path]::Combine($currDir, 'tmp', 'jenkins.war'))
+$maniFestFile = [System.IO.Path]::Combine($currDir, "tmp", "MANIFEST.MF")
+$zip = [IO.Compression.ZipFile]::OpenRead($env:WAR)
+$zip.Entries | Where-Object {$_.Name -like 'MANIFEST.MF'} | ForEach-Object {[System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, $maniFestFile, $true)}
+
+$JenkinsVersion = $(Get-Content $maniFestFile | Select-String -Pattern "^Jenkins-Version:\s*(.*)" | ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value } | Select-Object -First 1)
+Write-Host "JenkinsVersion = $JenkinsVersion"
+
 $zip.Entries | Where-Object {$_.Name -like "jenkins-core-${JenkinsVersion}.jar"} | ForEach-Object {[System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, [System.IO.Path]::Combine($currDir, "tmp", "core.jar"), $true)}
 $zip.Dispose()
 
@@ -100,7 +75,7 @@ if($MSBuildPath -ne '') {
     $env:PATH = $env:PATH + ";" + $MSBuildPath
 }
 
-msbuild jenkins.wixproj /p:Configuration=Release /p:DisplayVersion=$JenkinsVersion /p:ProductName="${ProductName}" /p:ProductSummary="${ProductSummary}" /p:ProductVendor="${ProductVendor}" /p:ArtifactName="${ArtifactName}" /p:BannerBmp="${BannerBmp}" /p:DialogBmp="${DialogBmp}" /p:InstallerIco="${InstallerIco}"
+msbuild jenkins.wixproj /p:WAR="${env:WAR}" /p:Configuration=Release /p:DisplayVersion=$JenkinsVersion /p:ProductName="${ProductName}" /p:ProductSummary="${ProductSummary}" /p:ProductVendor="${ProductVendor}" /p:ArtifactName="${ArtifactName}" /p:BannerBmp="${BannerBmp}" /p:DialogBmp="${DialogBmp}" /p:InstallerIco="${InstallerIco}"
 
 Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
     Foreach-Object {
