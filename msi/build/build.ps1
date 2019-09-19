@@ -25,47 +25,45 @@ $ErrorActionPreference = "Stop"
 
 Add-Type -Assembly System.IO.Compression.FileSystem
 
-if(!(Test-Path tmp)) {
-    New-Item -ItemType Directory -Path tmp -Force -Confirm:$false | Out-Null
+$tmpDir = Join-Path $PSScriptRoot "tmp"
+
+if(!(Test-Path $tmpDir)) {
+    New-Item -ItemType Directory -Path $tmpDir -Force -Confirm:$false | Out-Null
 } else {
-    Get-ChildItem tmp\* -Exclude jenkins.war | Remove-Item -Force
+    Get-ChildItem tmp\* | Remove-Item -Force
 }
 
-if(!(Test-Path './msiext-1.5/WixExtensions/WixCommonUiExtension.dll')) {
+if(!(Test-Path (Join-Path $PSScriptRoot 'msiext-1.5/WixExtensions/WixCommonUiExtension.dll'))) {
     Invoke-WebRequest -Uri "https://github.com/dblock/msiext/releases/download/1.5/msiext-1.5.zip" -OutFile (Join-Path $PSScriptRoot 'msiext-1.5.zip') -UseBasicParsing
     [IO.Compression.ZipFile]::ExtractToDirectory((Join-Path $PSScriptRoot 'msiext-1.5.zip'), $PSScriptRoot)
 }
-
-$currDir = Split-Path -parent $MyInvocation.MyCommand.Definition
-
-
 
 Write-Host "Extracting components"
 if($UseTracing) { Set-PSDebug -Trace 0 }
 # get the components we need from the war file
 
-$maniFestFile = [System.IO.Path]::Combine($currDir, "tmp", "MANIFEST.MF")
+$maniFestFile = Join-Path $tmpDir "MANIFEST.MF"
 $zip = [IO.Compression.ZipFile]::OpenRead($env:WAR)
-$zip.Entries | Where-Object {$_.Name -like 'MANIFEST.MF'} | ForEach-Object {[System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, $maniFestFile, $true)}
+$zip.Entries | Where-Object {$_.Name -like 'MANIFEST.MF'} | ForEach-Object { [System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, $maniFestFile, $true)}
 
 $JenkinsVersion = $(Get-Content $maniFestFile | Select-String -Pattern "^Jenkins-Version:\s*(.*)" | ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value } | Select-Object -First 1)
 Write-Host "JenkinsVersion = $JenkinsVersion"
 
-$zip.Entries | Where-Object {$_.Name -like "jenkins-core-${JenkinsVersion}.jar"} | ForEach-Object {[System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, [System.IO.Path]::Combine($currDir, "tmp", "core.jar"), $true)}
+$zip.Entries | Where-Object {$_.Name -like "jenkins-core-${JenkinsVersion}.jar"} | ForEach-Object {[System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, [System.IO.Path]::Combine($tmpDir, "core.jar"), $true)}
 $zip.Dispose()
 
-$zip = [IO.Compression.ZipFile]::OpenRead([System.IO.Path]::Combine($currDir, 'tmp', 'core.jar'))
-$zip.Entries | Where-Object {$_.Name -like 'jenkins.exe'} | ForEach-Object {[System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, [System.IO.Path]::Combine($currDir, "tmp", "jenkins.exe"), $true)}
+$zip = [IO.Compression.ZipFile]::OpenRead([System.IO.Path]::Combine($tmpDir, 'core.jar'))
+$zip.Entries | Where-Object {$_.Name -like 'jenkins.exe'} | ForEach-Object {[System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, [System.IO.Path]::Combine($tmpDir, "jenkins.exe"), $true)}
 $zip.Dispose()
 
-$zip = [IO.Compression.ZipFile]::OpenRead([System.IO.Path]::Combine($currDir, 'tmp', 'core.jar'))
-$zip.Entries | Where-Object {$_.Name -like 'jenkins.xml'} | ForEach-Object {[System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, [System.IO.Path]::Combine($currDir, "tmp", "jenkins.xml"), $true)}
+$zip = [IO.Compression.ZipFile]::OpenRead([System.IO.Path]::Combine($tmpDir, 'core.jar'))
+$zip.Entries | Where-Object {$_.Name -like 'jenkins.xml'} | ForEach-Object {[System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, [System.IO.Path]::Combine($tmpDir, "jenkins.xml"), $true)}
 $zip.Dispose()
 if($UseTracing) { Set-PSDebug -Trace 1 }
 
 Write-Host "Restoring packages before build"
 # restore the Wix package
-.\nuget restore -PackagesDirectory packages
+& "./nuget.exe" restore -PackagesDirectory "packages"
 
 Write-Host "Building MSI"
 if($MSBuildPath -ne '') {
@@ -75,7 +73,7 @@ if($MSBuildPath -ne '') {
     $env:PATH = $env:PATH + ";" + $MSBuildPath
 }
 
-msbuild jenkins.wixproj /p:WAR="${env:WAR}" /p:Configuration=Release /p:DisplayVersion=$JenkinsVersion /p:ProductName="${ProductName}" /p:ProductSummary="${ProductSummary}" /p:ProductVendor="${ProductVendor}" /p:ArtifactName="${ArtifactName}" /p:BannerBmp="${BannerBmp}" /p:DialogBmp="${DialogBmp}" /p:InstallerIco="${InstallerIco}"
+msbuild "jenkins.wixproj" /p:WAR="${War}" /p:Configuration=Release /p:DisplayVersion=$JenkinsVersion /p:ProductName="${ProductName}" /p:ProductSummary="${ProductSummary}" /p:ProductVendor="${ProductVendor}" /p:ArtifactName="${ArtifactName}" /p:BannerBmp="${BannerBmp}" /p:DialogBmp="${DialogBmp}" /p:InstallerIco="${InstallerIco}"
 
 Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
     Foreach-Object {
