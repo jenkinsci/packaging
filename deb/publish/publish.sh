@@ -9,7 +9,7 @@ bin="$(dirname "$0")"
 mkdir -p "$DEBDIR"
 mkdir -p "$DEB_WEBDIR"
 
-cp -R "$DEB" "$DEBDIR/"
+rsync -avz "$DEB" "$DEBDIR/"
 
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
@@ -42,10 +42,10 @@ rm "$D/binary/Release.gpg" || true
 
 gpg \
   --batch \
+  --pinentry-mode loopback \
   --no-default-keyring \
   --digest-algo=sha256 \
   --keyring "$GPG_KEYRING" \
-  --secret-keyring="$GPG_SECRET_KEYRING" \
   --passphrase-file "$GPG_PASSPHRASE_FILE" \
   -abs \
   -o "$D/binary/Release.gpg" \
@@ -58,6 +58,6 @@ cp \
   "$D"/binary/Contents* \
   "$D"/contents/binary
 
-rsync "$D/contents/" "$DEB_WEBDIR/"
+rsync -avz "$D/contents/" "$DEB_WEBDIR/"
 
 rm -rf "$D"
