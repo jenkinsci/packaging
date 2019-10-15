@@ -1,0 +1,19 @@
+# docker exec -i -t packaging_packaging_1 gpg --import --batch credentials/sandbox.gpg
+version: '3'
+services:
+  packaging:
+    image: jenkinsciinfra/packaging:latest
+    command: "sleep 99d"
+    environment:
+    - "BUILDENV='/packaging/env/test.mk'"
+    - "BRANDING_DIR=/packaging/branding"
+    - "BRAND=/packaging/jenkins.mk'"
+    - "CREDENTIAL=credentials/test.mk"
+    - "GPG_FILE=/packaging/credentials/sandbox.gpg"
+    - "GPG_KEYNAME=Bogus Test"
+    - "GPG_PASSPHRASE=s3cr3t"
+    - "GPG_PASSPHRASE_FILE=/packaging/credentials/test.gpg.password.txt"
+    - "WAR=/packaging/jenkins.war"
+    volumes:
+      - .:/packaging
+    working_dir: "/packaging"
