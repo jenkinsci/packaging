@@ -1,33 +1,52 @@
 #!/bin/bash -ex
 
-base=$(dirname $0)
+: "${AGENT_WORKDIR:=/tmp}"
 
-ssh $SSH_OPTS $PKGSERVER mkdir -p "'$RPMDIR/'"
-rsync -avz -e "ssh $SSH_OPTS" "$RPM" "$PKGSERVER:$(echo $RPMDIR | sed 's/ /\\ /g')/"
+mkdir -p "$RPMDIR/"
+mkdir -p "$RPM_WEBDIR/"
 
-D=/tmp/$$
-mkdir -p $D/RPMS/noarch
+rsync -avz "$RPM" "$RPMDIR/"
 
-"$base/gen.rb" > $D/index.html
-cp "${GPG_PUBLIC_KEY}" $D/${ORGANIZATION}.key
+# $$ Contains current pid
+D="$AGENT_WORKDIR/$$"
 
-"$BASE/bin/branding.py" $D
+mkdir -p "$D/RPMS/noarch"
 
-cp "$RPM" $D/RPMS/noarch
+"$BASE/bin/indexGenerator.py" \
+  --distribution redhat \
+  --binaryDir "$RPMDIR" \
+  --targetDir "$RPM_WEBDIR"
 
-cat  > $D/${ARTIFACTNAME}.repo << EOF
+cp "${GPG_PUBLIC_KEY}" "$D/${ORGANIZATION}.key"
+
+"$BASE/bin/branding.py" "$D"
+
+cp "$RPM" "$D/RPMS/noarch"
+
+cat  > "$D/${ARTIFACTNAME}.repo" << EOF
 [${ARTIFACTNAME}]
 name=${PRODUCTNAME}${RELEASELINE}
 baseurl=${RPM_URL}
 gpgcheck=1
 EOF
 
-pushd $D
-  rsync -avz -e "ssh $SSH_OPTS" --exclude RPMS . "$PKGSERVER:$(echo $RPM_WEBDIR | sed 's/ /\\ /g')"
+pushd "$D"
+  rsync -avz --exclude RPMS . "$RPM_WEBDIR/"
 popd
 
 # generate index on the server
-# server needs 'createrepo' pacakge
-ssh $SSH_OPTS $PKGSERVER createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
+createrepo --update -o "$RPM_WEBDIR" "$RPMDIR/"
+
+gpg \
+  --batch \
+  --no-use-agent \
+  --no-default-keyring \
+  --keyring "$GPG_KEYRING" \
+  --secret-keyring="$GPG_SECRET_KEYRING" \
+  --passphrase-file "$GPG_PASSPHRASE_FILE" \
+  -a \
+  --detach-sign \
+  --yes \
+  "$SUSE_WEBDIR/repodata/repomd.xml"
 
 rm -rf $D
