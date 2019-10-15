@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<!-- generated. do not manually edit -->
+
+<html lang="en">
+
+<head>
+    {% block head %}
+    <link rel="stylesheet" href="style.css" />
+    <title>{{productName | capitalize }} {{ os_family | capitalize}} Packages</title>
+    {% endblock %}
+
+    <style>
+      TH { font-weight: bold; }
+        #debs { border-spacing:3em 0em; margin-top:2em; }
+    </style>
+</head>
+
+<body>
+  <div id="content">
+    <h1>{{productName | capitalize }} {{ os_family | capitalize}} Packages</h1>
+    {% block distribution_instruction %}{% endblock %}
+
+    {% block java_instructions %}
+      <p>
+        You will need to explicitly install a Java runtime environment, because Oracle's Java RPMs are incorrect and fail to register as providing a java dependency.
+        Thus, adding an explicit dependency requirement on Java would force installation of the OpenJDK JVM.
+      <p>
+
+      <ul>
+        <li>2.164 (2019-02) and newer: Java 8 or Java 11</li>
+        <li>2.54 (2017-04) and newer: Java 8</li>
+        <li>1.612 (2015-05) and newer: Java 7</li>
+      </ul>
+
+      With that set up, the {{productName}} package can be installed with:
+    {% endblock %}
+
+
+    <p>
+      See <a href="https://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+on+Red+Hat+distributions">Wiki</a> for more information, including how {{productName}} is run and where the configuration is stored, etc.
+    </p>
+
+    <h2>Individual Package Downloads</h2>
+    {% block individual_package_instruction %} {% endblock %}
+    <table id=debs>
+      <tr>
+        <th>Name</th>
+        <th>Created Time</th>
+        <th>Last modified</th>
+        <th>Size</th>
+      </tr>
+      {%- for package in packages %}
+      <tr>
+        <td>{{package.filename}}</th>
+        <td>{{package.creation_time}}</th>
+        <td>{{package.last_modified}}</th>
+        <td>{{package.size}}</th>
+      </tr>
+      {%- endfor %}
+    </table>
+  </div>
+</body>
+
+<footer>
+  {% block footer %}
+  Footer Placeholder
+  {% endblock %}
+</footer>
+
+</html>
