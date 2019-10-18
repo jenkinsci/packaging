@@ -89,7 +89,7 @@ class IndexGenerator:
             ctime = datetime.datetime.fromtimestamp(stat.st_mtime)
             mtime = datetime.datetime.fromtimestamp(stat.st_ctime)
             self.packages.append({
-                'filename': file,
+                'filename': os.path.basename(file),
                 'creation_time': ctime,
                 'last_modified': mtime,
                 'size': str(stat.st_size/1000000) + ' MB'
