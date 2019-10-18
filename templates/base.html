@@ -52,7 +52,7 @@
       </tr>
       {%- for package in packages %}
       <tr>
-        <td>{{package.filename}}</th>
+        <td><a href={{package.filename}}>{{ package.filename}}</a></th>
         <td>{{package.creation_time}}</th>
         <td>{{package.last_modified}}</th>
         <td>{{package.size}}</th>
