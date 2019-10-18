@@ -50,6 +50,7 @@ class IndexGenerator:
     def __init__(self, argv):
 
         self.artifact = os.getenv('ARTIFACTNAME', 'jenkins')
+        self.releaseline = os.getenv('RELEASELINE', '')
         self.download_url = os.getenv('URL', 'null')
         self.organization = os.getenv('ORGANIZATION', 'jenkins.io')
         self.product_name = os.getenv('PRODUCTNAME', 'Jenkins')
@@ -113,7 +114,8 @@ class IndexGenerator:
             'organization': self.organization,
             'artifactName': self.artifact,
             'os_family': self.distribution,
-            'packages': self.packages
+            'packages': self.packages,
+            'releaseline': self.releaseline
         }
         env = Environment(loader=FileSystemLoader(self.template_directory))
         template = env.get_template(self.template_file)
