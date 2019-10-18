@@ -1,6 +1,7 @@
 #!/bin/bash -ex
 
 : "${AGENT_WORKDIR:=/tmp}"
+: "${GPG_KEYNAME:?Required valid gpg keyname}"
 
 mkdir -p "$RPMDIR/"
 mkdir -p "$RPM_WEBDIR/"
@@ -40,9 +41,7 @@ createrepo --update -o "$RPM_WEBDIR" "$RPMDIR/"
 gpg \
   --batch \
   --pinentry-mode loopback \
-  --no-default-keyring \
-  --keyring "$GPG_KEYRING" \
-  --passphrase-file "$GPG_PASSPHRASE_FILE" \
+  -u "$GPG_KEYNAME" \
   -a \
   --detach-sign \
   --yes \

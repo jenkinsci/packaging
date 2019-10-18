@@ -1,6 +1,7 @@
 #!/bin/bash -ex
 
 : "${AGENT_WORKDIR:=/tmp}"
+: "${GPG_KEYNAME:?Required valid gpg keyname}"
 
 bin="$(dirname "$0")"
 
@@ -43,10 +44,8 @@ rm "$D/binary/Release.gpg" || true
 gpg \
   --batch \
   --pinentry-mode loopback \
-  --no-default-keyring \
   --digest-algo=sha256 \
-  --keyring "$GPG_KEYRING" \
-  --passphrase-file "$GPG_PASSPHRASE_FILE" \
+  -u "$GPG_KEYNAME" \
   -abs \
   -o "$D/binary/Release.gpg" \
   "$D/binary/Release"

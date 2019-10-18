@@ -35,9 +35,7 @@ createrepo --update -o "$SUSE_WEBDIR" "$SUSEDIR/"
 gpg \
   --batch \
   --pinentry-mode loopback \
-  --no-default-keyring \
-  --keyring "$GPG_KEYRING" \
-  --passphrase-file "$GPG_PASSPHRASE_FILE" \
+  -u "$GPG_KEYNAME" \
   -a \
   --detach-sign \
   --yes \
