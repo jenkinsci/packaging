@@ -8,13 +8,13 @@
   To use this repository, first add the key to your system:
   
   <pre style="padding:0.5em; margin:1em; background-color:black; color:white">
-  wget -q -O - <a href="{{organization}}.key" style="color:white">{{url}}/{{organization}}.key</a> | sudo apt-key add -
+  wget -q -O - <a href="{{organization}}.key" style="color:white"><span class="hostname"></span>/{{organization}}.key</a> | sudo apt-key add -
   </pre>
   
   Then add the following entry in your <tt>/etc/apt/sources.list</tt>:
   
   <pre style="padding:0.5em; margin:1em; background-color:black; color:white">
-  deb {{ url }} binary/
+  deb <span class="hostname"></span> binary/
   </pre>
 </p>
 
@@ -29,5 +29,9 @@ Update your local package index, then finally install {{productName}}:
 {% endblock %}
 
 {% block  individual_package_instruction  %}
-If you need *.deb for a specific version, use these.
+
+<p>
+  If you need *.deb for a specific version, use these.
+</p>
+
 {% endblock %}
