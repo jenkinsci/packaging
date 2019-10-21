@@ -39,7 +39,7 @@ docker.test: docker.images
 
 war: ${WAR}
 war.publish: ${WAR}
-	mkdir -p "'${WARDIR}/${VERSION}/'"
+	mkdir -p "${WARDIR}/${VERSION}/"
 	sha256sum ${WAR} | sed 's, .*, ${ARTIFACTNAME}.war,' > ${WAR_SHASUM}
 	cat ${WAR_SHASUM}
 	rsync -avz "${WAR}" "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
