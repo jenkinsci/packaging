@@ -13,7 +13,7 @@ D="$AGENT_WORKDIR/$$"
 mkdir -p $D/RPMS/noarch $D/repodata
 
 "$BASE/bin/indexGenerator.py" \
-  --distribution suse \
+  --distribution opensuse \
   --binaryDir "$SUSEDIR" \
   --targetDir "$SUSE_WEBDIR"
 
