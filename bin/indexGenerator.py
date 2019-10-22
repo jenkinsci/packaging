@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -22,6 +22,10 @@ class IndexGenerator:
         'suse': {
             'extension': '.rpm',
             'template': 'index.suse.html'
+        },
+        'war': {
+            'extension': '.war',
+            'template': 'index.war.html'
         }
     }
 
@@ -85,12 +89,14 @@ class IndexGenerator:
     def update_packages_list(self):
         file_extension = self.DISTRIBUTIONS[self.distribution]["extension"]
 
-        for file in glob.glob(self.binary_directory + "/*" + file_extension):
+        for file in glob.glob(
+                self.binary_directory + "/**/*" + file_extension,
+                recursive=True):
             stat = os.stat(file)
             ctime = datetime.datetime.fromtimestamp(stat.st_mtime)
             mtime = datetime.datetime.fromtimestamp(stat.st_ctime)
             self.packages.append({
-                'filename': os.path.basename(file),
+                'filename': file.replace(self.binary_directory, ''),
                 'creation_time': ctime,
                 'last_modified': mtime,
                 'size': str(stat.st_size/1000000) + ' MB'
