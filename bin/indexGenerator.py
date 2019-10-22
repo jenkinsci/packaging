@@ -50,6 +50,7 @@ class IndexGenerator:
     targetFile = ''
     template_file = ''
     template_directory = 'templates'
+    repositories = []
 
     def __init__(self, argv):
 
@@ -84,9 +85,13 @@ class IndexGenerator:
 
         self.targetFile = self.target_directory + "/index.html"
         self.template_file = self.DISTRIBUTIONS[self.distribution]["template"]
-        self.update_packages_list()
+        self.packages = self.get_packages()
+        self.root_dir = os.path.dirname(self.target_directory[0:-1])
+        self.root_index = self.root_dir + '/index.html'
+        self.repositories = self.get_repositories()
 
-    def update_packages_list(self):
+    def get_packages(self):
+        packages = []
         file_extension = self.DISTRIBUTIONS[self.distribution]["extension"]
 
         for file in glob.glob(
@@ -95,12 +100,24 @@ class IndexGenerator:
             stat = os.stat(file)
             ctime = datetime.datetime.fromtimestamp(stat.st_mtime)
             mtime = datetime.datetime.fromtimestamp(stat.st_ctime)
-            self.packages.append({
+            packages.append({
                 'filename': file.replace(self.binary_directory, ''),
                 'creation_time': ctime,
                 'last_modified': mtime,
                 'size': str(stat.st_size/1000000) + ' MB'
                 })
+
+        return packages
+
+    def get_repositories(self):
+        repositories = []
+        for file in os.scandir(self.root_dir):
+            if file.is_dir():
+                repositories.append({
+                    'name': file.name
+                    })
+
+        return repositories
 
     def show_information(self):
         print("Product Name: " + self.product_name)
@@ -108,12 +125,26 @@ class IndexGenerator:
         print("Organization: " + self.organization)
         print("Artifact Name: " + self.artifact)
         print("Distribution: " + self.distribution)
+        print("Repositories: " + str(self.repositories))
         print("Get packages list from: " + self.binary_directory)
         print('Number of Packages found: ' + str(len(self.packages)))
         print('Template file: ' + self.template_file)
-        print('Generated index.html: ' + self.targetFile)
+        print('Repository index generated: ' + self.targetFile)
+        print('Root index generated: ' + self.root_index)
 
-    def write_template(self):
+    def generate_root_index(self):
+
+        contexts = {
+            'repositories': self.repositories
+        }
+
+        env = Environment(loader=FileSystemLoader(self.template_directory))
+        template = env.get_template('index.root.html')
+
+        with open(self.root_index, "w") as f:
+            f.write(template.render(contexts))
+
+    def generate_repository_index(self):
         contexts = {
             'product_name': self.product_name,
             'url': self.download_url,
@@ -133,4 +164,5 @@ class IndexGenerator:
 if __name__ == "__main__":
     indexGenerator = IndexGenerator(sys.argv[1:])
     indexGenerator.show_information()
-    indexGenerator.write_template()
+    indexGenerator.generate_repository_index()
+    indexGenerator.generate_root_index()
