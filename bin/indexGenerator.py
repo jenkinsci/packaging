@@ -19,9 +19,9 @@ class IndexGenerator:
             'extension': '.rpm',
             'template': 'index.redhat.html'
         },
-        'suse': {
+        'opensuse': {
             'extension': '.rpm',
-            'template': 'index.suse.html'
+            'template': 'index.opensuse.html'
         },
         'war': {
             'extension': '.war',
@@ -31,7 +31,7 @@ class IndexGenerator:
 
     HELP_MESSAGE = '''
     Generate index.html for package distribution site
-    It supports debian, redhat and suse packages
+    It supports debian, redhat and opensuse packages
 
     indexGenerator.py
         -b <binaries>: Directory where to get a list of packages>
