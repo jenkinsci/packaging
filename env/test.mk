@@ -23,6 +23,7 @@ export SUSEDIR=/packages/binary/opensuse${RELEASELINE}
 export  RPM_WEBDIR=/packages/web/redhat${RELEASELINE}
 export SUSE_WEBDIR=/packages/web/opensuse${RELEASELINE}
 export  DEB_WEBDIR=/packages/web/debian${RELEASELINE}
+export  WAR_WEBDIR=/packages/web/war${RELEASELINE}
 
 # URL to the aforementioned webdir.
 WEBSERVER=test.pkg.jenkins.io:9200

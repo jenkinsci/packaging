@@ -19,9 +19,10 @@ export RPMDIR=/packages/binary/redhat${RELEASELINE}
 export SUSEDIR=/packages/binary/opensuse${RELEASELINE}
 
 # where to put repository index and other web contents
-export  RPM_WEBDIR=/packages/webdir/redhat${RELEASELINE}
-export SUSE_WEBDIR=/packages/webdir/opensuse${RELEASELINE}
-export  DEB_WEBDIR=/packages/webdir/debian${RELEASELINE}
+export  RPM_WEBDIR=/packages/web/redhat${RELEASELINE}
+export SUSE_WEBDIR=/packages/web/opensuse${RELEASELINE}
+export  DEB_WEBDIR=/packages/web/debian${RELEASELINE}
+export  WAR_WEBDIR=/packages/web/war${RELEASELINE}
 
 # URL to the aforementioned webdir
 export  RPM_URL=https://pkg.jenkins.io/redhat${RELEASELINE}
