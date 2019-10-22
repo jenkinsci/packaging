@@ -44,6 +44,11 @@ war.publish: ${WAR}
 	cat ${WAR_SHASUM}
 	rsync -avz "${WAR}" "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
 	rsync -avz "${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
+	./bin/indexGenerator.py \
+		--distribution war \
+		--binaryDir "${WARDIR}" \
+		--targetDir "${WAR_WEBDIR}"
+
 
 
 
