@@ -22,7 +22,7 @@
 </head>
 
 <body>
-    <h1><span class="hostname"></span></h1>
+    <h1>Jenkins Core Packages</h1>
 
     <table class="table">
       <tr>
@@ -30,7 +30,7 @@
       </tr>
       {%- for repository in repositories %}
       <tr>
-        <td><a href="/{{repository.name}}/">{{repository.name}}</a></th>
+        <td><a href="/{{repository.name}}/">{{repository.name}}</a></td>
       </tr>
       {%- endfor %}
     </table>
