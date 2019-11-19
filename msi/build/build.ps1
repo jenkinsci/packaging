@@ -43,7 +43,7 @@ if($UseTracing) { Set-PSDebug -Trace 0 }
 # get the components we need from the war file
 
 $maniFestFile = Join-Path $tmpDir "MANIFEST.MF"
-$zip = [IO.Compression.ZipFile]::OpenRead($env:WAR)
+$zip = [IO.Compression.ZipFile]::OpenRead($War)
 $zip.Entries | Where-Object {$_.Name -like 'MANIFEST.MF'} | ForEach-Object { [System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, $maniFestFile, $true)}
 
 $JenkinsVersion = $(Get-Content $maniFestFile | Select-String -Pattern "^Jenkins-Version:\s*(.*)" | ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value } | Select-Object -First 1)
