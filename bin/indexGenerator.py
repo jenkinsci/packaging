@@ -9,6 +9,10 @@ import glob
 import datetime
 
 
+def basename(path):
+    return os.path.basename(path)
+
+
 class IndexGenerator:
     DISTRIBUTIONS = {
         'debian': {
@@ -139,6 +143,7 @@ class IndexGenerator:
         }
 
         env = Environment(loader=FileSystemLoader(self.template_directory))
+        env.filters['basename'] = basename
         template = env.get_template('index.root.html')
 
         with open(self.root_index, "w") as f:
