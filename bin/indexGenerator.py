@@ -143,7 +143,6 @@ class IndexGenerator:
         }
 
         env = Environment(loader=FileSystemLoader(self.template_directory))
-        env.filters['basename'] = basename
         template = env.get_template('index.root.html')
 
         with open(self.root_index, "w") as f:
@@ -160,6 +159,7 @@ class IndexGenerator:
             'releaseline': self.releaseline
         }
         env = Environment(loader=FileSystemLoader(self.template_directory))
+        env.filters['basename'] = basename
         template = env.get_template(self.template_file)
 
         with open(self.targetFile, "w") as f:
