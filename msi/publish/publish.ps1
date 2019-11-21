@@ -4,7 +4,8 @@ Get-Content .\$env:BUILDENV | Select-String -Match "^export" -Replace "export ",
 }
 
 Write-Host "Copying binaries to $($env:MSIDIR)"
-if(-not Test-Path $env:MSIDIR) {
+
+if(!(Test-Path $env:MSIDIR)) {
   New-Item -ItemType Directory -Path $env:MSIDIR
 }
 
