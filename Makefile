@@ -22,9 +22,9 @@ clean:
 setup:
 	bash -ex -c 'for f in */setup.sh; do $$f; done'
 
-package: war msi deb rpm suse osx
+package: war deb rpm suse osx
 
-publish: war.publish msi.publish deb.publish rpm.publish suse.publish osx.publish
+publish: war.publish deb.publish rpm.publish suse.publish osx.publish
 
 test: deb.test rpm.test suse.test
 
@@ -44,14 +44,6 @@ war.publish: ${WAR}
 	cat ${WAR_SHASUM}
 	rsync -avz -e "ssh ${SSH_OPTS}" "${WAR}" "${PKGSERVER}:${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
 	rsync -avz -e "ssh ${SSH_OPTS}" "${WAR_SHASUM}" "${PKGSERVER}:${WARDIR}/${VERSION}/"
-
-
-
-msi: ${MSI}
-${MSI}: ${WAR} ${CLI} $(shell find msi -type f)
-	./msi/build-on-jenkins.sh
-msi.publish: ${MSI}
-	./msi/publish.sh
 
 
 
