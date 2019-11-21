@@ -3,7 +3,7 @@
   <!-- Java Home Dialog Strings -->
   <String Id="JavaHomeDlgTitle" Overridable="yes">[ProductName] Setup</String>
   <String Id="JavaHomeDlgDescription" Overridable="yes">Select Java home directory (JDK or JRE)</String>
-  <String Id="JavaHomeDlgLabel" Overridable="yes">Please select the path of a Java SE 8.0 or 11.0 JRE installed on your system.</String>
+  <String Id="JavaHomeDlgLabel" Overridable="yes">Please select the path of a Java Development Kit or Java Runtime Environment. Only Java 1.8 and 11 are supported by Jenkins.</String>
   <String Id="JavaHomeDlgChange" Overridable="yes">&amp;Change...</String>
   <String Id="JavaHomeDlgErrorTitle" Overridable="yes">Invalid JRE Directory</String>
   <String Id="JavaJomeDlgErrorMessage" Overridable="yes">Failed to find compatible JRE in [JAVA_HOME]</String>
