@@ -9,7 +9,7 @@
   <String Id="JavaJomeDlgErrorMessage" Overridable="yes">Failed to find compatible Java version in [JAVA_HOME]</String>
   
   <!-- Java Browse Dialog Strings -->
-  <String Id="JavaBrowseDlgDescription" Overridable="yes">Browse to the JRE folder</String>
+  <String Id="JavaBrowseDlgDescription" Overridable="yes">Browse to the Java Home directory</String>
   <String Id="JavaBrowseDlgTitle" Overridable="yes">{\WixUI_Font_Title}Select JRE folder</String>
   
   <!-- Override the string on the service credential dialog -->
