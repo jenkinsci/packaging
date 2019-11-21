@@ -10,7 +10,7 @@
   
   <!-- Java Browse Dialog Strings -->
   <String Id="JavaBrowseDlgDescription" Overridable="yes">Browse to the Java Home directory</String>
-  <String Id="JavaBrowseDlgTitle" Overridable="yes">{\WixUI_Font_Title}Select JRE folder</String>
+  <String Id="JavaBrowseDlgTitle" Overridable="yes">{\WixUI_Font_Title}Select Java folder</String>
   
   <!-- Override the string on the service credential dialog -->
   <String Id="ServiceCredDlg_LocalSystemText" Overridable="yes">Run service as LocalSystem (not recommended)</String>
