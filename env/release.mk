@@ -11,17 +11,18 @@ export SSH_OPTS=-p 22
 export SCP_OPTS=-P 22
 
 # where to put binary files
-export WARDIR=/srv/releases/jenkins/war${RELEASELINE}
-export MSIDIR=/srv/releases/jenkins/windows${RELEASELINE}
+export WARDIR=/packages/binary/war${RELEASELINE}
+export MSIDIR=C:\packages\binary\windows${RELEASELINE}
 export OSXDIR=/srv/releases/jenkins/osx${RELEASELINE}
-export DEBDIR=/srv/releases/jenkins/debian${RELEASELINE}
-export RPMDIR=/srv/releases/jenkins/redhat${RELEASELINE}
-export SUSEDIR=/srv/releases/jenkins/opensuse${RELEASELINE}
+export DEBDIR=/packages/binary/debian${RELEASELINE}
+export RPMDIR=/packages/binary/redhat${RELEASELINE}
+export SUSEDIR=/packages/binary/opensuse${RELEASELINE}
 
 # where to put repository index and other web contents
-export  RPM_WEBDIR=/var/www/pkg.jenkins.io.staging/redhat${RELEASELINE}
-export SUSE_WEBDIR=/var/www/pkg.jenkins.io.staging/opensuse${RELEASELINE}
-export  DEB_WEBDIR=/var/www/pkg.jenkins.io.staging/debian${RELEASELINE}
+export  RPM_WEBDIR=/packages/web/redhat${RELEASELINE}
+export SUSE_WEBDIR=/packages/web/opensuse${RELEASELINE}
+export  DEB_WEBDIR=/packages/web/debian${RELEASELINE}
+export  WAR_WEBDIR=/packages/web/war${RELEASELINE}
 
 # URL to the aforementioned webdir
 export  RPM_URL=https://pkg.jenkins.io/redhat${RELEASELINE}

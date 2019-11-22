@@ -1,46 +1,62 @@
 #!/bin/bash -ex
-bin="$(dirname $0)"
 
-ssh $SSH_OPTS $PKGSERVER mkdir -p "'$DEBDIR/'"
-rsync -avz -e "ssh $SSH_OPTS" "${DEB}" "$PKGSERVER:$(echo $DEBDIR | sed 's/ /\\ /g')/"
+: "${AGENT_WORKDIR:=/tmp}"
+: "${GPG_KEYNAME:?Required valid gpg keyname}"
 
-D=/tmp/$$
-mkdir -p $D/binary $D/contents
-cp -R "$bin/contents/." $D/contents
-cp "${GPG_PUBLIC_KEY}" $D/contents/${ORGANIZATION}.key
+bin="$(dirname "$0")"
 
-# generate web index
-"$bin/gen.rb" > $D/contents/index.html
+## Publish Binary
+#
+mkdir -p "$DEBDIR"
+mkdir -p "$DEB_WEBDIR"
 
-"$BASE/bin/branding.py" $D
+rsync -avz "$DEB" "$DEBDIR/"
 
+# $$ Contains current pid
+D="$AGENT_WORKDIR/$$"
+
+# Generate and publish site content
+##
+mkdir -p "$D/binary" "$D/contents"
+cp -R "$bin/contents/." "$D/contents"
+cp "${GPG_PUBLIC_KEY}" "$D/contents/${ORGANIZATION}.key"
+
+"$BASE/bin/indexGenerator.py" \
+  --distribution debian \
+  --binaryDir "$DEBDIR" \
+  --targetDir "$DEB_WEBDIR"
+
+"$BASE/bin/branding.py" "$D"
 
 # build package index
 # see http://wiki.debian.org/SecureApt for more details
-cp "${DEB}" $D/binary
-pushd $D
+cp "${DEB}" "$D/binary/"
+pushd "$D"
   apt-ftparchive packages binary > binary/Packages
   apt-ftparchive contents binary > binary/Contents
 popd
 
-# merge the result
-pushd $D/binary
-  mvn org.kohsuke:apt-ftparchive-merge:1.6:merge -Durl="$DEB_URL/binary/" -Dout=../merged
-popd
+apt-ftparchive -c "$bin/release.conf" release "$D/binary" > "$D/binary/Release"
 
-cat $D/merged/Packages > $D/binary/Packages
-cat $D/merged/Packages | gzip -9c > $D/binary/Packages.gz
-cat $D/merged/Packages | bzip2 > $D/binary/Packages.bz2
-cat $D/merged/Packages | lzma > $D/binary/Packages.lzma
-cat $D/merged/Contents | gzip -9c > $D/binary/Contents.gz
-apt-ftparchive -c $bin/release.conf release $D/binary > $D/binary/Release
 # sign the release file
-rm $D/binary/Release.gpg || true
-gpg --batch --no-use-agent --no-default-keyring --digest-algo=sha256 --keyring "$GPG_KEYRING" --secret-keyring="$GPG_SECRET_KEYRING" --passphrase-file "$GPG_PASSPHRASE_FILE" \
-  -abs -o $D/binary/Release.gpg $D/binary/Release
+rm "$D/binary/Release.gpg" || true
 
-cp $D/binary/Packages* $D/binary/Release $D/binary/Release.gpg $D/binary/Contents* $D/contents/binary
+gpg \
+  --batch \
+  --pinentry-mode loopback \
+  --digest-algo=sha256 \
+  -u "$GPG_KEYNAME" \
+  -abs \
+  -o "$D/binary/Release.gpg" \
+  "$D/binary/Release"
 
-rsync -avz -e "ssh $SSH_OPTS" $D/contents/ "$PKGSERVER:$(echo $DEB_WEBDIR | sed 's/ /\\ /g')"
+cp \
+  "$D"/binary/Packages* \
+  "$D"/binary/Release \
+  "$D"/binary/Release.gpg \
+  "$D"/binary/Contents* \
+  "$D"/contents/binary
 
-rm -rf $D
+rsync -avz "$D/contents/" "$DEB_WEBDIR/"
+
+rm -rf "$D"

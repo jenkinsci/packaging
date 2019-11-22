@@ -39,11 +39,17 @@ docker.test: docker.images
 
 war: ${WAR}
 war.publish: ${WAR}
-	ssh ${SSH_OPTS} ${PKGSERVER} mkdir -p "'${WARDIR}/${VERSION}/'"
+	mkdir -p "${WARDIR}/${VERSION}/"
+	mkdir -p "${WAR_WEBDIR}"
 	sha256sum ${WAR} | sed 's, .*, ${ARTIFACTNAME}.war,' > ${WAR_SHASUM}
 	cat ${WAR_SHASUM}
-	rsync -avz -e "ssh ${SSH_OPTS}" "${WAR}" "${PKGSERVER}:${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
-	rsync -avz -e "ssh ${SSH_OPTS}" "${WAR_SHASUM}" "${PKGSERVER}:${WARDIR}/${VERSION}/"
+	rsync -avz "${WAR}" "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
+	rsync -avz "${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
+	./bin/indexGenerator.py \
+		--distribution war \
+		--binaryDir "${WARDIR}" \
+		--targetDir "${WAR_WEBDIR}"
+
 
 
 

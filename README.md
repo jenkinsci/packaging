@@ -31,6 +31,22 @@ can be only built on native platforms.
 You'll also need a `jenkins.war` file that you are packaging, which comes from the release process.
 The location of this file is set via the `WAR` variable.
 
+Remark:
+
+A docker image is available to run following script
+
+[![logo](https://img.shields.io/docker/pulls/jenkinsciinfra/packaging?label=jenkinsciinfra%2Fpackaging&logo=docker&logoColor=white)](https://hub.docker.com/r/jenkinsciinfra/packaging)
+
+```shell
+docker run -i -t \
+  -v $PWD:/packaging \
+  -v /gpg_password:/secrets/password \
+  -eWAR="/packaging/jenkins.war" \
+  -eGPG_KEYNAME="sandbox" \
+  -eGPG_PASSPHRASE_FILE="/secrets/password" \
+  -w /packaging jenkinsciinfra/packaging:latest make deb`
+```
+
 # Generating packages
 Run `make package` to build all the native packages.
 At minimum, you have to specify the `WAR` variable that points to the war file to be packaged and a branding file (for licensing and package descriptions).
