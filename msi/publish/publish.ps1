@@ -1,4 +1,4 @@
-Get-Content .\$env:BUILDENV | Select-String -Match "^export"| ForEach-Object {
+Get-Content .\$env:BUILDENV | Select-String -Pattern "^export"| ForEach-Object {
     $array= $_[0].ToString().split("=")
     [System.Environment]::SetEnvironmentVariable($array[0].Replace("export ",""), $array[1])
 }
