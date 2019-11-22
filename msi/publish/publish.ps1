@@ -1,6 +1,6 @@
-Get-Content .\$env:BUILDENV | Select-String -Pattern "^export" -Replace "export ",""| ForEach-Object {
+Get-Content .\$env:BUILDENV | Select-String -Match "^export"| ForEach-Object {
     $array= $_[0].ToString().split("=")
-    [System.Environment]::SetEnvironmentVariable($array[0], $array[1])
+    [System.Environment]::SetEnvironmentVariable($array[0].Replace("export ",""), $array[1])
 }
 
 Write-Host "Copying binaries to $($env:MSIDIR)"
