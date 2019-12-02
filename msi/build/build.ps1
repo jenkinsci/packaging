@@ -80,11 +80,11 @@ msbuild "jenkins.wixproj" /p:Stable="${isLts}" /p:WAR="${War}" /p:Configuration=
 Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
     Foreach-Object {
         # sign the file
-        if((Test-Path env:PKCS12_FILE) -and (Test-Path env:PKCS12_PASSWORD_FILE)) {
+        if((Test-Path $env:SIGN_KEYSTORE_FILENAME) -and (-not [System.String]::IsNullOrWhiteSpace($env:SIGN_STOREPASS))) {
             Write-Host "Signing installer"
             # always diable tracing here
             Set-PSDebug -Trace 0
-            signtool sign /v /f $env:PKCS12_FILE /p (Get-Content $env:PKCS12_PASSWORD_FILE) /t http://timestamp.verisign.com/scripts/timestamp.dll /d "Jenkins Automation Server ${JenkinsVersion}" /du "https://jenkins.io" $_.FullName
+            signtool sign /v /f $env:SIGN_KEYSTORE_FILENAME /p $env:SIGN_STOREPASS /t http://timestamp.verisign.com/scripts/timestamp.dll /d "Jenkins Automation Server ${JenkinsVersion}" /du "https://jenkins.io" $_.FullName
             if($UseTracing) { Set-PSDebug -Trace 1 }
         }
 
