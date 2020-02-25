@@ -1,13 +1,13 @@
 # refers to the definition of a release target
-BRAND:=./branding/test.mk
+BRAND ?= ./branding/test.mk
 include ${BRAND}
 
 # refers to the definition of the release process execution environment
-BUILDENV:=./env/test.mk
+BUILDENV ?=./env/test.mk
 include ${BUILDENV}
 
 # refers to whereabouts of code-signing keys
-CREDENTIAL:=./credentials/test.mk
+CREDENTIAL ?=./credentials/test.mk
 include ${CREDENTIAL}
 
 include ./setup.mk
