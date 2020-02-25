@@ -13,7 +13,8 @@ export SCP_OPTS=
 # where to put binary files
 export TESTDIR=$(realpath .)/pkg.jenkins.io
 export WARDIR=/packages/binary/war${RELEASELINE}
-export MSIDIR="/packages/binary/windows$($env:RELEASELINE)"
+# Concat MSDIR and RELEASELINE in the msi publishing
+export MSIDIR=/packages/binary/windows
 export OSXDIR=/packages/osx${RELEASELINE}
 export DEBDIR=/packages/binary/debian${RELEASELINE}
 export RPMDIR=/packages/binary/redhat${RELEASELINE}
