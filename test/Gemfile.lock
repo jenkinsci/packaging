@@ -18,7 +18,7 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
     nori (2.5.0)
-    rake (10.4.2)
+    rake (12.3.3)
     rspec (3.2.0)
       rspec-core (~> 3.2.0)
       rspec-expectations (~> 3.2.0)
