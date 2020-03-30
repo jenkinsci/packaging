@@ -12,7 +12,7 @@ export SCP_OPTS=-P 22
 
 # where to put binary files
 export WARDIR=/packages/binary/war${RELEASELINE}
-export MSIDIR=C:\packages\binary\windows${RELEASELINE}
+export MSIDIR=/packages/binary/windows${RELEASELINE}
 export OSXDIR=/srv/releases/jenkins/osx${RELEASELINE}
 export DEBDIR=/packages/binary/debian${RELEASELINE}
 export RPMDIR=/packages/binary/redhat${RELEASELINE}
