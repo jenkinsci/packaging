@@ -59,14 +59,14 @@ private List platformScripts(String platform) {
 private def osesToTest(String category) {
   def osDefs = [
       [
-          "ubuntu-14.04",
-          "sudo-ubuntu:14.04",
+          "ubuntu-18.04",
+          "sudo-ubuntu:18.04",
           "deb",
           "core"
       ],
       [
-          "ubuntu-15.04",
-          "sudo-ubuntu:15.04",
+          "ubuntu-19.10",
+          "sudo-ubuntu:19.10",
           "deb",
           "extended"
       ],

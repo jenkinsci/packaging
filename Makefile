@@ -13,7 +13,7 @@ include ${CREDENTIAL}
 
 include ./setup.mk
 
-PACKAGE_BUILDER_VERSION:=0.1
+PACKAGE_BUILDER_VERSION:=0.3
 
 #######################################################
 

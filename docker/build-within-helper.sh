@@ -6,5 +6,5 @@
 if [ -z "$1" ]; then 
     echo "Usage: bash build-within-helper.sh $command"
 else
-    docker run --rm -v "$(pwd)":/localmount -w /localmount jenkins-packaging-builder:0.2 as_user.sh $(id -un) $(id -u) $(id -gn) $(id -g) "$1"
+    docker run --rm -v "$(pwd)":/localmount -w /localmount jenkins-packaging-builder:0.3 as_user.sh $(id -un) $(id -u) $(id -gn) $(id -g) "$1"
 fi

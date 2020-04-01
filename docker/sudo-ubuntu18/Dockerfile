@@ -1,5 +1,5 @@
-FROM ubuntu:14.04
-MAINTAINER samvanoort@gmail.com
+FROM ubuntu:18.04
+MAINTAINER mark.earl.waite@gmail.com
 
 RUN apt-get update 
 RUN apt-get install -y sudo bc

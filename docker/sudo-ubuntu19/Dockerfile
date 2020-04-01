@@ -1,5 +1,5 @@
-FROM ubuntu:15.10
-MAINTAINER samvanoort@gmail.com
+FROM ubuntu:19.10
+MAINTAINER mark.earl.waite@gmail.com
 
 RUN apt-get update 
 RUN apt-get install -y sudo bc

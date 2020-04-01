@@ -1,5 +1,5 @@
-FROM ubuntu:14.04
-MAINTAINER svanoort <samvanoort@gmail.com>
+FROM ubuntu:18.04
+MAINTAINER Mark Waite <mark.earl.waite@gmail.com>
 
 # User id of the build user
 ARG uid=1000
@@ -13,9 +13,9 @@ RUN groupadd jenkins -g $gid && useradd jenkins -u $uid -g $gid -m -d /home/jenk
 
 # Dependencies plus vim for convenience, wget if you're trying to get fancy
 RUN apt-get update \
-  && apt-get install -y make unzip devscripts debhelper rpm expect createrepo ruby maven openjdk-7-jre \
-  && apt-get install -y vim git \
-  && apt-get install -y wget \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y make unzip devscripts debhelper rpm expect createrepo ruby maven openjdk-8-jre \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y vim git \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y wget \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
