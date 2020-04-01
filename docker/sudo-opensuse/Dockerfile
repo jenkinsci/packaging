@@ -1,5 +1,5 @@
-FROM opensuse:13.2
-MAINTAINER samvanoort@gmail.com
+FROM opensuse/leap:15.1
+MAINTAINER mark.earl.waite@gmail.com
 
 # For some reason the base docker image doesn't include chkconfig
 # So we install aaa_base for that and vim for tests and because it 

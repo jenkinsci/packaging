@@ -16,6 +16,6 @@ echo "Packaging directory is: $PACKAGING_DIR"
 docker run --rm -v "$PACKAGING_DIR":/tmp/packaging sudo-debian:buster /bin/bash /tmp/packaging/installtests/test_helper.sh /tmp/packaging/installtests/debian.sh /tmp/packaging/installtests/service-check.sh
 docker run --rm -v "$PACKAGING_DIR":/tmp/packaging sudo-centos:7 /bin/bash /tmp/packaging/installtests/test_helper.sh /tmp/packaging/installtests/centos.sh /tmp/packaging/installtests/service-check.sh
 docker run --rm -v "$PACKAGING_DIR":/tmp/packaging sudo-centos:6 /bin/bash /tmp/packaging/installtests/test_helper.sh /tmp/packaging/installtests/centos.sh /tmp/packaging/installtests/service-check.sh
-docker run --rm -v "$PACKAGING_DIR":/tmp/packaging sudo-opensuse:13.2 /bin/bash /tmp/packaging/installtests/test_helper.sh /tmp/packaging/installtests/suse.sh /tmp/packaging/installtests/service-check.sh
+docker run --rm -v "$PACKAGING_DIR":/tmp/packaging sudo-opensuse:15.1 /bin/bash /tmp/packaging/installtests/test_helper.sh /tmp/packaging/installtests/suse.sh /tmp/packaging/installtests/service-check.sh
 docker run --rm -v "$PACKAGING_DIR":/tmp/packaging sudo-ubuntu:18.04 /bin/bash /tmp/packaging/installtests/test_helper.sh /tmp/packaging/installtests/debian.sh /tmp/packaging/installtests/service-check.sh
 docker run --rm -v "$PACKAGING_DIR":/tmp/packaging sudo-ubuntu:19.10 /bin/bash /tmp/packaging/installtests/test_helper.sh /tmp/packaging/installtests/debian.sh /tmp/packaging/installtests/service-check.sh

@@ -89,8 +89,8 @@ private def osesToTest(String category) {
           "extended"
       ],
       [
-          "opensuse-13.2",
-          "sudo-opensuse:13.2",
+          "opensuse-15.1",
+          "sudo-opensuse:15.1",
           "suse",
           "core"
       ]
