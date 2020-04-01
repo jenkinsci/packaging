@@ -17,7 +17,7 @@ mkdir -p $D/RPMS/noarch $D/repodata
   --binaryDir "$SUSEDIR" \
   --targetDir "$SUSE_WEBDIR"
 
-cp "${GPG_PUBLIC_KEY}" $D/repodata/repomd.xml.key
+gpg --export -a --output "$D/repodata/repomd.xml.key" "${GPG_KEYNAME}"
 
 "$BASE/bin/branding.py" $D
 
