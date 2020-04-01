@@ -18,7 +18,7 @@ mkdir -p "$D/RPMS/noarch"
   --binaryDir "$RPMDIR" \
   --targetDir "$RPM_WEBDIR"
 
-cp "${GPG_PUBLIC_KEY}" "$D/${ORGANIZATION}.key"
+gpg --export -a --output "$D/${ORGANIZATION}.key" "${GPG_KEYNAME}"
 
 "$BASE/bin/branding.py" "$D"
 

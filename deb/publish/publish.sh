@@ -19,7 +19,8 @@ D="$AGENT_WORKDIR/$$"
 ##
 mkdir -p "$D/binary" "$D/contents"
 cp -R "$bin/contents/." "$D/contents"
-cp "${GPG_PUBLIC_KEY}" "$D/contents/${ORGANIZATION}.key"
+
+gpg --export -a --output "$D/contents/${ORGANIZATION}.key" "${GPG_KEYNAME}"
 
 "$BASE/bin/indexGenerator.py" \
   --distribution debian \
