@@ -1,5 +1,5 @@
-FROM debian:wheezy
-MAINTAINER samvanoort@gmail.com
+FROM debian:buster
+MAINTAINER mark.earl.waite@gmail.com
 
 RUN apt-get update 
 RUN apt-get install -y sudo bc
