@@ -1,42 +1,94 @@
-#!/bin/bash -ex
+#!/bin/bash
+
+set -euxo pipefail
 
 : "${AGENT_WORKDIR:=/tmp}"
-
-mkdir -p "$SUSEDIR/"
-mkdir -p "$SUSE_WEBDIR"
-
-rsync -avz "$SUSE" "$SUSEDIR/"
+: "${GPG_KEYNAME:?Required valid gpg keyname}"
+: "${BASE:?Require base directory}"
+: "${SUSEDIR:? Require where to put binary files}"
+: "${SUSE_WEBDIR:? Require where to put repository index and other web contents}"
 
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
 
-mkdir -p $D/RPMS/noarch $D/repodata
+function clean(){
+  mkdir -rf $D
+}
 
-"$BASE/bin/indexGenerator.py" \
-  --distribution opensuse \
-  --binaryDir "$SUSEDIR" \
-  --targetDir "$SUSE_WEBDIR"
+function generateSite(){
 
-gpg --export -a --output "$D/repodata/repomd.xml.key" "${GPG_KEYNAME}"
+  "$BASE/bin/indexGenerator.py" \
+    --distribution opensuse \
+    --binaryDir "$SUSEDIR" \
+    --targetDir "$SUSE_WEBDIR"
+  
+  gpg --export -a --output "$D/repodata/repomd.xml.key" "${GPG_KEYNAME}"
+  
+  "$BASE/bin/branding.py" $D
+  
+  cp "$SUSE" $D/RPMS/noarch
+}
 
-"$BASE/bin/branding.py" $D
+function init(){
+  # where to put binary files
+  mkdir -p "$SUSEDIR/" # Local
+  ssh "$SSH_OPTS" $PKGSERVER mkdir -p "'$SUSEDIR/'" # Remote
 
-cp "$SUSE" $D/RPMS/noarch
+  # where to put repository index and other web contents
+  mkdir -p "$SUSE_WEBDIR"
 
-pushd $D
-  rsync -avz --exclude RPMS . "$SUSE_WEBDIR/"
+  mkdir -p $D/RPMS/noarch $D/repodata
+}
 
-  # generate index on the server
-  # server needs 'createrepo' pacakge
-popd
 
-createrepo --update -o "$SUSE_WEBDIR" "$SUSEDIR/"
+function show(){
+  echo "Parameters:"
+  echo "SUSE: $SUSE"
+  echo "SUSEDIR: $SUSEDIR"
+  echo "SUSE_WEBDIR: $SUSE_WEBDIR"
+  echo "SSH_OPTS: $SSH_OPTS"
+  echo "PKGSERVER: $PKGSERVER"
+  echo "GPG_KEYNAME: $GPG_KEYNAME"
+  echo "---"
+}
 
-gpg \
-  --batch \
-  --pinentry-mode loopback \
-  -u "$GPG_KEYNAME" \
-  -a \
-  --detach-sign \
-  --yes \
-  "$SUSE_WEBDIR/repodata/repomd.xml"
+function uploadPackage(){
+  rsync -avz "$SUSE" "$SUSEDIR/" # Local
+  rsync -avz -e "ssh $SSH_OPTS" "${SUSE}" "$PKGSERVER:${SUSEDIR// /\\ }" # Remote
+}
+
+function uploadSite(){
+
+  pushd $D
+    rsync -avz --exclude RPMS . "$SUSE_WEBDIR/" #Local
+    rsync -avz -e "ssh $SSH_OPTS" --exclude RPMS . "$PKGSERVER:${SUSE_WEBDIR// /\\ }" # Remote
+  
+    # generate index on the server
+    # server needs 'createrepo' pacakge
+    createrepo --update -o "$SUSE_WEBDIR" "$SUSEDIR/" #Local
+    ssh "$SSH_OPTS" "$PKGSERVER" createrepo --update -o "'$SUSE_WEBDIR'" "'$SUSEDIR/'" # Remote
+
+    scp "$SCP_OPTS" "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Remote
+    cp "${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Local
+
+    gpg \
+      --batch \
+      --pinentry-mode loopback \
+      -u "$GPG_KEYNAME" \
+      -a \
+      --detach-sign \
+      --yes \
+      "$SUSE_WEBDIR/repodata/repomd.xml"
+
+     scp "$SCP_OPTS" repodata/repomd.xml.asc "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/"
+     cp repodata/repomd.xml.asc "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/"
+    
+  popd
+}
+
+show
+init
+generateSite
+uploadPackage
+uploadSite
+clean
