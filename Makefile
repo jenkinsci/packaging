@@ -7,7 +7,8 @@ BUILDENV ?=./env/test.mk
 include ${BUILDENV}
 
 # refers to whereabouts of code-signing keys
-CREDENTIAL ?=./credentials/test.mk
+# CREDENTIAL ?=./credentials/test.mk
+
 include ${CREDENTIAL}
 
 include ./setup.mk
