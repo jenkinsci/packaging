@@ -118,6 +118,7 @@ function signSite(){
     --pinentry-mode loopback \
     --digest-algo=sha256 \
     -u "$GPG_KEYNAME" \
+    --passphrase-file "$GPG_PASSPHRASE_FILE" \
     -abs \
     -o "$D/binary/Release.gpg" \
     "$D/binary/Release"
