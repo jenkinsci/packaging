@@ -93,7 +93,7 @@ Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
             Write-Host "Signing installer"
             # always diable tracing here
             Set-PSDebug -Trace 0
-            signtool sign /v /f $env:SIGN_KEYSTORE_FILENAME /p $env:SIGN_STOREPASS /t http://timestamp.verisign.com/scripts/timestamp.dll /d "Jenkins Automation Server ${JenkinsVersion}" /du "https://jenkins.io" $_.FullName
+            signtool sign /v /f $env:PKCS12_FILE /p $env:SIGN_STOREPASS /t http://timestamp.verisign.com/scripts/timestamp.dll /d "Jenkins Automation Server ${JenkinsVersion}" /du "https://jenkins.io" $_.FullName
             if($UseTracing) { Set-PSDebug -Trace 1 }
         }
 
