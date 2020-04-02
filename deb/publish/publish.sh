@@ -80,7 +80,7 @@ function init(){
 function uploadPackage(){
   # Upload Debian Package
   rsync -avz "$DEB" "$DEBDIR/"
-  rsync -avz -e \'ssh "${SSH_OPTS[*]}"\' "${DEB}" "$PKGSERVER:${DEBDIR// /\\ }"
+  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${DEB}" "$PKGSERVER:${DEBDIR// /\\ }"
 }
 
 function uploadSite(){
