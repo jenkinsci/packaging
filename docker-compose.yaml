@@ -1,5 +1,7 @@
 # docker exec -i -t packaging_packaging_1 gpg --import --batch credentials/sandbox.gpg
 version: '3'
+volumes:
+  sshd:
 services:
   packaging:
     image: jenkinsciinfra/packaging:latest
@@ -8,12 +10,21 @@ services:
     - "BUILDENV=/srv/releases/jenkins/env/test.mk"
     - "BRANDING_DIR=/srv/releases/jenkins/branding"
     - "BRAND=/srv/releases/jenkins/branding/test.mk"
-    - "CREDENTIAL=/srv/releases/jenkins/credentials/test.mk"
     - "GPG_FILE=/srv/releases/jenkins/credentials/sandbox.gpg"
     - "GPG_KEYNAME=Bogus Test"
     - "GPG_PASSPHRASE=s3cr3t"
     - "GPG_PASSPHRASE_FILE=/srv/releases/jenkins/credentials/test.gpg.password.txt"
     - "WAR=/srv/releases/jenkins/jenkins.war"
+    - "RELEASELINE=-experimental"
     volumes:
-      - .:/srv/releases/jenkins
+      - ".:/srv/releases/jenkins"
+      - "./credentials/ssh:/root/.ssh"
     working_dir: "/srv/releases/jenkins"
+  remote:
+    image: jenkinsciinfra/packaging:latest
+    command: "/usr/sbin/sshd -D"
+    ports:
+      - "2222:22"
+    volumes:
+      - "./credentials/ssh/id_rsa.pub:/root/.ssh/authorized_keys:ro"
+      - sshd:/run/sshd
