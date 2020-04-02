@@ -11,8 +11,12 @@ set -euxo pipefail
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
 
+# Convert string to array to correctly escape cli parameter
+SSH_OPTS=($SSH_OPTS)
+SCP_OPTS=($SCP_OPTS)
+
 function clean(){
-  mkdir -rf $D
+  rm -rf $D
 }
 
 function generateSite(){
@@ -32,7 +36,9 @@ function generateSite(){
 function init(){
   # where to put binary files
   mkdir -p "$SUSEDIR/" # Local
-  ssh "$SSH_OPTS" $PKGSERVER mkdir -p "'$SUSEDIR/'" # Remote
+
+  # shellcheck disable=SC2029
+  ssh "$PKGSERVER" "${SSH_OPTS[*]}" mkdir -p "'$SUSEDIR/'" # Remote
 
   # where to put repository index and other web contents
   mkdir -p "$SUSE_WEBDIR"
@@ -46,7 +52,7 @@ function show(){
   echo "SUSE: $SUSE"
   echo "SUSEDIR: $SUSEDIR"
   echo "SUSE_WEBDIR: $SUSE_WEBDIR"
-  echo "SSH_OPTS: $SSH_OPTS"
+  echo "SSH_OPTS: ${SSH_OPTS[*]}"
   echo "PKGSERVER: $PKGSERVER"
   echo "GPG_KEYNAME: $GPG_KEYNAME"
   echo "---"
@@ -54,21 +60,23 @@ function show(){
 
 function uploadPackage(){
   rsync -avz "$SUSE" "$SUSEDIR/" # Local
-  rsync -avz -e "ssh $SSH_OPTS" "${SUSE}" "$PKGSERVER:${SUSEDIR// /\\ }" # Remote
+  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${SUSE}" "$PKGSERVER:${SUSEDIR// /\\ }" # Remote
 }
 
 function uploadSite(){
 
   pushd $D
     rsync -avz --exclude RPMS . "$SUSE_WEBDIR/" #Local
-    rsync -avz -e "ssh $SSH_OPTS" --exclude RPMS . "$PKGSERVER:${SUSE_WEBDIR// /\\ }" # Remote
+    # shellcheck disable=SC2029
+    rsync -avz -e "ssh ${SSH_OPTS[*]}" --exclude RPMS . "$PKGSERVER:${SUSE_WEBDIR// /\\ }" # Remote
   
     # generate index on the server
     # server needs 'createrepo' pacakge
     createrepo --update -o "$SUSE_WEBDIR" "$SUSEDIR/" #Local
-    ssh "$SSH_OPTS" "$PKGSERVER" createrepo --update -o "'$SUSE_WEBDIR'" "'$SUSEDIR/'" # Remote
+    # shellcheck disable=SC2029
+    ssh "$PKGSERVER"  "${SSH_OPTS[*]}" createrepo --update -o "'$SUSE_WEBDIR'" "'$SUSEDIR/'" # Remote
 
-    scp "$SCP_OPTS" "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Remote
+    scp "${SCP_OPTS[*]}" "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Remote
     cp "${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Local
 
     gpg \
@@ -77,11 +85,12 @@ function uploadSite(){
       -u "$GPG_KEYNAME" \
       -a \
       --detach-sign \
+      --passphrase-file "$GPG_PASSPHRASE_FILE" \
       --yes \
-      "$SUSE_WEBDIR/repodata/repomd.xml"
+      repodata/repomd.xml
 
-     scp "$SCP_OPTS" repodata/repomd.xml.asc "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/"
-     cp repodata/repomd.xml.asc "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/"
+     scp "${SCP_OPTS[*]}" repodata/repomd.xml.asc "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/"
+     cp repodata/repomd.xml.asc "${SUSE_WEBDIR// /\\ }/repodata/"
     
   popd
 }
