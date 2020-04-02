@@ -77,9 +77,16 @@ if($MSBuildPath -ne '') {
 
 msbuild "jenkins.wixproj" /p:Stable="${isLts}" /p:WAR="${War}" /p:Configuration=Release /p:DisplayVersion=$JenkinsVersion /p:ProductName="${ProductName}" /p:ProductSummary="${ProductSummary}" /p:ProductVendor="${ProductVendor}" /p:ArtifactName="${ArtifactName}" /p:BannerBmp="${BannerBmp}" /p:DialogBmp="${DialogBmp}" /p:InstallerIco="${InstallerIco}"
 
+Get-Location
+
 Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
     Foreach-Object {
+        Write-Host "Signing installer: " + $_.FullName
         # sign the file
+        
+        Test-Path $env:SIGN_KEYSTORE_FILENAME
+        [System.String]::IsNullOrWhiteSpace($env:SIGN_STOREPASS)
+
         if((Test-Path $env:SIGN_KEYSTORE_FILENAME) -and (-not [System.String]::IsNullOrWhiteSpace($env:SIGN_STOREPASS))) {
             Write-Host "Signing installer"
             # always diable tracing here
