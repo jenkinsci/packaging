@@ -5,15 +5,15 @@ services:
     image: jenkinsciinfra/packaging:latest
     command: "sleep 99d"
     environment:
-    - "BUILDENV='/packaging/env/test.mk'"
-    - "BRANDING_DIR=/packaging/branding"
-    - "BRAND=/packaging/jenkins.mk'"
-    - "CREDENTIAL=credentials/test.mk"
-    - "GPG_FILE=/packaging/credentials/sandbox.gpg"
+    - "BUILDENV=/srv/releases/jenkins/env/test.mk"
+    - "BRANDING_DIR=/srv/releases/jenkins/branding"
+    - "BRAND=/srv/releases/jenkins/branding/test.mk"
+    - "CREDENTIAL=/srv/releases/jenkins/credentials/test.mk"
+    - "GPG_FILE=/srv/releases/jenkins/credentials/sandbox.gpg"
     - "GPG_KEYNAME=Bogus Test"
     - "GPG_PASSPHRASE=s3cr3t"
-    - "GPG_PASSPHRASE_FILE=/packaging/credentials/test.gpg.password.txt"
-    - "WAR=/packaging/jenkins.war"
+    - "GPG_PASSPHRASE_FILE=/srv/releases/jenkins/credentials/test.gpg.password.txt"
+    - "WAR=/srv/releases/jenkins/jenkins.war"
     volumes:
-      - .:/packaging
-    working_dir: "/packaging"
+      - .:/srv/releases/jenkins
+    working_dir: "/srv/releases/jenkins"
