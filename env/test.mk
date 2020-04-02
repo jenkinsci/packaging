@@ -29,6 +29,6 @@ export  DEB_WEBDIR=${TESTDIR}/debian${RELEASELINE}
 
 # URL to the aforementioned webdir.
 WEBSERVER=pkg.jenkins.io
-export  RPM_URL=http://${WEBSERVER}/redhat${RELEASELINE}
-export SUSE_URL=http://${WEBSERVER}/opensuse${RELEASELINE}
-export  DEB_URL=http://${WEBSERVER}/debian${RELEASELINE}
+export  RPM_URL=https://${WEBSERVER}/redhat${RELEASELINE}
+export SUSE_URL=https://${WEBSERVER}/opensuse${RELEASELINE}
+export  DEB_URL=https://${WEBSERVER}/debian${RELEASELINE}
