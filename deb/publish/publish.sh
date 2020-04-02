@@ -55,8 +55,8 @@ function generateSite(){
 
   cat $D/merged/Packages > $D/binary/Packages
   gzip -9c "$D/merged/Packages" > "$D/binary/Packages.gz"
-  bzip2 "$D/merged/Packages" > "$D/binary/Packages.bz2"
-  lzma "$D/merged/Packages" > "$D/binary/Packages.lzma"
+  bzip2 -c "$D/merged/Packages" > "$D/binary/Packages.bz2"
+  lzma -c "$D/merged/Packages" > "$D/binary/Packages.lzma"
   gzip -9c "$D/merged/Contents" > "$D/binary/Contents.gz"
 
   apt-ftparchive -c "$bin/release.conf" release "$D/binary" > "$D/binary/Release"
