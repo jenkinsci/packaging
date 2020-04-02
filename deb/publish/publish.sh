@@ -12,6 +12,9 @@ set -euxo pipefail
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
 
+# Convert string to array to correctly escape cli parameter
+SSH_OPTS=($SSH_OPTS)
+
 bin="$(dirname "$0")"
 
 function clean(){
@@ -69,14 +72,15 @@ function init(){
 
   # where to put repository index and other web contents
   mkdir -p "$DEB_WEBDIR"
-  ## On remote server
-  ssh "$SSH_OPTS" "$PKGSERVER" mkdir -p "'$DEBDIR/'" where to put repository index and other web contents
+  ## On remote serve
+  # shellcheck disable=SC2029
+  ssh "$PKGSERVER" "${SSH_OPTS[*]}" mkdir -p "$DEBDIR/"
 }
 
 function uploadPackage(){
   # Upload Debian Package
   rsync -avz "$DEB" "$DEBDIR/"
-  rsync -avz -e "ssh $SSH_OPTS" "${DEB}" "$PKGSERVER:${DEBDIR// /\\ }"
+  rsync -avz -e \'ssh "${SSH_OPTS[*]}"\' "${DEB}" "$PKGSERVER:${DEBDIR// /\\ }"
 }
 
 function uploadSite(){
@@ -89,7 +93,7 @@ function uploadSite(){
     "$D"/contents/binary
 
   rsync -avz "$D/contents/" "$DEB_WEBDIR/"
-  rsync -avz -e "ssh $SSH_OPTS" "${DEB}" "$PKGSERVER:${DEBDIR// /\\ }"
+  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${DEB}" "$PKGSERVER:${DEBDIR// /\\ }"
 }
 
 function show(){
