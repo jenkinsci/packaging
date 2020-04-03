@@ -77,12 +77,6 @@ private def osesToTest(String category) {
           "extended"
       ],
       [
-          "centos-6",
-          "sudo-centos:6",
-          "rpm",
-          "core"
-      ],
-      [
           "centos-7",
           "sudo-centos:7",
           "rpm",
