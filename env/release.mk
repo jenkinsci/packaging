@@ -23,6 +23,7 @@ export  RPM_WEBDIR=/packages/web/redhat${RELEASELINE}
 export SUSE_WEBDIR=/packages/web/opensuse${RELEASELINE}
 export  DEB_WEBDIR=/packages/web/debian${RELEASELINE}
 export  WAR_WEBDIR=/packages/web/war${RELEASELINE}
+export  MSI_WEBDIR=/packages/web/windows${RELEASELINE}
 
 # URL to the aforementioned webdir
 export  RPM_URL=https://pkg.jenkins.io/redhat${RELEASELINE}

@@ -11,8 +11,8 @@ export TARGET:=target
 # jenkins-cli.jar
 export CLI:=${TARGET}/jenkins-cli.jar
 
-# where to generate MSI file?
-export MSI:=${TARGET}/msi/${ARTIFACTNAME}-${VERSION}.zip
+# MSI file to release
+export MSI?=$(error Required variable MSI must point to the jenkins.msi file you are packaging)
 export MSI_SHASUM:=${MSI}.sha256
 
 # where to generate OSX PKG file?
