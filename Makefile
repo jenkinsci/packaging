@@ -90,7 +90,7 @@ msi.publish: ${MSI}
 	rsync -avz "${MSI}" "${MSIDIR}/${VERSION}/${ARTIFACTNAME}.msi"
 	rsync -avz "${MSI_SHASUM}" "${MSIDIR}/${VERSION}/"
 	./bin/indexGenerator.py \
-		--distribution war \
+		--distribution windows \
 		--binaryDir "${MSIDIR}" \
 		--targetDir "${WAR_WEBDIR}"
 
