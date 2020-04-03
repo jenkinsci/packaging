@@ -82,7 +82,18 @@ ${SUSE}: ${WAR}  $(shell find suse/build -type f)
 suse.publish: ${SUSE} $(shell find suse/publish -type f)
 	./suse/publish/publish.sh
 
-
+msi: ${MSI}
+msi.publish: ${MSI}
+	mkdir -p "${MSIDIR}/${VERSION}/"
+	mkdir -p "${MSI_WEBDIR}"
+	sha256sum ${MSI} | sed 's, .*, ${ARTIFACTNAME}.msi,' > ${MSI_SHASUM}
+	cat ${MSI_SHASUM}
+	rsync -avz "${MSI}" "${MSIDIR}/${VERSION}/${ARTIFACTNAME}.msi"
+	rsync -avz "${MSI_SHASUM}" "${MSIDIR}/${VERSION}/"
+	./bin/indexGenerator.py \
+		--distribution windows \
+		--binaryDir "${MSIDIR}" \
+		--targetDir "${WAR_WEBDIR}"
 
 ${CLI}:
 	@mkdir ${TARGET} || true

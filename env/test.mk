@@ -26,6 +26,8 @@ export SUSEDIR=${TESTDIR}/opensuse${RELEASELINE}
 export  RPM_WEBDIR=${TESTDIR}/redhat${RELEASELINE}
 export SUSE_WEBDIR=${TESTDIR}/opensuse${RELEASELINE}
 export  DEB_WEBDIR=${TESTDIR}/debian${RELEASELINE}
+export  WAR_WEBDIR=${TESTDIR}/war${RELEASELINE}
+export  MSI_WEBDIR=${TESTDIR}/windows${RELEASELINE}
 
 # URL to the aforementioned webdir.
 WEBSERVER=pkg.jenkins.io
