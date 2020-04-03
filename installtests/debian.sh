@@ -1,7 +1,5 @@
 #!/bin/bash
-set -x  # Exit on any command failure, can't use -u because of line 6
-
-. "$(dirname $0)/sh2ju.sh"
+set -x  # Exit on any command failure, can't use -u because of check for non-zero length of arg 1
 
 if [ -z "$1" ]; then
   PKG_FOLDER=$(ls /tmp/packaging/target/debian/*.deb)
