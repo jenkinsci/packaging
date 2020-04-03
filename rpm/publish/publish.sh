@@ -1,28 +1,35 @@
-#!/bin/bash -ex
+#!/bin/bash
+set -euxo pipefail
 
 : "${AGENT_WORKDIR:=/tmp}"
-: "${GPG_KEYNAME:?Required valid gpg keyname}"
-
-mkdir -p "$RPMDIR/"
-mkdir -p "$RPM_WEBDIR/"
-
-rsync -avz "$RPM" "$RPMDIR/"
+: "${GPG_KEYNAME:?Require valid gpg keyname}"
+: "${RPMDIR:?Require where to put binary files}"
+: "${RPM_WEBDIR:?Require where to put index and other web contents}"
+: "${RPM_URL:?Require rpm repository url}"
+: "${RELEASELINE?Require rpm release line}"
+: "${BASE:? Required base directory}"
 
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
 
-mkdir -p "$D/RPMS/noarch"
+# Convert string to array to correctly escape cli parameter
+SSH_OPTS=($SSH_OPTS)
 
-"$BASE/bin/indexGenerator.py" \
-  --distribution redhat \
-  --binaryDir "$RPMDIR" \
-  --targetDir "$RPM_WEBDIR"
+function clean(){
+  rm -rf $D
+}
 
-gpg --export -a --output "$D/${ORGANIZATION}.key" "${GPG_KEYNAME}"
-
-"$BASE/bin/branding.py" "$D"
-
-cp "$RPM" "$D/RPMS/noarch"
+function generateSite(){
+  "$BASE/bin/indexGenerator.py" \
+    --distribution redhat \
+    --binaryDir "$RPMDIR" \
+    --targetDir "$RPM_WEBDIR"
+  
+  gpg --export -a --output "$D/${ORGANIZATION}.key" "${GPG_KEYNAME}"
+  
+  "$BASE/bin/branding.py" "$D"
+  
+  cp "$RPM" "$D/RPMS/noarch"
 
 cat  > "$D/${ARTIFACTNAME}.repo" << EOF
 [${ARTIFACTNAME}]
@@ -31,20 +38,51 @@ baseurl=${RPM_URL}
 gpgcheck=1
 EOF
 
-pushd "$D"
-  rsync -avz --exclude RPMS . "$RPM_WEBDIR/"
-popd
+  # generate index 
+  # locally
+  createrepo --update -o "$RPM_WEBDIR" "$RPMDIR/"
+  # on the server
+  # shellcheck disable=SC2029
+  ssh "$PKGSERVER" "${SSH_OPTS[*]}" createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
 
-# generate index on the server
-createrepo --update -o "$RPM_WEBDIR" "$RPMDIR/"
+}
 
-gpg \
-  --batch \
-  --pinentry-mode loopback \
-  -u "$GPG_KEYNAME" \
-  -a \
-  --detach-sign \
-  --yes \
-  "$RPM_WEBDIR/repodata/repomd.xml"
+function init(){
+  mkdir -p "$D/RPMS/noarch"
 
-rm -rf $D
+  mkdir -p "$RPMDIR/"
+  # mkdir -p "$RPM_WEBDIR/" # May not be necessary
+  # shellcheck disable=SC2029
+  ssh "$PKGSERVER" "${SSH_OPTS[*]}" mkdir -p "'$RPMDIR/'"
+}
+
+
+function uploadPackage(){
+  rsync -avz "$RPM" "$RPMDIR/"
+  rsync -avz -e "ssh ${SSH_OPTS[*]}"  "$RPM" "$PKGSERVER:${RPMDIR// /\\ }/"
+}
+
+function show(){
+  echo "Parameters:"
+  echo "RPM: $RPM"
+  echo "RPMDIR: $RPMDIR"
+  echo "RPM_WEBDIR: $RPM_WEBDIR"
+  echo "SSH_OPTS: ${SSH_OPTS[*]}"
+  echo "PKGSERVER: $PKGSERVER"
+  echo "GPG_KEYNAME: $GPG_KEYNAME"
+  echo "---"
+}
+
+function uploadSite(){
+  pushd "$D"
+    rsync -avz --exclude RPMS . "$RPM_WEBDIR/"
+    rsync -avz -e "ssh ${SSH_OPTS[*]}" --exclude RPMS . "$PKGSERVER:${RPM_WEBDIR// /\\ }"
+  popd
+}
+
+show
+init
+generateSite
+uploadPackage
+uploadSite
+clean
