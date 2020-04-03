@@ -1,19 +1,30 @@
 # docker exec -i -t packaging_packaging_1 gpg --import --batch credentials/sandbox.gpg
 version: '3'
+volumes:
+  sshd:
 services:
   packaging:
     image: jenkinsciinfra/packaging:latest
     command: "sleep 99d"
     environment:
-    - "BUILDENV='/packaging/env/test.mk'"
-    - "BRANDING_DIR=/packaging/branding"
-    - "BRAND=/packaging/jenkins.mk'"
-    - "CREDENTIAL=credentials/test.mk"
-    - "GPG_FILE=/packaging/credentials/sandbox.gpg"
+    - "BUILDENV=/srv/releases/jenkins/env/test.mk"
+    - "BRANDING_DIR=/srv/releases/jenkins/branding"
+    - "BRAND=/srv/releases/jenkins/branding/test.mk"
+    - "GPG_FILE=/srv/releases/jenkins/credentials/sandbox.gpg"
     - "GPG_KEYNAME=Bogus Test"
     - "GPG_PASSPHRASE=s3cr3t"
-    - "GPG_PASSPHRASE_FILE=/packaging/credentials/test.gpg.password.txt"
-    - "WAR=/packaging/jenkins.war"
+    - "GPG_PASSPHRASE_FILE=/srv/releases/jenkins/credentials/test.gpg.password.txt"
+    - "WAR=/srv/releases/jenkins/jenkins.war"
+    - "RELEASELINE=-experimental"
     volumes:
-      - .:/packaging
-    working_dir: "/packaging"
+      - ".:/srv/releases/jenkins"
+      - "./credentials/ssh:/root/.ssh"
+    working_dir: "/srv/releases/jenkins"
+  remote:
+    image: jenkinsciinfra/packaging:latest
+    command: "/usr/sbin/sshd -D"
+    ports:
+      - "2222:22"
+    volumes:
+      - "./credentials/ssh/id_rsa.pub:/root/.ssh/authorized_keys:ro"
+      - sshd:/run/sshd
