@@ -91,10 +91,14 @@ Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
 
         if((Test-Path $env:PKCS12_FILE) -and (-not [System.String]::IsNullOrWhiteSpace($env:SIGN_STOREPASS))) {
             Write-Host "Signing installer"
-            # always diable tracing here
+            # always disable tracing here
             Set-PSDebug -Trace 0
             signtool sign /v /f $env:PKCS12_FILE /p $env:SIGN_STOREPASS /t http://timestamp.verisign.com/scripts/timestamp.dll /d "Jenkins Automation Server ${JenkinsVersion}" /du "https://jenkins.io" $_.FullName
             if($UseTracing) { Set-PSDebug -Trace 1 }
+
+            Write-Host "Checking the signature"
+            # It will print the entire certificate chain with details
+            signtool verify /v /pa /all $_.FullName
         }
 
     $sha256 = (Get-FileHash -Algorithm SHA256 -Path $_.FullName).Hash.ToString().ToLower()
