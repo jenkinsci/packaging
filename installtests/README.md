@@ -22,7 +22,7 @@ Note: these use templating on the Dockerfiles to supply the local user, so the D
 bash ./docker/build-sudo-images.sh
 ```
 
-These images include sudo + packages that are normally part of the OS distribution but may be missing in the base images.  (see the docker subfolder README).
+These images include sudo + java + packages that are normally part of the OS distribution but may be missing in the base images.  (see the docker subfolder README).
 
 Next, run the tests:
 bash ./run_tests.sh
