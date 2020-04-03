@@ -9,6 +9,9 @@ else
   JENKINS_DEB_INSTALLER_FILE="$1"
 fi
 
+# Configure dpkg to be less noisy
+export DEBIAN_FRONTEND=noninteractive
+
 . "$(dirname $0)/sh2ju.sh"
 
 install_failure_message="dpkg install failed on $JENKINS_DEB_INSTALLER_FILE file"
@@ -58,7 +61,7 @@ docker_dpkg_verify() {
     echo
     echo "===== Verifying jenkins package with dpkg"
     echo
-    dpkg --verify jenkins || echo "$verify_failure_message"
+    dpkg --verify jenkins < /dev/null || echo "$verify_failure_message"
 }
 
 juLog -error="$verify_failure_message" -name=debianDockerVerify docker_dpkg_verify
@@ -73,7 +76,7 @@ docker_dpkg_audit() {
     echo
     echo "===== Auditing jenkins package with dpkg"
     echo
-    dpkg --audit jenkins  || echo "$audit_failure_message"
+    dpkg --audit jenkins < /dev/null || echo "$audit_failure_message"
 }
 
 juLog -error="$audit_failure_message" -name=debianDockerAudit docker_dpkg_audit
