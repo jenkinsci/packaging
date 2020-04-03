@@ -1,5 +1,5 @@
-FROM centos:6
-MAINTAINER samvanoort@gmail.com
+FROM centos:centos6.9
+MAINTAINER mark.earl.waite@gmail.com
 
 RUN yum install -y sudo bc which
 RUN useradd mysudoer -u @@MYUSERID@@
