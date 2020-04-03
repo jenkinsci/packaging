@@ -16,7 +16,7 @@ install_failure_message="dpkg install failed on $JENKINS_DEB_INSTALLER_FILE file
 docker_dpkg_install() {
     # Installation within Docker
     # Update with latest list of available packages
-    apt-get update
+    apt-get -q update
 
     # Assume packaging is already built and is available in $JENKINS_DEB_INSTALLER_FILE
     # Below will fail because missing dependencies, which apt-get will install
@@ -30,7 +30,7 @@ docker_dpkg_install() {
     echo
     echo "===== Resolving dependencies of $JENKINS_DEB_INSTALLER_FILE with apt-get"
     echo
-    apt-get install -fy && apt-get install -fy curl > /dev/null 2>&1
+    apt-get -q install -fy && apt-get install -fy curl > /dev/null 2>&1
 
     # Remove jenkins installed by first call to dpkg
     echo
