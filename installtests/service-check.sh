@@ -3,6 +3,14 @@
 # ARGUMENTS: first argument is the artifact name, jenkins by default if not given
 # Second argument is the port number it will run on for testing
 
+if [ -z "$1" ]; then
+  PKG_FOLDER=$(ls /tmp/packaging/target/debian/*.deb)
+  # Change to /tmp/packaging so that results are written in /tmp/packaging/results
+  cd /tmp/packaging
+else
+  PKG_FOLDER="$1"
+fi
+
 . "$(dirname $0)/sh2ju.sh"
 
 SERVICE_WAIT=5

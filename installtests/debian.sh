@@ -3,9 +3,13 @@ set -x  # Exit on any command failure, can't use -u because of check for non-zer
 
 if [ -z "$1" ]; then
   PKG_FOLDER=$(ls /tmp/packaging/target/debian/*.deb)
-else 
+  # Change to /tmp/packaging so that results are written in /tmp/packaging/results
+  cd /tmp/packaging
+else
   PKG_FOLDER="$1"
 fi
+
+. "$(dirname $0)/sh2ju.sh"
 
 dockerInstall() {
     # Installation within Docker
