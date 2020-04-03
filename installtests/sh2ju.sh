@@ -20,6 +20,18 @@
 ###     - Junit reports are left in the folder 'result' under the directory where the script is executed.
 ###     - Configure Jenkins to parse junit files from the generated folder
 ###
+
+# Record if calling script is using 'set -x'
+# Thanks to https://unix.stackexchange.com/questions/21922/bash-test-whether-original-script-was-run-with-x
+if [[ ${-/x} != $- ]] ; then
+  DISABLE_XTRACE="+x"
+  ENABLE_XTRACE="-x"
+else
+  DISABLE_XTRACE="+x"
+  ENABLE_XTRACE="+x" # Since xtrace was not enabled by caller, we can disable safely even when disabled
+fi
+set $DISABLE_XTRACE
+
 PATH=$PATH:/usr/bin
 
 asserts=00; errors=0; total=0; content=""
@@ -35,8 +47,10 @@ suite=`basename $0 | sed -e 's/.sh$//' | tr "." "_"`
 # A wrapper for the eval method witch allows catching seg-faults and use tee
 errfile=/tmp/evErr.$$.log
 eVal() {
+  set $ENABLE_XTRACE
   eval "$1"
   echo $? | tr -d "\n" >$errfile
+  set $DISABLE_XTRACE
 }
 
 # Method to clean old tests
@@ -47,7 +61,9 @@ juLogClean() {
 
 # Execute a command and record its results 
 juLog() {
-  
+
+  set $DISABLE_XTRACE
+
   # parse arguments
   ya=""; icase=""
   while [ -z "$ya" ]; do  
@@ -128,5 +144,8 @@ $out
   </testsuite>
 EOF
 
+  set $ENABLE_XTRACE
+
 }
 
+set $ENABLE_XTRACE
