@@ -27,6 +27,7 @@ date=`which gdate || which date`
 # create output folder
 juDIR=`pwd`/results
 mkdir -p "$juDIR" || exit
+[ "$EUID" == 0 ] && chmod a+rwx "$juDIR" # Simplify cleanup for others, if root running, make results rwx for everyone
 
 # The name of the suite is calculated based in your script name
 suite=`basename $0 | sed -e 's/.sh$//' | tr "." "_"`
