@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage("Test") {
             steps {
-                sh 'make docker.test'
+                sh 'git clean -xfd; make docker.test'
             }
             post {
                 always {
