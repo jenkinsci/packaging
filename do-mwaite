@@ -4,8 +4,9 @@ set -x
 
 VERSION=2.229
 
-if hostname --long | grep -q markwaite.net; then
+if hostname --all-ip-addresses | grep -q -F 172.16.16; then
 
+  # markwaite.net
   PKG[debian]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}_all.deb
   PKG[msi]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}.zip
   PKG[suse]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins-${VERSION}-1.2.noarch.rpm
@@ -13,6 +14,7 @@ if hostname --long | grep -q markwaite.net; then
 
 else
 
+  # everywhere else
   PKG[debian]=https://pkg.jenkins.io/debian/binary/jenkins_${VERSION}_all.deb
   PKG[msi]=http://mirrors.jenkins-ci.org/windows/jenkins-${VERSION}.zip
   PKG[suse]=https://pkg.jenkins.io/opensuse/jenkins-${VERSION}-1.2.noarch.rpm
