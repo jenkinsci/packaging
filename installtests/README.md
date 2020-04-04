@@ -30,11 +30,10 @@ bash ./run_tests.sh
 
 ## Installation Scripts
 
-We have installation scripts for the core distro types (RPM, Debian pkg, SUSE RPM, which will create a working Jenkins with JDKs, etc + curl for testing.  THESE MUST RUN AS ROOT OR IN SUDO MODE in the container (the sudo images above achieve this).
+We have installation scripts for the core distro types (RPM, Debian pkg, SUSE RPM, which will create a working Jenkins for testing.  THESE MUST RUN AS ROOT OR IN SUDO MODE in the container (the sudo images above achieve this).
 
 Usage:
 
-* sudo centos.sh /path/to/rpm/package.rpm
 * sudo suse.sh /path/to/suse/package.rpm
 * sudo debian.sh /path/to/debian/package.deb
 
