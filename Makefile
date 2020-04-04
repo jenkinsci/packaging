@@ -18,7 +18,7 @@ PACKAGE_BUILDER_VERSION:=0.3
 #######################################################
 
 clean:
-	rm -rf ${TARGET}
+	rm -rf ${TARGET} results
 
 setup:
 	bash -ex -c 'for f in */setup.sh; do $$f; done'
