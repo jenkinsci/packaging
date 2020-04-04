@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -u
+
+VERSION=2.229
+
+[ -d results ] && rm -rf results
+
+[ -d target ] || mkdir target
+
+[ -d target/debian ] || mkdir target/debian
+
+(cd target/debian && wget https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}_all.deb)
+
+[ -d target/war ] || mkdir target/war
+
+(cd target/war && wget https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}.war)
+
+[ -d target/msi ] || mkdir target/msi
+
+(cd target/msi && wget https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}.msi)
+
+[ -d target/suse ] || mkdir target/suse
+
+(cd target/suse && wget https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins-${VERSION}-1.2.noarch.rpm)
+
+WAR=target/war/*.war MSI=target/msi/*.msi installtests/run_tests.sh
