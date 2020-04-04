@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -u
 set -x
 
 VERSION=2.229
