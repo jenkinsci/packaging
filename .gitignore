@@ -11,3 +11,4 @@ generated
 .iml
 .idea/
 *.orig
+/results/
