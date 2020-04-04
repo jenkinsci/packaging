@@ -46,6 +46,4 @@ if ! ls target/war/*.war > /dev/null 2>&1; then
     ( cd target/war && wget -q ${PKG[war]} )
 fi
 
-WAR=target/war/*.war MSI=target/msi/*.msi make clean docker.images
-
-installtests/run_tests.sh
+WAR=target/war/*.war MSI=target/msi/*.msi make docker.test
