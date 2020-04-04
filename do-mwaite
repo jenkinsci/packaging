@@ -5,28 +5,44 @@ set -x
 
 VERSION=2.229
 
+if hostname --long | grep -q markwaite.net; then
+
+  PKG[debian]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}_all.deb
+  PKG[msi]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}.msi
+  PKG[suse]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins-${VERSION}-1.2.noarch.rpm
+  PKG[war]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}.war
+
+else
+
+  PKG[debian]=https://pkg.jenkins.io/debian/binary/jenkins_${VERSION}_all.deb
+  PKG[msi]=http://mirrors.jenkins-ci.org/windows/jenkins-${VERSION}.zip
+  PKG[suse]=https://pkg.jenkins.io/opensuse/jenkins-${VERSION}-1.2.noarch.rpm
+  PKG[war]=http://mirrors.jenkins-ci.org/war/${VERSION}/jenkins.war
+
+fi
+
 [ -d results ] && rm -rf results
 
 [ -d target ] || mkdir target
 
 [ -d target/debian ] || mkdir target/debian
-if ! ls target/debian/*.deb > /dev/null 2>&1; then
-    ( cd target/debian && wget https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}_all.deb )
-fi
-
-[ -d target/war ] || mkdir target/war
-if ! ls target/war/*.war > /dev/null 2>&1; then
-    ( cd target/war && wget https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}.war )
+if ! ls target/debian/* > /dev/null 2>&1; then
+    ( cd target/debian && wget ${PKG[debian]} )
 fi
 
 [ -d target/msi ] || mkdir target/msi
-if ! ls target/msi/*.msi > /dev/null 2>&1; then
-    ( cd target/msi && wget https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}.msi )
+if ! ls target/msi/* > /dev/null 2>&1; then
+    ( cd target/msi && wget ${PKG[msi]} )
 fi
 
 [ -d target/suse ] || mkdir target/suse
-if ! ls target/suse/*.rpm > /dev/null 2>&1; then
-    ( cd target/suse && wget https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins-${VERSION}-1.2.noarch.rpm )
+if ! ls target/suse/* > /dev/null 2>&1; then
+    ( cd target/suse && wget ${PKG[suse]} )
+fi
+
+[ -d target/war ] || mkdir target/war
+if ! ls target/war/* > /dev/null 2>&1; then
+    ( cd target/war && wget ${PKG[war]} )
 fi
 
 WAR=target/war/*.war MSI=target/msi/*.msi make docker.images
