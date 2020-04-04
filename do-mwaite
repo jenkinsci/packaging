@@ -7,7 +7,7 @@ VERSION=2.229
 if hostname --long | grep -q markwaite.net; then
 
   PKG[debian]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}_all.deb
-  PKG[msi]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}.msi
+  PKG[msi]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}.zip
   PKG[suse]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins-${VERSION}-1.2.noarch.rpm
   PKG[war]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}.war
 
@@ -31,7 +31,7 @@ fi
 
 [ -d target/msi ] || mkdir target/msi
 if ! ls target/msi/* > /dev/null 2>&1; then
-    ( cd target/msi && wget ${PKG[msi]} )
+    ( cd target/msi && wget ${PKG[msi]} && unzip *.zip )
 fi
 
 [ -d target/suse ] || mkdir target/suse
