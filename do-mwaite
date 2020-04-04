@@ -29,4 +29,6 @@ if ls target/suse/*.rpm > /dev/null 2>&1; then
     (cd target/suse && wget https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins-${VERSION}-1.2.noarch.rpm)
 fi
 
-WAR=target/war/*.war MSI=target/msi/*.msi installtests/run_tests.sh
+WAR=target/war/*.war MSI=target/msi/*.msi make docker.images
+
+installtests/run_tests.sh
