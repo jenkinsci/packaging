@@ -71,7 +71,7 @@ docker_dpkg_verify() {
 }
 
 # dpkg error messages with three consecutive question marks indicate a verification exception
-juLog -error="???" -suite="${OS}-install" -name="${OS}DockerVerify" docker_dpkg_verify
+juLog -error="[?][?][?]" -suite="${OS}-install" -name="${OS}DockerVerify" docker_dpkg_verify
 
 ##
 # Use dpkg audit to check package contents
