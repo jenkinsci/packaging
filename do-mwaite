@@ -10,22 +10,22 @@ VERSION=2.229
 [ -d target ] || mkdir target
 
 [ -d target/debian ] || mkdir target/debian
-if ls target/debian/*.deb > /dev/null 2>&1; then
+if ! ls target/debian/*.deb > /dev/null 2>&1; then
     ( cd target/debian && wget https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}_all.deb )
 fi
 
 [ -d target/war ] || mkdir target/war
-if ls target/war/*.war > /dev/null 2>&1; then
+if ! ls target/war/*.war > /dev/null 2>&1; then
     ( cd target/war && wget https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}.war )
 fi
 
 [ -d target/msi ] || mkdir target/msi
-if ls target/msi/*.msi > /dev/null 2>&1; then
+if ! ls target/msi/*.msi > /dev/null 2>&1; then
     ( cd target/msi && wget https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}.msi )
 fi
 
 [ -d target/suse ] || mkdir target/suse
-if ls target/suse/*.rpm > /dev/null 2>&1; then
+if ! ls target/suse/*.rpm > /dev/null 2>&1; then
     ( cd target/suse && wget https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins-${VERSION}-1.2.noarch.rpm )
 fi
 
