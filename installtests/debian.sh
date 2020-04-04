@@ -14,6 +14,12 @@ export DEBIAN_FRONTEND=noninteractive
 
 . "$(dirname $0)/sh2ju.sh"
 
+# Read operating system information into variables
+
+. /etc/os-release
+
+OS="${ID}-${VERSION_ID}" # debian-buster or ubuntu-19.10
+
 install_failure_message="dpkg install failed on $JENKINS_DEB_INSTALLER_FILE file"
 
 docker_dpkg_install() {
@@ -28,12 +34,12 @@ docker_dpkg_install() {
     echo
     dpkg --install "$JENKINS_DEB_INSTALLER_FILE" || true
 
-    # Install Jenkins package dependencies, then install curl while ignoring curl install output
-    # Output should detect issues with Jenkins dependencies, curl is a tool needed later
+    # Install Jenkins package dependencies.
+    # Output should detect issues with Jenkins dependencies
     echo
     echo "===== Resolving dependencies of $JENKINS_DEB_INSTALLER_FILE with apt-get"
     echo
-    apt-get -q install -fy && apt-get install -fy curl > /dev/null 2>&1
+    apt-get -q install -fy
 
     # Remove jenkins installed by first call to dpkg
     echo
@@ -48,7 +54,7 @@ docker_dpkg_install() {
     dpkg --install "$JENKINS_DEB_INSTALLER_FILE" || echo "$install_failure_message"
 }
 
-juLog -error="$install_failure_message" -name=debianDockerInstall docker_dpkg_install
+juLog -error="$install_failure_message" -suite="${OS}-install" -name="${OS}DockerInstall" docker_dpkg_install
 
 ##
 # Use dpkg verify to check package contents
@@ -61,10 +67,11 @@ docker_dpkg_verify() {
     echo
     echo "===== Verifying jenkins package with dpkg"
     echo
-    dpkg --verify jenkins < /dev/null || echo "$verify_failure_message"
+    dpkg --verify --verify-format=rpm jenkins < /dev/null || echo "$verify_failure_message ???"
 }
 
-juLog -error="$verify_failure_message" -name=debianDockerVerify docker_dpkg_verify
+# dpkg error messages with three consecutive question marks indicate a verification exception
+juLog -error="???" -suite="${OS}-install" -name="${OS}DockerVerify" docker_dpkg_verify
 
 ##
 # Use dpkg audit to check package contents
@@ -79,4 +86,4 @@ docker_dpkg_audit() {
     dpkg --audit jenkins < /dev/null || echo "$audit_failure_message"
 }
 
-juLog -error="$audit_failure_message" -name=debianDockerAudit docker_dpkg_audit
+juLog -error="$audit_failure_message" -suite="${OS}-install" -name="${OS}DockerAudit" docker_dpkg_audit

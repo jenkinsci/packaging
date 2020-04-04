@@ -13,6 +13,12 @@ fi
 
 . "$(dirname $0)/sh2ju.sh"
 
+# Read operating system information into variables
+
+. /etc/os-release
+
+OS="${ID}-${VERSION_ID}" # debian-buster or ubuntu-19.10
+
 SERVICE_WAIT=5
 MAX_START_WAIT=120
 MAX_STOP_WAIT=45
@@ -95,65 +101,65 @@ function set_pids {
 # TODO add check for jenkins group too...
 getent passwd "$ARTIFACT_NAME"
 USER_TEST=$?
-juLog -name=createUserTest report_test "Verify $ARTIFACT_NAME user created" $USER_TEST 0 $USER_TEST
+juLog -suite="${OS}-service-check" -name=createUserTest report_test "Verify $ARTIFACT_NAME user created" $USER_TEST 0 $USER_TEST
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" start 2>&1)
 SERVICE_EXIT_CODE=$?
-juLog -name=initialServiceStartTest report_test "$ARTIFACT_NAME initial service start" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
+juLog -suite="${OS}-service-check" -name=initialServiceStartTest report_test "$ARTIFACT_NAME initial service start" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
 
 # Try to check service status and verify it eventually resolves as running
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
-juLog -name=serviceStatusRunningTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "$ARTIFACT_NAME service status after initial start"
+juLog -suite="${OS}-service-check" -name=serviceStatusRunningTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "$ARTIFACT_NAME service status after initial start"
 
 set_pids
-juLog -name=initialServiceStartPid report_test "$ARTIFACT_NAME daemon PID/PIDFILE" "$DAEMON_PID" "$PIDFILE" "(no output)"
+juLog -suite="${OS}-service-check" -name=initialServiceStartPid report_test "$ARTIFACT_NAME daemon PID/PIDFILE" "$DAEMON_PID" "$PIDFILE" "(no output)"
 
 # Try to curl the server and verify status resolves as started
 COMMAND='curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1'
-juLog -name=curlTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Curl to host"
+juLog -suite="${OS}-service-check" -name=curlTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Curl to host"
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" restart 2>&1)
 SERVICE_EXIT_CODE=$?
-juLog -name=serviceRestartTest report_test "$ARTIFACT_NAME service first restart from running" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
+juLog -suite="${OS}-service-check" -name=serviceRestartTest report_test "$ARTIFACT_NAME service first restart from running" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
 
 sleep $SERVICE_WAIT
 
 JENKINS_JAVA_PROC_COUNT=$(ps -U $ARTIFACT_NAME aux | grep java | grep -v grep | grep -v daemon | grep -v defunct| wc -l)
-juLog -name=serviceRetartJavaProcessCount report_test "Java process count for user after restart" $JENKINS_JAVA_PROC_COUNT 1 "no output"
+juLog -suite="${OS}-service-check" -name=serviceRetartJavaProcessCount report_test "Java process count for user after restart" $JENKINS_JAVA_PROC_COUNT 1 "no output"
 
 set_pids
-juLog -name=restartStartPid report_test "$ARTIFACT_NAME daemon PID/PIDFILE" $DAEMON_PID $PIDFILE "(no output)"
+juLog -suite="${OS}-service-check" -name=restartStartPid report_test "$ARTIFACT_NAME daemon PID/PIDFILE" $DAEMON_PID $PIDFILE "(no output)"
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" stop 2>&1)
 SERVICE_EXIT_CODE=$?
-juLog -name=serviceStopTest report_test "$ARTIFACT_NAME service stop" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
+juLog -suite="${OS}-service-check" -name=serviceStopTest report_test "$ARTIFACT_NAME service stop" $SERVICE_EXIT_CODE 0 $SERVICE_OUTPUT
 
 JENKINS_JAVA_PROC_COUNT=$(ps -U $ARTIFACT_NAME aux | grep java | grep -v grep | grep -v defunct | wc -l)
-juLog -name=serviceStopNoJavaProcess report_test "Java process count for user after stop" $JENKINS_JAVA_PROC_COUNT 0 "no output"
+juLog -suite="${OS}-service-check" -name=serviceStopNoJavaProcess report_test "Java process count for user after stop" $JENKINS_JAVA_PROC_COUNT 0 "no output"
 
 # Test status comes up as stopped eventually
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
-juLog -name=serviceStatusStoppedTest repeatedly_test "$COMMAND" 3 "$MAX_STOP_WAIT" "$ARTIFACT_NAME service status check when stopped"
+juLog -suite="${OS}-service-check" -name=serviceStatusStoppedTest repeatedly_test "$COMMAND" 3 "$MAX_STOP_WAIT" "$ARTIFACT_NAME service status check when stopped"
 
 set_pids
-juLog -name=stoppedServiceDaemonPid report_test "$ARTIFACT_NAME daemon PID absent" $DAEMON_PID "" "(no output)"
-juLog -name=stoppedServiceJavaPid report_test "$ARTIFACT_NAME java PID absent" $JAVA_PID "" "(no output)"
-juLog -name=stoppedServicePidFile report_test "$ARTIFACT_NAME pidfile absent" $PIDFILE "null" "(no output)"
+juLog -suite="${OS}-service-check" -name=stoppedServiceDaemonPid report_test "$ARTIFACT_NAME daemon PID absent" $DAEMON_PID "" "(no output)"
+juLog -suite="${OS}-service-check" -name=stoppedServiceJavaPid report_test "$ARTIFACT_NAME java PID absent" $JAVA_PID "" "(no output)"
+juLog -suite="${OS}-service-check" -name=stoppedServicePidFile report_test "$ARTIFACT_NAME pidfile absent" $PIDFILE "null" "(no output)"
 
 SERVICE_OUTPUT=$(service "$ARTIFACT_NAME" restart 2>&1)
 SERVICE_EXIT_CODE=$?
-juLog -name=serviceRestartFromStoppedTest report_test "$ARTIFACT_NAME service restart from stopped state" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
+juLog -suite="${OS}-service-check" -name=serviceRestartFromStoppedTest report_test "$ARTIFACT_NAME service restart from stopped state" $SERVICE_EXIT_CODE 0 "$SERVICE_OUTPUT"
 
 # Try to check service status and verify it eventually resolves as running
 COMMAND='service "$ARTIFACT_NAME" status 2>&1'
-juLog -name=serviceRestartedCheckTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "$ARTIFACT_NAME service status after restart from stopped state"
+juLog -suite="${OS}-service-check" -name=serviceRestartedCheckTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "$ARTIFACT_NAME service status after restart from stopped state"
 
 set_pids
-juLog -name=restartServiceAfterStopPid report_test "$ARTIFACT_NAME daemon PID/PIDFILE" "$DAEMON_PID" "$PIDFILE" "(no output)"
+juLog -suite="${OS}-service-check" -name=restartServiceAfterStopPid report_test "$ARTIFACT_NAME daemon PID/PIDFILE" "$DAEMON_PID" "$PIDFILE" "(no output)"
 
 # Try to curl the server and verify status resolves as started
 COMMAND='curl -sS 127.0.0.1:$PORT -o /dev/null 2>&1'
-juLog -name=curlAfterRestartedTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Curl to host AFTER restart from stopped"
+juLog -suite="${OS}-service-check" -name=curlAfterRestartedTest repeatedly_test "$COMMAND" 0 "$MAX_START_WAIT" "Curl to host AFTER restart from stopped"
 
 
 ## BREAK jenkins and then see how the service scripts behave

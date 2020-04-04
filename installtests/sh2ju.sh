@@ -1,5 +1,5 @@
 #!/bin/bash
-### Copyright 2010 Manuel Carrasco Moñino. (manolo at apache.org) 
+### Copyright 2010 Manuel Carrasco Moñino. (manolo at apache.org)
 ###
 ### Licensed under the Apache License, Version 2.0.
 ### You may obtain a copy of it at
@@ -9,7 +9,7 @@
 ### A library for shell scripts which creates reports in jUnit format.
 ### These reports can be used in Jenkins, or any other CI.
 ###
-### Usage: 
+### Usage:
 ###     - Include this file in your shell script
 ###     - Use juLog to call your command any time you want to produce a new report
 ###        Usage:   juLog <options> command arguments
@@ -41,7 +41,7 @@ juDIR=`pwd`/results
 mkdir -p "$juDIR" || exit
 [ "$EUID" == 0 ] && chmod a+rwx "$juDIR" # Simplify cleanup for others, if root running, make results rwx for everyone
 
-# The name of the suite is calculated based in your script name
+# The default name of the suite is calculated based on your script name
 suite=`basename $0 | sed -e 's/.sh$//' | tr "." "_"`
 
 # A wrapper for the eval method witch allows catching seg-faults and use tee
@@ -59,25 +59,26 @@ juLogClean() {
   rm -f "$juDIR"/TEST-*
 }
 
-# Execute a command and record its results 
+# Execute a command and record its results
 juLog() {
 
   set $DISABLE_XTRACE
 
   # parse arguments
   ya=""; icase=""
-  while [ -z "$ya" ]; do  
+  while [ -z "$ya" ]; do
     case "$1" in
-  	  -name=*)   name=$asserts-`echo "$1" | sed -e 's/-name=//'`;   shift;;
+      -name=*)   name=$asserts-`echo "$1" | sed -e 's/-name=//'`;   shift;;
+      -suite=*)  suite=`echo "$1" | sed -e 's/-suite=//'`;   shift;;
       -ierror=*) ereg=`echo "$1" | sed -e 's/-ierror=//'`; icase="-i"; shift;;
       -error=*)  ereg=`echo "$1" | sed -e 's/-error=//'`;  shift;;
       *)         ya=1;;
     esac
-  done  
+  done
 
-  # use first arg as name if it was not given 
+  # use first arg as name if it was not given
   if [ -z "$name" ]; then
-    name="$asserts-$1" 
+    name="$asserts-$1"
     shift
   fi
 
@@ -103,8 +104,8 @@ juLog() {
   rm -f $errfile
   end=`date +%s.%N`
   echo "+++ exit code: $evErr"        | tee -a $outf
-  
-  # set the appropriate error, based in the exit code and the regex  
+
+  # set the appropriate error, based in the exit code and the regex
   [ $evErr != 0 ] && err=1 || err=0
   out=`cat $outf | sed -e 's/^\([^+]\)/| \1/g'`
   if [ $err = 0 -a -n "$ereg" ]; then
