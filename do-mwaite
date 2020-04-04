@@ -7,10 +7,10 @@ VERSION=2.229
 if hostname --all-ip-addresses | grep -q -F 172.16.16; then
 
   # markwaite.net
-  PKG[debian]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}_all.deb
-  PKG[msi]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}.zip
+  PKG[debian]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins-${VERSION}_all.deb
+  PKG[msi]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins-${VERSION}.zip
   PKG[suse]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins-${VERSION}-1.2.noarch.rpm
-  PKG[war]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}.war
+  PKG[war]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins-${VERSION}.war
 
 else
 
