@@ -18,11 +18,19 @@ fi
 
 OS="${ID}.${VERSION_ID}" # opensuse-leap.15.1 so that JUnit package naming can be used
 
-install_failure_message="zypper install failed on $JENKINS_SUSE_INSTALLER_FILE"
+install_failure_msg="zypper install failed on $JENKINS_SUSE_INSTALLER_FILE"
 
 suse_zypper_install() {
     # Ignore signature verification - OpenSUSE Jenkins 2.229 package is not GPG signed (why not?)
-    zypper --no-gpg-checks --non-interactive install insserv-compat $JENKINS_SUSE_INSTALLER_FILE || echo "$install_failure_message"
+    zypper --no-gpg-checks --non-interactive install insserv-compat $JENKINS_SUSE_INSTALLER_FILE || echo "$install_failure_msg"
 }
 
-juLog -error="$JENKINS_SUSE_INSTALLER_FILE" -suite="${OS}.install" -name="DockerInstall" suse_zypper_install
+juLog -error="$install_failure_msg" -suite="${OS}.install" -name="DockerInstall" suse_zypper_install
+
+verify_failure_message="zypper packages check failed on jenkins package"
+
+suse_zypper_package_check() {
+    zypper --no-gpg-checks --non-interactive packages --installed-only | grep ^i.*jenkins || echo $verify_failure_message
+}
+
+juLog -error="$verify_failure_msg" -suite="${OS}.install" -name="DockerPackageCheck" suse_zypper_package_check
