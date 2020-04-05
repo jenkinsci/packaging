@@ -72,6 +72,12 @@ private def osesToTest(String category) {
           "extended"
       ],
       [
+          "debian-oldstable",
+          "sudo-debian:oldstable",
+          "deb",
+          "extended"
+      ],
+      [
           "debian-testing",
           "sudo-debian:testing",
           "deb",
