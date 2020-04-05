@@ -13,6 +13,10 @@ fi
 
 . "$(dirname $0)/sh2ju.sh"
 
+# Debian testing does not set a VERSION_ID, /etc/os-release will replace for stable and oldstable
+
+VERSION_ID=testing
+
 # Read operating system information into variables
 
 . /etc/os-release
