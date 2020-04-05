@@ -129,7 +129,7 @@ juLog() {
   "
   ## testcase tag
   content="$content
-    <testcase assertions=\"1\" name=\"$name\" time=\"$time\">
+    <testcase assertions=\"1\" name=\"$name\" classname=\"$suite\" time=\"$time\">
     $failure
     <system-out>
 <![CDATA[
