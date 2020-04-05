@@ -66,8 +66,8 @@ private def osesToTest(String category) {
           "extended"
       ],
       [
-          "debian-buster",
-          "sudo-debian:buster",
+          "debian-stable",
+          "sudo-debian:stable",
           "deb",
           "extended"
       ],
