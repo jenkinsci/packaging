@@ -22,7 +22,7 @@ VERSION_ID=testing
 
 . /etc/os-release
 
-OS="${ID}-${VERSION_ID}" # debian-buster or ubuntu-19.10
+OS="${ID}.${VERSION_ID}" # debian.10 or ubuntu.19.10 so that JUnit package naming can be used
 
 install_failure_message="dpkg install failed on $JENKINS_DEB_INSTALLER_FILE file"
 
@@ -58,7 +58,7 @@ docker_dpkg_install() {
     dpkg --install "$JENKINS_DEB_INSTALLER_FILE" || echo "$install_failure_message"
 }
 
-juLog -error="$install_failure_message" -suite="${OS}-install" -name="${OS}DockerInstall" docker_dpkg_install
+juLog -error="$install_failure_message" -suite="${OS}.install" -name="${OS}.install.DockerInstall" docker_dpkg_install
 
 ##
 # Use dpkg verify to check package contents
@@ -75,7 +75,7 @@ docker_dpkg_verify() {
 }
 
 # dpkg error messages with three consecutive question marks indicate a verification exception
-juLog -error="[?][?][?]" -suite="${OS}-install" -name="${OS}DockerVerify" docker_dpkg_verify
+juLog -error="[?][?][?]" -suite="${OS}.install" -name="${OS}.install.DockerVerify" docker_dpkg_verify
 
 ##
 # Use dpkg audit to check package contents
@@ -90,4 +90,4 @@ docker_dpkg_audit() {
     dpkg --audit jenkins < /dev/null || echo "$audit_failure_message"
 }
 
-juLog -error="$audit_failure_message" -suite="${OS}-install" -name="${OS}DockerAudit" docker_dpkg_audit
+juLog -error="$audit_failure_message" -suite="${OS}.install" -name="${OS}.install.DockerAudit" docker_dpkg_audit
