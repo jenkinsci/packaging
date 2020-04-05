@@ -7,7 +7,7 @@ cd "$(dirname "$0")"
 docker build --build-arg USER_ID=$(id -u ${USER}) -t sudo-debian:stable sudo-debian
 docker build --build-arg USER_ID=$(id -u ${USER}) -t sudo-debian:oldstable sudo-debian-oldstable
 docker build --build-arg USER_ID=$(id -u ${USER}) -t sudo-debian:testing sudo-debian-testing
-# docker build --build-arg USER_ID=$(id -u ${USER}) -t sudo-opensuse:15.1 sudo-opensuse
+docker build --build-arg USER_ID=$(id -u ${USER}) -t sudo-opensuse:15.1 sudo-opensuse
 docker build --build-arg USER_ID=$(id -u ${USER}) -t sudo-ubuntu:16.04  sudo-ubuntu16
 docker build --build-arg USER_ID=$(id -u ${USER}) -t sudo-ubuntu:18.04  sudo-ubuntu18
 docker build --build-arg USER_ID=$(id -u ${USER}) -t sudo-ubuntu:19.10  sudo-ubuntu19
