@@ -74,7 +74,7 @@ function init(){
   mkdir -p "$DEB_WEBDIR"
   ## On remote serve
   # shellcheck disable=SC2029
-  ssh "$PKGSERVER" "${SSH_OPTS[*]}" mkdir -p "$DEBDIR/"
+  ssh "${SSH_OPTS[@]}" "$PKGSERVER" mkdir -p "$DEBDIR/"
 }
 
 function uploadPackage(){
@@ -101,7 +101,7 @@ function show(){
   echo "DEB: $DEB"
   echo "DEBDIR: $DEBDIR"
   echo "DEB_WEBDIR: $DEB_WEBDIR"
-  echo "SSH_OPTS: $SSH_OPTS"
+  echo "SSH_OPTS: ${SSH_OPTS[*]}"
   echo "PKGSERVER: $PKGSERVER"
   echo "GPG_KEYNAME: $GPG_KEYNAME"
   echo "---"
