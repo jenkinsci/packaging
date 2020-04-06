@@ -34,3 +34,11 @@ suse_zypper_package_check() {
 }
 
 juLog -error="$verify_failure_msg" -suite="${OS}.install" -name="DockerPackageCheck" suse_zypper_package_check
+
+info_failure_message="zypper info check failed on jenkins package"
+
+suse_zypper_info_check() {
+    zypper --gpg-auto-import-keys --non-interactive info jenkins | grep 'Jenkins is an open source automation server which enables developers' || echo $info_failure_message
+}
+
+juLog -error="$info_failure_msg" -suite="${OS}.install" -name="DockerInfoCheck" suse_zypper_info_check
