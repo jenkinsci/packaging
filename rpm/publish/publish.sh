@@ -12,9 +12,6 @@ set -euxo pipefail
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
 
-# Convert string to array to correctly escape cli parameter
-SSH_OPTS=($SSH_OPTS)
-
 function clean(){
   rm -rf $D
 }
@@ -43,7 +40,7 @@ EOF
   createrepo --update -o "$RPM_WEBDIR" "$RPMDIR/"
   # on the server
   # shellcheck disable=SC2029
-  ssh "$PKGSERVER" "${SSH_OPTS[*]}" createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
+  ssh "$PKGSERVER" "${SSH_OPTS}" createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
 
 }
 
@@ -53,13 +50,13 @@ function init(){
   mkdir -p "$RPMDIR/"
   # mkdir -p "$RPM_WEBDIR/" # May not be necessary
   # shellcheck disable=SC2029
-  ssh "$PKGSERVER" "${SSH_OPTS[*]}" mkdir -p "'$RPMDIR/'"
+  ssh "$PKGSERVER" "${SSH_OPTS}" mkdir -p "'$RPMDIR/'"
 }
 
 
 function uploadPackage(){
   rsync -avz "$RPM" "$RPMDIR/"
-  rsync -avz -e "ssh ${SSH_OPTS[*]}"  "$RPM" "$PKGSERVER:${RPMDIR// /\\ }/"
+  rsync -avz -e "ssh ${SSH_OPTS}"  "$RPM" "$PKGSERVER:${RPMDIR// /\\ }/"
 }
 
 function show(){
@@ -67,7 +64,7 @@ function show(){
   echo "RPM: $RPM"
   echo "RPMDIR: $RPMDIR"
   echo "RPM_WEBDIR: $RPM_WEBDIR"
-  echo "SSH_OPTS: ${SSH_OPTS[*]}"
+  echo "SSH_OPTS: ${SSH_OPTS}"
   echo "PKGSERVER: $PKGSERVER"
   echo "GPG_KEYNAME: $GPG_KEYNAME"
   echo "---"
@@ -76,7 +73,7 @@ function show(){
 function uploadSite(){
   pushd "$D"
     rsync -avz --exclude RPMS . "$RPM_WEBDIR/"
-    rsync -avz -e "ssh ${SSH_OPTS[*]}" --exclude RPMS . "$PKGSERVER:${RPM_WEBDIR// /\\ }"
+    rsync -avz -e "ssh ${SSH_OPTS}" --exclude RPMS . "$PKGSERVER:${RPM_WEBDIR// /\\ }"
   popd
 }
 

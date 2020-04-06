@@ -4,8 +4,8 @@
 # the host to publish bits to
 # Temporary real pkgserver
 export PKGSERVER=mirrorbrain@20.186.155.37
-export SSH_OPTS=-p 22 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
-export SCP_OPTS=-P 22 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+export SSH_OPTS='-p 22 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+export SCP_OPTS='-P 22 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
 
 # where to put binary files
 export WARDIR=/srv/releases/jenkins/war${RELEASELINE}
