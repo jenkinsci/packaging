@@ -30,6 +30,10 @@ class IndexGenerator:
         'war': {
             'extension': '.war',
             'template': 'index.war.html'
+        },
+        'windows': {
+            'extension': '.msi',
+            'template': 'index.msi.html'
         }
     }
 
