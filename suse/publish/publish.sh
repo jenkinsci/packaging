@@ -38,7 +38,7 @@ function init(){
   mkdir -p "$SUSEDIR/" # Local
 
   # shellcheck disable=SC2029
-  ssh "$PKGSERVER" "${SSH_OPTS[*]}" mkdir -p "'$SUSEDIR/'" # Remote
+  ssh "${SSH_OPTS[@]}" "$PKGSERVER"  mkdir -p "'$SUSEDIR/'" # Remote
 
   # where to put repository index and other web contents
   mkdir -p "$SUSE_WEBDIR"
@@ -74,9 +74,9 @@ function uploadSite(){
     # server needs 'createrepo' pacakge
     createrepo --update -o "$SUSE_WEBDIR" "$SUSEDIR/" #Local
     # shellcheck disable=SC2029
-    ssh "$PKGSERVER"  "${SSH_OPTS[*]}" createrepo --update -o "'$SUSE_WEBDIR'" "'$SUSEDIR/'" # Remote
+    ssh "${SSH_OPTS[@]}" "$PKGSERVER"   createrepo --update -o "'$SUSE_WEBDIR'" "'$SUSEDIR/'" # Remote
 
-    scp "${SCP_OPTS[*]}" "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Remote
+    scp "${SCP_OPTS[@]}" "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Remote
     cp "${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Local
 
     gpg \
@@ -89,7 +89,7 @@ function uploadSite(){
       --yes \
       repodata/repomd.xml
 
-     scp "${SCP_OPTS[*]}" repodata/repomd.xml.asc "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/"
+     scp "${SCP_OPTS[@]}" repodata/repomd.xml.asc "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/"
      cp repodata/repomd.xml.asc "${SUSE_WEBDIR// /\\ }/repodata/"
     
   popd
