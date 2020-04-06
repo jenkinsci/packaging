@@ -63,4 +63,3 @@ init
 generateSite
 uploadPackage
 uploadSite
-clean
