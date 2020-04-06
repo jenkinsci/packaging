@@ -6,7 +6,7 @@
 export JENKINS_URL=https://cloudbees.ci.cloudbees.com/
 
 # the host to publish bits to
-export PKGSERVER=root@remote
+export PKGSERVER=jenkins@remote
 # Testing both with and without SSH_OPTS
 #export SSH_OPTS=-p 22
 #export SCP_OPTS=-P 22
