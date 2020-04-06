@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-MAINTAINER mark.earl.waite@gmail.com
+LABEL project="https://github.com/jenkinsci/packaging"
 
 ARG USER_ID
 

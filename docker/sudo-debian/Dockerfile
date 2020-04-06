@@ -1,5 +1,5 @@
 FROM debian:buster
-MAINTAINER mark.earl.waite@gmail.com
+LABEL project="https://github.com/jenkinsci/packaging"
 
 ARG USER_ID
 

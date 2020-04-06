@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-MAINTAINER Mark Waite <mark.earl.waite@gmail.com>
+LABEL project="https://github.com/jenkinsci/packaging"
 
 # User id of the build user
 ARG uid=1000
