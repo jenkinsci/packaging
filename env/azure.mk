@@ -16,6 +16,7 @@ export SUSEDIR=/srv/releases/jenkins/opensuse${RELEASELINE}
 
 # where to put repository index and other web contents
 export  RPM_WEBDIR=/srv/releases/jenkins/redhat${RELEASELINE}
+export  MSI_WEBDIR=/srv/releases/jenkins/windows${RELEASELINE}
 export  SUSE_WEBDIR=/srv/releases/jenkins/opensuse${RELEASELINE}
 export  DEB_WEBDIR=/srv/releases/jenkins/debian${RELEASELINE}
 export  WAR_WEBDIR=/srv/releases/jenkins/war${RELEASELINE}
