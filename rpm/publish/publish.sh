@@ -43,7 +43,7 @@ EOF
   createrepo --update -o "$RPM_WEBDIR" "$RPMDIR/"
   # on the server
   # shellcheck disable=SC2029
-  ssh "$PKGSERVER" "${SSH_OPTS[*]}" createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
+  ssh "${SSH_OPTS[@]}" "$PKGSERVER"  createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
 
 }
 
@@ -53,7 +53,7 @@ function init(){
   mkdir -p "$RPMDIR/"
   # mkdir -p "$RPM_WEBDIR/" # May not be necessary
   # shellcheck disable=SC2029
-  ssh "$PKGSERVER" "${SSH_OPTS[*]}" mkdir -p "'$RPMDIR/'"
+  ssh "${SSH_OPTS[@]}" "$PKGSERVER"  mkdir -p "'$RPMDIR/'"
 }
 
 
