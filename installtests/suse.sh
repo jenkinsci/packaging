@@ -22,7 +22,7 @@ install_failure_msg="zypper install failed on $JENKINS_SUSE_INSTALLER_FILE"
 
 suse_zypper_install() {
     # Ignore signature verification - OpenSUSE Jenkins 2.229 package is not GPG signed (why not?)
-    zypper --no-gpg-checks --non-interactive install insserv-compat $JENKINS_SUSE_INSTALLER_FILE || echo "$install_failure_msg"
+    zypper --no-gpg-checks --non-interactive install insserv-compat sysvinit-tools $JENKINS_SUSE_INSTALLER_FILE || echo "$install_failure_msg"
 }
 
 juLog -error="$install_failure_msg" -suite="${OS}.install" -name="DockerInstall" suse_zypper_install
