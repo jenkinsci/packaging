@@ -23,21 +23,20 @@ OS="${ID}.${VERSION_ID}" # opencentos-leap.15.1 so that JUnit package naming can
 install_failure_msg="yum install failed on $JENKINS_CENTOS_INSTALLER_FILE"
 
 centos_yum_install() {
-    # Ignore signature verification - OpenCENTOS Jenkins 2.229 package is not GPG signed (why not?)
-    yum install -y $JENKINS_CENTOS_INSTALLER_FILE || echo "$install_failure_msg"
+    yum install -y $JENKINS_CENTOS_INSTALLER_FILE || echo $install_failure_msg
 }
 
-juLog -error="$install_failure_msg" -suite="${OS}.install" -name="DockerInstall" centos_yum_install
+juLog -error=yum.install.failed.on -suite="${OS}.install" -name="DockerInstall" centos_yum_install
 
 #######################################################################
 
-verify_failure_message="yum packages check failed on jenkins package"
+verify_failure_message="yum verify check failed on jenkins verify"
 
-centos_yum_package_check() {
-    yum verify jenkins | grep verify.done || echo $verify_failure_message
+centos_yum_verify_check() {
+    yum verify jenkins || echo $verify_failure_message
 }
 
-juLog -error="$verify_failure_msg" -suite="${OS}.install" -name="DockerPackageCheck" centos_yum_package_check
+juLog -error=yum.verify.check.failed.on.jenkins.verify -suite="${OS}.install" -name="DockerPackageCheck" centos_yum_verify_check
 
 #######################################################################
 
@@ -47,4 +46,4 @@ centos_yum_info_check() {
     yum info jenkins | grep 'Jenkins is an open source automation server' || echo $info_failure_message
 }
 
-juLog -error="$info_failure_msg" -suite="${OS}.install" -name="DockerInfoCheck" centos_yum_info_check
+juLog -error=yum.info.check.failed.on.jenkins.package -suite="${OS}.install" -name="DockerInfoCheck" centos_yum_info_check
