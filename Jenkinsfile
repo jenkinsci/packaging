@@ -1,3 +1,6 @@
+//
+// THIS FILE IS TO BE DELETED OR REPLACED BEFORE MERGE
+//
 pipeline {
     agent {
         label 'docker'
