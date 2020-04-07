@@ -4,6 +4,8 @@
 ##    THIS FILE IS TO BE DELETED BEFORE MERGE
 #####
 
+set -x
+
 # Use a prototype build from 2020-04-07
 VERSION=2.223
 
@@ -39,7 +41,7 @@ fi
 [ -d target/centos ] || mkdir target/centos
 if ! ls target/centos/*.rpm > /dev/null 2>&1; then
     ( cd target/centos && wget --no-use-server-timestamps -q ${PKG[centos]} )
-    if ls target/centos/*.rpm | grep -q rpm; then
+    if ! ls target/centos/*.rpm | grep -q rpm; then
       echo "No CentOS rpm file in target/centos/"
       exit 1
     fi
@@ -48,7 +50,7 @@ fi
 [ -d target/debian ] || mkdir target/debian
 if ! ls target/debian/*.deb > /dev/null 2>&1; then
     ( cd target/debian && wget --no-use-server-timestamps -q ${PKG[debian]} )
-    if ls target/debian/*.deb | grep -q deb; then
+    if ! ls target/debian/*.deb | grep -q deb; then
       echo "No Debian deb file in target/debian/"
       exit 2
     fi
@@ -57,7 +59,7 @@ fi
 [ -d target/msi ] || mkdir target/msi
 if ! ls target/msi/*.msi > /dev/null 2>&1; then
     ( cd target/msi && wget --no-use-server-timestamps -q ${PKG[msi]} && unzip *.zip && touch *.msi )
-    if ls target/msi/*.msi | grep -q msi; then
+    if ! ls target/msi/*.msi | grep -q msi; then
       echo "No MSI file in target/msi/"
       exit 3
     fi
@@ -66,7 +68,7 @@ fi
 [ -d target/suse ] || mkdir target/suse
 if ! ls target/suse/*.rpm > /dev/null 2>&1; then
     ( cd target/suse && wget --no-use-server-timestamps -q ${PKG[suse]} )
-    if ls target/suse/*.rpm | grep -q rpm; then
+    if ! ls target/suse/*.rpm | grep -q rpm; then
       echo "No SuSE rpm file in target/suse/"
       exit 4
     fi
@@ -75,7 +77,7 @@ fi
 [ -d target/war ] || mkdir target/war
 if ! ls target/war/*.war > /dev/null 2>&1; then
     ( cd target/war && wget --no-use-server-timestamps -q ${PKG[war]} )
-    if ls target/war/*.war | grep -q war; then
+    if ! ls target/war/*.war | grep -q war; then
       echo "No Java war file in target/war/"
       exit 5
     fi
