@@ -2,6 +2,7 @@
 version: '3'
 volumes:
   sshd:
+  pkgserver:
 services:
   packaging:
     image: jenkinsciinfra/packaging:latest
@@ -15,16 +16,20 @@ services:
     - "GPG_PASSPHRASE=s3cr3t"
     - "GPG_PASSPHRASE_FILE=/srv/releases/jenkins/credentials/test.gpg.password.txt"
     - "WAR=/srv/releases/jenkins/jenkins.war"
+    - "MSI=/srv/releases/jenkins/jenkins.msi"
     - "RELEASELINE=-experimental"
     volumes:
       - ".:/srv/releases/jenkins"
-      - "./credentials/ssh:/root/.ssh"
+      - "./credentials/ssh:/home/jenkins/.ssh"
     working_dir: "/srv/releases/jenkins"
+
   remote:
     image: jenkinsciinfra/packaging:latest
+    user: root # In order to start, sshd needs to be root
     command: "/usr/sbin/sshd -D"
     ports:
       - "2222:22"
     volumes:
-      - "./credentials/ssh/id_rsa.pub:/root/.ssh/authorized_keys:ro"
+      - "./credentials/ssh/id_rsa.pub:/home/jenkins/.ssh/authorized_keys:ro"
       - sshd:/run/sshd
+      - "pkgserver:/srv/releases/jenkins"

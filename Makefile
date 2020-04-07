@@ -37,19 +37,7 @@ docker.test: docker.images
 
 war: ${WAR}
 war.publish: ${WAR}
-	mkdir -p "${WARDIR}/${VERSION}/"
-	mkdir -p "${WAR_WEBDIR}"
-	sha256sum ${WAR} | sed 's, .*, ${ARTIFACTNAME}.war,' > ${WAR_SHASUM}
-	cat ${WAR_SHASUM}
-	rsync -avz "${WAR}" "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
-	rsync -avz "${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
-	./bin/indexGenerator.py \
-		--distribution war \
-		--binaryDir "${WARDIR}" \
-		--targetDir "${WAR_WEBDIR}"
-
-
-
+	./war/publish/publish.sh
 
 osx: ${OSX}
 ${OSX}: ${WAR} ${CLI}  $(shell find osx -type f | sed -e 's/ /\\ /g')
