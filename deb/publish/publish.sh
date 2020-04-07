@@ -93,7 +93,7 @@ function uploadSite(){
     "$D"/contents/binary
 
   rsync -avz "$D/contents/" "$DEB_WEBDIR/"
-  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${DEB}" "$PKGSERVER:${DEBDIR// /\\ }"
+  rsync -avz -e "ssh ${SSH_OPTS[*]}" "$D/contents/" "$PKGSERVER:${DEB_WEBDIR// /\\ }"
 }
 
 function show(){
