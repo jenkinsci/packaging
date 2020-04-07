@@ -32,7 +32,7 @@ fi
 [ -d results ] && rm -rf results
 
 # Once a day refresh the cache of target files
-find target -mindepth 1 -mtime +1 -delete
+[ -d target ] && find target -mindepth 1 -mtime +1 -delete
 
 [ -d target ] || mkdir target
 
