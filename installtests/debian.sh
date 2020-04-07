@@ -67,6 +67,17 @@ juLog -error="$install_failure_message" -suite="${OS}.install" -name="DockerInst
 verify_failure_message="dpkg verify failed on jenkins package"
 
 docker_dpkg_verify() {
+    if [[ $OS =~ ubuntu[.]1[89].* ]]; then
+        # Hide the Ubuntu 18 and Ubuntu 19 deletion of changelog.gz
+        # Unclear why those distributions delete changelog.gz, while
+        # Ubuntu 16, Debian 9, Debian 10, and Debian testing do not.
+        tmpdir=/tmp/$$
+        dpkg-deb -x $JENKINS_DEB_INSTALLER_FILE $tmpdir
+        if [ ! -f /usr/share/doc/jenkins/changelog.gz ]; then
+            mv $tmpdir/usr/share/doc/jenkins/changelog.gz /usr/share/doc/jenkins/
+        fi
+        rm -rf $tmpdir
+    fi
     # Use dpkg verify to check contents of the jenkins package
     echo
     echo "===== Verifying jenkins package with dpkg"
