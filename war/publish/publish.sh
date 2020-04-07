@@ -13,7 +13,7 @@ SSH_OPTS=($SSH_OPTS)
 function generateSite(){
 
   "$BASE/bin/indexGenerator.py" \
-    --distribution debian \
+    --distribution war \
     --binaryDir "$WARDIR" \
     --targetDir "$WAR_WEBDIR"
 
