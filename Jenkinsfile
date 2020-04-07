@@ -3,7 +3,7 @@
 //
 pipeline {
     agent {
-        label 'docker && !cloud' // Keep all builds inside markwaite.net to check 2.223
+        label 'docker'
     }
     stages {
         stage("Test") {
