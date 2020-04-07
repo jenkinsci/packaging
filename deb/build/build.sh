@@ -22,10 +22,17 @@ sed -i.bak -e 's/^\s*$/./' -e 's/^/ /' $DESCRIPTION_FILE
 # Rewrite the file
 mv "$DESCRIPTION_FILE.bak" "$DESCRIPTION_FILE"
 
+# Define changelog link for weekly releases
+CHANGELOG_LINK=https://jenkins.io/changelog/#v${VERSION}
+if [[ $VERSION =~ [0-9]+[.][0-9]+[.][0-9]+ ]]; then
+  # Link the LTS version to the LTS changelog
+  CHANGELOG_LINK=https://jenkins.io/changelog-stable/#v${VERSION}
+fi
+
 cat > $D/debian/changelog << EOF
 ${ARTIFACTNAME} ($VERSION${DEB_REVISION}) unstable; urgency=low
 
-  * Packaged ${VERSION}
+  * Packaged ${VERSION} ${CHANGELOG_LINK}
 
  -- ${AUTHOR}  $(date -R)
 
