@@ -13,6 +13,7 @@ else
 fi
 
 echo "Packaging directory is: $PACKAGING_DIR"
+docker run --rm -v "$PACKAGING_DIR":/tmp/packaging sudo-centos:7         /bin/bash /tmp/packaging/installtests/test_helper.sh /tmp/packaging/installtests/centos.sh
 docker run --rm -v "$PACKAGING_DIR":/tmp/packaging sudo-debian:oldstable /bin/bash /tmp/packaging/installtests/test_helper.sh /tmp/packaging/installtests/debian.sh /tmp/packaging/installtests/service-check.sh
 docker run --rm -v "$PACKAGING_DIR":/tmp/packaging sudo-debian:stable    /bin/bash /tmp/packaging/installtests/test_helper.sh /tmp/packaging/installtests/debian.sh /tmp/packaging/installtests/service-check.sh
 docker run --rm -v "$PACKAGING_DIR":/tmp/packaging sudo-debian:testing   /bin/bash /tmp/packaging/installtests/test_helper.sh /tmp/packaging/installtests/debian.sh /tmp/packaging/installtests/service-check.sh

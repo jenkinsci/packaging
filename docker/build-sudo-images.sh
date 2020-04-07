@@ -4,6 +4,7 @@
 # Note: this modifies the original Dockerfiles so the current user can sudo
 
 cd "$(dirname "$0")"
+docker build                                      -t sudo-centos:7 sudo-centos7
 docker build --build-arg USER_ID=$(id -u ${USER}) -t sudo-debian:stable sudo-debian
 docker build --build-arg USER_ID=$(id -u ${USER}) -t sudo-debian:oldstable sudo-debian-oldstable
 docker build --build-arg USER_ID=$(id -u ${USER}) -t sudo-debian:testing sudo-debian-testing

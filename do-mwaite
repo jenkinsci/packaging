@@ -7,6 +7,7 @@ declare -A PKG
 if hostname --all-ip-addresses | grep -q -F 172.16.16; then
 
   # markwaite.net
+  PKG[centos]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins-${VERSION}-1.1.noarch.rpm
   PKG[debian]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins_${VERSION}_all.deb
   PKG[msi]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins-${VERSION}.zip
   PKG[suse]=https://home.markwaite.net/~mwaite/jenkins-builds/${VERSION}/jenkins-${VERSION}-1.2.noarch.rpm
@@ -15,6 +16,7 @@ if hostname --all-ip-addresses | grep -q -F 172.16.16; then
 else
 
   # everywhere else
+  PKG[centos]=https://pkg.jenkins.io/redhat/jenkins-${VERSION}-1.1.noarch.rpm
   PKG[debian]=https://pkg.jenkins.io/debian/binary/jenkins_${VERSION}_all.deb
   PKG[msi]=http://mirrors.jenkins-ci.org/windows/jenkins-${VERSION}.zip
   PKG[suse]=https://pkg.jenkins.io/opensuse/jenkins-${VERSION}-1.2.noarch.rpm
@@ -25,6 +27,11 @@ fi
 [ -d results ] && rm -rf results
 
 [ -d target ] || mkdir target
+
+[ -d target/centos ] || mkdir target/centos
+if ! ls target/centos/*.rpm > /dev/null 2>&1; then
+    ( cd target/centos && wget -q ${PKG[centos]} )
+fi
 
 [ -d target/debian ] || mkdir target/debian
 if ! ls target/debian/*.deb > /dev/null 2>&1; then
