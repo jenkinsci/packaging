@@ -27,6 +27,10 @@ OS="${ID}.${VERSION_ID}" # debian.10 or ubuntu.19.10 so that JUnit package namin
 install_failure_message="dpkg install failed on $JENKINS_DEB_INSTALLER_FILE file"
 
 docker_dpkg_install() {
+    # Installation within Docker
+    # Update with latest list of available packages
+    apt-get -q update
+
     # Assume packaging is already built and is available in $JENKINS_DEB_INSTALLER_FILE
     # Below will fail because missing dependencies, which apt-get will install
     echo
