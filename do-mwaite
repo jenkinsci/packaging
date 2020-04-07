@@ -31,6 +31,9 @@ fi
 
 [ -d results ] && rm -rf results
 
+# Temporarily discard target completely so we can test 2.223 without waiting for cache expiration
+rm -rf target
+
 # Once a day refresh the cache of target files
 [ -d target ] && find target -mindepth 1 -mtime +1 -delete
 
