@@ -26,31 +26,34 @@ fi
 
 [ -d results ] && rm -rf results
 
+# Once a day refresh the cache of target files
+find target -mindepth 1 -mtime +1 -delete
+
 [ -d target ] || mkdir target
 
 [ -d target/centos ] || mkdir target/centos
 if ! ls target/centos/*.rpm > /dev/null 2>&1; then
-    ( cd target/centos && wget -q ${PKG[centos]} )
+    ( cd target/centos && wget --no-use-server-timestamps -q ${PKG[centos]} )
 fi
 
 [ -d target/debian ] || mkdir target/debian
 if ! ls target/debian/*.deb > /dev/null 2>&1; then
-    ( cd target/debian && wget -q ${PKG[debian]} )
+    ( cd target/debian && wget --no-use-server-timestamps -q ${PKG[debian]} )
 fi
 
 [ -d target/msi ] || mkdir target/msi
 if ! ls target/msi/*.msi > /dev/null 2>&1; then
-    ( cd target/msi && wget -q ${PKG[msi]} && unzip *.zip )
+    ( cd target/msi && wget --no-use-server-timestamps -q ${PKG[msi]} && unzip *.zip && touch *.msi )
 fi
 
 [ -d target/suse ] || mkdir target/suse
 if ! ls target/suse/*.rpm > /dev/null 2>&1; then
-    ( cd target/suse && wget -q ${PKG[suse]} )
+    ( cd target/suse && wget --no-use-server-timestamps -q ${PKG[suse]} )
 fi
 
 [ -d target/war ] || mkdir target/war
 if ! ls target/war/*.war > /dev/null 2>&1; then
-    ( cd target/war && wget -q ${PKG[war]} )
+    ( cd target/war && wget --no-use-server-timestamps -q ${PKG[war]} )
 fi
 
 WAR=target/war/*.war MSI=target/msi/*.msi make docker.test
