@@ -25,7 +25,7 @@ mv "$DESCRIPTION_FILE.bak" "$DESCRIPTION_FILE"
 cat > $D/debian/changelog << EOF
 ${ARTIFACTNAME} ($VERSION${DEB_REVISION}) unstable; urgency=low
 
-  * Packaged ${VERSION}
+  * Packaged ${VERSION} https://jenkins.io/changelog${RELEASELINE}/#v${VERSION}
 
  -- ${AUTHOR}  $(date -R)
 
