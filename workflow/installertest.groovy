@@ -31,6 +31,11 @@ private List platformScripts(String platform) {
           "installers/deb/*.deb"
       ],
       [
+          "rpm",
+          "centos.sh",
+          "installers/rpm/*.rpm"
+      ],
+      [
           "suse",
           "suse.sh",
           "installers/suse/*.rpm"
@@ -87,6 +92,12 @@ private def osesToTest(String category) {
           "debian-testing",
           "sudo-debian:testing",
           "deb",
+          "extended"
+      ],
+      [
+          "centos-7",
+          "sudo-centos:7",
+          "rpm",
           "extended"
       ],
       [
