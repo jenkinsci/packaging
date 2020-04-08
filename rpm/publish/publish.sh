@@ -58,8 +58,20 @@ function init(){
 
 
 function uploadPackage(){
-  rsync -avz "$RPM" "$RPMDIR/"
-  rsync -avz -e "ssh ${SSH_OPTS[*]}"  "$RPM" "$PKGSERVER:${RPMDIR// /\\ }/"
+  # Local
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    "$RPM" "$RPMDIR/"
+
+  # Remote 
+  rsync \
+    -avz \
+    -e "ssh ${SSH_OPTS[*]}" \
+    --ignore-existing \
+    --progress \
+    "$RPM" "$PKGSERVER:${RPMDIR// /\\ }/"
 }
 
 function show(){
@@ -75,8 +87,20 @@ function show(){
 
 function uploadSite(){
   pushd "$D"
-    rsync -avz --exclude RPMS . "$RPM_WEBDIR/"
-    rsync -avz -e "ssh ${SSH_OPTS[*]}" --exclude RPMS . "$PKGSERVER:${RPM_WEBDIR// /\\ }"
+    rsync \
+      -avz \
+      --exclude RPMS \
+      --ignore-existing \
+      --progress \
+      . "$RPM_WEBDIR/"
+
+    rsync \
+      -avz \
+      -e "ssh ${SSH_OPTS[*]}" \
+      --exclude RPMS \
+      --ignore-existing \
+      --progress \
+      . "$PKGSERVER:${RPM_WEBDIR// /\\ }/"
   popd
 }
 

@@ -79,8 +79,18 @@ function init(){
 
 function uploadPackage(){
   # Upload Debian Package
-  rsync -avz "$DEB" "$DEBDIR/"
-  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${DEB}" "$PKGSERVER:${DEBDIR// /\\ }"
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    "$DEB" "$DEBDIR/"
+
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    -e "ssh ${SSH_OPTS[*]}" \
+    "${DEB}" "$PKGSERVER:${DEBDIR// /\\ }"
 }
 
 function uploadSite(){
@@ -92,8 +102,18 @@ function uploadSite(){
     "$D"/binary/Contents* \
     "$D"/contents/binary
 
-  rsync -avz "$D/contents/" "$DEB_WEBDIR/"
-  rsync -avz -e "ssh ${SSH_OPTS[*]}" "$D/contents/" "$PKGSERVER:${DEB_WEBDIR// /\\ }"
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    "$D/contents/" "$DEB_WEBDIR/"
+
+  rsync \
+    -avz \
+    -e "ssh ${SSH_OPTS[*]}" \
+    --ignore-existing \
+    --progress \
+    "$D/contents/" "$PKGSERVER:${DEB_WEBDIR// /\\ }/"
 }
 
 function show(){

@@ -38,16 +38,40 @@ function uploadPackage(){
   cat "${MSI_SHASUM}"
 
   # Local
-  rsync -avz "${MSI}" "${MSIDIR}/${VERSION}/"
-  rsync -avz "${MSI_SHASUM}" "${MSIDIR}/${VERSION}/"
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    "${MSI}" "${MSIDIR}/${VERSION}/"
+
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    "${MSI_SHASUM}" "${MSIDIR}/${VERSION}/"
 
   # Remote
-  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${MSI}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
-  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${MSI_SHASUM}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    -e "ssh ${SSH_OPTS[*]}" \
+    "${MSI}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    -e "ssh ${SSH_OPTS[*]}" \
+    "${MSI_SHASUM}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
 }
 
 function uploadSite(){
-  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${MSI_WEBDIR}/" "$PKGSERVER:${MSI_WEBDIR// /\\ }/"
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    -e "ssh ${SSH_OPTS[*]}" \
+    "${MSI_WEBDIR}/" "$PKGSERVER:${MSI_WEBDIR// /\\ }/"
 
 }
 
@@ -56,7 +80,7 @@ function show(){
   echo "MSI: $MSI"
   echo "MSIDIR: $MSIDIR"
   echo "MSI_WEBDIR: $MSI_WEBDIR"
-  echo "SSH_OPTS: $SSH_OPTS[*]"
+  echo "SSH_OPTS: ${SSH_OPTS[*]}"
   echo "PKGSERVER: $PKGSERVER"
   echo "---"
 }
