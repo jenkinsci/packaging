@@ -17,14 +17,6 @@ fi
 
 OS="${ID}.${VERSION_ID}" # debian.10 or ubuntu.19.10 so that JUnit package naming can be used
 
-signed_war_file_verification_failed="signing verification failed on $JENKINS_WAR_FILE"
-
-verify_signed_war_file() {
-
-    jarsigner -verify -signedjar $JENKINS_WAR_FILE $JENKINS_WAR_FILE || echo "$signed_war_file_verification_failed"
-
-}
-
 juLog -error="$signed_war_file_verification_failed" -suite="${OS}.signing" -name="VerifySignedWarFile" verify_signed_war_file
 
 strict_signed_war_file_verification_failed="strict signing verification failed on $JENKINS_WAR_FILE"
