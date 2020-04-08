@@ -31,15 +31,18 @@ function init(){
 
 function uploadPackage(){
 
-  sha256sum "${MSI}" | sed "s, .*, ${ARTIFACTNAME}.war," > "${MSI_SHASUM}"
+  cp ${ARTIFACTNAME}.msi ${MSI}
+
+  sha256sum "${MSI}" > "${MSI_SHASUM}"
+
   cat "${MSI_SHASUM}"
 
   # Local
-  rsync -avz "${MSI}" "${MSIDIR}/${VERSION}/${ARTIFACTNAME}.war"
+  rsync -avz "${MSI}" "${MSIDIR}/${VERSION}/"
   rsync -avz "${MSI_SHASUM}" "${MSIDIR}/${VERSION}/"
 
   # Remote
-  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${MSI}" "$PKGSERVER:${MSIDIR}/${VERSION}/${ARTIFACTNAME}.war"
+  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${MSI}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
   rsync -avz -e "ssh ${SSH_OPTS[*]}" "${MSI_SHASUM}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
 }
 
