@@ -7,10 +7,10 @@
 set -x
 
 # Use weekly 2.230
-VERSION=2.230
+# VERSION=2.230
 
 # Use pre-release prototype 2.225 from 8 Apr 2020
-# VERSION=2.225
+VERSION=2.225
 
 declare -A PKG
 
