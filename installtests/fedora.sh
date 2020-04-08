@@ -22,28 +22,28 @@ OS="${ID}.${VERSION_ID}" # fedora.31 so that JUnit package naming can be used
 
 install_failure_msg="dnf install failed on $JENKINS_FEDORA_INSTALLER_FILE"
 
-centos_dnf_install() {
+fedora_dnf_install() {
     dnf install -y $JENKINS_FEDORA_INSTALLER_FILE || echo $install_failure_msg
 }
 
-juLog -error=dnf.install.failed.on -suite="${OS}.install" -name="DockerInstall" centos_dnf_install
+juLog -error="$install_failure_msg" -suite="${OS}.install" -name="DockerInstall" fedora_dnf_install
 
 #######################################################################
 
 info_failure_message="dnf info check failed on jenkins package"
 
-centos_dnf_info_check() {
+fedora_dnf_info_check() {
     dnf info jenkins | grep 'Jenkins is an open source automation server' || echo $info_failure_message
 }
 
-juLog -error=dnf.info.check.failed.on.jenkins.package -suite="${OS}.install" -name="DockerInfoCheck" centos_dnf_info_check
+juLog -error="$info_failure_message" -suite="${OS}.install" -name="DockerInfoCheck" fedora_dnf_info_check
 
 #######################################################################
 
 signing_check_failure_message="rpm signing check failed on jenkins package"
 
-centos_rpm_signing_check() {
+fedora_rpm_signing_check() {
     rpm --checksig $JENKINS_FEDORA_INSTALLER_FILE || echo $signing_check_failure_message
 }
 
-juLog -error=rpm.signing.check.failed.on.jenkins.package -suite="${OS}.install" -name="DockerSigningCheck" centos_rpm_signing_check
+juLog -error="$signing_check_failure_message" -suite="${OS}.install" -name="DockerSigningCheck" fedora_rpm_signing_check
