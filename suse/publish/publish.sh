@@ -46,6 +46,15 @@ function init(){
   mkdir -p $D/RPMS/noarch $D/repodata
 }
 
+function isPackagePublished(){
+
+  if ssh "${SSH_OPTS[@]}" "$PKGSERVER" "test -e ${SUSEDIR}/$(basename $SUSE)"; then
+    echo "File already published, nothing else todo"
+    exit 0
+
+  fi
+
+}
 
 function show(){
   echo "Parameters:"
@@ -126,6 +135,7 @@ function uploadSite(){
 }
 
 show
+isPackagePublished
 init
 generateSite
 uploadPackage

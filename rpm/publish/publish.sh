@@ -47,6 +47,15 @@ EOF
 
 }
 
+function isPackagePublished(){
+
+  if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${RPMDIR}/$(basename "$RPM")"; then
+    echo "File already published, nothing else todo"
+    exit 0
+
+  fi
+}
+
 function init(){
   mkdir -p "$D/RPMS/noarch"
 
@@ -105,6 +114,7 @@ function uploadSite(){
 }
 
 show
+isPackagePublished
 init
 generateSite
 uploadPackage

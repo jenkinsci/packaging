@@ -29,6 +29,15 @@ function init(){
 
 }
 
+function isPackagePublished(){
+
+  if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${MSIDIR}/${VERSION}/$(basename "$MSI")"; then
+    echo "File already published, nothing else todo"
+    exit 0
+
+  fi
+}
+
 function uploadPackage(){
 
   cp "${ARTIFACTNAME}-${VERSION}.msi" "${MSI}"
@@ -86,6 +95,7 @@ function show(){
 }
 
 show
+isPackagePublished
 init
 generateSite
 uploadPackage

@@ -29,6 +29,15 @@ function init(){
 
 }
 
+function isPackagePublished(){
+
+  if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"; then
+    echo "File already published, nothing else todo"
+    exit 0
+
+  fi
+}
+
 function uploadPackage(){
 
   sha256sum "${WAR}" | sed "s, .*, ${ARTIFACTNAME}.war," > "${WAR_SHASUM}"
@@ -84,6 +93,7 @@ function show(){
 }
 
 show
+isPackagePublished
 init
 generateSite
 uploadPackage

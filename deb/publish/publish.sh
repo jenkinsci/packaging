@@ -77,6 +77,16 @@ function init(){
   ssh "${SSH_OPTS[@]}" "$PKGSERVER" mkdir -p "$DEBDIR/"
 }
 
+function isPackagePublished(){
+
+  if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${DEBDIR}/$(basename "$DEB")"; then
+    echo "File already published, nothing else todo"
+    exit 0
+
+  fi
+
+}
+
 function uploadPackage(){
   # Upload Debian Package
   rsync \
@@ -145,6 +155,7 @@ function signSite(){
 }
 
 show
+isPackagePublished
 init
 generateSite
 signSite
