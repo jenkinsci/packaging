@@ -30,8 +30,6 @@ test: deb.test rpm.test suse.test
 docker.images:
 	bash ./docker/build-sudo-images.sh
 
-# See ./docker/README.md for how to use the docker containers to run a build in docker
-
 docker.test: docker.images
 	bash ./installtests/run_tests.sh
 
