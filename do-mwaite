@@ -33,6 +33,9 @@ fi
 
 [ -d results ] && rm -rf results
 
+# Fresh start with new target files
+rm -rf target
+
 # Once a day refresh the cache of target files
 [ -d target ] && find target -mindepth 1 -mtime +1 -delete
 
