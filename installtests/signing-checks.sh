@@ -29,7 +29,7 @@ verify_strict_signed_war_file() {
 
 juLog -error="$strict_signed_war_file_verification_failed" -suite="${OS}.signing" -name="StrictVerifySignedWarFile" verify_strict_signed_war_file
 
-if [[ "$CHECK_STRICT_CERTS" == "true" ]]; then
+if [[ "$CHECK_CERTS" == "true" ]]; then
     strict_certs_signed_war_file_verification_failed="strict signing verification with certs failed on $JENKINS_WAR_FILE"
 
     verify_strict_certs_signed_war_file() {

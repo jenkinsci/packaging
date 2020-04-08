@@ -12,13 +12,18 @@ else
 fi
 
 echo "Packaging directory is: $PKG_SRC_DIR"
+
 PKG_TMP_DIR=/tmp/packaging
 TEST_DIR=$PKG_TMP_DIR/installtests
-docker run --rm                               -v "$PKG_SRC_DIR":$PKG_TMP_DIR sudo-centos:7         /bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/centos.sh
-docker run --rm                               -v "$PKG_SRC_DIR":$PKG_TMP_DIR sudo-debian:oldstable /bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/debian.sh $TEST_DIR/service-check.sh
-docker run --rm --env CHECK_STRICT_CERTS=true -v "$PKG_SRC_DIR":$PKG_TMP_DIR sudo-debian:stable    /bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/debian.sh $TEST_DIR/service-check.sh
-docker run --rm                               -v "$PKG_SRC_DIR":$PKG_TMP_DIR sudo-debian:testing   /bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/debian.sh $TEST_DIR/service-check.sh
-docker run --rm                               -v "$PKG_SRC_DIR":$PKG_TMP_DIR sudo-opensuse:15.1    /bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/suse.sh
-docker run --rm                               -v "$PKG_SRC_DIR":$PKG_TMP_DIR sudo-ubuntu:16.04     /bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/debian.sh $TEST_DIR/service-check.sh
-docker run --rm                               -v "$PKG_SRC_DIR":$PKG_TMP_DIR sudo-ubuntu:18.04     /bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/debian.sh $TEST_DIR/service-check.sh
-docker run --rm                               -v "$PKG_SRC_DIR":$PKG_TMP_DIR sudo-ubuntu:19.10     /bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/debian.sh $TEST_DIR/service-check.sh
+TEST_INSTALL_CENTOS="/bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/centos.sh"
+TEST_INSTALL_SUSE="/bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/suse.sh"
+TEST_INSTALL_DEBIAN_AND_SERVICES="/bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/debian.sh $TEST_DIR/service-check.sh"
+
+docker run --rm -v "$PKG_SRC_DIR":$PKG_TMP_DIR                        sudo-centos:7         $TEST_INSTALL_CENTOS
+docker run --rm -v "$PKG_SRC_DIR":$PKG_TMP_DIR                        sudo-debian:oldstable $TEST_INSTALL_DEBIAN_AND_SERVICES
+docker run --rm -v "$PKG_SRC_DIR":$PKG_TMP_DIR --env CHECK_CERTS=true sudo-debian:stable    $TEST_INSTALL_DEBIAN_AND_SERVICES
+docker run --rm -v "$PKG_SRC_DIR":$PKG_TMP_DIR                        sudo-debian:testing   $TEST_INSTALL_DEBIAN_AND_SERVICES
+docker run --rm -v "$PKG_SRC_DIR":$PKG_TMP_DIR                        sudo-opensuse:15.1    $TEST_INSTALL_SUSE
+docker run --rm -v "$PKG_SRC_DIR":$PKG_TMP_DIR                        sudo-ubuntu:16.04     $TEST_INSTALL_DEBIAN_AND_SERVICES
+docker run --rm -v "$PKG_SRC_DIR":$PKG_TMP_DIR                        sudo-ubuntu:18.04     $TEST_INSTALL_DEBIAN_AND_SERVICES
+docker run --rm -v "$PKG_SRC_DIR":$PKG_TMP_DIR                        sudo-ubuntu:19.10     $TEST_INSTALL_DEBIAN_AND_SERVICES
