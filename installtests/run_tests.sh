@@ -17,8 +17,8 @@ PKG_TMP_DIR=/tmp/packaging
 TEST_DIR=$PKG_TMP_DIR/installtests
 
 TEST_INSTALL_CENTOS="/bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/centos.sh"
-TEST_INSTALL_FEDORA="/bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/fedora.sh"
 TEST_INSTALL_DEBIAN_AND_SERVICES="/bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/debian.sh $TEST_DIR/service-check.sh"
+TEST_INSTALL_FEDORA="/bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/fedora.sh"
 TEST_INSTALL_SUSE="/bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/suse.sh"
 
 docker run --rm -v "$PKG_SRC_DIR":$PKG_TMP_DIR                        sudo-fedora:31        $TEST_INSTALL_FEDORA
