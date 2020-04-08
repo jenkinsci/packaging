@@ -30,16 +30,6 @@ juLog -error=dnf.install.failed.on -suite="${OS}.install" -name="DockerInstall" 
 
 #######################################################################
 
-verify_failure_message="dnf verify check failed on jenkins verify"
-
-centos_dnf_verify_check() {
-    dnf verify jenkins || echo $verify_failure_message
-}
-
-juLog -error=dnf.verify.check.failed.on.jenkins.verify -suite="${OS}.install" -name="DockerPackageCheck" centos_dnf_verify_check
-
-#######################################################################
-
 info_failure_message="dnf info check failed on jenkins package"
 
 centos_dnf_info_check() {
