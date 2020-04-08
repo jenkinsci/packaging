@@ -31,7 +31,7 @@ function init(){
 
 function uploadPackage(){
 
-  cp ${ARTIFACTNAME}.msi ${MSI}
+  cp "${ARTIFACTNAME}-${VERSION}.msi" "${MSI}"
 
   sha256sum "${MSI}" > "${MSI_SHASUM}"
 
