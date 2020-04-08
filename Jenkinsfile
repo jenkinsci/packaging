@@ -3,7 +3,7 @@
 //
 pipeline {
     agent {
-        label 'docker && !cloud'
+        label 'docker'
     }
     stages {
         stage("Test") {
