@@ -6,8 +6,8 @@
 
 set -x
 
-# Use a prototype build from 2020-04-07
-VERSION=2.223
+# Use weekly 2.230
+VERSION=2.230
 
 declare -A PKG
 
