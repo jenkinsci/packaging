@@ -70,8 +70,7 @@ ${SUSE}: ${WAR}  $(shell find suse/build -type f)
 suse.publish: ${SUSE} $(shell find suse/publish -type f)
 	./suse/publish/publish.sh
 
-msi: ${MSI}
-msi.publish: ${MSI}
+msi.publish:
 	./msi/publish/publish.sh
 
 ${CLI}:
