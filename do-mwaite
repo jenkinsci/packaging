@@ -9,6 +9,9 @@ set -x
 # Use weekly 2.230
 VERSION=2.230
 
+# Use pre-release prototype 2.223 from 8 Apr 2020
+VERSION=2.223
+
 declare -A PKG
 
 if hostname --all-ip-addresses | grep -q -F 172.16.16; then
