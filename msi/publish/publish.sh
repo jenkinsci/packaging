@@ -47,7 +47,7 @@ function uploadPackage(){
 }
 
 function uploadSite(){
-  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${MSI_WEBDIR}" "$PKGSERVER:${MSI_WEBDIR// /\\ }"
+  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${MSI_WEBDIR}/" "$PKGSERVER:${MSI_WEBDIR// /\\ }/"
 
 }
 
