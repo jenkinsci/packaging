@@ -1,9 +1,6 @@
 <?xml version="1.0"?>
 
 <!--
-  This file gets processed twice. Once by shell on the release machine, then
-  once more by WiX toolkit on Windows build box.
-  
   WiX variables are supposed to look like <DOLLAR>(var.VARNAME), which means
   it has to be written like <BACKSLASH><DOLLAR>(var.VARNAME) to survive the first processing
 -->
@@ -17,11 +14,11 @@
       Comments='$(var.ProductSummary)' InstallScope="perMachine"
       InstallerVersion='200' Compressed='yes' SummaryCodepage='1252' />
     <Media Id='1' Cabinet='$(var.ArtifactName).cab' EmbedCab='yes'/>
-      
+
     <Icon Id="installer.ico" SourceFile="$(var.InstallerIco)" />
     <Binary Id="Cryptography" SourceFile="msiext-1.5\CustomActions\Cryptography.dll" />
-      
-      
+
+
     <!-- Save the command line value INSTALLDIR and restore it later in the sequence or it will be overwritten by the value saved to the registry during an upgrade -->
     <!-- http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/ -->
     <CustomAction Id='SaveCmdLineValueINSTALLDIR' Property='CMDLINE_INSTALLDIR' Value='[INSTALLDIR]' Execute='firstSequence' />
@@ -55,7 +52,7 @@
           CMDLINE_PORT
         </Custom>
     </InstallExecuteSequence>
-      
+
     <!-- Save the command line value JAVA_HOME and restore it later in the sequence or it will be overwritten by the value saved to the registry during an upgrade -->
     <!-- http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/ -->
     <CustomAction Id='SaveCmdLineValueJAVA_HOME' Property='CMDLINE_JAVA_HOME' Value='[JAVA_HOME]' Execute='firstSequence' />
@@ -72,7 +69,7 @@
           CMDLINE_JAVA_HOME
         </Custom>
     </InstallExecuteSequence>
-      
+
     <!-- Save the command line value SERVICE_USERNAME and restore it later in the sequence or it will be overwritten by the value saved to the registry during an upgrade -->
     <!-- http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/ -->
     <CustomAction Id='SaveCmdLineValueSERVICE_USERNAME' Property='CMDLINE_SERVICE_USERNAME' Value='[SERVICE_USERNAME]' Execute='firstSequence' />
@@ -89,7 +86,7 @@
           CMDLINE_SERVICE_USERNAME
         </Custom>
     </InstallExecuteSequence>
-    
+
     <!-- Save the command line value SERVICE_PASSWORD and restore it later in the sequence or it will be overwritten by the value saved to the registry during an upgrade -->
     <!-- http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/ -->
     <CustomAction Id='SaveCmdLineValueSERVICE_PASSWORD' Property='CMDLINE_SERVICE_PASSWORD' Value='[SERVICE_PASSWORD]' Execute='firstSequence' HideTarget='yes'/>
@@ -106,25 +103,25 @@
           CMDLINE_SERVICE_PASSWORD
         </Custom>
     </InstallExecuteSequence>
- 
+
     <!-- Determine the directory of a previous installation (if one exists). If not INSTALLDIR stays empty -->
     <Property Id="INSTALLDIR">
         <RegistrySearch Id="DetermineInstallLocation" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="InstallLocation" Win64="yes" />
     </Property>
-    
+
     <!-- Determine the port number of a previous installation -->
     <Property Id="PORTNUMBER">
         <RegistrySearch Id="DeterminePort" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="Port" Win64="yes" />
     </Property>
     <!-- Set default value if registry search comes up empty -->
     <SetProperty After='AppSearch' Id='PORTNUMBER' Value='8080'>NOT PORTNUMBER</SetProperty>
-    
+
     <!-- Determine the JENKINS_ROOT of a previous installation -->
     <Property Id="JENKINS_ROOT">
       <RegistrySearch Id="DetermineJenkinsRoot" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="JenkinsRoot" Win64="yes" />
     </Property>
     <SetProperty After='AppSearch' Id='JENKINS_ROOT' Value='%LocalAppData%\Jenkins'>NOT JENKINS_ROOT</SetProperty>
-    
+
     <Property Id="SERVICE_USERNAME">
       <RegistrySearch Id="DetermineServiceUsername" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="SU" Win64="yes" />
     </Property>
@@ -132,18 +129,18 @@
     <Property Id="SERVICE_PASSWORD_ENC">
       <RegistrySearch Id="DetermineServicePassword" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="SP" Win64="yes" />
     </Property>
-    
+
     <Property Id="CRYPTUNPROTECT_FLAGS" Value="CRYPTPROTECT_LOCAL_MACHINE|CRYPTPROTECT_UI_FORBIDDEN" />
     <CustomAction Id="SetEncryptedServicePASSWORD" Property="CRYPTUNPROTECT_DATA" Value="[SERVICE_PASSWORD_ENC]" />
     <CustomAction Id="DecryptServicePassword" BinaryKey="Cryptography" DllEntry="CryptUnprotectDataHex" Execute="immediate" />
     <CustomAction Id="SetServiceDecryptedPASSWORD" Property="SERVICE_PASSWORD" Value="[CRYPTUNPROTECT_RESULT]" />
-    
+
     <Property Id="CRYPTPROTECT_FLAGS" Value="CRYPTPROTECT_LOCAL_MACHINE|CRYPTPROTECT_UI_FORBIDDEN" />
     <CustomAction Id="EncryptServicePassword" BinaryKey="Cryptography" DllEntry="CryptProtectDataHex" Execute="immediate" />
     <CustomAction Id="SetServiceEncryptedPASSWORD" Property="SERVICE_PASSWORD_ENC" Value="[CRYPTPROTECT_RESULT]" />
-    
+
     <!-- These lock down the permissions for the Jenkins directory (where it's installed) so that normal users can't mess with the files -->
-    
+
     <!--
         S-1-5-19     LocalService
         S-1-5-32-544 Local Administrators group
@@ -174,14 +171,14 @@
         BinaryKey="WixCA"
         DllEntry="WixQuietExec64"
         Execute="deferred"
-        Return="check" 
+        Return="check"
         Impersonate="no" />
 
     <!-- Find a Java 8 JRE/JDK installation (by default) -->
     <Property Id="JDK11_VERSION">
       <RegistrySearch Id="JDK11_VERSION_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK" Name="CurrentVersion" Type="raw" Win64="yes" />
     </Property>
-    
+
     <!-- these are in reverse preference order...e.g., we look for JDK11, but if JRE8 is available, we use that unless JDK8 is available -->
     <Property Id="JAVA_HOME">
       <RegistrySearch Id="JDK11_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK\[JDK11_VERSION]" Name="JavaHome" Type="raw" Win64="yes" />
@@ -192,7 +189,7 @@
     <Property Id="ARPPRODUCTICON" Value="installer.ico" />
     <Property Id="ARPNOREPAIR" Value="yes" Secure="yes" />      <!-- Remove repair -->
     <Property Id="ARPNOMODIFY" Value="yes" Secure="yes" />      <!-- Remove modify -->
-    
+
     <Property Id="INSTALLLEVEL" Value="1" />
 
     <Directory Id='TARGETDIR' Name='SourceDir'>
@@ -203,7 +200,7 @@
             <File Id="JenkinsXml" Name="jenkins.xml" Source='tmp/jenkins.xml' DiskId='1' />
             <File Name="jenkins.exe.config" Source='jenkins.exe.config' DiskId='1' />
             <File Name="$(var.ArtifactName).war" Source='$(var.WAR)' DiskId='1' />
-            
+
             <!-- Update the XML file with the values selected during install -->
             <util:XmlFile Id='JenkinsXmlJenkinsData' Action='setValue' ElementPath='//service/env/@value' File='[#JenkinsXml]' Value='[JENKINS_ROOT].jenkins' Sequence="1"/>
             <util:XmlFile Id='JenkinsXmlExecutable' Action='setValue' ElementPath='//service/executable' File='[#JenkinsXml]' Value='[JAVA_HOME]\bin\java.exe' Sequence="1"/>
@@ -218,7 +215,7 @@
                   Description="$(var.ProductSummary)"
                   Account="[SERVICE_USERNAME]"
                   Password="[SERVICE_PASSWORD]" />
-              <ServiceControl Id="Control$(var.ArtifactName)Service" Name="$(var.ArtifactName)" Start="install" Stop="both" Wait="yes" Remove="uninstall"/>
+              <ServiceControl Id="Control$(var.ArtifactName)Service" Name="$(var.ArtifactName)" Start="install" Stop="both" Wait="yes" Remove="uninstall" />
           </Component>
 
           <!-- Registry entries -->
@@ -234,7 +231,7 @@
                 <RegistryValue Name="JavaHome" Value="[JAVA_HOME]" Type="string" />
               </RegistryKey>
           </Component>
-          
+
           <Component Id="FirewallException" Guid="">
             <CreateFolder/>
             <fire:FirewallException Id="FwEx" Program="[JAVA_HOME]\bin\java.exe" Port="[PORTNUMBER]" Name="Jenkins" Scope="any" IgnoreFailure="yes" />
@@ -272,7 +269,7 @@
         Set fsObj = Nothing
       ]]>
     </CustomAction>
-    
+
     <CustomAction Id="ValidateJavaHome" Script="vbscript">
       <![CDATA[
       On Error Resume Next
@@ -292,14 +289,14 @@
       Set fsObj = Nothing
       ]]>
     </CustomAction>
-    
+
     <CustomAction Id="StripJenkinsDir" Script="vbscript">
       <![CDATA[
       On Error Resume Next
       Err.Clear
       value = Session.Property("JENKINSDIR")
       If Right(value, 1) = "\" Then
-        value = Left(value, Len(value) - 1) 
+        value = Left(value, Len(value) - 1)
       End If
       Session.Property("JENKINSDIR_STRIPPED") = value
       ]]>
@@ -328,19 +325,19 @@
       -->
       <Custom Action="BackupJenkinsXmlFile" After='InstallInitialize' />
       <RemoveExistingProducts After="BackupJenkinsXmlFile"/>
-      
+
       <Custom Action="SetEncryptedServicePASSWORD" Before="InstallInitialize">SERVICE_PASSWORD_ENC</Custom>
       <Custom Action="DecryptServicePassword" After="SetEncryptedServicePASSWORD">SERVICE_PASSWORD_ENC</Custom>
       <Custom Action="SetServiceDecryptedPASSWORD" After="DecryptServicePassword">SERVICE_PASSWORD_ENC</Custom>
-      
+
       <Custom Action="EncryptServicePassword" Before="InstallFiles">SERVICE_PASSWORD</Custom>
       <Custom Action="SetServiceEncryptedPASSWORD" After="EncryptServicePassword">SERVICE_PASSWORD</Custom>
-      
+
       <Custom Action="StripJenkinsDir" After="InstallFiles">NOT REMOVE</Custom>
       <Custom Action="SetDirectoryPermissionsLocalSystem" After="StripJenkinsDir"><![CDATA[SERVICE_LOGON_TYPE="ServiceLocalSystem" AND NOT REMOVE]]></Custom>
       <Custom Action="SetDirectoryPermissionsServiceAccount" After="StripJenkinsDir"><![CDATA[SERVICE_LOGON_TYPE<>"ServiceLocalSystem" AND NOT REMOVE]]></Custom>
     </InstallExecuteSequence>
-    
+
     <Feature Id='Complete' Level='1' Title='Jenkins' TypicalDefault="install" InstallDefault="local" Absent="disallow" Display="expand" Description='The required Jenkins components'>
       <ComponentRef Id='Main' />
       <ComponentRef Id='SettingsRegistryEntries' />
@@ -348,20 +345,20 @@
         <ComponentRef Id='FirewallException' />
       </Feature>
     </Feature>
-    
+
     <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
     <WixVariable Id="WixUIDialogBmp" Value="$(var.DialogBmp)" />
     <WixVariable Id="WixUIBannerBmp" Value="$(var.BannerBmp)" />
 
     <UI>
       <UIRef Id="WixUI_Common" />
-      
+
       <Property Id="WixUI_Mode" Value="FeatureTree" />
 
       <Dialog Id="JavaHomeDlg" Width="370" Height="270" Title="!(loc.JavaHomeDlgTitle)">
           <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)">
             <Publish Event="DoAction" Value="ValidateJavaHome" Order="1">1</Publish>
-            
+
             <!-- Spawn the error dialog if java.exe can't be found. -->
             <Publish Property="ERROR_TITLE" Value="!(loc.JavaHomeDlgErrorTitle)" Order="2"><![CDATA[JAVA_EXE_FOUND = "0" OR JAVA_EXE_VERSION = "10" OR JAVA_EXE_VERSION = "9"]]></Publish>
             <Publish Property="ERROR_MESSAGE" Value="!(loc.JavaJomeDlgErrorMessage)" Order="3"><![CDATA[JAVA_EXE_FOUND = "0" OR JAVA_EXE_VERSION = "10" OR JAVA_EXE_VERSION = "9"]]></Publish>
@@ -384,7 +381,7 @@
             <Publish Event="SpawnDialog" Value="JavaBrowseDlg" Order="2">1</Publish>
           </Control>
       </Dialog>
-      
+
       <Dialog Id="JavaBrowseDlg" Width="370" Height="270" Title="[ProductName] Setup">
         <Control Id="PathEdit" Type="PathEdit" X="25" Y="202" Width="320" Height="18" Property="_BrowseProperty" Indirect="yes" />
         <Control Id="OK" Type="PushButton" X="240" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUIOK)">
@@ -430,7 +427,7 @@
       <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
 
       <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg">NOT Installed</Publish>
-      
+
       <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
       <Publish Dialog="InstallDirDlg" Control="Next" Event="SetTargetPath" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
       <Publish Dialog="InstallDirDlg" Control="Next" Event="DoAction" Value="WixUIValidatePath" Order="2">NOT WIXUI_DONTVALIDATEPATH</Publish>
@@ -439,21 +436,20 @@
       <Publish Dialog="InstallDirDlg" Control="Next" Property="SERVICE_LOGON_TYPE" Value="ServiceLocalSystem" Order="5"><![CDATA[SERVICE_USERNAME="LocalSystem"]]></Publish>
       <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog" Value="ServiceCredDlg" Order="6">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
       <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
-      <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>     
-      
-      
+      <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
+
+
       <Publish Dialog="ServiceCredDlg" Control="Next" Event="NewDialog" Value="ServicePortDlg" Order="1">NOT Installed</Publish>
       <Publish Dialog="ServiceCredDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg" Order="1">NOT Installed</Publish>
-      
+
       <Publish Dialog="ServicePortDlg" Control="Next" Event="NewDialog" Value="JavaHomeDlg" Order="1">NOT Installed</Publish>
       <Publish Dialog="ServicePortDlg" Control="Back" Event="NewDialog" Value="ServiceCredDlg" Order="1">NOT Installed</Publish>
-      
+
       <Publish Dialog="JavaHomeDlg" Control="Next" Event="NewDialog" Value="CustomizeDlg" Order="1">NOT Installed</Publish>
       <Publish Dialog="JavaHomeDlg" Control="Back" Event="NewDialog" Value="ServicePortDlg" Order="1">NOT Installed</Publish>
-      
+
       <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="JavaHomeDlg" Order="2">NOT Installed</Publish>
       <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
-
 
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">NOT Installed</Publish>
       <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed</Publish>
@@ -464,19 +460,18 @@
       <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
       <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
 
-      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication">NOT installed</Publish>
+      <Publish Dialog="ExitDialog" Control="Finish" Property="WixShellExecTarget" Value="http://localhost:[PORTNUMBER]/" Order="1">NOT Installed</Publish>
+      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication" Order="2">NOT Installed</Publish>
     </UI>
 
-
     <!-- launch a browser at the end of the installation -->
-    <SetProperty Id="WixShellExecTarget" Before="CostFinalize" Value="http://localhost:[PORTNUMBER]/"/>
     <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
 
     <!-- Set JAVA_HOME to the JAVA_HOME environment variable if it is currently empty -->
     <SetProperty Id="JAVA_HOME" Action="SetJAVA_HOME_Default" Before="SetJAVA_HOME_Empty" Value="[%JAVA_HOME]">NOT JAVA_HOME</SetProperty>
     <!-- Set JAVA_HOME to the Program Files directory if it is empty so the JavaHomeDlg doesn't have an issue -->
     <SetProperty Id="JAVA_HOME" Action="SetJAVA_HOME_Empty" Before="CostFinalize" Value="[ProgramFiles64Folder]">NOT JAVA_HOME</SetProperty>
-    
+
     <Property Id="WIXUI_INSTALLDIR" Value="JENKINSDIR" />
   </Product>
 </Wix>
