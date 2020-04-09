@@ -77,7 +77,7 @@ function init(){
   ssh "${SSH_OPTS[@]}" "$PKGSERVER" mkdir -p "$DEBDIR/"
 }
 
-function isPackagePublished(){
+function skipIfAlreadyPublished(){
 
   if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${DEBDIR}/$(basename "$DEB")"; then
     echo "File already published, nothing else todo"
@@ -155,7 +155,7 @@ function signSite(){
 }
 
 show
-isPackagePublished
+skipIfAlreadyPublished
 init
 generateSite
 signSite

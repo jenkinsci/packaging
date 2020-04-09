@@ -47,7 +47,7 @@ EOF
 
 }
 
-function isPackagePublished(){
+function skipIfAlreadyPublished(){
 
   if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${RPMDIR}/$(basename "$RPM")"; then
     echo "File already published, nothing else todo"
@@ -114,7 +114,7 @@ function uploadSite(){
 }
 
 show
-isPackagePublished
+skipIfAlreadyPublished
 init
 generateSite
 uploadPackage

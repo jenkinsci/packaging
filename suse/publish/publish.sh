@@ -46,7 +46,7 @@ function init(){
   mkdir -p $D/RPMS/noarch $D/repodata
 }
 
-function isPackagePublished(){
+function skipIfAlreadyPublished(){
 
   if ssh "${SSH_OPTS[@]}" "$PKGSERVER" "test -e ${SUSEDIR}/$(basename $SUSE)"; then
     echo "File already published, nothing else todo"
@@ -135,7 +135,7 @@ function uploadSite(){
 }
 
 show
-isPackagePublished
+skipIfAlreadyPublished
 init
 generateSite
 uploadPackage

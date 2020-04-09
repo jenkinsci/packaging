@@ -29,7 +29,7 @@ function init(){
 
 }
 
-function isPackagePublished(){
+function skipIfAlreadyPublished(){
 
   if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${MSIDIR}/${VERSION}/$(basename "$MSI")"; then
     echo "File already published, nothing else todo"
@@ -95,7 +95,7 @@ function show(){
 }
 
 show
-isPackagePublished
+skipIfAlreadyPublished
 init
 generateSite
 uploadPackage
