@@ -29,22 +29,56 @@ function init(){
 
 }
 
+function skipIfAlreadyPublished(){
+
+  if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"; then
+    echo "File already published, nothing else todo"
+    exit 0
+
+  fi
+}
+
 function uploadPackage(){
 
   sha256sum "${WAR}" | sed "s, .*, ${ARTIFACTNAME}.war," > "${WAR_SHASUM}"
   cat "${WAR_SHASUM}"
 
   # Local
-  rsync -avz "${WAR}" "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
-  rsync -avz "${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    "${WAR}" "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
+
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    "${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
 
   # Remote
-  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${WAR}" "$PKGSERVER:${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
-  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${WAR_SHASUM}" "$PKGSERVER:${WARDIR}/${VERSION}/"
+  rsync \
+    -avz \
+    -e "ssh ${SSH_OPTS[*]}" \
+    --ignore-existing \
+    --progress \
+    "${WAR}" "$PKGSERVER:${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
+
+  rsync \
+    -avz \
+    -e "ssh ${SSH_OPTS[*]}" \
+    --ignore-existing \
+    --progress \
+    "${WAR_SHASUM}" "$PKGSERVER:${WARDIR}/${VERSION}/"
 }
 
 function uploadSite(){
-  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${WAR_WEBDIR}" "$PKGSERVER:${WAR_WEBDIR// /\\ }"
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    -e "ssh ${SSH_OPTS[*]}" \
+    "${WAR_WEBDIR}/" "$PKGSERVER:${WAR_WEBDIR// /\\ }/"
 
 }
 
@@ -53,12 +87,13 @@ function show(){
   echo "WAR: $WAR"
   echo "WARDIR: $WARDIR"
   echo "WAR_WEBDIR: $WAR_WEBDIR"
-  echo "SSH_OPTS: $SSH_OPTS[*]"
+  echo "SSH_OPTS: ${SSH_OPTS[*]}"
   echo "PKGSERVER: $PKGSERVER"
   echo "---"
 }
 
 show
+skipIfAlreadyPublished
 init
 generateSite
 uploadPackage

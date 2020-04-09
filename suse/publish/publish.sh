@@ -46,6 +46,15 @@ function init(){
   mkdir -p $D/RPMS/noarch $D/repodata
 }
 
+function skipIfAlreadyPublished(){
+
+  if ssh "${SSH_OPTS[@]}" "$PKGSERVER" "test -e ${SUSEDIR}/$(basename $SUSE)"; then
+    echo "File already published, nothing else todo"
+    exit 0
+
+  fi
+
+}
 
 function show(){
   echo "Parameters:"
@@ -59,16 +68,38 @@ function show(){
 }
 
 function uploadPackage(){
-  rsync -avz "$SUSE" "$SUSEDIR/" # Local
-  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${SUSE}" "$PKGSERVER:${SUSEDIR// /\\ }" # Remote
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    "$SUSE" "$SUSEDIR/" # Local
+
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    -e "ssh ${SSH_OPTS[*]}" \
+    "${SUSE}" "$PKGSERVER:${SUSEDIR// /\\ }" # Remote
 }
 
 function uploadSite(){
 
   pushd $D
-    rsync -avz --exclude RPMS . "$SUSE_WEBDIR/" #Local
+    rsync \
+      -avz \
+      --ignore-existing \
+      --progress \
+      --exclude RPMS \
+      . "$SUSE_WEBDIR/" #Local
+
     # shellcheck disable=SC2029
-    rsync -avz -e "ssh ${SSH_OPTS[*]}" --exclude RPMS . "$PKGSERVER:${SUSE_WEBDIR// /\\ }" # Remote
+    rsync \
+      -avz \
+      --ignore-existing \
+      --progress \
+      -e "ssh ${SSH_OPTS[*]}" \
+      --exclude RPMS \
+      . "$PKGSERVER:${SUSE_WEBDIR// /\\ }/" # Remote
   
     # generate index on the server
     # server needs 'createrepo' pacakge
@@ -76,7 +107,11 @@ function uploadSite(){
     # shellcheck disable=SC2029
     ssh "${SSH_OPTS[@]}" "$PKGSERVER"   createrepo --update -o "'$SUSE_WEBDIR'" "'$SUSEDIR/'" # Remote
 
-    scp "${SCP_OPTS[@]}" "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Remote
+    scp \
+      "${SCP_OPTS[@]}" \
+      "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" \
+      repodata/ # Remote
+
     cp "${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Local
 
     gpg \
@@ -89,13 +124,18 @@ function uploadSite(){
       --yes \
       repodata/repomd.xml
 
-     scp "${SCP_OPTS[@]}" repodata/repomd.xml.asc "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/"
+     scp \
+      "${SCP_OPTS[@]}" \
+      repodata/repomd.xml.asc \
+      "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/"
+
      cp repodata/repomd.xml.asc "${SUSE_WEBDIR// /\\ }/repodata/"
     
   popd
 }
 
 show
+skipIfAlreadyPublished
 init
 generateSite
 uploadPackage

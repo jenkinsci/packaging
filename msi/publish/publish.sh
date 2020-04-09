@@ -29,6 +29,15 @@ function init(){
 
 }
 
+function skipIfAlreadyPublished(){
+
+  if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${MSIDIR}/${VERSION}/$(basename "$MSI")"; then
+    echo "File already published, nothing else todo"
+    exit 0
+
+  fi
+}
+
 function uploadPackage(){
 
   cp "${ARTIFACTNAME}-${VERSION}.msi" "${MSI}"
@@ -38,16 +47,40 @@ function uploadPackage(){
   cat "${MSI_SHASUM}"
 
   # Local
-  rsync -avz "${MSI}" "${MSIDIR}/${VERSION}/"
-  rsync -avz "${MSI_SHASUM}" "${MSIDIR}/${VERSION}/"
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    "${MSI}" "${MSIDIR}/${VERSION}/"
+
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    "${MSI_SHASUM}" "${MSIDIR}/${VERSION}/"
 
   # Remote
-  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${MSI}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
-  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${MSI_SHASUM}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    -e "ssh ${SSH_OPTS[*]}" \
+    "${MSI}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    -e "ssh ${SSH_OPTS[*]}" \
+    "${MSI_SHASUM}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
 }
 
 function uploadSite(){
-  rsync -avz -e "ssh ${SSH_OPTS[*]}" "${MSI_WEBDIR}/" "$PKGSERVER:${MSI_WEBDIR// /\\ }/"
+  rsync \
+    -avz \
+    --ignore-existing \
+    --progress \
+    -e "ssh ${SSH_OPTS[*]}" \
+    "${MSI_WEBDIR}/" "$PKGSERVER:${MSI_WEBDIR// /\\ }/"
 
 }
 
@@ -56,12 +89,13 @@ function show(){
   echo "MSI: $MSI"
   echo "MSIDIR: $MSIDIR"
   echo "MSI_WEBDIR: $MSI_WEBDIR"
-  echo "SSH_OPTS: $SSH_OPTS[*]"
+  echo "SSH_OPTS: ${SSH_OPTS[*]}"
   echo "PKGSERVER: $PKGSERVER"
   echo "---"
 }
 
 show
+skipIfAlreadyPublished
 init
 generateSite
 uploadPackage
