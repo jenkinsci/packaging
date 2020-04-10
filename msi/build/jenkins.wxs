@@ -215,7 +215,7 @@
                   Description="$(var.ProductSummary)"
                   Account="[SERVICE_USERNAME]"
                   Password="[SERVICE_PASSWORD]" />
-              <ServiceControl Id="Control$(var.ArtifactName)Service" Name="$(var.ArtifactName)" Start="install" Stop="both" Wait="yes" Remove="uninstall" />
+            <ServiceControl Id="Control$(var.ArtifactName)Service" Name="$(var.ArtifactName)" Start="install" Stop="both" Wait="yes" Remove="uninstall" />
           </Component>
 
           <!-- Registry entries -->
@@ -460,12 +460,12 @@
       <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
       <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
 
-      <Publish Dialog="ExitDialog" Control="Finish" Property="WixShellExecTarget" Value="http://localhost:[PORTNUMBER]/" Order="1">NOT Installed</Publish>
-      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication" Order="2">NOT Installed</Publish>
+      <Publish Dialog="ExitDialog" Control="Finish" Property="WixShellExecTarget" Value="http://localhost:[PORTNUMBER]/" Order="1">NOT Installed AND NOT REMOVE</Publish>
+      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication" Order="2">NOT Installed AND NOT REMOVE</Publish>
     </UI>
 
     <!-- launch a browser at the end of the installation -->
-    <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+    <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes"/>
 
     <!-- Set JAVA_HOME to the JAVA_HOME environment variable if it is currently empty -->
     <SetProperty Id="JAVA_HOME" Action="SetJAVA_HOME_Default" Before="SetJAVA_HOME_Empty" Value="[%JAVA_HOME]">NOT JAVA_HOME</SetProperty>
