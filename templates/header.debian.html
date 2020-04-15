@@ -4,16 +4,16 @@
 
 <p>
   This is the Debian package repository of {{productName}} to automate installation and upgrade.
-  
+
   To use this repository, first add the key to your system:
-  
-  <pre style="padding:0.5em; margin:1em; background-color:black; color:white">
+
+  <pre class="text-white bg-dark">
   wget -q -O - <a href="{{organization}}.key" style="color:white"><span class="hostname"></span>/{{organization}}.key</a> | sudo apt-key add -
   </pre>
-  
+
   Then add the following entry in your <tt>/etc/apt/sources.list</tt>:
-  
-  <pre style="padding:0.5em; margin:1em; background-color:black; color:white">
+
+  <pre class="text-white bg-dark">
   deb <span class="hostname"></span>/{{os_family}}{{releaseline}} binary/
   </pre>
 </p>
@@ -21,7 +21,7 @@
 <p>
 Update your local package index, then finally install {{productName}}:
 
-  <pre style="padding:0.5em; margin:1em; background-color:black; color:white">
+  <pre class="text-white bg-dark">
     sudo apt-get update
     sudo apt-get install {{artifactName}}
   </pre>

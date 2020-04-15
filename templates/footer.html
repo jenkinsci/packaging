@@ -1,6 +1,10 @@
 <!-- Beginning of this html document is located in HEADER.html -->
+      </div>
+    </div>
+  </div>
+</div>
 
-<footer id='footer' style="position:absolute; width:100%">
+<footer style="position:absolute; width:100%">
   <div class='container'>
     <div class='row'>
       <div class='col-md-4'>
@@ -80,3 +84,24 @@
 </body>
 
 </html>
+
+<!--
+  This html files have been test with Apache fancy directory
+
+DocumentRoot "/usr/local/apache2/htdocs"
+<Directory "/usr/local/apache2/htdocs">
+    Options Indexes FollowSymLinks
+    AllowOverride FileInfo
+    Require all granted
+
+    IndexOptions FancyIndexing VersionSort TrackModified FoldersFirst SuppressHTMLPreamble NameWidth=* SuppressRules SuppressIcon SuppressDescription
+
+    HeaderName HEADER.html
+    ReadmeName FOOTER.html
+
+    IndexIgnore HEADER* FOOTER* index.html
+
+</Directory>
+
+
+--
