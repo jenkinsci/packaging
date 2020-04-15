@@ -45,25 +45,6 @@
       See <a href="https://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+on+Red+Hat+distributions">Wiki</a> for more information, including how {{productName}} is run and where the configuration is stored, etc.
     </p>
 
-    <h2>Individual Package Downloads</h2>
-
-    {% block individual_package_instruction %} {% endblock %}
-    <table class="table">
-      <tr>
-        <th>Name</th>
-        <th>Created Time</th>
-        <th>Last modified</th>
-        <th>Size</th>
-      </tr>
-      {%- for package in packages %}
-      <tr>
-        <td><a href=/{{os_family}}{{releaseline}}/binary{{package.filename}}>{{ package.filename | basename }}</a></th>
-        <td>{{package.creation_time}}</th>
-        <td>{{package.last_modified}}</th>
-        <td>{{package.size}}</th>
-      </tr>
-      {%- endfor %}
-    </table>
   </div>
   <script>
     $(function() {

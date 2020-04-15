@@ -5,8 +5,6 @@ from jinja2 import Environment, FileSystemLoader
 import getopt
 import os
 import sys
-import glob
-import datetime
 
 
 def basename(path):
@@ -17,43 +15,40 @@ class IndexGenerator:
     DISTRIBUTIONS = {
         'debian': {
             'extension': '.deb',
-            'template': 'index.debian.html'
+            'template': 'header.debian.html'
         },
         'redhat': {
             'extension': '.rpm',
-            'template': 'index.redhat.html'
+            'template': 'header.redhat.html'
         },
         'opensuse': {
             'extension': '.rpm',
-            'template': 'index.opensuse.html'
+            'template': 'header.opensuse.html'
         },
         'war': {
             'extension': '.war',
-            'template': 'index.war.html'
+            'template': 'header.war.html'
         },
         'windows': {
             'extension': '.msi',
-            'template': 'index.msi.html'
+            'template': 'header.msi.html'
         }
     }
 
     HELP_MESSAGE = '''
-    Generate index.html for package distribution site
+    Generate header.html for package distribution site
     It supports debian, redhat and opensuse packages
 
     indexGenerator.py
-        -b <binaries>: Directory where to get a list of packages>
         -d <distribution>: Which package distribution to target
-        -o <targetDir>: Where to create the index.html
+        -o <targetDir>: Where to create the HEADER.html
 
         ex:
         indexGenerator.py
-            -b /packages/binary/debian
             -d debian
             -o /packages/website/debian
     '''
 
-    binary_directory = ''
     packages = []
     targetFile = ''
     template_file = ''
@@ -72,8 +67,8 @@ class IndexGenerator:
         try:
             opts, args = getopt.getopt(
                 argv,
-                "hd:o:b:",
-                ["targetDir=", "binaryDir=", "distribution="]
+                "hd:o:",
+                ["targetDir=", "distribution="]
             )
         except getopt.GetoptError:
             print(self.HELP_MESSAGE)
@@ -82,50 +77,17 @@ class IndexGenerator:
             if opt == '-h':
                 print(self.HELP_MESSAGE)
                 sys.exit()
-            elif opt in ("-b", "--binaryDir"):
-                self.binary_directory = arg
             elif opt in ("-d", "--distribution"):
                 self.distribution = arg
                 self.target_directory = './target/' + self.distribution
             elif opt in ("-o", "--targetDir"):
                 self.target_directory = arg
-                self.targetFile = self.target_directory + "/index.html"
+                self.targetFile = self.target_directory + "/HEADER.html"
 
-        self.targetFile = self.target_directory + "/index.html"
+        self.targetFile = self.target_directory + "/HEADER.html"
         self.template_file = self.DISTRIBUTIONS[self.distribution]["template"]
-        self.packages = self.get_packages()
         self.root_dir = os.path.dirname(self.target_directory[0:-1])
-        self.root_index = self.root_dir + '/index.html'
-        self.repositories = self.get_repositories()
-
-    def get_packages(self):
-        packages = []
-        file_extension = self.DISTRIBUTIONS[self.distribution]["extension"]
-
-        for file in glob.glob(
-                self.binary_directory + "/**/*" + file_extension,
-                recursive=True):
-            stat = os.stat(file)
-            ctime = datetime.datetime.fromtimestamp(stat.st_mtime)
-            mtime = datetime.datetime.fromtimestamp(stat.st_ctime)
-            packages.append({
-                'filename': file.replace(self.binary_directory, ''),
-                'creation_time': ctime,
-                'last_modified': mtime,
-                'size': str(stat.st_size/1000000) + ' MB'
-                })
-
-        return packages
-
-    def get_repositories(self):
-        repositories = []
-        for file in os.scandir(self.root_dir):
-            if file.is_dir():
-                repositories.append({
-                    'name': file.name
-                    })
-
-        return repositories
+        self.root_header = self.root_dir + '/HEADER.html'
 
     def show_information(self):
         print("Product Name: " + self.product_name)
@@ -133,26 +95,24 @@ class IndexGenerator:
         print("Organization: " + self.organization)
         print("Artifact Name: " + self.artifact)
         print("Distribution: " + self.distribution)
-        print("Repositories: " + str(self.repositories))
-        print("Get packages list from: " + self.binary_directory)
         print('Number of Packages found: ' + str(len(self.packages)))
         print('Template file: ' + self.template_file)
-        print('Repository index generated: ' + self.targetFile)
-        print('Root index generated: ' + self.root_index)
+        print('Repository header generated: ' + self.targetFile)
+        print('Root header generated: ' + self.root_header)
 
-    def generate_root_index(self):
+    def generate_root_header(self):
 
         contexts = {
             'repositories': self.repositories
         }
 
         env = Environment(loader=FileSystemLoader(self.template_directory))
-        template = env.get_template('index.root.html')
+        template = env.get_template('header.root.html')
 
-        with open(self.root_index, "w") as f:
+        with open(self.root_header, "w") as f:
             f.write(template.render(contexts))
 
-    def generate_repository_index(self):
+    def generate_repository_header(self):
         contexts = {
             'product_name': self.product_name,
             'url': self.download_url,
@@ -171,7 +131,7 @@ class IndexGenerator:
 
 
 if __name__ == "__main__":
-    indexGenerator = IndexGenerator(sys.argv[1:])
-    indexGenerator.show_information()
-    indexGenerator.generate_repository_index()
-    indexGenerator.generate_root_index()
+    headerGenerator = IndexGenerator(sys.argv[1:])
+    headerGenerator.show_information()
+    headerGenerator.generate_repository_header()
+    headerGenerator.generate_root_header()
