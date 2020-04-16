@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block distribution_instruction %}
+
+<p>
+  This is the WAR package repository of {{ product_name }} for installation.
+
+  <pre class="text-white bg-dark">
+
+  wget -q -O - <a href="{{organization}}.key" style="color:white"><span class="hostname"></span>/{{organization}}.key</a> | sudo apt-key add -
+  </pre>
+
+<p>
+{% endblock %}
+
+{% block java_instructions %}
+<p>
+  You will need to pre-install a supported version of Java:
+<p>
+
+<ul>
+  <li>2.164 (2019-02) and newer: Java 8 or Java 11</li>
+  <li>2.54 (2017-04) and newer: Java 8</li>
+  <li>1.612 (2015-05) and newer: Java 7</li>
+</ul>
+
+With that set up, the {{product_name}} package can be run with: <code>java -jar jenkins.war</code>
+{% endblock %}
+
+{% block  individual_package_instruction  %}
+
+<p>
+  If you need *.war for a specific version, use these.
+</p>
+
+{% endblock %}
