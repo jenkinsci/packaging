@@ -129,10 +129,9 @@ function uploadSite(){
     "$D/html/" "$DEBDIR/"
 
   rsync \
-    -avz \
+    -rlpgoDvz \
     -e "ssh ${SSH_OPTS[*]}" \
     --progress \
-    --omit-dir-times \
     "$D/html/" "$PKGSERVER:${DEBDIR// /\\ }/"
 }
 
