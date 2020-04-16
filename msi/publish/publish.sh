@@ -81,14 +81,12 @@ function uploadPackage(){
 function uploadSite(){
   rsync \
     -avz \
-    --ignore-existing \
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
     "${D}/" "$PKGSERVER:${MSIDIR// /\\ }/"
 
   rsync \
     -avz \
-    --ignore-existing \
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
     "${D}/" "${MSIDIR// /\\ }/"
