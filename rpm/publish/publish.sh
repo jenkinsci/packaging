@@ -22,7 +22,6 @@ function clean(){
 function generateSite(){
   "$BASE/bin/indexGenerator.py" \
     --distribution redhat \
-    --binaryDir "$RPMDIR" \
     --targetDir "$RPM_WEBDIR"
   
   gpg --export -a --output "$D/${ORGANIZATION}.key" "${GPG_KEYNAME}"
