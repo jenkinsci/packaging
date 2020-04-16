@@ -122,12 +122,11 @@ function uploadSite(){
       . "$RPMDIR/"
 
     rsync \
-      -avz \
+      -rlpgoDvz \
       -e "ssh ${SSH_OPTS[*]}" \
       --include "HEADER.html" \
       --include "FOOTER.html" \
       --exclude "*" \
-      --omit-dir-times \
       --progress \
       . "$PKGSERVER:${RPMDIR// /\\ }/"
   popd
