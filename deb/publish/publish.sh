@@ -131,6 +131,7 @@ function uploadSite(){
   rsync \
     -rlpgoDvz \
     -e "ssh ${SSH_OPTS[*]}" \
+    -O \
     --progress \
     "$D/html/" "$PKGSERVER:${DEBDIR// /\\ }/"
 }
