@@ -86,7 +86,6 @@ function uploadSite(){
   pushd $D
     rsync \
       -avz \
-      --ignore-existing \
       --progress \
       --exclude RPMS \
       . "$SUSE_WEBDIR/" #Local
@@ -94,7 +93,6 @@ function uploadSite(){
     # shellcheck disable=SC2029
     rsync \
       -avz \
-      --ignore-existing \
       --progress \
       -e "ssh ${SSH_OPTS[*]}" \
       --exclude RPMS \
