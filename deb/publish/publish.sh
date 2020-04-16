@@ -30,7 +30,7 @@ function generateSite(){
   
   "$BASE/bin/indexGenerator.py" \
     --distribution debian \
-    --targetDir "$DEB_WEBDIR"
+    --targetDir "$D/html"
   
   "$BASE/bin/branding.py" "$D"
 
@@ -64,7 +64,7 @@ function generateSite(){
 
 function init(){
 
-  mkdir -p "$D/binary" "$D/contents"
+  mkdir -p "$D/binary" "$D/contents" "$D/html"
 
   # where to put binary files
   mkdir -p "$DEBDIR" # where to put binary files
@@ -121,6 +121,18 @@ function uploadSite(){
     -e "ssh ${SSH_OPTS[*]}" \
     --progress \
     "$D/contents/" "$PKGSERVER:${DEB_WEBDIR// /\\ }/"
+
+  # Html file need to be located in the binary directory
+  rsync \
+    -avz \
+    --progress \
+    "$D/html/" "$DEBDIR/"
+
+  rsync \
+    -avz \
+    -e "ssh ${SSH_OPTS[*]}" \
+    --progress \
+    "$D/html/" "$PKGSERVER:${DEBDIR// /\\ }/"
 }
 
 function show(){
