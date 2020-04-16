@@ -30,7 +30,7 @@ function generateSite(){
   
   "$BASE/bin/indexGenerator.py" \
     --distribution debian \
-    --targetDir "$DEB_WEBDIR"
+    --targetDir "$D/html"
   
   "$BASE/bin/branding.py" "$D"
 
@@ -64,7 +64,7 @@ function generateSite(){
 
 function init(){
 
-  mkdir -p "$D/binary" "$D/contents"
+  mkdir -p "$D/binary" "$D/contents" "$D/html"
 
   # where to put binary files
   mkdir -p "$DEBDIR" # where to put binary files
@@ -113,16 +113,26 @@ function uploadSite(){
 
   rsync \
     -avz \
-    --ignore-existing \
     --progress \
     "$D/contents/" "$DEB_WEBDIR/"
 
   rsync \
     -avz \
     -e "ssh ${SSH_OPTS[*]}" \
-    --ignore-existing \
     --progress \
     "$D/contents/" "$PKGSERVER:${DEB_WEBDIR// /\\ }/"
+
+  # Html file need to be located in the binary directory
+  rsync \
+    -avz \
+    --progress \
+    "$D/html/" "$DEBDIR/"
+
+  rsync \
+    -avz \
+    -e "ssh ${SSH_OPTS[*]}" \
+    --progress \
+    "$D/html/" "$PKGSERVER:${DEBDIR// /\\ }/"
 }
 
 function show(){
@@ -154,7 +164,9 @@ function signSite(){
 }
 
 show
-skipIfAlreadyPublished
+## Disabling this function allow us to recreate and sign the repository.
+# the debian package won't be overrided as we use the parameter '--ignore-existing'
+#skipIfAlreadyPublished
 init
 generateSite
 signSite

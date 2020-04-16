@@ -23,7 +23,7 @@ function generateSite(){
 
   "$BASE/bin/indexGenerator.py" \
     --distribution opensuse \
-    --targetDir "$SUSE_WEBDIR"
+    --targetDir "${D}"
   
   gpg --export -a --output "$D/repodata/repomd.xml.key" "${GPG_KEYNAME}"
   
@@ -86,18 +86,20 @@ function uploadSite(){
   pushd $D
     rsync \
       -avz \
-      --ignore-existing \
       --progress \
       --exclude RPMS \
+      --exclude "HEADER.html" \
+      --exclude "FOOTER.html" \
       . "$SUSE_WEBDIR/" #Local
 
     # shellcheck disable=SC2029
     rsync \
       -avz \
-      --ignore-existing \
       --progress \
       -e "ssh ${SSH_OPTS[*]}" \
       --exclude RPMS \
+      --exclude "HEADER.html" \
+      --exclude "FOOTER.html" \
       . "$PKGSERVER:${SUSE_WEBDIR// /\\ }/" # Remote
   
     # generate index on the server
@@ -129,12 +131,32 @@ function uploadSite(){
       "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/"
 
      cp repodata/repomd.xml.asc "${SUSE_WEBDIR// /\\ }/repodata/"
+
+    # Following html need to be located inside the binary directory
+    rsync \
+      -avz \
+      --include "HEADER.html" \
+      --include "FOOTER.html" \
+      --exclude "*" \
+      --progress \
+      . "$SUSEDIR/"
+
+    rsync \
+      -avz \
+      -e "ssh ${SSH_OPTS[*]}" \
+      --include "HEADER.html" \
+      --include "FOOTER.html" \
+      --exclude "*" \
+      --progress \
+      . "$PKGSERVER:${SUSEDIR// /\\ }/"
     
   popd
 }
 
 show
-skipIfAlreadyPublished
+## Disabling this function allow us to recreate and sign the Suse repository.
+# the rpm package won't be overrided as we use the parameter '--ignore-existing' when we upload it
+#skipIfAlreadyPublished
 init
 generateSite
 uploadPackage
