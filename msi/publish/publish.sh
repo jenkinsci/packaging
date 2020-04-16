@@ -14,7 +14,6 @@ function generateSite(){
 
   "$BASE/bin/indexGenerator.py" \
     --distribution windows \
-    --binaryDir "$MSIDIR" \
     --targetDir "$MSI_WEBDIR"
 
 }

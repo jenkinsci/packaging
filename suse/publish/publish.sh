@@ -23,7 +23,6 @@ function generateSite(){
 
   "$BASE/bin/indexGenerator.py" \
     --distribution opensuse \
-    --binaryDir "$SUSEDIR" \
     --targetDir "$SUSE_WEBDIR"
   
   gpg --export -a --output "$D/repodata/repomd.xml.key" "${GPG_KEYNAME}"

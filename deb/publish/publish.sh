@@ -30,7 +30,6 @@ function generateSite(){
   
   "$BASE/bin/indexGenerator.py" \
     --distribution debian \
-    --binaryDir "$DEBDIR" \
     --targetDir "$DEB_WEBDIR"
   
   "$BASE/bin/branding.py" "$D"
