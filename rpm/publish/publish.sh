@@ -115,7 +115,6 @@ function uploadSite(){
     # Following html need to be located inside the binary directory
     rsync \
       -avz \
-      --include './' \
       --include "HEADER.html" \
       --include "FOOTER.html" \
       --exclude "*" \
@@ -125,7 +124,6 @@ function uploadSite(){
     rsync \
       -avz \
       -e "ssh ${SSH_OPTS[*]}" \
-      --include './' \
       --include "HEADER.html" \
       --include "FOOTER.html" \
       --exclude "*" \
