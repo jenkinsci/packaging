@@ -2,29 +2,36 @@
 
 set -euxo pipefail
 
+: "${AGENT_WORKDIR:=/tmp}"
 : "${MSI:?Require Jenkins War file}"
 : "${MSIDIR:? Require where to put binary files}"
-: "${MSI_WEBDIR:? Require where to put repository index and other web contents}"
 
 # Convert string to array to correctly escape cli parameter
 SSH_OPTS=($SSH_OPTS)
+
+# $$ Contains current pid
+D="$AGENT_WORKDIR/$$"
+
+function clean(){
+  rm -rf "$D"
+}
 
 # Generate and publish site content
 function generateSite(){
 
   "$BASE/bin/indexGenerator.py" \
     --distribution windows \
-    --targetDir "$MSI_WEBDIR"
+    --targetDir "$MSIDIR"
 
 }
 
 function init(){
 
+  mkdir -p $D
+
   mkdir -p "${MSIDIR}/${VERSION}/"
-  mkdir -p "${MSI_WEBDIR}"
 
   ssh "${SSH_OPTS[@]}" "$PKGSERVER" mkdir -p "$MSIDIR/${VERSION}/"
-  ssh "${SSH_OPTS[@]}" "$PKGSERVER" mkdir -p "${MSI_WEBDIR}"
 
 }
 
@@ -73,21 +80,25 @@ function uploadPackage(){
     "${MSI_SHASUM}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
 }
 
+# The site need to be located in the binary directory
 function uploadSite(){
   rsync \
     -avz \
-    --ignore-existing \
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
-    "${MSI_WEBDIR}/" "$PKGSERVER:${MSI_WEBDIR// /\\ }/"
+    "${D}/" "$PKGSERVER:${MSIDIR// /\\ }/"
 
+  rsync \
+    -avz \
+    --progress \
+    -e "ssh ${SSH_OPTS[*]}" \
+    "${D}/" "${MSIDIR// /\\ }/"
 }
 
 function show(){
   echo "Parameters:"
   echo "MSI: $MSI"
   echo "MSIDIR: $MSIDIR"
-  echo "MSI_WEBDIR: $MSI_WEBDIR"
   echo "SSH_OPTS: ${SSH_OPTS[*]}"
   echo "PKGSERVER: $PKGSERVER"
   echo "---"

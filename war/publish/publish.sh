@@ -2,9 +2,17 @@
 
 set -euxo pipefail
 
+: "${AGENT_WORKDIR:=/tmp}"
 : "${WAR:?Require Jenkins War file}"
 : "${WARDIR:? Require where to put binary files}"
 : "${WAR_WEBDIR:? Require where to put repository index and other web contents}"
+
+# $$ Contains current pid
+D="$AGENT_WORKDIR/$$"
+
+function clean(){
+  rm -rf "$D"
+}
 
 # Convert string to array to correctly escape cli parameter
 SSH_OPTS=($SSH_OPTS)
@@ -14,17 +22,17 @@ function generateSite(){
 
   "$BASE/bin/indexGenerator.py" \
     --distribution war \
-    --targetDir "$WAR_WEBDIR"
+    --targetDir "$D"
 
 }
 
 function init(){
 
+  mkdir -p $D
+
   mkdir -p "${WARDIR}/${VERSION}/"
-  mkdir -p "${WAR_WEBDIR}"
 
   ssh "${SSH_OPTS[@]}" "$PKGSERVER" mkdir -p "$WARDIR/${VERSION}/"
-  ssh "${SSH_OPTS[@]}" "$PKGSERVER" mkdir -p "${WAR_WEBDIR}"
 
 }
 
@@ -71,21 +79,25 @@ function uploadPackage(){
     "${WAR_SHASUM}" "$PKGSERVER:${WARDIR}/${VERSION}/"
 }
 
+# Site html need to be located in the binary directory
 function uploadSite(){
   rsync \
     -avz \
-    --ignore-existing \
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
-    "${WAR_WEBDIR}/" "$PKGSERVER:${WAR_WEBDIR// /\\ }/"
+    "${D}/" "$PKGSERVER:${WARDIR// /\\ }/"
 
+  rsync \
+    -avz \
+    --progress \
+    -e "ssh ${SSH_OPTS[*]}" \
+    "${D}/" "${WARDIR// /\\ }/"
 }
 
 function show(){
   echo "Parameters:"
   echo "WAR: $WAR"
   echo "WARDIR: $WARDIR"
-  echo "WAR_WEBDIR: $WAR_WEBDIR"
   echo "SSH_OPTS: ${SSH_OPTS[*]}"
   echo "PKGSERVER: $PKGSERVER"
   echo "---"
@@ -97,3 +109,4 @@ init
 generateSite
 uploadPackage
 uploadSite
+clean
