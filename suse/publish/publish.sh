@@ -88,6 +88,8 @@ function uploadSite(){
       -avz \
       --progress \
       --exclude RPMS \
+      --exclude "HEADER.html" \
+      --exclude "FOOTER.html" \
       . "$SUSE_WEBDIR/" #Local
 
     # shellcheck disable=SC2029
@@ -96,6 +98,8 @@ function uploadSite(){
       --progress \
       -e "ssh ${SSH_OPTS[*]}" \
       --exclude RPMS \
+      --exclude "HEADER.html" \
+      --exclude "FOOTER.html" \
       . "$PKGSERVER:${SUSE_WEBDIR// /\\ }/" # Remote
   
     # generate index on the server
@@ -127,6 +131,26 @@ function uploadSite(){
       "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/"
 
      cp repodata/repomd.xml.asc "${SUSE_WEBDIR// /\\ }/repodata/"
+
+    # Following html need to be located inside the binary directory
+    rsync \
+      -avz \
+      --include './' \
+      --include "HEADER.html" \
+      --include "FOOTER.html" \
+      --exclude "*" \
+      --progress \
+      . "$SUSEDIR/"
+
+    rsync \
+      -avz \
+      -e "ssh ${SSH_OPTS[*]}" \
+      --include './' \
+      --include "HEADER.html" \
+      --include "FOOTER.html" \
+      --exclude "*" \
+      --progress \
+      . "$PKGSERVER:${SUSEDIR// /\\ }/"
     
   popd
 }
