@@ -14,7 +14,6 @@ function generateSite(){
 
   "$BASE/bin/indexGenerator.py" \
     --distribution war \
-    --binaryDir "$WARDIR" \
     --targetDir "$WAR_WEBDIR"
 
 }
