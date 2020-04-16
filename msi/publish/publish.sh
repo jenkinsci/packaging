@@ -2,6 +2,7 @@
 
 set -euxo pipefail
 
+: "${AGENT_WORKDIR:=/tmp}"
 : "${MSI:?Require Jenkins War file}"
 : "${MSIDIR:? Require where to put binary files}"
 
@@ -25,6 +26,8 @@ function generateSite(){
 }
 
 function init(){
+
+  mkdir -p $D
 
   mkdir -p "${MSIDIR}/${VERSION}/"
 
