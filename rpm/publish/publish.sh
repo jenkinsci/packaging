@@ -22,7 +22,7 @@ function clean(){
 function generateSite(){
   "$BASE/bin/indexGenerator.py" \
     --distribution redhat \
-    --targetDir "$RPM_WEBDIR"
+    --targetDir "${D}"
   
   gpg --export -a --output "$D/${ORGANIZATION}.key" "${GPG_KEYNAME}"
   
@@ -98,6 +98,8 @@ function uploadSite(){
     rsync \
       -avz \
       --exclude RPMS \
+      --exclude "HEADER.html" \
+      --exclude "FOOTER.html" \
       --progress \
       . "$RPM_WEBDIR/"
 
@@ -105,8 +107,30 @@ function uploadSite(){
       -avz \
       -e "ssh ${SSH_OPTS[*]}" \
       --exclude RPMS \
+      --exclude "HEADER.html" \
+      --exclude "FOOTER.html" \
       --progress \
       . "$PKGSERVER:${RPM_WEBDIR// /\\ }/"
+
+    # Following html need to be located inside the binary directory
+    rsync \
+      -avz \
+      --include './' \
+      --include "HEADER.html" \
+      --include "FOOTER.html" \
+      --exclude "*" \
+      --progress \
+      . "$RPMDIR/"
+
+    rsync \
+      -avz \
+      -e "ssh ${SSH_OPTS[*]}" \
+      --include './' \
+      --include "HEADER.html" \
+      --include "FOOTER.html" \
+      --exclude "*" \
+      --progress \
+      . "$PKGSERVER:${RPMDIR// /\\ }/"
   popd
 }
 
