@@ -113,14 +113,12 @@ function uploadSite(){
 
   rsync \
     -avz \
-    --ignore-existing \
     --progress \
     "$D/contents/" "$DEB_WEBDIR/"
 
   rsync \
     -avz \
     -e "ssh ${SSH_OPTS[*]}" \
-    --ignore-existing \
     --progress \
     "$D/contents/" "$PKGSERVER:${DEB_WEBDIR// /\\ }/"
 }
