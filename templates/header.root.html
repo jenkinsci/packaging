@@ -1,46 +1,8 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<!-- generated. do not manually edit -->
+{% block title %}Jenkins Core Packages{% endblock %}
 
-<html lang="en">
+{% block distribution_instruction %}{% endblock %}
+{% block java_instructions %}{% endblock %}
 
-<head>
-    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-    <meta content="utf-8" http-equiv="encoding">
-    {% block head %}
-    <link rel="stylesheet" href="style.css" />
-    <title>{{productName | capitalize }} {{ os_family | capitalize}} Packages</title>
-    {% endblock %}
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-
-    <style>
-      TH { font-weight: bold; }
-        #debs { border-spacing:3em 0em; margin-top:2em; }
-    </style>
-</head>
-
-<body>
-    <h1>Jenkins Core Packages</h1>
-
-    <table class="table">
-      <tr>
-        <th>Name</th>
-      </tr>
-      {%- for repository in repositories %}
-      <tr>
-        <td><a href="/{{repository.name}}/">{{repository.name}}</a></td>
-      </tr>
-      {%- endfor %}
-    </table>
-  </div>
-  <script>
-    $(function() {
-      $('.hostname').html($(location).attr('origin'));
-    });
-  </script>
-
-</body>
-
-</html>
+{% block  individual_package_instruction  %}{% endblock %}

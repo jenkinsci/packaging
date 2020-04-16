@@ -105,6 +105,7 @@ class IndexGenerator:
     def generate_root_header(self):
 
         contexts = {
+            'product_name': self.product_name,
             'repositories': self.repositories
         }
 
@@ -116,7 +117,9 @@ class IndexGenerator:
 
     def generate_footer(self):
 
-        contexts = {}
+        contexts = {
+            'product_name': self.product_name
+        }
 
         env = Environment(loader=FileSystemLoader(self.template_directory))
         template = env.get_template('footer.html')

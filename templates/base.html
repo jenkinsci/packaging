@@ -8,7 +8,7 @@
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
     <meta content="utf-8" http-equiv="encoding">
     {% block head %}
-    <title>{{productName | capitalize }} {{ os_family | capitalize}} Packages</title>
+    <title>{{ os_family | capitalize}} {{product_name | capitalize }} Packages</title>
     {% endblock %}
 
     <link href='https://jenkins.io/sites/default/files/jenkins_favicon.ico' rel='shortcut icon' type='image/x-icon'/>
@@ -116,7 +116,7 @@
     <div class='row'>
       <div class="col-md-12">
         <div class="main">
-          <h1>{{productName | capitalize }} {{ os_family | capitalize}} Packages</h1>
+          <h1>{% block title %}{{product_name | capitalize }} {{ os_family | capitalize}} Packages{% endblock %}</h1>
 
           {% block distribution_instruction %}{% endblock %}
 
@@ -132,12 +132,12 @@
               <li>1.612 (2015-05) and newer: Java 7</li>
             </ul>
 
-            With that set up, the {{productName}} package can be installed with:
+            With that set up, the {{product_name}} package can be installed with:
           {% endblock %}
 
 
           <p>
-            See <a href="https://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+on+Red+Hat+distributions">Wiki</a> for more information, including how {{productName}} is run and where the configuration is stored, etc.
+            See <a href="https://jenkins.io/doc/book/installing/">the installation guide</a> for more information, including how {{ product_name }} is run and where the configuration is stored, etc.
           </p>
         </div>
       </div>

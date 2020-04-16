@@ -6,15 +6,17 @@
   To use this repository, run the following command:
 
   <pre class="text-white bg-dark">
+
   sudo wget -O /etc/yum.repos.d/{{artifactName}}.repo <span class="hostname"></span>/{{os_family}}{{releaseline}}/{{artifactName}}.repo
   sudo rpm --import <span class="hostname"></span>/{{os_family}}{{releaseline}}/{{organization}}.key
   </pre>
 
   <p>
-  If you've previously imported the key from Jenkins, the "rpm --import" will fail because
+  If you've previously imported the key from Jenkins, the <code>rpm --import</code> will fail because
   you already have a key. Please ignore that and move on.
 
   <pre class="text-white bg-dark">
+
   yum install {{artifactName}}
   </pre>
 
