@@ -147,6 +147,7 @@ function uploadSite(){
       --include "HEADER.html" \
       --include "FOOTER.html" \
       --exclude "*" \
+      --omit-dir-times \
       --progress \
       . "$PKGSERVER:${SUSEDIR// /\\ }/"
     

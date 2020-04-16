@@ -132,6 +132,7 @@ function uploadSite(){
     -avz \
     -e "ssh ${SSH_OPTS[*]}" \
     --progress \
+    --omit-dir-times \
     "$D/html/" "$PKGSERVER:${DEBDIR// /\\ }/"
 }
 
