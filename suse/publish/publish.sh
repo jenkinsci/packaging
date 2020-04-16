@@ -154,7 +154,9 @@ function uploadSite(){
 }
 
 show
-skipIfAlreadyPublished
+## Disabling this function allow us to recreate and sign the Suse repository.
+# the rpm package won't be overrided as we use the parameter '--ignore-existing' when we upload it
+#skipIfAlreadyPublished
 init
 generateSite
 uploadPackage

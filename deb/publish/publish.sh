@@ -164,7 +164,9 @@ function signSite(){
 }
 
 show
-skipIfAlreadyPublished
+## Disabling this function allow us to recreate and sign the repository.
+# the debian package won't be overrided as we use the parameter '--ignore-existing'
+#skipIfAlreadyPublished
 init
 generateSite
 signSite
