@@ -98,7 +98,6 @@ function uploadSite(){
     rsync \
       -avz \
       --exclude RPMS \
-      --ignore-existing \
       --progress \
       . "$RPM_WEBDIR/"
 
@@ -106,7 +105,6 @@ function uploadSite(){
       -avz \
       -e "ssh ${SSH_OPTS[*]}" \
       --exclude RPMS \
-      --ignore-existing \
       --progress \
       . "$PKGSERVER:${RPM_WEBDIR// /\\ }/"
   popd
