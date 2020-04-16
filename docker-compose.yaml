@@ -33,3 +33,11 @@ services:
       - "./credentials/ssh/id_rsa.pub:/home/jenkins/.ssh/authorized_keys:ro"
       - sshd:/run/sshd
       - "pkgserver:/srv/releases/jenkins"
+
+  pkgserver:
+    image: httpd
+    ports:
+      - "80:80"
+    volumes:
+      - "./pkgConfig/httpd.conf:/usr/local/apache2/conf/httpd.conf"
+      - "./target:/usr/local/apache2/htdocs"
