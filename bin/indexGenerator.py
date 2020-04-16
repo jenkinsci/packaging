@@ -89,6 +89,7 @@ class IndexGenerator:
         self.template_file = self.DISTRIBUTIONS[self.distribution]["template"]
         self.root_dir = os.path.dirname(self.target_directory[0:-1])
         self.root_header = self.root_dir + '/HEADER.html'
+        self.root_footer = self.root_dir + '/FOOTER.html'
 
     def show_information(self):
         print("Product Name: " + self.product_name)
@@ -101,6 +102,7 @@ class IndexGenerator:
         print('Repository header generated: ' + self.targetFile)
         print('Repository footer generated: ' + self.footer)
         print('Root header generated: ' + self.root_header)
+        print('Root footer generated: ' + self.root_footer)
 
     def generate_root_header(self):
 
@@ -113,6 +115,16 @@ class IndexGenerator:
         template = env.get_template('header.root.html')
 
         with open(self.root_header, "w") as f:
+            f.write(template.render(contexts))
+
+    def generate_root_footer(self):
+
+        contexts = {}
+
+        env = Environment(loader=FileSystemLoader(self.template_directory))
+        template = env.get_template('footer.html')
+
+        with open(self.root_footer, "w") as f:
             f.write(template.render(contexts))
 
     def generate_footer(self):
@@ -149,5 +161,6 @@ if __name__ == "__main__":
     headerGenerator = IndexGenerator(sys.argv[1:])
     headerGenerator.show_information()
     headerGenerator.generate_repository_header()
-    headerGenerator.generate_root_header()
     headerGenerator.generate_footer()
+    headerGenerator.generate_root_header()
+    headerGenerator.generate_root_footer()
