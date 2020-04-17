@@ -6,12 +6,14 @@
   <p>
   To use this repository, run the following command:
 
-  WARNING: The gpg key use to sign our packages has been updated on the 16 of April 2020, therefore you need to reimport it if you did before this date.
+  <div class="alert alert-warning" role="alert">
+    WARNING: The gpg key use to sign our packages has been updated on 16th of April 2020, therefore you need to reimport it if you imported before this date.
+  </div>
 
   <pre class="text-white bg-dark">
 
-  sudo wget -O /etc/yum.repos.d/{{artifactName}}.repo <span class="hostname"></span>/{{os_family}}{{releaseline}}/{{artifactName}}.repo
-  sudo rpm --import <span class="hostname"></span>/{{os_family}}{{releaseline}}/{{organization}}.key
+  sudo wget -O /etc/yum.repos.d/{{artifactName}}.repo {{ web_url }}/{{artifactName}}.repo
+  sudo rpm --import {{ web_url }}/{{organization}}.key
   </pre>
 
   <p>
