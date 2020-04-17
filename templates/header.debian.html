@@ -7,18 +7,20 @@
 
   To use this repository, first add the key to your system:
 
-  WARNING: The gpg key use to sign our packages has been updated on the 16 of April 2020, therefore you need to reimport it if you did before this date.
+  <div class="alert alert-warning" role="alert">
+    WARNING: The gpg key use to sign our packages has been updated on 16th of April 2020, therefore you need to reimport it if you imported before this date.
+  </div>
 
   <pre class="text-white bg-dark">
     <code>
-  wget -q -O - <a href="{{organization}}.key" style="color:white"><span class="hostname"></span>/{{organization}}.key</a> | sudo apt-key add -</code>
+  wget -q -O - <a href="{{web_url}}/{{organization}}.key" style="color:white">{{web_url}}/{{organization}}.key</a> | sudo apt-key add -</code>
   </pre>
 
   Then add the following entry in your <tt>/etc/apt/sources.list</tt>:
 
   <pre class="text-white bg-dark">
     
-  deb <span class="hostname"></span>/{{os_family}}{{releaseline}} binary/
+  deb {{ web_url }}/{{os_family}}{{releaseline}} binary/
   </pre>
 </p>
 
@@ -26,8 +28,9 @@
 Update your local package index, then finally install {{product_name}}:
 
   <pre class="text-white bg-dark">
-    sudo apt-get update
-    sudo apt-get install {{artifactName}}
+
+  sudo apt-get update
+  sudo apt-get install {{artifactName}}
   </pre>
 </p>
 {% endblock %}

@@ -15,23 +15,28 @@ class IndexGenerator:
     DISTRIBUTIONS = {
         'debian': {
             'extension': '.deb',
-            'template': 'header.debian.html'
+            'template': 'header.debian.html',
+            'web_url': os.getenv('DEB_URL')
         },
         'redhat': {
             'extension': '.rpm',
-            'template': 'header.redhat.html'
+            'template': 'header.redhat.html',
+            'web_url': os.getenv('RPM_URL')
         },
         'opensuse': {
             'extension': '.rpm',
-            'template': 'header.opensuse.html'
+            'template': 'header.opensuse.html',
+            'web_url': os.getenv('SUSE_URL')
         },
         'war': {
             'extension': '.war',
-            'template': 'header.war.html'
+            'template': 'header.war.html',
+            'web_url': 'unset'
         },
         'windows': {
             'extension': '.msi',
-            'template': 'header.msi.html'
+            'template': 'header.msi.html',
+            'web_url': 'unset'
         }
     }
 
@@ -90,6 +95,7 @@ class IndexGenerator:
         self.root_dir = os.path.dirname(self.target_directory[0:-1])
         self.root_header = self.root_dir + '/HEADER.html'
         self.root_footer = self.root_dir + '/FOOTER.html'
+        self.web_url = self.DISTRIBUTIONS[self.distribution]['web_url']
 
     def show_information(self):
         print("Product Name: " + self.product_name)
@@ -97,6 +103,7 @@ class IndexGenerator:
         print("Organization: " + self.organization)
         print("Artifact Name: " + self.artifact)
         print("Distribution: " + self.distribution)
+        print("Web URL: " + self.web_url)
         print('Number of Packages found: ' + str(len(self.packages)))
         print('Template file: ' + self.template_file)
         print('Repository header generated: ' + self.targetFile)
@@ -147,7 +154,8 @@ class IndexGenerator:
             'artifactName': self.artifact,
             'os_family': self.distribution,
             'packages': self.packages,
-            'releaseline': self.releaseline
+            'releaseline': self.releaseline,
+            'web_url': self.web_url
         }
         env = Environment(loader=FileSystemLoader(self.template_directory))
         env.filters['basename'] = basename
