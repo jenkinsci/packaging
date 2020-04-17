@@ -132,6 +132,7 @@ function uploadSite(){
     -rlpgoDvz \
     -e "ssh ${SSH_OPTS[*]}" \
     -O \
+    --no-o --no-g --no-perms \
     --progress \
     "$D/html/" "$PKGSERVER:${DEBDIR// /\\ }/"
 }
