@@ -148,6 +148,7 @@ function uploadSite(){
       --include "FOOTER.html" \
       --exclude "*" \
       -O \
+      --no-o --no-g --no-perms \
       --progress \
       . "$PKGSERVER:${SUSEDIR// /\\ }/"
     
