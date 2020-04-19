@@ -19,11 +19,11 @@ export RPMDIR=/srv/releases/jenkins/redhat${RELEASELINE}
 export SUSEDIR=/srv/releases/jenkins/opensuse${RELEASELINE}
 
 # where to put repository index and other web contents
-export  RPM_WEBDIR=/var/www/pkg.jenkins.io.staging/redhat${RELEASELINE}
-export SUSE_WEBDIR=/var/www/pkg.jenkins.io.staging/opensuse${RELEASELINE}
-export  DEB_WEBDIR=/var/www/pkg.jenkins.io.staging/debian${RELEASELINE}
-export  WAR_WEBDIR=/var/www/pkg.jenkins.io.staging/war${RELEASELINE}
-export  MSI_WEBDIR=/var/www/pkg.jenkins.io.staging/windows${RELEASELINE}
+export  RPM_WEBDIR=/var/www/pkg.jenkins.io/redhat${RELEASELINE}
+export SUSE_WEBDIR=/var/www/pkg.jenkins.io/opensuse${RELEASELINE}
+export  DEB_WEBDIR=/var/www/pkg.jenkins.io/debian${RELEASELINE}
+export  WAR_WEBDIR=/var/www/pkg.jenkins.io/war${RELEASELINE}
+export  MSI_WEBDIR=/var/www/pkg.jenkins.io/windows${RELEASELINE}
 
 # URL to the aforementioned webdir
 export  RPM_URL=https://pkg.jenkins.io/redhat${RELEASELINE}
