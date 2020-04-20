@@ -138,7 +138,6 @@ function uploadHtmlSite(){
     --compress \
     --recursive \
     --progress \
-    --recursive \
     --verbose \
     "$D/html/" "$DEBDIR/"
 
