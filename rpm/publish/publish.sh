@@ -43,6 +43,8 @@ EOF
   # createrepo --update -o "$RPM_WEBDIR" "$RPMDIR/"
   # on the server
   # shellcheck disable=SC2029
+  ssh "${SSH_OPTS[@]}" "$PKGSERVER"  createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
+
 }
 
 function skipIfAlreadyPublished(){
@@ -83,8 +85,6 @@ function uploadPackage(){
     --ignore-existing \
     --progress \
     "$RPM" "$PKGSERVER:${RPMDIR// /\\ }/"
-
-    ssh "${SSH_OPTS[@]}" "$PKGSERVER"  createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
 }
 
 function show(){
@@ -151,7 +151,7 @@ show
 # the rpm package won't be overrided as we use the parameter '--ignore-existing' when we upload it
 #skipIfAlreadyPublished
 init
-generateSite
 uploadPackage
+generateSite
 uploadSite
 clean
