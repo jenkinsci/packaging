@@ -70,6 +70,7 @@ function uploadPackage(){
   rsync \
     -avz \
     --ignore-existing \
+    -O --no-o --no-g --no-perms \
     --progress \
     "$RPM" "$RPMDIR/"
 
@@ -100,6 +101,7 @@ function uploadSite(){
       --exclude RPMS \
       --exclude "HEADER.html" \
       --exclude "FOOTER.html" \
+      -O --no-o --no-g --no-perms \
       --progress \
       . "$RPM_WEBDIR/"
 
@@ -117,6 +119,7 @@ function uploadSite(){
       -avz \
       --include "HEADER.html" \
       --include "FOOTER.html" \
+      -O --no-o --no-g --no-perms \
       --exclude "*" \
       --progress \
       . "$RPMDIR/"

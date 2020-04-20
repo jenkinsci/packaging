@@ -91,6 +91,7 @@ function uploadPackage(){
   rsync \
     -avz \
     --ignore-existing \
+    -O --no-o --no-g --no-perms \
     --progress \
     "$DEB" "$DEBDIR/"
 
@@ -114,6 +115,7 @@ function uploadPackageSite(){
   rsync \
     -avz \
     --progress \
+    -O --no-o --no-g --no-perms \
     "$D/contents/" "$DEB_WEBDIR/"
 
   rsync \
@@ -129,6 +131,7 @@ function uploadHtmlSite(){
   rsync \
     -avz \
     --progress \
+    -O --no-o --no-g --no-perms \
     "$D/html/" "$DEBDIR/"
 
   rsync \

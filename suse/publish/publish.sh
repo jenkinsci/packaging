@@ -71,6 +71,7 @@ function uploadPackage(){
     -avz \
     --ignore-existing \
     --progress \
+    -O --no-o --no-g --no-perms \
     "$SUSE" "$SUSEDIR/" # Local
 
   rsync \
@@ -90,6 +91,7 @@ function uploadSite(){
       --exclude RPMS \
       --exclude "HEADER.html" \
       --exclude "FOOTER.html" \
+      -O --no-o --no-g --no-perms \
       . "$SUSE_WEBDIR/" #Local
 
     # shellcheck disable=SC2029
@@ -138,6 +140,7 @@ function uploadSite(){
       --include "HEADER.html" \
       --include "FOOTER.html" \
       --exclude "*" \
+      -O --no-o --no-g --no-perms \
       --progress \
       . "$SUSEDIR/"
 
