@@ -86,8 +86,10 @@ function skipIfAlreadyPublished(){
 
 }
 
+# Upload Debian Package
 function uploadPackage(){
-  # Upload Debian Package
+  skipIfAlreadyPublished
+
   rsync \
     -avz \
     --ignore-existing \
@@ -102,7 +104,8 @@ function uploadPackage(){
     "${DEB}" "$PKGSERVER:${DEBDIR// /\\ }"
 }
 
-function uploadSite(){
+function uploadPackageSite(){
+  skipIfAlreadyPublished
 
   cp \
     "$D"/binary/Packages* \
@@ -121,6 +124,9 @@ function uploadSite(){
     -e "ssh ${SSH_OPTS[*]}" \
     --progress \
     "$D/contents/" "$PKGSERVER:${DEB_WEBDIR// /\\ }/"
+}
+
+function uploadHtmlSite(){
 
   # Html file need to be located in the binary directory
   rsync \
@@ -181,5 +187,6 @@ init
 generateSite
 signSite
 uploadPackage
-uploadSite
+uploadPackagSite
+uploadHtmlSite
 clean
