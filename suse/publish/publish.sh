@@ -68,13 +68,17 @@ function show(){
 
 function uploadPackage(){
   rsync \
-    -avz \
+    --recursive \
+    --verbose \
+    --compress \
     --ignore-existing \
     --progress \
     "$SUSE" "$SUSEDIR/" # Local
 
   rsync \
-    -avz \
+    --archive \
+    --verbose \
+    --compress \
     --ignore-existing \
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
@@ -85,7 +89,9 @@ function uploadSite(){
 
   pushd $D
     rsync \
-      -avz \
+      --recursive \
+      --verbose \
+      --compress \
       --progress \
       --exclude RPMS \
       --exclude "HEADER.html" \
@@ -94,7 +100,9 @@ function uploadSite(){
 
     # shellcheck disable=SC2029
     rsync \
-      -avz \
+      --archive \
+      --verbose \
+      --compress \
       --progress \
       -e "ssh ${SSH_OPTS[*]}" \
       --exclude RPMS \
@@ -104,7 +112,10 @@ function uploadSite(){
   
     # generate index on the server
     # server needs 'createrepo' pacakge
-    createrepo --update -o "$SUSE_WEBDIR" "$SUSEDIR/" #Local
+    # Disable this for now as not critical
+    # createrepo --update -o "$SUSE_WEBDIR" "$SUSEDIR/" #Local
+    # cp "${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Local
+
     # shellcheck disable=SC2029
     ssh "${SSH_OPTS[@]}" "$PKGSERVER"   createrepo --update -o "'$SUSE_WEBDIR'" "'$SUSEDIR/'" # Remote
 
@@ -113,7 +124,6 @@ function uploadSite(){
       "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" \
       repodata/ # Remote
 
-    cp "${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Local
 
     gpg \
       --batch \
@@ -134,7 +144,9 @@ function uploadSite(){
 
     # Following html need to be located inside the binary directory
     rsync \
-      -avz \
+      --compress \
+      --verbose \
+      --recursive \
       --include "HEADER.html" \
       --include "FOOTER.html" \
       --exclude "*" \
@@ -142,7 +154,9 @@ function uploadSite(){
       . "$SUSEDIR/"
 
     rsync \
-      -avz \
+      --archive \
+      --compress \
+      --verbose \
       -e "ssh ${SSH_OPTS[*]}" \
       --include "HEADER.html" \
       --include "FOOTER.html" \

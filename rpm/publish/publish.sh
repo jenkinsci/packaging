@@ -39,7 +39,8 @@ EOF
 
   # generate index 
   # locally
-  createrepo --update -o "$RPM_WEBDIR" "$RPMDIR/"
+  # disable this for now, as it's currently now used and generate errors
+  # createrepo --update -o "$RPM_WEBDIR" "$RPMDIR/"
   # on the server
   # shellcheck disable=SC2029
   ssh "${SSH_OPTS[@]}" "$PKGSERVER"  createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
@@ -68,14 +69,18 @@ function init(){
 function uploadPackage(){
   # Local
   rsync \
-    -avz \
+    --verbose \
+    --compress \
     --ignore-existing \
+    --recursive \
     --progress \
     "$RPM" "$RPMDIR/"
 
   # Remote 
   rsync \
-    -avz \
+    --archive \
+    --verbose \
+    --compress \
     -e "ssh ${SSH_OPTS[*]}" \
     --ignore-existing \
     --progress \
@@ -95,16 +100,21 @@ function show(){
 
 function uploadSite(){
   pushd "$D"
-    rsync \
-      -avz \
-      --exclude RPMS \
-      --exclude "HEADER.html" \
-      --exclude "FOOTER.html" \
-      --progress \
-      . "$RPM_WEBDIR/"
+    # Disable copy on local network storage
+    #rsync \
+    #  --compress \
+    #  --recursive \
+    #  --verbose \
+    #  --exclude RPMS \
+    #  --exclude "HEADER.html" \
+    #  --exclude "FOOTER.html" \
+    #  --progress \
+    #  . "$RPM_WEBDIR/"
 
     rsync \
-      -avz \
+      --archive \
+      --compress \
+      --verbose \
       -e "ssh ${SSH_OPTS[*]}" \
       --exclude RPMS \
       --exclude "HEADER.html" \
@@ -114,7 +124,9 @@ function uploadSite(){
 
     # Following html need to be located inside the binary directory
     rsync \
-      -avz \
+      --compress \
+      --verbose \
+      --recursive \
       --include "HEADER.html" \
       --include "FOOTER.html" \
       --exclude "*" \
@@ -122,7 +134,9 @@ function uploadSite(){
       . "$RPMDIR/"
 
     rsync \
-      -avz \
+      --archive \
+      --compress \
+      --verbose \
       -e "ssh ${SSH_OPTS[*]}" \
       --include "HEADER.html" \
       --include "FOOTER.html" \

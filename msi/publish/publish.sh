@@ -54,26 +54,35 @@ function uploadPackage(){
 
   # Local
   rsync \
-    -avz \
+    --compress \
+    --verbose \
+    --recursive \
     --ignore-existing \
     --progress \
     "${MSI}" "${MSIDIR}/${VERSION}/"
 
   rsync \
-    -avz \
+    --compress \
     --ignore-existing \
+    --recursive \
     --progress \
+    --verbose \
     "${MSI_SHASUM}" "${MSIDIR}/${VERSION}/"
 
   # Remote
   rsync \
-    -avz \
+    --archive \
+    --compress \
+    --verbose \
     --ignore-existing \
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
     "${MSI}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
+
   rsync \
-    -avz \
+    --archive \
+    --compress \
+    --verbose \
     --ignore-existing \
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
@@ -83,16 +92,20 @@ function uploadPackage(){
 # The site need to be located in the binary directory
 function uploadSite(){
   rsync \
-    -avz \
-    --progress \
-    -e "ssh ${SSH_OPTS[*]}" \
-    "${D}/" "$PKGSERVER:${MSIDIR// /\\ }/"
-
-  rsync \
-    -avz \
+    --compress \
+    --verbose \
+    --recursive \
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
     "${D}/" "${MSIDIR// /\\ }/"
+
+  rsync \
+    --archive \
+    --compress \
+    --verbose \
+    --progress \
+    -e "ssh ${SSH_OPTS[*]}" \
+    "${D}/" "$PKGSERVER:${MSIDIR// /\\ }/"
 }
 
 function show(){

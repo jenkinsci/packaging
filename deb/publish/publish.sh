@@ -80,29 +80,33 @@ function skipIfAlreadyPublished(){
 
   if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${DEBDIR}/$(basename "$DEB")"; then
     echo "File already published, nothing else todo"
-    exit 0
-
+    return 0
   fi
+  return 1
 
 }
 
+# Upload Debian Package
 function uploadPackage(){
-  # Upload Debian Package
   rsync \
-    -avz \
+    --verbose \
+    --recursive \
+    --compress \
     --ignore-existing \
     --progress \
     "$DEB" "$DEBDIR/"
 
   rsync \
-    -avz \
+    --archive \
+    --verbose \
+    --compress \
     --ignore-existing \
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
     "${DEB}" "$PKGSERVER:${DEBDIR// /\\ }"
 }
 
-function uploadSite(){
+function uploadPackageSite(){
 
   cp \
     "$D"/binary/Packages* \
@@ -112,26 +116,45 @@ function uploadSite(){
     "$D"/contents/binary
 
   rsync \
-    -avz \
+    --verbose \
+    --recursive \
+    --compress \
     --progress \
     "$D/contents/" "$DEB_WEBDIR/"
 
   rsync \
-    -avz \
-    -e "ssh ${SSH_OPTS[*]}" \
+    --archive \
+    --compress \
     --progress \
+    --verbose \
+    -e "ssh ${SSH_OPTS[*]}" \
     "$D/contents/" "$PKGSERVER:${DEB_WEBDIR// /\\ }/"
+}
+
+function uploadHtmlSite(){
 
   # Html file need to be located in the binary directory
   rsync \
-    -avz \
+    --compress \
+    --recursive \
     --progress \
+    --verbose \
     "$D/html/" "$DEBDIR/"
 
   rsync \
-    -avz \
-    -e "ssh ${SSH_OPTS[*]}" \
+    --archive \
+    --compress \
     --progress \
+    --verbose \
+    -e "ssh ${SSH_OPTS[*]}" \
+    "$D/html/" "$PKGSERVER:${DEB_WEBDIR// /\\ }/"
+
+  rsync \
+    --archive \
+    --compress \
+    --progress \
+    --verbose \
+    -e "ssh ${SSH_OPTS[*]}" \
     "$D/html/" "$PKGSERVER:${DEBDIR// /\\ }/"
 }
 
@@ -170,6 +193,11 @@ show
 init
 generateSite
 signSite
-uploadPackage
-uploadSite
+
+if ! skipIfAlreadyPublished; then
+  uploadPackage
+  uploadPackageSite
+fi
+
+uploadHtmlSite
 clean
