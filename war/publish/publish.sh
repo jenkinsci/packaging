@@ -52,29 +52,35 @@ function uploadPackage(){
 
   # Local
   rsync \
-    -avz \
+    --compress \
+    --recursive \
+    --verbose \
     --ignore-existing \
     --progress \
-    -O --no-o --no-g --no-perms \
     "${WAR}" "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
 
   rsync \
-    -avz \
+    --compress \
+    --recursive \
+    --verbose \
     --ignore-existing \
     --progress \
-    -O --no-o --no-g --no-perms \
     "${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
 
   # Remote
   rsync \
-    -avz \
+    --archive \
+    --compress \
+    --verbose \
     -e "ssh ${SSH_OPTS[*]}" \
     --ignore-existing \
     --progress \
     "${WAR}" "$PKGSERVER:${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
 
   rsync \
-    -avz \
+    --archive \
+    --compress \
+    --verbose \
     -e "ssh ${SSH_OPTS[*]}" \
     --ignore-existing \
     --progress \
@@ -84,17 +90,20 @@ function uploadPackage(){
 # Site html need to be located in the binary directory
 function uploadSite(){
   rsync \
-    -avz \
+    --compress \
+    --recursive \
+    --verbose \
+    --progress \
+    -e "ssh ${SSH_OPTS[*]}" \
+    "${D}/" "${WARDIR// /\\ }/"
+
+  rsync \
+    --archive \
+    --compress \
+    --verbose \
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
     "${D}/" "$PKGSERVER:${WARDIR// /\\ }/"
-
-  rsync \
-    -avz \
-    --progress \
-    -e "ssh ${SSH_OPTS[*]}" \
-    -O --no-o --no-g --no-perms \
-    "${D}/" "${WARDIR// /\\ }/"
 }
 
 function show(){

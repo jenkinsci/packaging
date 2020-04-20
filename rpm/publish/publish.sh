@@ -68,15 +68,18 @@ function init(){
 function uploadPackage(){
   # Local
   rsync \
-    -avz \
+    --verbose \
+    --compress \
     --ignore-existing \
-    -O --no-o --no-g --no-perms \
+    --recursive \
     --progress \
     "$RPM" "$RPMDIR/"
 
   # Remote 
   rsync \
-    -avz \
+    --archive \
+    --verbose \
+    --compress \
     -e "ssh ${SSH_OPTS[*]}" \
     --ignore-existing \
     --progress \
@@ -97,16 +100,19 @@ function show(){
 function uploadSite(){
   pushd "$D"
     rsync \
-      -avz \
+      --compress \
+      --recursive \
+      --verbose \
       --exclude RPMS \
       --exclude "HEADER.html" \
       --exclude "FOOTER.html" \
-      -O --no-o --no-g --no-perms \
       --progress \
       . "$RPM_WEBDIR/"
 
     rsync \
-      -avz \
+      --archive \
+      --compress \
+      --verbose \
       -e "ssh ${SSH_OPTS[*]}" \
       --exclude RPMS \
       --exclude "HEADER.html" \
@@ -116,22 +122,23 @@ function uploadSite(){
 
     # Following html need to be located inside the binary directory
     rsync \
-      -avz \
+      --compress \
+      --verbose \
+      --recursive \
       --include "HEADER.html" \
       --include "FOOTER.html" \
-      -O --no-o --no-g --no-perms \
       --exclude "*" \
       --progress \
       . "$RPMDIR/"
 
     rsync \
-      -rlpgoDvz \
+      --archive \
+      --compress \
+      --verbose \
       -e "ssh ${SSH_OPTS[*]}" \
       --include "HEADER.html" \
       --include "FOOTER.html" \
       --exclude "*" \
-      -O \
-      --no-o --no-g --no-perms \
       --progress \
       . "$PKGSERVER:${RPMDIR// /\\ }/"
   popd

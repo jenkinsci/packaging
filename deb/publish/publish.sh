@@ -89,14 +89,17 @@ function skipIfAlreadyPublished(){
 # Upload Debian Package
 function uploadPackage(){
   rsync \
-    -avz \
+    --verbose \
+    --recursive \
+    --compress \
     --ignore-existing \
-    -O --no-o --no-g --no-perms \
     --progress \
     "$DEB" "$DEBDIR/"
 
   rsync \
-    -avz \
+    --archive \
+    --verbose \
+    --compress \
     --ignore-existing \
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
@@ -113,15 +116,18 @@ function uploadPackageSite(){
     "$D"/contents/binary
 
   rsync \
-    -avz \
+    --verbose \
+    --recursive \
+    --compress \
     --progress \
-    -O --no-o --no-g --no-perms \
     "$D/contents/" "$DEB_WEBDIR/"
 
   rsync \
-    -avz \
-    -e "ssh ${SSH_OPTS[*]}" \
+    --archive \
+    --compress \
     --progress \
+    --verbose \
+    -e "ssh ${SSH_OPTS[*]}" \
     "$D/contents/" "$PKGSERVER:${DEB_WEBDIR// /\\ }/"
 }
 
@@ -129,25 +135,27 @@ function uploadHtmlSite(){
 
   # Html file need to be located in the binary directory
   rsync \
-    -avz \
+    --compress \
+    --recursive \
     --progress \
-    -O --no-o --no-g --no-perms \
+    --recursive \
+    --verbose \
     "$D/html/" "$DEBDIR/"
 
   rsync \
-    -avz \
-    -e "ssh ${SSH_OPTS[*]}" \
-    -O \
-    --no-o --no-g --no-perms \
+    --archive \
+    --compress \
     --progress \
+    --verbose \
+    -e "ssh ${SSH_OPTS[*]}" \
     "$D/html/" "$PKGSERVER:${DEB_WEBDIR// /\\ }/"
 
   rsync \
-    -rlpgoDvz \
-    -e "ssh ${SSH_OPTS[*]}" \
-    -O \
-    --no-o --no-g --no-perms \
+    --archive \
+    --compress \
     --progress \
+    --verbose \
+    -e "ssh ${SSH_OPTS[*]}" \
     "$D/html/" "$PKGSERVER:${DEBDIR// /\\ }/"
 }
 
