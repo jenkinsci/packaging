@@ -39,7 +39,8 @@ EOF
 
   # generate index 
   # locally
-  createrepo --update -o "$RPM_WEBDIR" "$RPMDIR/"
+  # disable this for now, as it's currently now used and generate errors
+  # createrepo --update -o "$RPM_WEBDIR" "$RPMDIR/"
   # on the server
   # shellcheck disable=SC2029
   ssh "${SSH_OPTS[@]}" "$PKGSERVER"  createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
@@ -99,15 +100,16 @@ function show(){
 
 function uploadSite(){
   pushd "$D"
-    rsync \
-      --compress \
-      --recursive \
-      --verbose \
-      --exclude RPMS \
-      --exclude "HEADER.html" \
-      --exclude "FOOTER.html" \
-      --progress \
-      . "$RPM_WEBDIR/"
+    # Disable copy on local network storage
+    #rsync \
+    #  --compress \
+    #  --recursive \
+    #  --verbose \
+    #  --exclude RPMS \
+    #  --exclude "HEADER.html" \
+    #  --exclude "FOOTER.html" \
+    #  --progress \
+    #  . "$RPM_WEBDIR/"
 
     rsync \
       --archive \
