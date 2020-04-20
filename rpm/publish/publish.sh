@@ -43,8 +43,6 @@ EOF
   # createrepo --update -o "$RPM_WEBDIR" "$RPMDIR/"
   # on the server
   # shellcheck disable=SC2029
-  ssh "${SSH_OPTS[@]}" "$PKGSERVER"  createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
-
 }
 
 function skipIfAlreadyPublished(){
@@ -85,6 +83,8 @@ function uploadPackage(){
     --ignore-existing \
     --progress \
     "$RPM" "$PKGSERVER:${RPMDIR// /\\ }/"
+
+    ssh "${SSH_OPTS[@]}" "$PKGSERVER"  createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
 }
 
 function show(){
