@@ -55,12 +55,14 @@ function uploadPackage(){
     -avz \
     --ignore-existing \
     --progress \
+    -O --no-o --no-g --no-perms \
     "${WAR}" "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
 
   rsync \
     -avz \
     --ignore-existing \
     --progress \
+    -O --no-o --no-g --no-perms \
     "${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
 
   # Remote
@@ -91,6 +93,7 @@ function uploadSite(){
     -avz \
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
+    -O --no-o --no-g --no-perms \
     "${D}/" "${WARDIR// /\\ }/"
 }
 

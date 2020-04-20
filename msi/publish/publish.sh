@@ -57,11 +57,13 @@ function uploadPackage(){
     -avz \
     --ignore-existing \
     --progress \
+    -O --no-o --no-g --no-perms \
     "${MSI}" "${MSIDIR}/${VERSION}/"
 
   rsync \
     -avz \
     --ignore-existing \
+    -O --no-o --no-g --no-perms \
     --progress \
     "${MSI_SHASUM}" "${MSIDIR}/${VERSION}/"
 
@@ -72,6 +74,7 @@ function uploadPackage(){
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
     "${MSI}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
+
   rsync \
     -avz \
     --ignore-existing \
@@ -91,6 +94,7 @@ function uploadSite(){
   rsync \
     -avz \
     --progress \
+    -O --no-o --no-g --no-perms \
     -e "ssh ${SSH_OPTS[*]}" \
     "${D}/" "${MSIDIR// /\\ }/"
 }
