@@ -129,6 +129,14 @@ function uploadSite(){
     "$D/html/" "$DEBDIR/"
 
   rsync \
+    -avz \
+    -e "ssh ${SSH_OPTS[*]}" \
+    -O \
+    --no-o --no-g --no-perms \
+    --progress \
+    "$D/html/" "$PKGSERVER:${DEB_WEBDIR// /\\ }/"
+
+  rsync \
     -rlpgoDvz \
     -e "ssh ${SSH_OPTS[*]}" \
     -O \
