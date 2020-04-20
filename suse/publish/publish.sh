@@ -112,7 +112,10 @@ function uploadSite(){
   
     # generate index on the server
     # server needs 'createrepo' pacakge
-    createrepo --update -o "$SUSE_WEBDIR" "$SUSEDIR/" #Local
+    # Disable this for now as not critical
+    # createrepo --update -o "$SUSE_WEBDIR" "$SUSEDIR/" #Local
+    # cp "${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Local
+
     # shellcheck disable=SC2029
     ssh "${SSH_OPTS[@]}" "$PKGSERVER"   createrepo --update -o "'$SUSE_WEBDIR'" "'$SUSEDIR/'" # Remote
 
@@ -121,7 +124,6 @@ function uploadSite(){
       "$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" \
       repodata/ # Remote
 
-    cp "${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Local
 
     gpg \
       --batch \
