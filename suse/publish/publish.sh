@@ -68,14 +68,17 @@ function show(){
 
 function uploadPackage(){
   rsync \
-    -avz \
+    --recursive \
+    --verbose \
+    --compress \
     --ignore-existing \
     --progress \
-    -O --no-o --no-g --no-perms \
     "$SUSE" "$SUSEDIR/" # Local
 
   rsync \
-    -avz \
+    --archive \
+    --verbose \
+    --compress \
     --ignore-existing \
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
@@ -86,17 +89,20 @@ function uploadSite(){
 
   pushd $D
     rsync \
-      -avz \
+      --recursive \
+      --verbose \
+      --compress \
       --progress \
       --exclude RPMS \
       --exclude "HEADER.html" \
       --exclude "FOOTER.html" \
-      -O --no-o --no-g --no-perms \
       . "$SUSE_WEBDIR/" #Local
 
     # shellcheck disable=SC2029
     rsync \
-      -avz \
+      --archive \
+      --verbose \
+      --compress \
       --progress \
       -e "ssh ${SSH_OPTS[*]}" \
       --exclude RPMS \
@@ -136,22 +142,23 @@ function uploadSite(){
 
     # Following html need to be located inside the binary directory
     rsync \
-      -avz \
+      --compress \
+      --verbose \
+      --recursive \
       --include "HEADER.html" \
       --include "FOOTER.html" \
       --exclude "*" \
-      -O --no-o --no-g --no-perms \
       --progress \
       . "$SUSEDIR/"
 
     rsync \
-      -rlpgoDvz \
+      --archive \
+      --compress \
+      --verbose \
       -e "ssh ${SSH_OPTS[*]}" \
       --include "HEADER.html" \
       --include "FOOTER.html" \
       --exclude "*" \
-      -O \
-      --no-o --no-g --no-perms \
       --progress \
       . "$PKGSERVER:${SUSEDIR// /\\ }/"
     
