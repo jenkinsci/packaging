@@ -187,6 +187,6 @@ init
 generateSite
 signSite
 uploadPackage
-uploadPackagSite
+uploadPackageSite
 uploadHtmlSite
 clean
