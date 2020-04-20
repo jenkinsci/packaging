@@ -80,15 +80,17 @@ function skipIfAlreadyPublished(){
 
   if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${DEBDIR}/$(basename "$DEB")"; then
     echo "File already published, nothing else todo"
-    exit 0
-
+    return 0
   fi
+  return 1
 
 }
 
 # Upload Debian Package
 function uploadPackage(){
-  skipIfAlreadyPublished
+  if skipIfAlreadyPublished; then
+    return
+  fi
 
   rsync \
     -avz \
@@ -105,7 +107,9 @@ function uploadPackage(){
 }
 
 function uploadPackageSite(){
-  skipIfAlreadyPublished
+  if skipIfAlreadyPublished; then
+    return
+  fi
 
   cp \
     "$D"/binary/Packages* \
