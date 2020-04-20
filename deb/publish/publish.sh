@@ -88,10 +88,6 @@ function skipIfAlreadyPublished(){
 
 # Upload Debian Package
 function uploadPackage(){
-  if skipIfAlreadyPublished; then
-    return
-  fi
-
   rsync \
     -avz \
     --ignore-existing \
@@ -107,9 +103,6 @@ function uploadPackage(){
 }
 
 function uploadPackageSite(){
-  if skipIfAlreadyPublished; then
-    return
-  fi
 
   cp \
     "$D"/binary/Packages* \
@@ -190,7 +183,11 @@ show
 init
 generateSite
 signSite
-uploadPackage
-uploadPackageSite
+
+if ! skipIfAlreadyPublished; then
+  uploadPackage
+  uploadPackageSite
+fi
+
 uploadHtmlSite
 clean
