@@ -169,6 +169,14 @@ class IndexGenerator:
     def generate_repository_index(self):
         contexts = {
             'header': self.template_file,
+            'product_name': self.product_name,
+            'url': self.download_url,
+            'organization': self.organization,
+            'artifactName': self.artifact,
+            'os_family': self.distribution,
+            'packages': self.packages,
+            'releaseline': self.releaseline,
+            'web_url': self.web_url
         }
         env = Environment(loader=FileSystemLoader(self.template_directory))
         env.filters['basename'] = basename
