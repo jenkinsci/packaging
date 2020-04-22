@@ -6,7 +6,7 @@
 export JENKINS_URL=https://cloudbees.ci.cloudbees.com/
 
 # the host to publish bits to
-export PKGSERVER=mirrorbrain@pkg.jenkins.io
+export PKGSERVER=mirrorbrain@52.202.51.185
 export SSH_OPTS=-p 22
 export SCP_OPTS=-P 22
 
