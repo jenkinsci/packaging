@@ -135,6 +135,9 @@ function uploadHtmlSite(){
 
   # Html file need to be located in the binary directory
   rsync \
+    --include "HEADER.html" \
+    --include "FOOTER.html" \
+    --exclude "*" \
     --compress \
     --recursive \
     --progress \
@@ -144,6 +147,8 @@ function uploadHtmlSite(){
   rsync \
     --archive \
     --compress \
+    --include "index.html" \
+    --exclude "*" \
     --progress \
     --verbose \
     -e "ssh ${SSH_OPTS[*]}" \
@@ -152,6 +157,9 @@ function uploadHtmlSite(){
   rsync \
     --archive \
     --compress \
+    --include "HEADER.html" \
+    --include "FOOTER.html" \
+    --exclude "*" \
     --progress \
     --verbose \
     -e "ssh ${SSH_OPTS[*]}" \
