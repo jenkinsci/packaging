@@ -91,6 +91,7 @@ class IndexGenerator:
 
         self.targetFile = self.target_directory + "/HEADER.html"
         self.footer = self.target_directory + '/FOOTER.html'
+        self.index = self.target_directory + '/index.html'
         self.template_file = self.DISTRIBUTIONS[self.distribution]["template"]
         self.root_dir = os.path.dirname(self.target_directory[0:-1])
         self.root_header = self.root_dir + '/HEADER.html'
@@ -107,6 +108,7 @@ class IndexGenerator:
         print('Number of Packages found: ' + str(len(self.packages)))
         print('Template file: ' + self.template_file)
         print('Repository header generated: ' + self.targetFile)
+        print('Repository index generated: ' + self.index)
         print('Repository footer generated: ' + self.footer)
         print('Root header generated: ' + self.root_header)
         print('Root footer generated: ' + self.root_footer)
@@ -164,11 +166,31 @@ class IndexGenerator:
         with open(self.targetFile, "w") as f:
             f.write(template.render(contexts))
 
+    def generate_repository_index(self):
+        contexts = {
+            'header': self.template_file,
+            'product_name': self.product_name,
+            'url': self.download_url,
+            'organization': self.organization,
+            'artifactName': self.artifact,
+            'os_family': self.distribution,
+            'packages': self.packages,
+            'releaseline': self.releaseline,
+            'web_url': self.web_url
+        }
+        env = Environment(loader=FileSystemLoader(self.template_directory))
+        env.filters['basename'] = basename
+        templateIndex = env.get_template('index.html')
+
+        with open(self.index, "w") as f:
+            f.write(templateIndex.render(contexts))
+
 
 if __name__ == "__main__":
     headerGenerator = IndexGenerator(sys.argv[1:])
     headerGenerator.show_information()
     headerGenerator.generate_repository_header()
     headerGenerator.generate_footer()
+    headerGenerator.generate_repository_index()
     headerGenerator.generate_root_header()
     headerGenerator.generate_root_footer()
