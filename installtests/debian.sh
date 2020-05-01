@@ -31,6 +31,12 @@ docker_dpkg_install() {
     # Update with latest list of available packages
     apt-get -q update
 
+    # Install jenkins.io public key to verify package signing
+    wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | apt-key add -
+
+    # Intentionally does not add entry to sources.list.d - file based installation
+    # echo "deb https://pkg.jenkins.io/debian binary/" > /etc/apt/sources.list.d/jenkins.list
+
     # Assume packaging is already built and is available in $JENKINS_DEB_INSTALLER_FILE
     # Below will fail because missing dependencies, which apt-get will install
     echo
