@@ -6,8 +6,8 @@
 
 set -x
 
-# Use weekly 2.233
-VERSION=2.233
+# Use weekly 2.234
+VERSION=2.234
 
 # Use pre-release prototype 2.226 from 15 Apr 2020
 # VERSION=2.226
