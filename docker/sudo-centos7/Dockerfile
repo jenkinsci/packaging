@@ -2,4 +2,3 @@ FROM centos:7
 LABEL project="https://github.com/jenkinsci/packaging"
 
 RUN yum upgrade -y && yum install -y bc curl java-1.8.0-openjdk-devel which yum-plugin-verify
-RUN rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key

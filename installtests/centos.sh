@@ -23,6 +23,9 @@ OS="${ID}.${VERSION_ID}" # opencentos-leap.15.1 so that JUnit package naming can
 install_failure_msg="yum install failed on $JENKINS_CENTOS_INSTALLER_FILE"
 
 centos_yum_install() {
+    # Intentionally do not add yum repo - install file is local
+    # wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat/jenkins.repo
+    rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
     yum install -y $JENKINS_CENTOS_INSTALLER_FILE || echo $install_failure_msg
 }
 
