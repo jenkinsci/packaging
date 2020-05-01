@@ -68,7 +68,7 @@ private def osesToTest(String category) {
           "ubuntu-18.04",
           "sudo-ubuntu:18.04",
           "deb",
-          "core"
+          "extended"
       ],
       [
           "ubuntu-19.10",
