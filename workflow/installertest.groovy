@@ -113,6 +113,12 @@ private def osesToTest(String category) {
           "extended"
       ],
       [
+          "fedora-32",
+          "sudo-fedora:32",
+          "rpm",
+          "extended"
+      ],
+      [
           "opensuse-15.1",
           "sudo-opensuse:15.1",
           "suse",

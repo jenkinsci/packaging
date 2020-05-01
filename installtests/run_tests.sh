@@ -22,6 +22,7 @@ TEST_INSTALL_FEDORA="/bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks
 TEST_INSTALL_SUSE="/bin/bash $TEST_DIR/test_helper.sh $TEST_DIR/signing-checks.sh $TEST_DIR/suse.sh"
 
 docker run --rm -v "$PKG_SRC_DIR":$PKG_TMP_DIR                        sudo-fedora:31        $TEST_INSTALL_FEDORA
+docker run --rm -v "$PKG_SRC_DIR":$PKG_TMP_DIR                        sudo-fedora:32        $TEST_INSTALL_FEDORA
 docker run --rm -v "$PKG_SRC_DIR":$PKG_TMP_DIR                        sudo-centos:7         $TEST_INSTALL_CENTOS
 docker run --rm -v "$PKG_SRC_DIR":$PKG_TMP_DIR                        sudo-debian:oldstable $TEST_INSTALL_DEBIAN_AND_SERVICES
 docker run --rm -v "$PKG_SRC_DIR":$PKG_TMP_DIR --env CHECK_CERTS=true sudo-debian:stable    $TEST_INSTALL_DEBIAN_AND_SERVICES
