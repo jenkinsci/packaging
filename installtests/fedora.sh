@@ -23,7 +23,8 @@ OS="${ID}.${VERSION_ID}" # fedora.31 so that JUnit package naming can be used
 install_failure_msg="dnf install failed on $JENKINS_FEDORA_INSTALLER_FILE"
 
 fedora_dnf_install() {
-    wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat/jenkins.repo
+    # Intentionally do not add yum repo - install file is local
+    # wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat/jenkins.repo
     rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
     dnf install -y $JENKINS_FEDORA_INSTALLER_FILE || echo $install_failure_msg
 }
