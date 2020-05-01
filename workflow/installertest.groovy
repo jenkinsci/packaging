@@ -54,7 +54,7 @@ private List platformScripts(String platform) {
  * Get information on OSes to test that belong to a given category (or all)
  *
  * @param category Category of OSes to find - if null, returns all.
- * @return A map with OS names as keys and information about those OSes (image name, platform and category) as values.
+ * @return A list with OS names as keys and information about those OSes (image name, platform and category) as values.
  */
 private def osesToTest(String category) {
   def osDefs = [
