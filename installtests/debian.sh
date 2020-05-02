@@ -73,7 +73,7 @@ juLog -error="$install_failure_message" -suite="${OS}.install" -name="DockerInst
 verify_failure_message="dpkg verify failed on jenkins package"
 
 docker_dpkg_verify() {
-    if [[ $OS =~ ubuntu.* ]]; then
+    if [[ $OS =~ ubuntu ]]; then
         # Hide the Ubuntu deletion of changelog.gz
         # Unclear why those distributions delete changelog.gz, while
         # Ubuntu 16, Debian 9, Debian 10, and Debian testing do not.
