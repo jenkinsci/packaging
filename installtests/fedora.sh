@@ -42,8 +42,6 @@ fedora_dnf_info_check() {
 juLog -error="$info_failure_message" -suite="${OS}.install" -name="DockerInfoCheck" fedora_dnf_info_check
 
 #######################################################################
-#
-# Fedora signing check fails on Jenkins 2.230, needs more investigation
 
 signing_check_failure_message="rpm signing check failed on jenkins package"
 #
