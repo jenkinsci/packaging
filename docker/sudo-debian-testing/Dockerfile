@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM debian:bullseye
 LABEL project="https://github.com/jenkinsci/packaging"
 
 ARG USER_ID

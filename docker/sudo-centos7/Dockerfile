@@ -1,7 +1,4 @@
 FROM centos:7
-MAINTAINER samvanoort@gmail.com
+LABEL project="https://github.com/jenkinsci/packaging"
 
-RUN yum install -y sudo initscripts bc which
-RUN useradd mysudoer -u @@MYUSERID@@
-RUN echo 'mysudoer ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-RUN sed -i 's/requiretty/!requiretty/g' /etc/sudoers
+RUN yum upgrade -y && yum install -y bc curl java-1.8.0-openjdk-devel which yum-plugin-verify

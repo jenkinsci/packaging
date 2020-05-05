@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM ubuntu:19.10
 LABEL project="https://github.com/jenkinsci/packaging"
 
 ARG USER_ID
