@@ -18,8 +18,6 @@ Param(
 
 # include ./setup.mk
 
-# PACKAGE_BUILDER_VERSION:=0.1
-
 # #######################################################
 
 # clean:
