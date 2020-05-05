@@ -1,5 +1,5 @@
 #!/bin/bash
-### Copyright 2010 Manuel Carrasco Moñino. (manolo at apache.org) 
+### Copyright 2010 Manuel Carrasco Moñino. (manolo at apache.org)
 ###
 ### Licensed under the Apache License, Version 2.0.
 ### You may obtain a copy of it at
@@ -9,7 +9,7 @@
 ### A library for shell scripts which creates reports in jUnit format.
 ### These reports can be used in Jenkins, or any other CI.
 ###
-### Usage: 
+### Usage:
 ###     - Include this file in your shell script
 ###     - Use juLog to call your command any time you want to produce a new report
 ###        Usage:   juLog <options> command arguments
@@ -20,6 +20,18 @@
 ###     - Junit reports are left in the folder 'result' under the directory where the script is executed.
 ###     - Configure Jenkins to parse junit files from the generated folder
 ###
+
+# Record if calling script is using 'set -x'
+# Thanks to https://unix.stackexchange.com/questions/21922/bash-test-whether-original-script-was-run-with-x
+if [[ ${-/x} != $- ]] ; then
+  DISABLE_XTRACE="+x"
+  ENABLE_XTRACE="-x"
+else
+  DISABLE_XTRACE="+x"
+  ENABLE_XTRACE="+x" # Since xtrace was not enabled by caller, we can disable safely even when disabled
+fi
+set $DISABLE_XTRACE
+
 PATH=$PATH:/usr/bin
 
 asserts=00; errors=0; total=0; content=""
@@ -27,15 +39,18 @@ date=`which gdate || which date`
 # create output folder
 juDIR=`pwd`/results
 mkdir -p "$juDIR" || exit
+[ "$EUID" == 0 ] && chmod a+rwx "$juDIR" # Simplify cleanup for others, if root running, make results rwx for everyone
 
-# The name of the suite is calculated based in your script name
+# The default name of the suite is calculated based on your script name
 suite=`basename $0 | sed -e 's/.sh$//' | tr "." "_"`
 
 # A wrapper for the eval method witch allows catching seg-faults and use tee
 errfile=/tmp/evErr.$$.log
 eVal() {
+  set $ENABLE_XTRACE
   eval "$1"
   echo $? | tr -d "\n" >$errfile
+  set $DISABLE_XTRACE
 }
 
 # Method to clean old tests
@@ -44,23 +59,26 @@ juLogClean() {
   rm -f "$juDIR"/TEST-*
 }
 
-# Execute a command and record its results 
+# Execute a command and record its results
 juLog() {
-  
+
+  set $DISABLE_XTRACE
+
   # parse arguments
   ya=""; icase=""
-  while [ -z "$ya" ]; do  
+  while [ -z "$ya" ]; do
     case "$1" in
-  	  -name=*)   name=$asserts-`echo "$1" | sed -e 's/-name=//'`;   shift;;
+      -name=*)   name=$asserts-`echo "$1" | sed -e 's/-name=//'`;   shift;;
+      -suite=*)  suite=`echo "$1" | sed -e 's/-suite=//'`;   shift;;
       -ierror=*) ereg=`echo "$1" | sed -e 's/-ierror=//'`; icase="-i"; shift;;
       -error=*)  ereg=`echo "$1" | sed -e 's/-error=//'`;  shift;;
       *)         ya=1;;
     esac
-  done  
+  done
 
-  # use first arg as name if it was not given 
+  # use first arg as name if it was not given
   if [ -z "$name" ]; then
-    name="$asserts-$1" 
+    name="$asserts-$1"
     shift
   fi
 
@@ -80,14 +98,14 @@ juLog() {
   echo "+++ Running case: $name " | tee -a $outf
   echo "+++ working dir: "`pwd`           | tee -a $outf
   echo "+++ command: $cmd"            | tee -a $outf
-  ini=`$date +%s.%N`
+  ini=$(date +%s.%N)
   eVal "$cmd" 2>&1                | tee -a $outf
   evErr=`cat $errfile`
   rm -f $errfile
-  end=`date +%s.%N`
+  end=$(date +%s.%N)
   echo "+++ exit code: $evErr"        | tee -a $outf
-  
-  # set the appropriate error, based in the exit code and the regex  
+
+  # set the appropriate error, based in the exit code and the regex
   [ $evErr != 0 ] && err=1 || err=0
   out=`cat $outf | sed -e 's/^\([^+]\)/| \1/g'`
   if [ $err = 0 -a -n "$ereg" ]; then
@@ -111,7 +129,7 @@ juLog() {
   "
   ## testcase tag
   content="$content
-    <testcase assertions=\"1\" name=\"$name\" time=\"$time\">
+    <testcase assertions=\"1\" name=\"$name\" classname=\"$suite\" time=\"$time\">
     $failure
     <system-out>
 <![CDATA[
@@ -127,5 +145,8 @@ $out
   </testsuite>
 EOF
 
+  set $ENABLE_XTRACE
+
 }
 
+set $ENABLE_XTRACE

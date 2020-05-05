@@ -22,7 +22,7 @@ Note: these use templating on the Dockerfiles to supply the local user, so the D
 bash ./docker/build-sudo-images.sh
 ```
 
-These images include sudo + packages that are normally part of the OS distribution but may be missing in the base images.  (see the docker subfolder README).
+These images include sudo + java + packages that are normally part of the OS distribution but may be missing in the base images.  (see the docker subfolder README).
 
 Next, run the tests:
 bash ./run_tests.sh
@@ -30,11 +30,10 @@ bash ./run_tests.sh
 
 ## Installation Scripts
 
-We have installation scripts for the core distro types (RPM, Debian pkg, SUSE RPM, which will create a working Jenkins with JDKs, etc + curl for testing.  THESE MUST RUN AS ROOT OR IN SUDO MODE in the container (the sudo images above achieve this).
+We have installation scripts for the core distro types (RPM, Debian pkg, SUSE RPM, which will create a working Jenkins for testing.  THESE MUST RUN AS ROOT OR IN SUDO MODE in the container (the sudo images above achieve this).
 
 Usage:
 
-* sudo centos.sh /path/to/rpm/package.rpm
 * sudo suse.sh /path/to/suse/package.rpm
 * sudo debian.sh /path/to/debian/package.deb
 

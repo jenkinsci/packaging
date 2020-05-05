@@ -54,33 +54,51 @@ private List platformScripts(String platform) {
  * Get information on OSes to test that belong to a given category (or all)
  *
  * @param category Category of OSes to find - if null, returns all.
- * @return A map with OS names as keys and information about those OSes (image name, platform and category) as values.
+ * @return A list with OS names as keys and information about those OSes (image name, platform and category) as values.
  */
 private def osesToTest(String category) {
   def osDefs = [
       [
-          "ubuntu-14.04",
-          "sudo-ubuntu:14.04",
-          "deb",
-          "core"
-      ],
-      [
-          "ubuntu-15.04",
-          "sudo-ubuntu:15.04",
+          "ubuntu-16.04",
+          "sudo-ubuntu:16.04",
           "deb",
           "extended"
       ],
       [
-          "debian-wheezy",
-          "sudo-debian:wheezy",
+          "ubuntu-18.04",
+          "sudo-ubuntu:18.04",
           "deb",
           "extended"
       ],
       [
-          "centos-6",
-          "sudo-centos:6",
-          "rpm",
-          "core"
+          "ubuntu-19.10",
+          "sudo-ubuntu:19.10",
+          "deb",
+          "extended"
+      ],
+      [
+          "ubuntu-20.04",
+          "sudo-ubuntu:20.04",
+          "deb",
+          "extended"
+      ],
+      [
+          "debian-stable",
+          "sudo-debian:stable",
+          "deb",
+          "extended"
+      ],
+      [
+          "debian-oldstable",
+          "sudo-debian:oldstable",
+          "deb",
+          "extended"
+      ],
+      [
+          "debian-testing",
+          "sudo-debian:testing",
+          "deb",
+          "extended"
       ],
       [
           "centos-7",
@@ -89,8 +107,20 @@ private def osesToTest(String category) {
           "extended"
       ],
       [
-          "opensuse-13.2",
-          "sudo-opensuse:13.2",
+          "fedora-31",
+          "sudo-fedora:31",
+          "rpm",
+          "extended"
+      ],
+      [
+          "fedora-32",
+          "sudo-fedora:32",
+          "rpm",
+          "extended"
+      ],
+      [
+          "opensuse-15.1",
+          "sudo-opensuse:15.1",
           "suse",
           "core"
       ]
