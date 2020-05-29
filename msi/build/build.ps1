@@ -94,20 +94,20 @@ Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
             # always disable tracing here
             Set-PSDebug -Trace 0
             $retries = 10
-            while($retries -gt 0) {
+            $i = $retries
+            for(; $i -gt 0; $i--) {
                 $p = Start-Process -Wait -PassThru -NoNewWindow -FilePath "signtool.exe" -ArgumentList "sign /v /f `"${env:PKCS12_FILE}`" /p ${env:SIGN_STOREPASS} /t http://timestamp.verisign.com/scripts/timestamp.dll /d `"Jenkins Automation Server ${JenkinsVersion}`" /du `"https://jenkins.io`" $_.FullName"
                 $p.WaitForExit()
-                # we will retry until we get a good exit code
+                # we will retry up to $retries times until we get a good exit code
                 if($p.ExitCode -eq 0) {
                     break
                 } else {
                     Start-Sleep -Seconds 10
-                    $retries--
                 }
             }
             
-            if($retries -lt 0) {
-                Write-Error "signtool did not complete successfully after 10 tries"
+            if($i -le 0) {
+                Write-Error "signtool did not complete successfully after $retries tries"
                 exit -1
             }
             
