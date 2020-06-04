@@ -93,7 +93,24 @@ Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
             Write-Host "Signing installer"
             # always disable tracing here
             Set-PSDebug -Trace 0
-            signtool sign /v /f $env:PKCS12_FILE /p $env:SIGN_STOREPASS /t http://timestamp.verisign.com/scripts/timestamp.dll /d "Jenkins Automation Server ${JenkinsVersion}" /du "https://jenkins.io" $_.FullName
+            $retries = 10
+            $i = $retries
+            for(; $i -gt 0; $i--) {
+                $p = Start-Process -Wait -PassThru -NoNewWindow -FilePath "signtool.exe" -ArgumentList "sign /v /f `"${env:PKCS12_FILE}`" /p ${env:SIGN_STOREPASS} /t http://timestamp.verisign.com/scripts/timestamp.dll /d `"Jenkins Automation Server ${JenkinsVersion}`" /du `"https://jenkins.io`" $_.FullName"
+                $p.WaitForExit()
+                # we will retry up to $retries times until we get a good exit code
+                if($p.ExitCode -eq 0) {
+                    break
+                } else {
+                    Start-Sleep -Seconds 10
+                }
+            }
+            
+            if($i -le 0) {
+                Write-Error "signtool did not complete successfully after $retries tries"
+                exit -1
+            }
+            
             if($UseTracing) { Set-PSDebug -Trace 1 }
 
             Write-Host "Checking the signature"
