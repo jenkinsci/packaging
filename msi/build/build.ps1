@@ -83,7 +83,7 @@ Get-Location
 
 Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
     Foreach-Object {
-        Write-Host "Signing installer: " + $_
+        Write-Host "Signing installer: $($_.FullName)"
         # sign the file
         
         Test-Path $env:PKCS12_FILE
@@ -96,7 +96,7 @@ Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
             $retries = 10
             $i = $retries
             for(; $i -gt 0; $i--) {
-                $p = Start-Process -Wait -PassThru -NoNewWindow -FilePath "signtool.exe" -ArgumentList "sign /v /f `"${env:PKCS12_FILE}`" /p ${env:SIGN_STOREPASS} /t http://timestamp.verisign.com/scripts/timestamp.dll /d `"Jenkins Automation Server ${JenkinsVersion}`" /du `"https://jenkins.io`" $_"
+                $p = Start-Process -Wait -PassThru -NoNewWindow -FilePath "signtool.exe" -ArgumentList "sign /v /f `"${env:PKCS12_FILE}`" /p ${env:SIGN_STOREPASS} /t http://timestamp.verisign.com/scripts/timestamp.dll /d `"Jenkins Automation Server ${JenkinsVersion}`" /du `"https://jenkins.io`" $($_.FullName)"
                 $p.WaitForExit()
                 # we will retry up to $retries times until we get a good exit code
                 if($p.ExitCode -eq 0) {
@@ -115,11 +115,11 @@ Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
 
             Write-Host "Checking the signature"
             # It will print the entire certificate chain with details
-            signtool verify /v /pa /all $_
+            signtool verify /v /pa /all $_.FullName
         }
 
-    $sha256 = (Get-FileHash -Algorithm SHA256 -Path $_).Hash.ToString().ToLower()
-    Set-Content -Path "$($_).sha256" -Value "$sha256 $($_.Name)" -Force
+    $sha256 = (Get-FileHash -Algorithm SHA256 -Path $_.FullName).Hash.ToString().ToLower()
+    Set-Content -Path "$($_.FullName).sha256" -Value "$sha256 $($_.Name)" -Force
     $env:MSI_SHA256 = $sha256
 }
 
