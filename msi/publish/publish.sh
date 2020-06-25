@@ -87,6 +87,28 @@ function uploadPackage(){
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
     "${MSI_SHASUM}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
+
+  # Update the symlink to point to most recent Windows build
+  #
+  # Remove anything in current directory named 'latest'
+  # This is a safety measure just in case something was left there previously
+  rm -rf latest
+
+  # Create a local symlink pointing to the VERSION directory
+  # Don't need VERSION directory locally, just the unresolved symlink
+  ln -s ${VERSION} latest
+
+  # Copy the symlink to PKGSERVER in the root of MSIDIR
+  # Overwrites the existing symlink on the destination
+  rsync \
+    --archive \
+    --links \
+    --verbose \
+    -e "ssh ${SSH_OPTS[*]}" \
+    latest "$PKGSERVER:${MSIDIR}/"
+
+  # Remove the local symlink
+  rm latest
 }
 
 # The site need to be located in the binary directory
