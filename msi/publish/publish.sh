@@ -96,9 +96,9 @@ function uploadPackage(){
 
   # Create a local symlink pointing to the MSI file in the VERSION directory.
   # Don't need VERSION directory or MSI locally, just the unresolved symlink.
-  # The downloads page downloads http://mirrors.jenkins-ci.org/windows/latest
+  # The jenkins.io page downloads http://mirrors.jenkins-ci.org/windows/latest
   # and assumes it points to the most recent MSI file.
-  ln -s ${VERSION}/windows.msi latest
+  ln -s ${VERSION}/jenkins.msi latest
 
   # Copy the symlink to PKGSERVER in the root of MSIDIR
   # Overwrites the existing symlink on the destination
