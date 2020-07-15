@@ -117,7 +117,8 @@ function uploadSite(){
     # cp "${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Local
 
     # shellcheck disable=SC2029
-    ssh "${SSH_OPTS[@]}" "$PKGSERVER"   createrepo --update -o "'$SUSE_WEBDIR'" "'$SUSEDIR/'" # Remote
+    # --update can't be used because of https://bugs.centos.org/view.php?id=9189
+    ssh "${SSH_OPTS[@]}" "$PKGSERVER"   createrepo --outputdir "'$SUSE_WEBDIR'" --pretty --split "'$PROD_SUSEDIR/'"  "'$SUSEDIR/'" # Remote
 
     scp \
       "${SCP_OPTS[@]}" \

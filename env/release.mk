@@ -11,12 +11,16 @@ export SSH_OPTS=-p 22
 export SCP_OPTS=-P 22
 
 # where to put binary files
-export WARDIR=/srv/releases/jenkins/war${RELEASELINE}
-export MSIDIR=/srv/releases/jenkins/windows${RELEASELINE}
-export OSXDIR=/srv/releases/jenkins/osx${RELEASELINE}
-export DEBDIR=/srv/releases/jenkins/debian${RELEASELINE}
-export RPMDIR=/srv/releases/jenkins/redhat${RELEASELINE}
-export SUSEDIR=/srv/releases/jenkins/opensuse${RELEASELINE}
+export WARDIR=/srv/releases/jenkins.staging/war${RELEASELINE}
+export MSIDIR=/srv/releases/jenkins.staging/windows${RELEASELINE}
+export OSXDIR=/srv/releases/jenkins.staging/osx${RELEASELINE}
+export DEBDIR=/srv/releases/jenkins.staging/debian${RELEASELINE}
+export RPMDIR=/srv/releases/jenkins.staging/redhat${RELEASELINE}
+export SUSEDIR=/srv/releases/jenkins.staging/opensuse${RELEASELINE}
+
+# Where to fetch production packages used to generate pkg website
+export RPMDIR=/srv/releases/jenkins.staging/redhat${RELEASELINE}
+export SUSEDIR=/srv/releases/jenkins.staging/opensuse${RELEASELINE}
 
 # where to put repository index and other web contents
 export  RPM_WEBDIR=/var/www/pkg.jenkins.io.staging/redhat${RELEASELINE}

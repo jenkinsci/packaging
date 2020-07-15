@@ -43,7 +43,8 @@ EOF
   # createrepo --update -o "$RPM_WEBDIR" "$RPMDIR/"
   # on the server
   # shellcheck disable=SC2029
-  ssh "${SSH_OPTS[@]}" "$PKGSERVER"  createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
+  # --update can't be used because of https://bugs.centos.org/view.php?id=9189
+  ssh "${SSH_OPTS[@]}" "$PKGSERVER"  createrepo --outputdir "'$RPM_WEBDIR'" --split --pretty "'$PROD_RPMDIR/'" "'$RPMDIR/'"
 
 }
 
