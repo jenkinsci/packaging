@@ -11,3 +11,4 @@ generated
 .iml
 .idea/
 *.orig
+credentials/ssh/known_hosts
