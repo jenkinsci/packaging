@@ -1,4 +1,3 @@
-# docker exec -i -t packaging_packaging_1 gpg --import --batch credentials/sandbox.gpg
 version: '3'
 volumes:
   sshd:
@@ -41,3 +40,14 @@ services:
     volumes:
       - "./pkgConfig/httpd.conf:/usr/local/apache2/conf/httpd.conf"
       - "./target:/usr/local/apache2/htdocs"
+
+## Howto
+# docker exec -i -t packaging_packaging_1 gpg --import --batch credentials/sandbox.gpg
+#
+# Delete .ssh/known_hosts
+# docker exec -i -t packaging_packaging_1 rm .ssh/known_hosts
+# docker exec -i -t packaging_packaging_1 ssh jenkins@remote
+# docker exec -i -t packaging_packaging_1 make rpm rpm.publish
+# docker exec -i -t packaging_packaging_1 make deb deb.publish
+# docker exec -i -t packaging_packaging_1 make suse suse.publish
+# docker exec -i -t packaging_packaging_1 make war war.publish
