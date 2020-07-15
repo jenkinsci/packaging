@@ -14,7 +14,7 @@ export SSH_OPTS=-p 22 -o StrictHostKeyChecking=no
 export SCP_OPTS=-P 22 -o StrictHostKeyChecking=no
 
 # where to put binary files
-export TESTDIR=$(realpath .)/pkg.jenkins.io
+export TESTDIR=/src/releases/jenkins
 export WARDIR=${TESTDIR}.staging/war${RELEASELINE}
 export MSIDIR=${TESTDIR}.staging/windows${RELEASELINE}
 export OSXDIR=${TESTDIR}.staging/osx${RELEASELINE}
@@ -26,6 +26,7 @@ export PROD_RPMDIR=${TESTDIR}/redhat${RELEASELINE}
 export PROD_SUSEDIR=${TESTDIR}/opensuse${RELEASELINE}
 
 # where to put repository index and other web contents
+export TESTDIR=$(realpath .)/pkg.jenkins.io
 export  RPM_WEBDIR=${TESTDIR}.staging/redhat${RELEASELINE}
 export SUSE_WEBDIR=${TESTDIR}.staging/opensuse${RELEASELINE}
 export  DEB_WEBDIR=${TESTDIR}.staging/debian${RELEASELINE}

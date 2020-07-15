@@ -19,8 +19,8 @@ export RPMDIR=/srv/releases/jenkins.staging/redhat${RELEASELINE}
 export SUSEDIR=/srv/releases/jenkins.staging/opensuse${RELEASELINE}
 
 # Where to fetch production packages used to generate pkg website
-export RPMDIR=/srv/releases/jenkins.staging/redhat${RELEASELINE}
-export SUSEDIR=/srv/releases/jenkins.staging/opensuse${RELEASELINE}
+export RPMDIR=/srv/releases/jenkins/redhat${RELEASELINE}
+export SUSEDIR=/srv/releases/jenkins/opensuse${RELEASELINE}
 
 # where to put repository index and other web contents
 export  RPM_WEBDIR=/var/www/pkg.jenkins.io.staging/redhat${RELEASELINE}
