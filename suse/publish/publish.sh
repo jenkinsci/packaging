@@ -24,11 +24,11 @@ function generateSite(){
   "$BASE/bin/indexGenerator.py" \
     --distribution opensuse \
     --targetDir "${D}"
-  
+
   gpg --export -a --output "$D/repodata/repomd.xml.key" "${GPG_KEYNAME}"
-  
+
   "$BASE/bin/branding.py" $D
-  
+
   cp "$SUSE" $D/RPMS/noarch
 }
 
@@ -43,6 +43,22 @@ function init(){
   mkdir -p "$SUSE_WEBDIR"
 
   mkdir -p $D/RPMS/noarch $D/repodata
+}
+
+function isDuplicatedPackageLocation(){
+
+  DUPLICATED=false
+
+  while read -r FILE; do
+    FILE=$(basename "$FILE")
+    if ssh "${SSH_OPTS[@]}" "$PKGSERVER" "test -e $PROD_SUSEDIR/$FILE"; then
+      DUPLICATED=true
+      echo "Duplicated file '$FILE' found in both $SUSEDIR $PROD_SUSEDIR"
+    fi
+  done < <(ssh "${SSH_OPTS[@]}" "$PKGSERVER" find "$SUSEDIR" -name "*.rpm" -type f)
+
+  return $DUPLICATED
+
 }
 
 function skipIfAlreadyPublished(){
@@ -112,7 +128,7 @@ function uploadSite(){
       --exclude "HEADER.html" \
       --exclude "FOOTER.html" \
       . "$PKGSERVER:${SUSE_WEBDIR// /\\ }/" # Remote
-  
+
     # generate index on the server
     # server needs 'createrepo' pacakge
     # Disable this for now as not critical
@@ -121,7 +137,12 @@ function uploadSite(){
 
     # shellcheck disable=SC2029
     # --update can't be used because of https://bugs.centos.org/view.php?id=9189
-    ssh "${SSH_OPTS[@]}" "$PKGSERVER"   createrepo --outputdir "'$SUSE_WEBDIR'" --pretty --split "'$PROD_SUSEDIR/'"  "'$SUSEDIR/'" # Remote
+
+    if ! isDuplicatedPackageLocation; then
+      ssh "${SSH_OPTS[@]}" "$PKGSERVER"   createrepo --outputdir "'$SUSE_WEBDIR'" --pretty --split "'$PROD_SUSEDIR/'"  "'$SUSEDIR/'" # Remote
+    else
+      echo "Please first remove duplicated packages between $RPMDIR/ and $PROD_RPMDIR"
+    fi
 
     scp \
       "${SCP_OPTS[@]}" \
@@ -167,7 +188,7 @@ function uploadSite(){
       --exclude "*" \
       --progress \
       . "$PKGSERVER:${SUSEDIR// /\\ }/"
-    
+
   popd
 }
 

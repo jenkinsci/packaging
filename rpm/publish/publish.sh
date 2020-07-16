@@ -23,11 +23,11 @@ function generateSite(){
   "$BASE/bin/indexGenerator.py" \
     --distribution redhat \
     --targetDir "${D}"
-  
+
   gpg --export -a --output "$D/${ORGANIZATION}.key" "${GPG_KEYNAME}"
-  
+
   "$BASE/bin/branding.py" "$D"
-  
+
   cp "$RPM" "$D/RPMS/noarch"
 
 cat  > "$D/${ARTIFACTNAME}.repo" << EOF
@@ -37,29 +37,54 @@ baseurl=${RPM_URL}
 gpgcheck=1
 EOF
 
-  # generate index 
+  # generate index
   # locally
   # disable this for now, as it's currently now used and generate errors
   # createrepo --update -o "$RPM_WEBDIR" "$RPMDIR/"
   # on the server
   # shellcheck disable=SC2029
   # --update can't be used because of https://bugs.centos.org/view.php?id=9189
-  ssh "${SSH_OPTS[@]}" "$PKGSERVER"  createrepo --outputdir "'$RPM_WEBDIR'" --update --pretty --baseurl "'$PROD_RPMDIR/'" "'$RPMDIR/'" 
+
+  if ! isDuplicatedPackageLocation; then
+    ssh "${SSH_OPTS[@]}" "$PKGSERVER"  createrepo --outputdir "'$RPM_WEBDIR'" --update --pretty --baseurl "'$PROD_RPMDIR/'" "'$RPMDIR/'"
+  else
+    echo "Please first remove duplicated packages between $RPMDIR/ and $PROD_RPMDIR"
+  fi
 
 }
 
-function skipIfAlreadyPublished(){
+function isDuplicatedPackageLocation(){
 
-  if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${RPMDIR}/$(basename "$RPM")"; then
-    echo "File already published on $PKGSERVER:$RPMDIR, nothing else todo"
-    exit 0
-  fi
+  DUPLICATED=false
 
-  if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${PROD_RPMDIR}/$(basename "$RPM")"; then
-    echo "File already published on $PKGSERVER:$PROD_RPMDIR, nothing else todo"
-    exit 0
-  fi
+  while read -r FILE; do
+    FILE=$(basename "$FILE")
+    if ssh "${SSH_OPTS[@]}" "$PKGSERVER" "test -e $PROD_RPMDIR/$FILE"; then
+      DUPLICATED=true
+      echo "Duplicated file '$FILE' found in both $RPMDIR $PROD_RPMDIR"
+    fi
+  done < <(ssh "${SSH_OPTS[@]}" "$PKGSERVER" find "$RPMDIR" -name "*.rpm" -type f)
+
+  return $DUPLICATED
+
 }
+
+function isDuplicatedPackageLocation(){
+
+  DUPLICATED=false
+
+  while read -r FILE; do
+    FILE=$(basename "$FILE")
+    if [ -f "$PROD_RPMDIR/$FILE" ]; then
+      echo "Duplicated file '$FILE' found in both $RPMDIR $PROD_RPMDIR"
+    fi
+  done < <(find "$RPMDIR" -name "*.rpm" -type f)
+
+
+  return $DUPLICATED
+
+}
+
 
 function init(){
   mkdir -p "$D/RPMS/noarch"
@@ -81,7 +106,7 @@ function uploadPackage(){
     --progress \
     "$RPM" "$RPMDIR/"
 
-  # Remote 
+  # Remote
   rsync \
     --archive \
     --verbose \
