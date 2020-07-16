@@ -44,16 +44,20 @@ EOF
   # on the server
   # shellcheck disable=SC2029
   # --update can't be used because of https://bugs.centos.org/view.php?id=9189
-  ssh "${SSH_OPTS[@]}" "$PKGSERVER"  createrepo --outputdir "'$RPM_WEBDIR'" --split --pretty "'$PROD_RPMDIR/'" "'$RPMDIR/'"
+  ssh "${SSH_OPTS[@]}" "$PKGSERVER"  createrepo --outputdir "'$RPM_WEBDIR'" --update --pretty --baseurl "'$PROD_RPMDIR/'" "'$RPMDIR/'" 
 
 }
 
 function skipIfAlreadyPublished(){
 
   if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${RPMDIR}/$(basename "$RPM")"; then
-    echo "File already published, nothing else todo"
+    echo "File already published on $PKGSERVER:$RPMDIR, nothing else todo"
     exit 0
+  fi
 
+  if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${PROD_RPMDIR}/$(basename "$RPM")"; then
+    echo "File already published on $PKGSERVER:$PROD_RPMDIR, nothing else todo"
+    exit 0
   fi
 }
 

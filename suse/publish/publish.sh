@@ -48,9 +48,12 @@ function init(){
 function skipIfAlreadyPublished(){
 
   if ssh "${SSH_OPTS[@]}" "$PKGSERVER" "test -e ${SUSEDIR}/$(basename $SUSE)"; then
-    echo "File already published, nothing else todo"
+    echo "File already published $PKGSERVER:${SUSEDIR}/$(basename "$SUSE"), nothing else todo"
     exit 0
-
+  fi
+  if ssh "${SSH_OPTS[@]}" "$PKGSERVER" "test -e ${PROD_SUSEDIR}/$(basename $SUSE)"; then
+    echo "File already published $PKGSERVER:${PROD_SUSEDIR}/$(basename "$SUSE"), nothing else todo"
+    exit 0
   fi
 
 }
