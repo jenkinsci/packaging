@@ -47,7 +47,7 @@ if [ "$RUN_STANDALONE" = "false" ]; then
     exit 1
 fi
 
-# Make sure there exists a java executable, it may not be allways the case
+# Make sure there exists a java executable, it may not be always the case
 if [ -z "$JAVA" ]; then
     echo "ERROR: No Java executable found in current PATH: $PATH" >&2
     echo "If you actually have java installed on the system make sure the executable is in the aforementioned path and that 'type -p java' returns the java executable path" >&2
