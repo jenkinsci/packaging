@@ -20,11 +20,13 @@ function clean(){
 }
 
 function generateSite(){
+  gpg --export -a --output "$D/${ORGANIZATION}.key" "${GPG_KEYNAME}"
+  echo "$(gpg --import-options show-only --import $D/${ORGANIZATION}.key)" > "$D/${ORGANIZATION}.key.info"
+  
   "$BASE/bin/indexGenerator.py" \
     --distribution redhat \
-    --targetDir "${D}"
-  
-  gpg --export -a --output "$D/${ORGANIZATION}.key" "${GPG_KEYNAME}"
+    --targetDir "${D}" \
+    --gpg-key-info-file "${D}/${ORGANIZATION}.key.info"
   
   "$BASE/bin/branding.py" "$D"
   
