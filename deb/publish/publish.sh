@@ -31,8 +31,8 @@ function generateSite(){
   
   "$BASE/bin/indexGenerator.py" \
     --distribution debian \
-    --targetDir "$D/html" \
-    --gpg-key-info-file "${D}/${ORGANIZATION}.key.info"
+    --gpg-key-info-file "${D}/${ORGANIZATION}.key.info" \
+    --targetDir "$D/html"
   
   "$BASE/bin/branding.py" "$D"
 

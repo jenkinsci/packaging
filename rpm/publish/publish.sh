@@ -25,8 +25,8 @@ function generateSite(){
   
   "$BASE/bin/indexGenerator.py" \
     --distribution redhat \
-    --targetDir "${D}" \
-    --gpg-key-info-file "${D}/${ORGANIZATION}.key.info"
+    --gpg-key-info-file "${D}/${ORGANIZATION}.key.info" \
+    --targetDir "$D"
   
   "$BASE/bin/branding.py" "$D"
   

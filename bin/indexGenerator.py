@@ -159,9 +159,8 @@ class IndexGenerator:
         if (self.gpg_pub_key_info_file != "."):
             gpg_pub_key = Path(self.gpg_pub_key_info_file)
             if (gpg_pub_key.is_file()): 
-                gpg_pub_key = open(self.gpg_pub_key_info_file, "r")
-                pub_key_info = gpg_pub_key.read()
-                gpg_pub_key.close()
+                with open(self.gpg_pub_key_info_file, "r") as gpg_pub_key:
+                    pub_key_info = gpg_pub_key.read()
         
         return pub_key_info
 
