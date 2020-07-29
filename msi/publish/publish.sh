@@ -46,7 +46,7 @@ function skipIfAlreadyPublished(){
 
 function uploadPackage(){
 
-  cp "${ARTIFACTNAME}-${VERSION}.msi" "${MSI}"
+  cp "${ARTIFACTNAME}-${VERSION}${RELEASELINE}.msi" "${MSI}"
 
   sha256sum "${MSI}" > "${MSI_SHASUM}"
 
