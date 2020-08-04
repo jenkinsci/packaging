@@ -25,6 +25,13 @@
   yum install {{artifactName}}
   </pre>
 
+  <p>
+  The rpm packages were signed using this key:
+  </p>
+
+  <pre class="text-white bg-dark" style="box-sizing:border-box; padding:1.5rem 1rem;">{{ pub_key_info|trim }}</pre>
+
+
 {% endblock %}
 
 {% block  individual_package_instruction  %}

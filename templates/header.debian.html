@@ -33,6 +33,12 @@ Update your local package index, then finally install {{product_name}}:
   sudo apt-get install {{artifactName}}
   </pre>
 </p>
+
+<p>
+The apt packages were signed using this key:
+</p>
+
+<pre class="text-white bg-dark" style="box-sizing:border-box; padding:1.5rem 1rem;">{{ pub_key_info|trim }}</pre>
 {% endblock %}
 
 {% block  individual_package_instruction  %}
