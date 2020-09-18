@@ -28,9 +28,19 @@
       <![CDATA[ 
       var items = DisplayVersion.Split('.');
       if(items.Length <= 2) {
-        EncodedVersion = string.Format("{0}.0", DisplayVersion);
+        int minor = 0;
+        if(items.Length > 1 && int.TryParse(items[1], out minor) && minor > 255) {
+          EncodedVersion = string.Format("{0}.255.{1}", items[0], minor * 10);            
+        } else {
+          EncodedVersion = string.Format("{0}.0", DisplayVersion);
+        }
       } else {
-        EncodedVersion = string.Format("{0}.{1}.{2}", items[0], items[1], (int.Parse(items[2]) * 1000) + (items.Length > 3 ? int.Parse(items[3]) * 10 : 0));
+        int minor = 0;
+        if(int.TryParse(items[1], out minor) && minor > 255) {
+          EncodedVersion = string.Format("{0}.255.{1}", items[0], (minor * 10) + int.Parse(items[2]));
+        } else {
+          EncodedVersion = string.Format("{0}.{1}.{2}", items[0], items[1], int.Parse(items[2]));
+        }
       }
       ]]>
     </Code>

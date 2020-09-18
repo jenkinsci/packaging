@@ -120,7 +120,7 @@
     <Property Id="JENKINS_ROOT">
       <RegistrySearch Id="DetermineJenkinsRoot" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="JenkinsRoot" Win64="yes" />
     </Property>
-    <SetProperty After='AppSearch' Id='JENKINS_ROOT' Value='%LocalAppData%\Jenkins'>NOT JENKINS_ROOT</SetProperty>
+    <SetProperty After='AppSearch' Id='JENKINS_ROOT' Value='%LocalAppData%\Jenkins\'>NOT JENKINS_ROOT</SetProperty>
 
     <Property Id="SERVICE_USERNAME">
       <RegistrySearch Id="DetermineServiceUsername" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="SU" Win64="yes" />
