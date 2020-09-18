@@ -77,10 +77,6 @@ if($MSBuildPath -ne '') {
 
 msbuild "jenkins.wixproj" /p:Stable="${isLts}" /p:WAR="${War}" /p:Configuration=Release /p:DisplayVersion=$JenkinsVersion /p:ProductName="${ProductName}" /p:ProductSummary="${ProductSummary}" /p:ProductVendor="${ProductVendor}" /p:ArtifactName="${ArtifactName}" /p:BannerBmp="${BannerBmp}" /p:DialogBmp="${DialogBmp}" /p:InstallerIco="${InstallerIco}"
 
-Get-ChildItem env:
-
-Get-Location
-
 Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
     Foreach-Object {
         Write-Host "Signing installer: $($_.FullName)"
