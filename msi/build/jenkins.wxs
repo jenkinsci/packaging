@@ -164,7 +164,7 @@
         Id="SetDirectoryPermissionsServiceAccount"
         Before="SetDirectoryPermissionsServiceAccount"
         Sequence="execute"
-        Value ="&quot;[System64Folder]icacls.exe&quot; &quot;[JENKINSDIR_STRIPPED]&quot; /inheritance:r /grant *S-1-5-32-544:(OI)(CI)(F) /grant [SERVICE_USERNAME]:(OI)(CI)(F)" />
+        Value ="&quot;[System64Folder]icacls.exe&quot; &quot;[JENKINSDIR_STRIPPED]&quot; /inheritance:r /grant *S-1-5-32-544:(OI)(CI)(F) /grant &quot;[SERVICE_USERNAME]&quot;:(OI)(CI)(F)" />
 
     <CustomAction
         Id="SetDirectoryPermissionsServiceAccount"
