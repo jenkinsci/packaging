@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Setup" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project=".\packages\WiX.3.11.1\build\wix.props" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <ProductVersion>3.5</ProductVersion>
+    <ProjectGuid>{49c7ae2b-d9d1-4b32-9d11-474f1be86658}</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <Stable Condition=" '$(Stable)' == '' ">False</Stable>
+    <OutputName Condition=" '$(Stable)' == 'False' ">jenkins-$(DisplayVersion)</OutputName>
+    <OutputName Condition=" '$(Stable)' == 'True' ">jenkins-$(DisplayVersion)-stable</OutputName>
+    <OutputType>Package</OutputType>
+    <SuppressPdbOutput>true</SuppressPdbOutput>
+    <SetMsiAssemblyNameFileVersion>True</SetMsiAssemblyNameFileVersion>
+    <DefineSolutionProperties>false</DefineSolutionProperties>
+    <SuppressSpecificWarnings>1076</SuppressSpecificWarnings>
+    <Cultures>en-US</Cultures>
+  </PropertyGroup>
+  
+  <UsingTask TaskName="EncodeVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <ParameterGroup>
+      <DisplayVersion ParameterType="System.String" Required="true" />
+      <EncodedVersion ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+    <Task>
+    <Code Type="Fragment" Language="cs">
+      <![CDATA[ 
+      var items = DisplayVersion.Split('.');
+      if(items.Length <= 2) {
+        int minor = 0;
+        if(items.Length > 1 && int.TryParse(items[1], out minor) && minor > 255) {
+          EncodedVersion = string.Format("{0}.255.{1}", items[0], minor * 10);            
+        } else {
+          EncodedVersion = string.Format("{0}.0", DisplayVersion);
+        }
+      } else {
+        int minor = 0;
+        if(int.TryParse(items[1], out minor) && minor > 255) {
+          EncodedVersion = string.Format("{0}.255.{1}", items[0], (minor * 10) + int.Parse(items[2]));
+        } else {
+          EncodedVersion = string.Format("{0}.{1}.{2}", items[0], items[1], int.Parse(items[2]));
+        }
+      }
+      ]]>
+    </Code>
+  </Task>
+  </UsingTask>
+  
+  <Target Name="Setup">
+    <CallTarget Targets="SetConstants" />
+    <CallTarget Targets="Build"/>
+  </Target>
+  
+  <Target Name="SetConstants">
+    <EncodeVersion DisplayVersion="$(DisplayVersion)">
+      <Output PropertyName="EncodedVersion" TaskParameter="EncodedVersion" />
+    </EncodeVersion>
+    
+    <Message Text="EncodedVersion = $(EncodedVersion)" />
+    <ItemGroup>
+      <WixConstant Include="EncodedVersion">
+        <Value>$(EncodedVersion)</Value>
+      </WixConstant>
+      <WixConstant Include="ProductCode">
+        <Value>{415933D8-4104-47C3-AEE9-66B31DE07A57}</Value>
+      </WixConstant>
+      <WixConstant Include="ProductVersion">
+        <Value>$(DisplayVersion)</Value>
+      </WixConstant>
+      <WixConstant Include="WAR" Condition=" '$(WAR)' == '' ">
+        <Value>tmp\jenkins.war</Value>
+      </WixConstant>
+      <WixConstant Include="WAR" Condition=" '$(WAR)' != '' ">
+        <Value>$(WAR)</Value>
+      </WixConstant>
+      
+      <WixConstant Include="ProductName" Condition=" '$(ProductName)' == '' ">
+        <Value>Jenkins</Value>
+      </WixConstant>
+      <WixConstant Include="ProductName" Condition=" '$(ProductName)' != '' ">
+        <Value>$(ProductName)</Value>
+      </WixConstant>
+      
+      <WixConstant Include="ProductSummary" Condition=" '$(ProductSummary)' == '' ">
+        <Value>Jenkins Automation Server</Value>
+      </WixConstant>
+      <WixConstant Include="ProductSummary" Condition=" '$(ProductSummary)' != '' ">
+        <Value>$(ProductSummary)</Value>
+      </WixConstant>
+      
+      <WixConstant Include="ProductVendor" Condition=" '$(ProductVendor)' == '' ">
+        <Value>Jenkins Project</Value>
+      </WixConstant>
+      <WixConstant Include="ProductVendor" Condition=" '$(ProductVendor)' != '' ">
+        <Value>$(ProductVendor)</Value>
+      </WixConstant>
+      
+      <WixConstant Include="ArtifactName" Condition=" '$(ArtifactName)' == ''">
+        <Value>Jenkins</Value>
+      </WixConstant>
+      <WixConstant Include="ArtifactName" Condition=" '$(ArtifactName)' != ''">
+        <Value>$(ArtifactName)</Value>
+      </WixConstant>
+      
+      
+      <WixConstant Include="InstallerIco" Condition=" '$(InstallerIco)' == '' ">
+        <Value>jenkins.ico</Value>
+      </WixConstant>
+      <WixConstant Include="InstallerIco" Condition=" '$(InstallerIco)' != '' ">
+        <Value>$(InstallerIco)</Value>
+      </WixConstant>
+      
+      <WixConstant Include="DialogBmp" Condition=" '$(DialogBmp)' == ''">
+        <Value>jenkins.bmp</Value>
+      </WixConstant>
+      <WixConstant Include="DialogBmp" Condition=" '$(DialogBmp)' != ''">
+        <Value>$(DialogBmp)</Value>
+      </WixConstant>
+      
+      <WixConstant Include="BannerBmp" Condition=" '$(BannerBmp)' == ''">
+        <Value>banner.bmp</Value>
+      </WixConstant>
+      <WixConstant Include="BannerBmp" Condition=" '$(BannerBmp)' != ''">
+        <Value>$(BannerBmp)</Value>
+      </WixConstant>
+    </ItemGroup>
+
+    <CreateProperty Value="@(WixConstant->'%(Identity)=%(Value)')">
+      <Output TaskParameter="Value" PropertyName="CommonWixConstants" />
+    </CreateProperty>
+
+    <CreateProperty Value="Debug;$(CommonWixConstants)" Condition=" '$(Configuration)' == 'Debug' ">
+      <Output TaskParameter="Value" PropertyName="DefineConstants" />
+    </CreateProperty>
+
+    <CreateProperty Value="$(CommonWixConstants)" Condition=" '$(Configuration)' == 'Release' ">
+      <Output TaskParameter="Value" PropertyName="DefineConstants" />
+    </CreateProperty>
+  </Target>
+
+  <PropertyGroup>
+    <OutputPath Condition=" '$(OutputPath)' == '' ">bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="jenkins.wxs" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="*.wxl" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <WixExtension Include="WixUIExtension">
+      <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
+      <Name>WixUIExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixNetFxExtension">
+      <HintPath>$(WixExtDir)\WixNetFxExtension.dll</HintPath>
+      <Name>WixNetFxExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixUtilExtension">
+      <HintPath>$(WixExtDir)\WixUtilExtension.dll</HintPath>
+      <Name>WixUtilExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixCommonUIExtension">
+      <HintPath>.\msiext-1.5\WixExtensions\WixCommonUIExtension.dll</HintPath>
+      <Name>WixCommonUIExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixFirewallExtension">
+      <HintPath>$(WixExtDir)\WixFirewallExtension.dll</HintPath>
+      <Name>WixCommonUIExtension</Name>
+    </WixExtension>
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" />
+</Project>

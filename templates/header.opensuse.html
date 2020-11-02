@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block distribution_instruction %}
+
+To use this repository, run the following command:
+
+<div class="alert alert-warning" role="alert">
+WARNING: The gpg key use to sign our packages has been updated on 16th of April 2020, therefore you need to reimport it if you imported before this date.
+</div>
+
+<pre class="text-white bg-dark">
+
+  sudo zypper addrepo -f {{web_url}}/ {{artifactName}}
+
+</pre>
+
+<p>
+With that set up, the {{ product_name }} package can be installed with:
+
+<pre class="text-white bg-dark">
+
+  zypper install {{ artifactName }}
+
+</pre>
+</p>
+{% endblock %}
+
+{% block  individual_package_instruction  %}
+If you need *.rpm for a specific version, use these.
+{% endblock %}

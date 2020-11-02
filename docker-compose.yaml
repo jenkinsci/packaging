@@ -1,0 +1,43 @@
+# docker exec -i -t packaging_packaging_1 gpg --import --batch credentials/sandbox.gpg
+version: '3'
+volumes:
+  sshd:
+  pkgserver:
+services:
+  packaging:
+    image: jenkinsciinfra/packaging:latest
+    command: "sleep 99d"
+    environment:
+    - "BUILDENV=/srv/releases/jenkins/env/test.mk"
+    - "BRANDING_DIR=/srv/releases/jenkins/branding"
+    - "BRAND=/srv/releases/jenkins/branding/test.mk"
+    - "GPG_FILE=/srv/releases/jenkins/credentials/sandbox.gpg"
+    - "GPG_KEYNAME=Bogus Test"
+    - "GPG_PASSPHRASE=s3cr3t"
+    - "GPG_PASSPHRASE_FILE=/srv/releases/jenkins/credentials/test.gpg.password.txt"
+    - "WAR=/srv/releases/jenkins/jenkins.war"
+    - "MSI=/srv/releases/jenkins/jenkins.msi"
+    - "RELEASELINE=-experimental"
+    volumes:
+      - ".:/srv/releases/jenkins"
+      - "./credentials/ssh:/home/jenkins/.ssh"
+    working_dir: "/srv/releases/jenkins"
+
+  remote:
+    image: jenkinsciinfra/packaging:latest
+    user: root # In order to start, sshd needs to be root
+    command: "/usr/sbin/sshd -D"
+    ports:
+      - "2222:22"
+    volumes:
+      - "./credentials/ssh/id_rsa.pub:/home/jenkins/.ssh/authorized_keys:ro"
+      - sshd:/run/sshd
+      - "pkgserver:/srv/releases/jenkins"
+
+  pkgserver:
+    image: httpd
+    ports:
+      - "80:80"
+    volumes:
+      - "./pkgConfig/httpd.conf:/usr/local/apache2/conf/httpd.conf"
+      - "./target:/usr/local/apache2/htdocs"

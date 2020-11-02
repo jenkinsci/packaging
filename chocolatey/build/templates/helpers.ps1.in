@@ -1,0 +1,119 @@
+function Assert-TcpPortIsOpen {
+    [CmdletBinding()]
+    param(
+        [Parameter(Position = 0, Mandatory, ValueFromPipeline)][ValidateNotNullOrEmpty()][int] $portNumber
+    )
+
+    $process = Get-NetTCPConnection -State Listen -LocalPort $portNumber -ErrorAction SilentlyContinue | `
+        Select-Object -First 1 -ExpandProperty OwningProcess | `
+        Select-Object @{Name = "Id"; Expression = {$_} } | `
+        Get-Process | `
+        Select-Object Name, Path
+
+    if ($process) {
+        if ($process.Path) {
+            Write-Host "Port '$portNumber' is in use by '$($process.Name)' with path '$($process.Path)'..."
+        }
+        else {
+            Write-Host "Port '$portNumber' is in use by '$($process.Name)'..."
+        }
+
+        return $false
+    }
+
+    return $true
+}
+
+function Get-JenkinsPaths {
+    [CmdletBinding()]
+    param(
+        [Parameter(Position = 0, Mandatory)][ValidateNotNullOrEmpty()][string] $installDir
+    )
+
+    $jenkinsDir = Get-ChildItem $installDir -Directory -Filter 'Jenkins*' | Select-Object -First 1 -ExpandProperty FullName
+    $xmlPath = Join-Path $jenkinsDir 'jenkins.xml'
+    $binPath = Join-Path $jenkinsDir 'jenkins.exe'
+    
+    $key = [Microsoft.Win32.RegistryKey]::OpenBaseKey([Microsoft.Win32.RegistryHive]::LocalMachine, [Microsoft.Win32.RegistryView]::Registry32)
+    $subKey =  $key.OpenSubKey("Software\JavaSoft\Java Runtime Environment\1.8")
+    $javaHome = $subKey.GetValue("JavaHome")
+    
+    return @{ JenkinsDir = $jenkinsDir; XmlPath = $xmlPath; BinPath = $binPath; JavaHome = $javaHome }
+}
+
+function Install-Jenkins {
+    [CmdletBinding()]
+    param(
+        [Parameter(Position = 0, Mandatory)][ValidateNotNullOrEmpty()][PSCustomObject] $arguments
+    )
+    
+    $toolsDir = $arguments.toolsDir
+    $zipFile = "$toolsDir\jenkins-$($env:ChocolateyPackageVersion).zip"
+    $packageName = $arguments.packageName
+    
+    Get-ChocolateyWebFile `
+        -PackageName "$packageName" `
+        -FileFullPath "$zipFile" `
+        -Url "http://mirrors.jenkins-ci.org/%MSI_LOC%/jenkins-$($env:ChocolateyPackageVersion).msi" `
+        -Checksum '%CHECKSUM%' `
+        -ChecksumType 'sha256'
+
+    Get-ChocolateyUnzip `
+        -FileFullPath "$zipFile" `
+        -Destination $toolsDir
+        
+    $installerFile = Join-Path $toolsDir 'jenkins.msi'
+        
+    Install-ChocolateyInstallPackage `
+        -PackageName $packageName `
+        -FileType 'msi' `
+        -File "$installerFile" `
+        -SilentArgs "/qn /norestart /l*v `"$($env:TEMP)\$($packageName).$($env:chocolateyPackageVersion).MsiInstall.log`""
+        
+    if(Get-OSArchitectureWidth -Compare 64) {
+        $arguments.destination = ${env:ProgramFiles(x86)}
+    } else {
+        $arguments.destinaton = $env:ProgramFiles
+    }
+
+    # stop the service so we can update the configuration
+    Stop-JenkinsService
+    
+    Set-JenkinsConfig $arguments
+    
+    Start-JenkinsService
+}
+
+function Set-JenkinsConfig {
+    [CmdletBinding()]
+    param(
+        [Parameter(Position = 0, Mandatory)][ValidateNotNullOrEmpty()][PSCustomObject] $arguments
+    )
+
+    $jenkinsPaths = Get-JenkinsPaths $arguments.destination
+    $jrePath = Join-Path $jenkinsPaths.JavaHome "bin\java.exe"
+
+    # Update the server root and port number
+    $xmlConf = Get-Content $jenkinsPaths.XmlPath
+    $xmlConf = $xmlConf -replace "%BASE%\\jre\\bin\\java", $jrePath
+    $xmlConf = $xmlConf -replace '%BASE%', $jenkinsPaths.JenkinsDir
+    $xmlConf = $xmlConf -replace '--httpPort=8080', "--httpPort=$($arguments.port)"
+
+    Set-Content -Path $jenkinsPaths.XmlPath -Value $xmlConf -Encoding Ascii
+}
+
+function Stop-JenkinsService {
+    $service = Get-Service | Where-Object Name -eq "Jenkins"
+
+    if ($service) {
+        Stop-Service "Jenkins"
+    }
+}
+
+function Start-JenkinsService {
+    $service = Get-Service | Where-Object Name -eq "Jenkins"
+
+    if ($service) {
+        Start-Service "Jenkins"
+    }
+}
