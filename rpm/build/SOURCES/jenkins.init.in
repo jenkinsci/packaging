@@ -75,8 +75,6 @@ candidates="
 /etc/alternatives/java
 /usr/lib/jvm/java-1.8.0/bin/java
 /usr/lib/jvm/jre-1.8.0/bin/java
-/usr/lib/jvm/java-1.7.0/bin/java
-/usr/lib/jvm/jre-1.7.0/bin/java
 /usr/lib/jvm/java-11.0/bin/java
 /usr/lib/jvm/jre-11.0/bin/java
 /usr/lib/jvm/java-11-openjdk-amd64
