@@ -1,6 +1,9 @@
-# Jenkins OS X Installer Project
+# Jenkins macOS Installer Project
 
-To create the Jenkins Installer for OS X you need an OS X machine with Developer Tools installed. 
+| WARNING: Official macOS packaging was deprecated in Jenkins 2.206+ and Jenkins LTS 2.204.1+. It will be removed in future versions. See [this blogpost](https://jenkins.io/blog/2019/11/25/macos-native-installer-deprecation/) for more information. |
+| --- |
+
+To create the Jenkins Installer for macOS you need a macOS machine with Developer Tools installed. 
 You can download the Developer Tools from [Apple's Developer Connection website](http://developer.apple.com)
 
 ## Build the Installer

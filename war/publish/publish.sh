@@ -93,6 +93,9 @@ function uploadSite(){
     --compress \
     --recursive \
     --verbose \
+    --include "HEADER.html" \
+    --include "FOOTER.html" \
+    --exclude "*" \
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
     "${D}/" "${WARDIR// /\\ }/"
@@ -101,6 +104,9 @@ function uploadSite(){
     --archive \
     --compress \
     --verbose \
+    --include "HEADER.html" \
+    --include "FOOTER.html" \
+    --exclude "*" \
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
     "${D}/" "$PKGSERVER:${WARDIR// /\\ }/"

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 from jinja2 import Environment, FileSystemLoader
+from pathlib import Path
 
 import getopt
 import os
 import sys
-
 
 def basename(path):
     return os.path.basename(path)
@@ -68,12 +68,14 @@ class IndexGenerator:
         self.organization = os.getenv('ORGANIZATION', 'jenkins.io')
         self.product_name = os.getenv('PRODUCTNAME', 'Jenkins')
         self.distribution = os.getenv('OS_FAMILY', 'debian')
+        self.gpg_pub_key_info_file = os.getenv('GPGPUBKEYINFO', '.')
         self.target_directory = './target/' + self.distribution
+
         try:
             opts, args = getopt.getopt(
                 argv,
                 "hd:o:",
-                ["targetDir=", "distribution="]
+                ["targetDir=", "distribution=", "gpg-key-info-file="]
             )
         except getopt.GetoptError:
             print(self.HELP_MESSAGE)
@@ -85,6 +87,8 @@ class IndexGenerator:
             elif opt in ("-d", "--distribution"):
                 self.distribution = arg
                 self.target_directory = './target/' + self.distribution
+            elif opt in ("-g", "--gpg-key-info-file"):
+                self.gpg_pub_key_info_file = arg
             elif opt in ("-o", "--targetDir"):
                 self.target_directory = arg
                 self.targetFile = self.target_directory + "/HEADER.html"
@@ -112,6 +116,7 @@ class IndexGenerator:
         print('Repository footer generated: ' + self.footer)
         print('Root header generated: ' + self.root_header)
         print('Root footer generated: ' + self.root_footer)
+        print("GPG Key Info File: " + self.gpg_pub_key_info_file)
 
     def generate_root_header(self):
 
@@ -148,6 +153,17 @@ class IndexGenerator:
         with open(self.footer, "w") as f:
             f.write(template.render(contexts))
 
+    def fetch_pubkeyinfo(self):
+        pub_key_info = ""
+
+        if (self.gpg_pub_key_info_file != "."):
+            gpg_pub_key = Path(self.gpg_pub_key_info_file)
+            if (gpg_pub_key.is_file()): 
+                with open(self.gpg_pub_key_info_file, "r") as gpg_pub_key:
+                    pub_key_info = gpg_pub_key.read()
+        
+        return pub_key_info
+
     def generate_repository_header(self):
         contexts = {
             'product_name': self.product_name,
@@ -157,8 +173,10 @@ class IndexGenerator:
             'os_family': self.distribution,
             'packages': self.packages,
             'releaseline': self.releaseline,
-            'web_url': self.web_url
+            'web_url': self.web_url,
+            'pub_key_info': self.fetch_pubkeyinfo()
         }
+
         env = Environment(loader=FileSystemLoader(self.template_directory))
         env.filters['basename'] = basename
         template = env.get_template(self.template_file)
@@ -176,8 +194,10 @@ class IndexGenerator:
             'os_family': self.distribution,
             'packages': self.packages,
             'releaseline': self.releaseline,
-            'web_url': self.web_url
+            'web_url': self.web_url,
+            'pub_key_info': self.fetch_pubkeyinfo()
         }
+
         env = Environment(loader=FileSystemLoader(self.template_directory))
         env.filters['basename'] = basename
         templateIndex = env.get_template('index.html')

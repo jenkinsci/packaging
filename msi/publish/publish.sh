@@ -46,7 +46,7 @@ function skipIfAlreadyPublished(){
 
 function uploadPackage(){
 
-  cp "${ARTIFACTNAME}-${VERSION}.msi" "${MSI}"
+  cp "${ARTIFACTNAME}-${VERSION}${RELEASELINE}.msi" "${MSI}"
 
   sha256sum "${MSI}" > "${MSI_SHASUM}"
 
@@ -87,6 +87,30 @@ function uploadPackage(){
     --progress \
     -e "ssh ${SSH_OPTS[*]}" \
     "${MSI_SHASUM}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
+
+  # Update the symlink to point to most recent Windows build
+  #
+  # Remove anything in current directory named 'latest'
+  # This is a safety measure just in case something was left there previously
+  rm -rf latest
+
+  # Create a local symlink pointing to the MSI file in the VERSION directory.
+  # Don't need VERSION directory or MSI locally, just the unresolved symlink.
+  # The jenkins.io page downloads http://mirrors.jenkins-ci.org/windows/latest
+  # and assumes it points to the most recent MSI file.
+  ln -s ${VERSION}/"$(basename "$MSI")" latest
+
+  # Copy the symlink to PKGSERVER in the root of MSIDIR
+  # Overwrites the existing symlink on the destination
+  rsync \
+    --archive \
+    --links \
+    --verbose \
+    -e "ssh ${SSH_OPTS[*]}" \
+    latest "$PKGSERVER:${MSIDIR}/"
+
+  # Remove the local symlink
+  rm latest
 }
 
 # The site need to be located in the binary directory

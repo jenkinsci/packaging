@@ -77,13 +77,9 @@ if($MSBuildPath -ne '') {
 
 msbuild "jenkins.wixproj" /p:Stable="${isLts}" /p:WAR="${War}" /p:Configuration=Release /p:DisplayVersion=$JenkinsVersion /p:ProductName="${ProductName}" /p:ProductSummary="${ProductSummary}" /p:ProductVendor="${ProductVendor}" /p:ArtifactName="${ArtifactName}" /p:BannerBmp="${BannerBmp}" /p:DialogBmp="${DialogBmp}" /p:InstallerIco="${InstallerIco}"
 
-Get-ChildItem env:
-
-Get-Location
-
 Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
     Foreach-Object {
-        Write-Host "Signing installer: " + $_.FullName
+        Write-Host "Signing installer: $($_.FullName)"
         # sign the file
         
         Test-Path $env:PKCS12_FILE
@@ -93,7 +89,24 @@ Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
             Write-Host "Signing installer"
             # always disable tracing here
             Set-PSDebug -Trace 0
-            signtool sign /v /f $env:PKCS12_FILE /p $env:SIGN_STOREPASS /t http://timestamp.verisign.com/scripts/timestamp.dll /d "Jenkins Automation Server ${JenkinsVersion}" /du "https://jenkins.io" $_.FullName
+            $retries = 10
+            $i = $retries
+            for(; $i -gt 0; $i--) {
+                $p = Start-Process -Wait -PassThru -NoNewWindow -FilePath "signtool.exe" -ArgumentList "sign /v /f `"${env:PKCS12_FILE}`" /p ${env:SIGN_STOREPASS} /t http://timestamp.verisign.com/scripts/timestamp.dll /d `"Jenkins Automation Server ${JenkinsVersion}`" /du `"https://jenkins.io`" $($_.FullName)"
+                $p.WaitForExit()
+                # we will retry up to $retries times until we get a good exit code
+                if($p.ExitCode -eq 0) {
+                    break
+                } else {
+                    Start-Sleep -Seconds 10
+                }
+            }
+            
+            if($i -le 0) {
+                Write-Error "signtool did not complete successfully after $retries tries"
+                exit -1
+            }
+            
             if($UseTracing) { Set-PSDebug -Trace 1 }
 
             Write-Host "Checking the signature"

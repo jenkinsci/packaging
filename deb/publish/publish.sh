@@ -27,9 +27,11 @@ function generateSite(){
   cp -R "$bin/contents/." "$D/contents"
   
   gpg --export -a --output "$D/contents/${ORGANIZATION}.key" "${GPG_KEYNAME}"
+  echo "$(gpg --import-options show-only --import $D/contents/${ORGANIZATION}.key)" > "$D/contents/${ORGANIZATION}.key.info"
   
   "$BASE/bin/indexGenerator.py" \
     --distribution debian \
+    --gpg-key-info-file "${D}/contents/${ORGANIZATION}.key.info" \
     --targetDir "$D/html"
   
   "$BASE/bin/branding.py" "$D"

@@ -1,4 +1,8 @@
 # Native package script for Jenkins
+
+| WARNING: The packaging flows are being reworked as a part of the Jenkins Core release automation effort ([INFRA-910](https://issues.jenkins-ci.org/browse/INFRA-910)). Please submit new enhancements against [this branch](https://github.com/jenkinsci/packaging/tree/INFRA-910-core-release-automation) |
+| --- |
+
 This repository contains scripts for packaging `jenkins.war` into various platform-specific native packages.
 The following platforms are currently supported:
 

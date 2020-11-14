@@ -12,3 +12,4 @@ generated
 .idea/
 *.orig
 /results/
+msi/build
