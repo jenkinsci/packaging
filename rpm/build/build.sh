@@ -1,4 +1,6 @@
-#!/bin/bash -e
+#!/bin/bash
+
+set -e
 
 # prepare fresh directories
 D=/tmp/$$
@@ -15,7 +17,8 @@ pushd $D
 
   # sign the results
   for rpm in $(find RPMS -name '*.rpm'); do
-    "$BASE/bin/rpm-sign.bin" "${rpm}"
+    rpmsign --addsign "${rpm}"
+    rpm -qpi "${rpm}"
   done
 popd
 

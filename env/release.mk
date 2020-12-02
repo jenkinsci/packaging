@@ -22,6 +22,8 @@ export SUSEDIR=/srv/releases/jenkins/opensuse${RELEASELINE}
 export  RPM_WEBDIR=/var/www/pkg.jenkins.io.staging/redhat${RELEASELINE}
 export SUSE_WEBDIR=/var/www/pkg.jenkins.io.staging/opensuse${RELEASELINE}
 export  DEB_WEBDIR=/var/www/pkg.jenkins.io.staging/debian${RELEASELINE}
+export  WAR_WEBDIR=/var/www/pkg.jenkins.io.staging/war${RELEASELINE}
+export  MSI_WEBDIR=/var/www/pkg.jenkins.io.staging/windows${RELEASELINE}
 
 # URL to the aforementioned webdir
 export  RPM_URL=https://pkg.jenkins.io/redhat${RELEASELINE}

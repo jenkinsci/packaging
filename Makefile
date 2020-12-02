@@ -1,13 +1,14 @@
 # refers to the definition of a release target
-BRAND:=./branding/test.mk
+BRAND ?= ./branding/test.mk
 include ${BRAND}
 
 # refers to the definition of the release process execution environment
-BUILDENV:=./env/test.mk
+BUILDENV ?=./env/test.mk
 include ${BUILDENV}
 
 # refers to whereabouts of code-signing keys
-CREDENTIAL:=./credentials/test.mk
+# CREDENTIAL ?=./credentials/test.mk
+
 include ${CREDENTIAL}
 
 include ./setup.mk
@@ -22,9 +23,9 @@ clean:
 setup:
 	bash -ex -c 'for f in */setup.sh; do $$f; done'
 
-package: war msi deb rpm suse osx
+package: war deb rpm suse osx
 
-publish: war.publish msi.publish deb.publish rpm.publish suse.publish osx.publish
+publish: war.publish deb.publish rpm.publish suse.publish osx.publish
 
 test: deb.test rpm.test suse.test
 
@@ -39,21 +40,7 @@ docker.test: docker.images
 
 war: ${WAR}
 war.publish: ${WAR}
-	ssh ${SSH_OPTS} ${PKGSERVER} mkdir -p "'${WARDIR}/${VERSION}/'"
-	sha256sum ${WAR} | sed 's, .*, ${ARTIFACTNAME}.war,' > ${WAR_SHASUM}
-	cat ${WAR_SHASUM}
-	rsync -avz -e "ssh ${SSH_OPTS}" "${WAR}" "${PKGSERVER}:${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
-	rsync -avz -e "ssh ${SSH_OPTS}" "${WAR_SHASUM}" "${PKGSERVER}:${WARDIR}/${VERSION}/"
-
-
-
-msi: ${MSI}
-${MSI}: ${WAR} ${CLI} $(shell find msi -type f)
-	./msi/build-on-jenkins.sh
-msi.publish: ${MSI}
-	./msi/publish.sh
-
-
+	./war/publish/publish.sh
 
 osx: ${OSX}
 ${OSX}: ${WAR} ${CLI}  $(shell find osx -type f | sed -e 's/ /\\ /g')
@@ -83,7 +70,8 @@ ${SUSE}: ${WAR}  $(shell find suse/build -type f)
 suse.publish: ${SUSE} $(shell find suse/publish -type f)
 	./suse/publish/publish.sh
 
-
+msi.publish:
+	./msi/publish/publish.sh
 
 ${CLI}:
 	@mkdir ${TARGET} || true

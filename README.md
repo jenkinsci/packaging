@@ -1,8 +1,5 @@
 # Native package script for Jenkins
 
-| WARNING: The packaging flows are being reworked as a part of the Jenkins Core release automation effort ([INFRA-910](https://issues.jenkins-ci.org/browse/INFRA-910)). Please submit new enhancements against [this branch](https://github.com/jenkinsci/packaging/tree/INFRA-910-core-release-automation) |
-| --- |
-
 This repository contains scripts for packaging `jenkins.war` into various platform-specific native packages.
 The following platforms are currently supported:
 
@@ -34,6 +31,22 @@ can be only built on native platforms.
 
 You'll also need a `jenkins.war` file that you are packaging, which comes from the release process.
 The location of this file is set via the `WAR` variable.
+
+Remark:
+
+A docker image is available to run following script
+
+[![logo](https://img.shields.io/docker/pulls/jenkinsciinfra/packaging?label=jenkinsciinfra%2Fpackaging&logo=docker&logoColor=white)](https://hub.docker.com/r/jenkinsciinfra/packaging)
+
+```shell
+docker run -i -t \
+  -v $PWD:/packaging \
+  -v /gpg_password:/secrets/password \
+  -eWAR="/packaging/jenkins.war" \
+  -eGPG_KEYNAME="sandbox" \
+  -eGPG_PASSPHRASE_FILE="/secrets/password" \
+  -w /packaging jenkinsciinfra/packaging:latest make deb`
+```
 
 # Generating packages
 Run `make package` to build all the native packages.

@@ -25,7 +25,7 @@ mv "$DESCRIPTION_FILE.bak" "$DESCRIPTION_FILE"
 cat > $D/debian/changelog << EOF
 ${ARTIFACTNAME} ($VERSION${DEB_REVISION}) unstable; urgency=low
 
-  * Packaged ${VERSION}
+  * Packaged ${VERSION} https://jenkins.io/changelog${RELEASELINE}/#v${VERSION}
 
  -- ${AUTHOR}  $(date -R)
 
@@ -41,10 +41,9 @@ pushd $D
       mv ${f}_ ${ARTIFACTNAME}$(echo $f | cut -b8-)
     done
   popd
-  debuild -us -uc -Zgzip -A
+  debuild -Zgzip -A
 popd
 
 mkdir -p "$(dirname "${DEB}")" || true
 mv $D/../${ARTIFACTNAME}_${VERSION}${DEB_REVISION}_all.deb ${DEB}
-
 rm -rf $D

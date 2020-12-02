@@ -75,8 +75,6 @@ candidates="
 /etc/alternatives/java
 /usr/lib/jvm/java-1.8.0/bin/java
 /usr/lib/jvm/jre-1.8.0/bin/java
-/usr/lib/jvm/java-1.7.0/bin/java
-/usr/lib/jvm/jre-1.7.0/bin/java
 /usr/lib/jvm/java-11.0/bin/java
 /usr/lib/jvm/jre-11.0/bin/java
 /usr/lib/jvm/java-11-openjdk-amd64
@@ -114,7 +112,7 @@ RETVAL=0
 case "$1" in
     start)
 	echo -n "Starting @@PRODUCTNAME@@ "
-	daemon --user "$JENKINS_USER" --pidfile "$JENKINS_PID_FILE" $JAVA_CMD $PARAMS > /dev/null
+	daemon --user "$JENKINS_USER" --pidfile "$JENKINS_PID_FILE" "$JAVA_CMD" $PARAMS > /dev/null
 	RETVAL=$?
 	if [ $RETVAL = 0 ]; then
 	    success
