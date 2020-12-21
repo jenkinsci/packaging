@@ -165,7 +165,7 @@ do_start()
 #
 get_running()
 {
-    return `ps -U $JENKINS_USER --no-headers -f | egrep -e '(java)' | grep -v defunct | grep -c . `
+    return `pgrep -U $JENKINS_USER -f jenkins.war | grep -c .`
 }
 
 #
