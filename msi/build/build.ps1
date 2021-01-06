@@ -98,7 +98,7 @@ Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
                 if($p.ExitCode -eq 0) {
                     break
                 } else {
-                    Start-Sleep -Seconds 10
+                    Start-Sleep -Seconds 15
                 }
             }
             
