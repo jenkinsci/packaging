@@ -98,7 +98,7 @@ Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
                 # Pop first entry from timestamp server array, use it as timestamp server for this attempt
                 $timestamp, $timestampservers = $timestampservers
                 # Submit SHA256 digest to RFC 3161 timestamp server
-                $p = Start-Process -Wait -PassThru -NoNewWindow -FilePath "signtool.exe" -ArgumentList "sign /v /f `"${env:PKCS12_FILE}`" /p ${env:SIGN_STOREPASS} /tr $timestamp /td SHA256 /d `"Jenkins Automation Server ${JenkinsVersion}`" /du `"https://jenkins.io`" $($_.FullName)"
+                $p = Start-Process -Wait -PassThru -NoNewWindow -FilePath "signtool.exe" -ArgumentList "sign /v /f `"${env:PKCS12_FILE}`" /p ${env:SIGN_STOREPASS} /tr $timestamp /td SHA256 /fd SHA256 /d `"Jenkins Automation Server ${JenkinsVersion}`" /du `"https://jenkins.io`" $($_.FullName)"
                 $p.WaitForExit()
                 # we will retry up to $retries times until we get a good exit code
                 if($p.ExitCode -eq 0) {
