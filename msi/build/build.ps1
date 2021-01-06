@@ -91,14 +91,20 @@ Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
             Set-PSDebug -Trace 0
             $retries = 10
             $i = $retries
+            # Create an array of timestamp servers that includes each of the known timestamp servers duplicated $retries times so that the list won't be exhausted during retry
+            # Start with digicert because we purchased the code signing certificate from digicert
+            $timestampservers = "http://timestamp.digicert.com", "http://rfc3161timestamp.globalsign.com/advanced", "http://timestamp.sectigo.com/", "http://timestamp.verisign.com/scripts/timstamp.dll" * $retries
             for(; $i -gt 0; $i--) {
-                $p = Start-Process -Wait -PassThru -NoNewWindow -FilePath "signtool.exe" -ArgumentList "sign /v /f `"${env:PKCS12_FILE}`" /p ${env:SIGN_STOREPASS} /t http://timestamp.verisign.com/scripts/timestamp.dll /d `"Jenkins Automation Server ${JenkinsVersion}`" /du `"https://jenkins.io`" $($_.FullName)"
+                # Pop first entry from timestamp server array, use it as timestamp server for this attempt
+                $timestamp, $timestampservers = $timestampservers
+                # Submit SHA256 digest to RFC 3161 timestamp server
+                $p = Start-Process -Wait -PassThru -NoNewWindow -FilePath "signtool.exe" -ArgumentList "sign /v /f `"${env:PKCS12_FILE}`" /p ${env:SIGN_STOREPASS} /tr $timestamp /td SHA256 /d `"Jenkins Automation Server ${JenkinsVersion}`" /du `"https://jenkins.io`" $($_.FullName)"
                 $p.WaitForExit()
                 # we will retry up to $retries times until we get a good exit code
                 if($p.ExitCode -eq 0) {
                     break
                 } else {
-                    Start-Sleep -Seconds 10
+                    Start-Sleep -Seconds 15
                 }
             }
             
