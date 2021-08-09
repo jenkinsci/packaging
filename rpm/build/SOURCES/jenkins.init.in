@@ -87,7 +87,7 @@ do
 done
 
 JAVA_CMD="$JENKINS_JAVA_CMD $JENKINS_JAVA_OPTIONS -DJENKINS_HOME=$JENKINS_HOME -jar $JENKINS_WAR"
-PARAMS="--logfile=/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log --webroot=/var/cache/@@ARTIFACTNAME@@/war --daemon"
+PARAMS="--logfile=/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log --webroot=/var/cache/@@ARTIFACTNAME@@/war"
 [ -n "$JENKINS_PORT" ] && PARAMS="$PARAMS --httpPort=$JENKINS_PORT"
 [ -n "$JENKINS_LISTEN_ADDRESS" ] && PARAMS="$PARAMS --httpListenAddress=$JENKINS_LISTEN_ADDRESS"
 [ -n "$JENKINS_HTTPS_PORT" ] && PARAMS="$PARAMS --httpsPort=$JENKINS_HTTPS_PORT"
@@ -112,7 +112,7 @@ RETVAL=0
 case "$1" in
     start)
 	echo -n "Starting @@PRODUCTNAME@@ "
-	daemon --user "$JENKINS_USER" --pidfile "$JENKINS_PID_FILE" "$JAVA_CMD" $PARAMS > /dev/null
+	daemonize -u "$JENKINS_USER" -p "$JENKINS_PID_FILE" $JAVA_CMD $PARAMS
 	RETVAL=$?
 	if [ $RETVAL = 0 ]; then
 	    success
