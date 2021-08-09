@@ -21,7 +21,7 @@ BuildRoot:	%{_tmppath}/build-%{name}-%{version}
 # Only workaround would be to use a java virtual package, see https://github.com/keystep/virtual-java-rpm
 # TODO: If re-enable, fix the matcher for Java 11
 # Requires: java >= 1:1.8.0
-Requires: procps
+Requires: daemonize procps
 Obsoletes: hudson
 Conflicts: hudson
 PreReq: /usr/sbin/groupadd /usr/sbin/useradd
