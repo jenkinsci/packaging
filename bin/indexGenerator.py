@@ -87,6 +87,7 @@ class IndexGenerator:
             elif opt in ("-d", "--distribution"):
                 self.distribution = arg
                 self.target_directory = './target/' + self.distribution
+                os.makedirs(self.target_directory, exist_ok=True)
             elif opt in ("-g", "--gpg-key-info-file"):
                 self.gpg_pub_key_info_file = arg
             elif opt in ("-o", "--targetDir"):
@@ -108,7 +109,7 @@ class IndexGenerator:
         print("Organization: " + self.organization)
         print("Artifact Name: " + self.artifact)
         print("Distribution: " + self.distribution)
-        print("Web URL: " + self.web_url)
+        print("Web URL: " + str(self.web_url))
         print('Number of Packages found: ' + str(len(self.packages)))
         print('Template file: ' + self.template_file)
         print('Repository header generated: ' + self.targetFile)
