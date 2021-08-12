@@ -109,7 +109,7 @@ class IndexGenerator:
         print("Organization: " + self.organization)
         print("Artifact Name: " + self.artifact)
         print("Distribution: " + self.distribution)
-        print("Web URL: " + self.web_url)
+        print("Web URL: " + str(self.web_url))
         print('Number of Packages found: ' + str(len(self.packages)))
         print('Template file: ' + self.template_file)
         print('Repository header generated: ' + self.targetFile)
