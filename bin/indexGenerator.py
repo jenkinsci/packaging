@@ -87,6 +87,7 @@ class IndexGenerator:
             elif opt in ("-d", "--distribution"):
                 self.distribution = arg
                 self.target_directory = './target/' + self.distribution
+                os.makedirs(self.target_directory, exist_ok=True)
             elif opt in ("-g", "--gpg-key-info-file"):
                 self.gpg_pub_key_info_file = arg
             elif opt in ("-o", "--targetDir"):
