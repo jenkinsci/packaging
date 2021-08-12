@@ -16,11 +16,11 @@
   wget -q -O - <a href="{{web_url}}/{{organization}}.key" style="color:white">{{web_url}}/{{organization}}.key</a> | sudo apt-key add -</code>
   </pre>
 
-  Then add the following entry in your <tt>/etc/apt/sources.list</tt>:
+  Then add a Jenkins apt repository entry:
 
   <pre class="text-white bg-dark">
     
-  deb {{ web_url }} binary/
+  sudo sh -c 'echo deb {{ web_url }} binary/ > /etc/apt/sources.list.d/jenkins.list'
   </pre>
 </p>
 
