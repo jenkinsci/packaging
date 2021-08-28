@@ -439,7 +439,8 @@
       <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
 
 
-      <Publish Dialog="ServiceCredDlg" Control="Next" Event="NewDialog" Value="ServicePortDlg" Order="1">NOT Installed</Publish>
+      <Publish Dialog="ServiceCredDlg" Control="Next" Property="JENKINS_ROOT" Value="C:\ProgramData\Jenkins\" Order="1"><![CDATA[SERVICE_LOGON_TYPE="ServiceLocalSystem"]]></Publish>
+      <Publish Dialog="ServiceCredDlg" Control="Next" Event="NewDialog" Value="ServicePortDlg" Order="2">NOT Installed</Publish>
       <Publish Dialog="ServiceCredDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg" Order="1">NOT Installed</Publish>
 
       <Publish Dialog="ServicePortDlg" Control="Next" Event="NewDialog" Value="JavaHomeDlg" Order="1">NOT Installed</Publish>
