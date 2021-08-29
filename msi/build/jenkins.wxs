@@ -460,7 +460,7 @@
       <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
       <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
 
-      <Publish Dialog="ExitDialog" Control="Finish" Property="WixShellExecTarget" Value="http://localhost:[PORTNUMBER]/" Order="1">NOT Installed AND NOT REMOVE</Publish>
+      <Publish Dialog="ExitDialog" Control="Finish" Property="WixShellExecTarget" Value="http://127.0.0.1:[PORTNUMBER]/" Order="1">NOT Installed AND NOT REMOVE</Publish>
       <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication" Order="2">NOT Installed AND NOT REMOVE</Publish>
     </UI>
 
