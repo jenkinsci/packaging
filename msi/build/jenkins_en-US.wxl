@@ -15,4 +15,5 @@
   <!-- Override the string on the service credential dialog -->
   <String Id="ServiceCredDlg_LocalSystemText" Overridable="yes">Run service as LocalSystem (not recommended)</String>
   <String Id="FirewallException_Description">Enables a firewall exception for the Java running Jenkins on port [PORTNUMBER] (not recommended).</String>
+  <String Id="StartJenkinsService_Description">Starts the Jenkins service after install.</String>
 </WixLocalization>
