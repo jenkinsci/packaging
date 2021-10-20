@@ -238,7 +238,7 @@
 
           <!-- 
             We have this for the case if someone doesn't have the service started during install, if that component isn't installed, then the service will 
-            not be uninstalled during the uninstaller. This component makes sure that the service will be uninstalled correctly in this case.
+            not be uninstalled during uninstallation. This component makes sure that the service will be uninstalled correctly in this case.
           -->
           <Component Id="UninstallService" Guid="9D0DEE31-5560-4FDD-8A73-236A4102BFE0">
             <CreateFolder/>
