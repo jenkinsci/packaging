@@ -231,9 +231,18 @@
               </RegistryKey>
           </Component>
 
-          <Component Id="StartService" Guid="">
+          <Component Id="StartService" Guid="6F6925C0-4D1F-4A1E-A4A9-BC83EB88637A">
             <CreateFolder/>
             <ServiceControl Id="Control$(var.ArtifactName)Service" Name="$(var.ArtifactName)" Start="install" Stop="both" Wait="yes" Remove="uninstall" />
+          </Component>
+
+          <!-- 
+            We have this for the case if someone doesn't have the service started during install, if that component isn't installed, then the service will 
+            not be uninstalled during the uninstaller. This component makes sure that the service will be uninstalled correctly in this case.
+          -->
+          <Component Id="UninstallService" Guid="9D0DEE31-5560-4FDD-8A73-236A4102BFE0">
+            <CreateFolder/>
+            <ServiceControl Id="Control$(var.ArtifactName)ServiceUninstall" Name="$(var.ArtifactName)" Stop="both" Wait="yes" Remove="uninstall" />
           </Component>
 
           <Component Id="FirewallException" Guid="">
@@ -350,6 +359,9 @@
       </Feature>
       <Feature Id='FirewallException' Level='10' Title='Firewall Exception' Description='!(loc.FirewallException_Description)'>
         <ComponentRef Id='FirewallException' />
+      </Feature>
+      <Feature Id='UninstallService' Absent='disallow' Display='hidden' Level='1' Title='Uninstall Service' Description='Uninstall the service on Jenkins uninstall'>
+        <ComponentRef Id='UninstallService'/>
       </Feature>
     </Feature>
 
@@ -468,7 +480,7 @@
       <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
 
       <Publish Dialog="ExitDialog" Control="Finish" Property="WixShellExecTarget" Value="http://localhost:[PORTNUMBER]/" Order="1">NOT Installed AND NOT REMOVE</Publish>
-      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication" Order="2">NOT Installed AND NOT REMOVE</Publish>
+      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication" Order="2"><![CDATA[ADDLOCAL >< "StartService" AND NOT Installed AND NOT REMOVE]]></Publish>
     </UI>
 
     <!-- launch a browser at the end of the installation -->
