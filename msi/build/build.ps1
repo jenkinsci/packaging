@@ -79,14 +79,8 @@ msbuild "jenkins.wixproj" /p:Stable="${isLts}" /p:WAR="${War}" /p:Configuration=
 
 Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
     Foreach-Object {
-        Write-Host "Signing installer: $($_.FullName)"
-        # sign the file
-        
-        Test-Path $env:PKCS12_FILE
-        [System.String]::IsNullOrWhiteSpace($env:SIGN_STOREPASS)
-
-        if((Test-Path $env:PKCS12_FILE) -and (-not [System.String]::IsNullOrWhiteSpace($env:SIGN_STOREPASS))) {
-            Write-Host "Signing installer"
+        if((-not ([System.String]::IsNullOrWhiteSpace($env:PKCS12_FILE)) -and (Test-Path $env:PKCS12_FILE)) -and (-not [System.String]::IsNullOrWhiteSpace($env:SIGN_STOREPASS))) {
+            Write-Host "Signing installer: $($_.FullName)"
             # always disable tracing here
             Set-PSDebug -Trace 0
             $retries = 10
