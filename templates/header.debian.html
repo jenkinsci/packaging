@@ -9,14 +9,17 @@
 
   <pre class="text-white bg-dark">
     <code>
-  wget -q -O - <a href="{{web_url}}/{{organization}}.key" style="color:white">{{web_url}}/{{organization}}.key</a> | sudo apt-key add -</code>
+  curl -fsSL <a href="{{web_url}}/{{organization}}.key" style="color:white">{{web_url}}/{{organization}}.key</a> | sudo tee \
+    /usr/share/keyrings/jenkins-keyring.asc > /dev/null</code>
   </pre>
 
   Then add a Jenkins apt repository entry:
 
   <pre class="text-white bg-dark">
-    
-  sudo sh -c 'echo deb {{ web_url }} binary/ > /etc/apt/sources.list.d/jenkins.list'
+    <code>
+  echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+    {{ web_url }} binary/ | sudo tee \
+    /etc/apt/sources.list.d/jenkins.list > /dev/null</code>
   </pre>
 </p>
 
@@ -25,8 +28,9 @@ Update your local package index, then finally install {{product_name}}:
 
   <pre class="text-white bg-dark">
 
+    <code>
   sudo apt-get update
-  sudo apt-get install {{artifactName}}
+  sudo apt-get install {{artifactName}}</code>
   </pre>
 </p>
 
