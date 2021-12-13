@@ -1,0 +1,93 @@
+[Unit]
+Description=Jenkins controller service
+Requires=network.target
+After=network.target
+
+[Service]
+Type=simple
+# Unix user account that runs the Jenkins daemon
+# Be careful when you change this, as you need to update
+# permissions of $JENKINS_HOME and /var/log/@@ARTIFACTNAME@@.
+User=@@ARTIFACTNAME@@
+Group=@@ARTIFACTNAME@@
+EnvironmentFile=-/etc/sysconfig/@@ARTIFACTNAME@@
+ExecStart=/usr/libexec/@@ARTIFACTNAME@@-run
+Restart=always
+
+# Directory where Jenkins store its configuration and working
+# files (checkouts, build reports, artifacts, ...).
+Environment=JENKINS_HOME="~~HOME~~"
+
+# Java executable to run Jenkins
+# When left empty, we'll try to find the suitable Java.
+Environment=JENKINS_JAVA_CMD=""
+
+# Whether to skip potentially long-running chown at the
+# $JENKINS_HOME location. Do not enable this, "true", unless
+# you know what you're doing. See JENKINS-23273.
+#Environment=JENKINS_INSTALL_SKIP_CHOWN="false"
+
+# Options to pass to java when running Jenkins.
+Environment=JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true"
+
+# Port Jenkins is listening on.
+# Set to -1 to disable
+Environment=JENKINS_PORT="@@PORT@@"
+
+# IP address Jenkins listens on for HTTP requests.
+# Default is all interfaces (0.0.0.0).
+Environment=JENKINS_LISTEN_ADDRESS=""
+
+# HTTPS port Jenkins is listening on. Disabled by default.
+Environment=JENKINS_HTTPS_PORT=""
+
+# Path to the keystore in JKS format (as created by the JDK 'keytool').
+# Default is disabled.
+Environment=JENKINS_HTTPS_KEYSTORE=""
+
+# Password to access the keystore defined in JENKINS_HTTPS_KEYSTORE.
+# Default is disabled.
+Environment=JENKINS_HTTPS_KEYSTORE_PASSWORD=""
+
+# IP address Jenkins listens on for HTTPS requests.
+# Default is disabled.
+Environment=JENKINS_HTTPS_LISTEN_ADDRESS=""
+
+# HTTP2 port Jenkins is listening on.
+# Default is disabled.
+#
+# Notice: HTTP2 support may require additional configuration, see Winstone
+# documentation for more information.
+Environment=JENKINS_HTTP2_PORT=""
+
+# IP address Jenkins listens on for HTTP2 requests.
+# Default is disabled.
+#
+# Notice: HTTP2 support may require additional configuration, see Winstone
+# documentation for more information.
+Environment=JENKINS_HTTP2_LISTEN_ADDRESS=""
+
+# Debug level for logs -- the higher the value, the more verbose.
+# 5 is INFO. 1 is lowest, 9 is highest.
+Environment=JENKINS_DEBUG_LEVEL="5"
+
+# Whether to enable access logging or not.
+Environment=JENKINS_ENABLE_ACCESS_LOG="no"
+
+# Maximum number of HTTP worker threads.
+Environment=JENKINS_HANDLER_MAX="100"
+
+# Maximum number of idle HTTP worker threads.
+Environment=JENKINS_HANDLER_IDLE="20"
+
+# Directory for additional jar files to add to the Jetty class loader.
+# See Winstone documentation for more information.
+# Default is disabled.
+Environment=JENKINS_EXTRA_LIB_FOLDER=""
+
+# Pass arbitrary arguments to Jenkins.
+# Full option list: java -jar @@ARTIFACTNAME@@.war --help
+Environment=JENKINS_ARGS=""
+
+[Install]
+WantedBy=multi-user.target

@@ -1,30 +1,36 @@
 # TODO:
 # - how to add to the trusted service of the firewall?
 
-%define _prefix	%{_usr}/lib/@@ARTIFACTNAME@@
-%define workdir	%{_var}/lib/@@ARTIFACTNAME@@
+%define _prefix		%{_usr}/lib/%{name}
+%define workdir		%{_sharedstatedir}/%{name}
+%define logdir		%{_localstatedir}/log/%{name}
+%define cachedir	%{_localstatedir}/cache/%{name}
 
 Name:		@@ARTIFACTNAME@@
 Version:	%{ver}
 Release:	1.1
 Summary:	@@SUMMARY@@
 Source:		jenkins.war
-Source1:	jenkins.init.in
-Source2:	jenkins.sysconfig.in
+Source1:	jenkins-run.in
+Source2:	jenkins.service.in
 Source3:	jenkins.logrotate
 URL:		@@HOMEPAGE@@
 Group:		Development/Tools/Building
 License:	@@LICENSE@@
-BuildRoot:	%{_tmppath}/build-%{name}-%{version}
 # Unfortunately the Oracle Java RPMs do not register as providing anything (including "java" or "jdk")
 # So either we make a hard requirement on the OpenJDK or none at all
 # Only workaround would be to use a java virtual package, see https://github.com/keystep/virtual-java-rpm
 # TODO: If re-enable, fix the matcher for Java 11
 # Requires: java >= 1:1.8.0
-Requires: daemonize procps
 Obsoletes: hudson
 Conflicts: hudson
-PreReq: /usr/sbin/groupadd /usr/sbin/useradd
+Requires(pre): /usr/sbin/groupadd /usr/sbin/useradd
+%if 0%{?rhel} == 7
+BuildRequires: systemd
+%endif
+%if 0%{?rhel} >= 8
+BuildRequires: systemd-rpm-macros
+%endif
 BuildArch: noarch
 
 %description
@@ -42,21 +48,18 @@ Authors:
 %install
 rm -rf "%{buildroot}"
 %__install -D -m0644 "%{SOURCE0}" "%{buildroot}%{_prefix}/%{name}.war"
+%__install -D -m0644 "%{SOURCE1}" "%{buildroot}%{_libexecdir}/%{name}-run"
 %__install -d "%{buildroot}%{workdir}"
 %__install -d "%{buildroot}%{workdir}/plugins"
 
-%__install -d "%{buildroot}/var/log/%{name}"
-%__install -d "%{buildroot}/var/cache/%{name}"
+%__install -d "%{buildroot}%{logdir}"
+%__install -d "%{buildroot}%{cachedir}"
 
-%__install -D -m0755 "%{SOURCE1}" "%{buildroot}/etc/init.d/%{name}"
-%__sed -i 's,~~WAR~~,%{_prefix}/%{name}.war,g' "%{buildroot}/etc/init.d/%{name}"
-%__install -d "%{buildroot}/usr/sbin"
-%__ln_s "../../etc/init.d/%{name}" "%{buildroot}/usr/sbin/rc%{name}"
+%__install -D -m0644 "%{SOURCE2}" "%{buildroot}%{_unitdir}/%{name}.service"
+%__sed -i 's,~~WAR~~,%{_prefix}/%{name}.war,g' "%{buildroot}%{_unitdir}/%{name}.service"
+%__sed -i 's,~~HOME~~,%{workdir},g' "%{buildroot}%{_unitdir}/%{name}.service"
 
-%__install -D -m0600 "%{SOURCE2}" "%{buildroot}/etc/sysconfig/%{name}"
-%__sed -i 's,~~HOME~~,%{workdir},g' "%{buildroot}/etc/sysconfig/%{name}"
-
-%__install -D -m0644 "%{SOURCE3}" "%{buildroot}/etc/logrotate.d/%{name}"
+%__install -D -m0644 "%{SOURCE3}" "%{buildroot}%{_sysconfdir}/logrotate.d/%{name}"
 
 %pre
 /usr/sbin/groupadd -r %{name} &>/dev/null || :
@@ -68,18 +71,18 @@ rm -rf "%{buildroot}"
   # Check if a previous installation exists, if so check the JENKINS_HOME value and existing owners of work, log and cache dir, need to to this check
   # here because the %files directive overwrites folder owners, I have not found a simple way to make the
   # files directive to use JENKINS_USER as owner.
-  if [ -f "/etc/sysconfig/%{name}" ]; then
-      logger -t %{name}.installer "Found previous config file /etc/sysconfig/%{name}"
-      . "/etc/sysconfig/%{name}"
-      stat --format=%U "/var/cache/%{name}" > "/tmp/%{name}.installer.cacheowner"
-      stat --format=%U "/var/log/%{name}"  >  "/tmp/%{name}.installer.logowner"
+  if [ -f "%{_sysconfdir}/sysconfig/%{name}" ]; then
+      logger -t %{name}.installer "Found previous config file %{_sysconfdir}/sysconfig/%{name}"
+      . "%{_sysconfdir}/sysconfig/%{name}"
+      stat --format=%U "%{cachedir}" > "/tmp/%{name}.installer.cacheowner"
+      stat --format=%U "%{logdir}"  >  "/tmp/%{name}.installer.logowner"
       stat --format=%U ${JENKINS_HOME:-%{workdir}}  > "/tmp/%{name}.installer.workdirowner"
   else
-      logger -t %{name}.installer "No previous config file /etc/sysconfig/%{name} found"
+      logger -t %{name}.installer "No previous config file %{_sysconfdir}/sysconfig/%{name} found"
   fi
 
 %post
-/sbin/chkconfig --add %{name}
+%systemd_post %{name}.service
 
 function chownIfNecessary {
   logger -t %{name}.installer "Checking ${2} ownership"
@@ -104,25 +107,19 @@ function chownIfNecessary {
 # != %{name}, namely all cases but the default one (configured for %{name} owned by %{name})
 # In any case if JENKINS_INSTALL_SKIP_CHOWN is true we do not chown anything to maintain
 # the existing semantics
-. /etc/sysconfig/%{name}
+. %{_sysconfdir}/sysconfig/%{name}
 if test x"$JENKINS_INSTALL_SKIP_CHOWN" != "xtrue"; then
-      chownIfNecessary "/tmp/%{name}.installer.cacheowner"  "/var/cache/%{name}"
-      chownIfNecessary "/tmp/%{name}.installer.logowner"  "/var/log/%{name}"
+      chownIfNecessary "/tmp/%{name}.installer.cacheowner"  "%{cachedir}"
+      chownIfNecessary "/tmp/%{name}.installer.logowner"  "%{logdir}"
       chownIfNecessary "/tmp/%{name}.installer.workdirowner"  ${JENKINS_HOME:-%{workdir}}
 fi
 
 %preun
-if [ "$1" = 0 ] ; then
-    # if this is uninstallation as opposed to upgrade, delete the service
-    /sbin/service %{name} stop > /dev/null 2>&1
-    /sbin/chkconfig --del %{name}
-fi
+%systemd_preun %{name}.service
 exit 0
 
 %postun
-if [ "$1" -ge 1 ]; then
-    /sbin/service %{name} condrestart > /dev/null 2>&1
-fi
+%systemd_postun_with_restart %{name}.service
 exit 0
 
 %clean
@@ -132,13 +129,12 @@ exit 0
 %defattr(-,root,root)
 %dir %{_prefix}
 %{_prefix}/%{name}.war
+%{_libexecdir}/%{name}-run
 %attr(0755,%{name},%{name}) %dir %{workdir}
-%attr(0750,%{name},%{name}) /var/log/%{name}
-%attr(0750,%{name},%{name}) /var/cache/%{name}
-%config /etc/logrotate.d/%{name}
-%config(noreplace) /etc/init.d/%{name}
-%config(noreplace) /etc/sysconfig/%{name}
-/usr/sbin/rc%{name}
+%attr(0750,%{name},%{name}) %dir %{logdir}
+%attr(0750,%{name},%{name}) %dir %{cachedir}
+%config %{_sysconfdir}/logrotate.d/%{name}
+%{_unitdir}/%{name}.service
 
 %changelog
 * Sat Apr 19 2014 mbarr@mbarr.net
