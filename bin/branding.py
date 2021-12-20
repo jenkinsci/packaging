@@ -2,10 +2,8 @@
 
 import os
 from string import Template
-import fnmatch
 import sys
 import re
-from optparse import OptionParser
 
 # Applies branding to files/folders with simple templating
 # Usage is 'python branding.py {file or folder}'
