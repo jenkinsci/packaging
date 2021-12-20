@@ -47,9 +47,8 @@ def read_file_content(value_path_dictionary):
 	output = dict()
 	filtered = filter(lambda x: x[1] is not None and len(x[1].strip()) > 0, value_path_dictionary.items())
 	for variable, path in filtered:
-		f = open(path, 'r')
-		output[variable] = f.read()
-		f.close()
+		with open(path, 'r') as f:
+			output[variable] = f.read()
 	return output
 
 def read_branding_variables(base_path, env_variables_list, file_variables_list):
@@ -68,12 +67,11 @@ def apply_templating_to_file(path, branding_map):
 	""" Do IN-PLACE search and replace using string templating for a each file
 		Throws Exceptions if I/O fails or substitution is missing vars (safety check)
 	"""
-	f = open(path, "r+")
-	f_content = apply_template(f.read(), branding_map)
-	f.seek(0)
-	f.write(f_content)
-	f.truncate()  # This removes any original content beyond the end of templated content
-	f.close()
+	with open(path, "r+") as f:
+		f_content = apply_template(f.read(), branding_map)
+		f.seek(0)
+		f.write(f_content)
+		f.truncate()  # This removes any original content beyond the end of templated content
 
 def apply_templating_to_folder(path, branding_map):
 	""" Walks through all contents of folder recursively, and applies templating """	
