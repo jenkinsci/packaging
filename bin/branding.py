@@ -45,7 +45,7 @@ def read_file_content(value_path_dictionary):
 
 	    If paths are null/empty, they are not read to result. """
 	output = dict()
-	filtered = filter(lambda x: x[1] is not None and len(x[1].strip()) > 0, value_path_dictionary.items())
+	filtered = filter(lambda x: x[1] and x[1].strip(), value_path_dictionary.items())
 	for variable, path in filtered:
 		with open(path, 'r') as f:
 			output[variable] = f.read()
