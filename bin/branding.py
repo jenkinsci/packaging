@@ -78,8 +78,8 @@ def apply_templating_to_file(path, branding_map):
 def apply_templating_to_folder(path, branding_map):
 	""" Walks through all contents of folder recursively, and applies templating """	
 	for root, dirnames, filenames in os.walk(path):
-		func = lambda x: apply_templating_to_file(os.path.join(root, x), branding_map)
-		map(func, filenames)
+		for filename in filenames:
+			apply_templating_to_file(os.path.join(root, filename), branding_map)
 
 # Importable as a library without executing it
 if(__name__ == '__main__'):
