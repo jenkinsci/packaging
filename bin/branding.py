@@ -34,8 +34,7 @@ def read_env_variable_list(path):
 	""" Read a list of environment variables from a file (one per line) and get a dict of var:value """
 	with open(path, 'r') as env_file:
 		lines = clean_text_lines(env_file.read())
-		branding_values = {x:os.environ.get(x) for x in lines}
-	return branding_values
+		return {x: os.environ.get(x) for x in lines}
 
 def read_file_content(value_path_dictionary):
 	""" For a {variable_name:file_path} dictionary, read each file and 
@@ -90,7 +89,7 @@ if(__name__ == '__main__'):
 	allowed_blank = ['RELEASELINE']
 	# Remove branding values with nothing set so we fail early if they are used in a template
 	# except for values where blank is explicitly allows
-	branding_values = dict(filter (lambda x: x[0] in allowed_blank or x[1], branding_values.items()))
+	branding_values = {k: v for k, v in branding_values.items() if k in allowed_blank or v}
 
 	# Apply templating to files or content of folder
 	if os.path.isfile(path):
