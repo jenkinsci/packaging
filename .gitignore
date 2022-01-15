@@ -6,8 +6,6 @@
 *.log
 target
 generated
-*.box
-.vagrant
 .iml
 .idea/
 *.orig
