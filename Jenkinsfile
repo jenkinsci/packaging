@@ -9,7 +9,7 @@ pipeline {
 
   options {
     disableConcurrentBuilds(abortPrevious: true)
-    buildDiscarder logRotator(numToKeepStr: '15') // Retain only last 15 builds to reduce space requirements
+    buildDiscarder logRotator(numToKeepStr: '5') // Retain only last 15 builds to reduce space requirements
   }
 
   environment {
