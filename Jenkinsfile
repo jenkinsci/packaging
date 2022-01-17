@@ -18,9 +18,8 @@ pipeline {
     BRAND = "${WORKSPACE}/branding/test.mk"
     BUILDENV = "${WORKSPACE}/env/test.mk"
     CREDENTIAL = "${WORKSPACE}/credentials/test.mk"
-    GPG_KEYNAME = 'test'
-    GPG_KEYRING = "${WORKSPACE}/credentials/${GPG_KEYNAME}.gpg"
-    GPG_SECRET_KEYRING = "${WORKSPACE}/credentials/${GPG_KEYNAME}.secret.gpg"
+    GPG_KEYNAME = 'Bogus Test'
+    GPG_FILE = "${WORKSPACE}/credentials/sandbox.gpg"
   }
 
   stages {
