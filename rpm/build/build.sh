@@ -4,7 +4,7 @@ set -e
 
 # prepare fresh directories
 D=$(mktemp -d)
-trap "rm -rf $D" EXIT
+trap 'rm -rf "$D"' EXIT
 
 cp -R "$(dirname "$0")"/* $D
 "$BASE/bin/branding.py" $D
