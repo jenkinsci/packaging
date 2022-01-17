@@ -38,8 +38,15 @@ A docker image is available to run following script
 
 [![logo](https://img.shields.io/docker/pulls/jenkinsciinfra/packaging?label=jenkinsciinfra%2Fpackaging&logo=docker&logoColor=white)](https://hub.docker.com/r/jenkinsciinfra/packaging)
 
-Run `./bldenv.sh` to get a shell in the official Docker image for this repository.
-To build the packages locally, run `./bldenv.sh ./local-build.sh`.
+```shell
+docker run -i -t \
+  -v $PWD:/packaging \
+  -v /gpg_password:/secrets/password \
+  -eWAR="/packaging/jenkins.war" \
+  -eGPG_KEYNAME="sandbox" \
+  -eGPG_PASSPHRASE_FILE="/secrets/password" \
+  -w /packaging jenkinsciinfra/packaging:latest make deb`
+```
 
 # Generating packages
 Run `make package` to build all the native packages.
