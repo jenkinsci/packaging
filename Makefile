@@ -23,21 +23,15 @@ clean:
 setup:
 	bash -ex -c 'for f in */setup.sh; do $$f; done'
 
-package: war deb rpm suse osx
+package: war deb rpm suse
 
-publish: war.publish deb.publish rpm.publish suse.publish osx.publish
+publish: war.publish deb.publish rpm.publish suse.publish
 
 test: deb.test rpm.test suse.test
 
 war: ${WAR}
 war.publish: ${WAR}
 	./war/publish/publish.sh
-
-osx: ${OSX}
-${OSX}: ${WAR} ${CLI}  $(shell find osx -type f | sed -e 's/ /\\ /g')
-	./osx/build-on-jenkins.sh
-osx.publish: ${OSX}
-	./osx/publish.sh
 
 
 

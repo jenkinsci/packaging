@@ -2,7 +2,7 @@
 # Environment definition for dry-run of the packaging process
 # 
 
-# JENKINS used to generate OSX/MSI packages
+# JENKINS used to generate MSI packages
 export JENKINS_URL=https://cloudbees.ci.cloudbees.com/
 
 # the host to publish bits to
@@ -17,7 +17,6 @@ export SCP_OPTS=-P 22
 export TESTDIR=$(realpath .)/pkg.jenkins.io
 export WARDIR=${TESTDIR}/war${RELEASELINE}
 export MSIDIR=${TESTDIR}/windows${RELEASELINE}
-export OSXDIR=${TESTDIR}/osx${RELEASELINE}
 export DEBDIR=${TESTDIR}/debian${RELEASELINE}/binary
 export RPMDIR=${TESTDIR}/redhat${RELEASELINE}
 export SUSEDIR=${TESTDIR}/opensuse${RELEASELINE}

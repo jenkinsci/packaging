@@ -22,7 +22,7 @@ podTemplate(yaml: readTrusted('KubernetesPod.yaml'), workingDir: '/home/jenkins/
           sh './prep.sh'
         }
         stage('Build') {
-          sh 'make war deb rpm suse'
+          sh 'make package'
         }
         archiveArtifacts 'target/debian/*.deb, target/rpm/*.rpm, target/suse/*.rpm'
       }

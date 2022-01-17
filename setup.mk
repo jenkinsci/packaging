@@ -15,10 +15,6 @@ export CLI:=${TARGET}/jenkins-cli.jar
 export MSI?=$(error Required variable MSI must point to the jenkins.msi file you are packaging)
 export MSI_SHASUM:=${MSI}.sha256
 
-# where to generate OSX PKG file?
-export OSX=${TARGET}/osx/${ARTIFACTNAME}-${VERSION}.pkg
-export OSX_SHASUM=${OSX}.sha256
-
 # where to generate Debian/Ubuntu DEB file?
 export DEB=${TARGET}/debian/${ARTIFACTNAME}_${VERSION}${DEB_REVISION}_all.deb
 

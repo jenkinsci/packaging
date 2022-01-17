@@ -8,7 +8,6 @@ export SUMMARY=Jenkins Automation Server
 export PORT=8080
 
 export MSI_PRODUCTCODE=415933d8-4104-47c3-aee9-66b31de07a57
-export OSX_IDPREFIX=org.jenkins-ci
 export AUTHOR=Kohsuke Kawaguchi <kk@kohsuke.org>
 export LICENSE=MIT/X License, GPL/CDDL, ASL2
 export HOMEPAGE=http://jenkins.io/
