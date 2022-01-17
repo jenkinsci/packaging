@@ -52,7 +52,7 @@ class TestBranding(unittest.TestCase):
 
     def test_read_env_list(self):
         temp = tempfile.NamedTemporaryFile()
-        temp.write(SHORT_VARS)
+        temp.write(SHORT_VARS.encode())
         temp.seek(0)
         os.environ['TESTVAR']='testvalue'
         vals = branding.read_env_variable_list(temp.name)
@@ -62,7 +62,7 @@ class TestBranding(unittest.TestCase):
     def test_read_file_content(self):
         """ Write file and then read, using path from env """
         temp = tempfile.NamedTemporaryFile()
-        temp.write(RAW_CONTENT)
+        temp.write(RAW_CONTENT.encode())
         temp.seek(0)
 
         os.environ['FILEPATH']=temp.name
@@ -84,11 +84,11 @@ class TestBranding(unittest.TestCase):
 
     def test_in_place_templating(self):
         temp = tempfile.NamedTemporaryFile()
-        temp.write(TEMPLATED_CONTENT)
+        temp.write(TEMPLATED_CONTENT.encode())
         temp.seek(0)
         branding.apply_templating_to_file(temp.name, TEMPLATE_VARS)
         temp.seek(0)
-        self.assertEqual(TEMPLATE_EXPECTED, temp.read())
+        self.assertEqual(TEMPLATE_EXPECTED, temp.read().decode())
 
 
 if __name__ == '__main__':
