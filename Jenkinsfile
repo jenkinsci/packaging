@@ -1,7 +1,6 @@
 pipeline {
   agent {
     kubernetes {
-      label 'package-linux'
       yamlFile 'KubernetesPod.yaml'
       workingDir '/home/jenkins/agent'
     }
@@ -10,15 +9,13 @@ pipeline {
   options {
     disableConcurrentBuilds(abortPrevious: true)
     buildDiscarder logRotator(numToKeepStr: '5') // Retain only last 5 builds to reduce space requirements
+    timeout(time: 1, unit: 'HOURS')
   }
 
   environment {
-    JENKINS_VERSION = 'latest'
-    JENKINS_DOWNLOAD_URL= 'https://repo.jenkins-ci.org/releases/org/jenkins-ci/main/jenkins-war/'
-    WAR = "${WORKSPACE}/target/war/jenkins.war"
-    MSI = "${WORKSPACE}/target/msi/jenkins.msi"
-    BRAND = "${WORKSPACE}/branding/common"
-    ORGANIZATION = 'example.org'
+    WAR = "${WORKSPACE}/jenkins.war"
+    MSI = "${WORKSPACE}/jenkins.msi"
+    BRAND = "${WORKSPACE}/branding/test.mk"
     BUILDENV = "${WORKSPACE}/env/test.mk"
     CREDENTIAL = "${WORKSPACE}/credentials/test.mk"
     GPG_KEYNAME = 'test'
@@ -39,7 +36,7 @@ pipeline {
       }
       post {
         success {
-          archiveArtifacts 'target/war/*.war, target/debian/*.deb, target/rpm/*.rpm, target/suse/*.rpm'
+          archiveArtifacts 'target/debian/*.deb, target/rpm/*.rpm, target/suse/*.rpm'
         }
       }
     }

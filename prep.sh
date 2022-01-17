@@ -9,7 +9,6 @@ cd "$(dirname "$0")"
 # jenkins-infra/release should be refactored to consume the new functionality.
 
 if [[ ! -f $WAR ]]; then
-	mkdir -p "$(dirname "${WAR}")"
 	jv download
 fi
 
@@ -17,5 +16,5 @@ if ! gpg --fingerprint "${GPG_KEYNAME}"; then
 	gpg --import --batch "${GPG_KEYRING}" "${GPG_SECRET_KEYRING}"
 fi
 
-# produces: target/war/jenkins.war
+# produces: jenkins.war
 exit 0
