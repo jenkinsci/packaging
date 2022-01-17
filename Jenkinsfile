@@ -37,15 +37,15 @@ podTemplate(yaml: readTrusted('PodTemplates.d/package-windows.yaml')) {
   node(POD_LABEL) {
     timeout(time: 1, unit: 'HOURS') {
       withEnv([
-        "BUILDENV=${WORKSPACE}/env/test.mk",
-        "BRANDING_DIR=${WORKSPACE}/branding",
-        "BRAND=${WORKSPACE}/branding/test.mk",
-        "GPG_FILE=${WORKSPACE}/credentials/sandbox.gpg",
+        "BUILDENV=${WORKSPACE}\\env\\test.mk",
+        "BRANDING_DIR=${WORKSPACE}\\branding",
+        "BRAND=${WORKSPACE}\\branding\\test.mk",
+        "GPG_FILE=${WORKSPACE}\\credentials\\sandbox.gpg",
         "GPG_KEYNAME=Bogus Test",
         "GPG_PASSPHRASE=s3cr3t",
-        "GPG_PASSPHRASE_FILE=${WORKSPACE}/credentials/test.gpg.password.txt",
-        "WAR=${WORKSPACE}/jenkins.war",
-        "MSI=${WORKSPACE}/jenkins.msi",
+        "GPG_PASSPHRASE_FILE=${WORKSPACE}\\credentials\\test.gpg.password.txt",
+        "WAR=${WORKSPACE}\\jenkins.war",
+        "MSI=${WORKSPACE}\\jenkins.msi",
         "RELEASELINE=-experimental",
       ]) {
         stage('Preparation') {
@@ -54,11 +54,7 @@ podTemplate(yaml: readTrusted('PodTemplates.d/package-windows.yaml')) {
         }
         stage('Build') {
           container('dotnet') {
-            powershell '''
-                Get-ChildItem env:
-                $env:WAR=(Resolve-Path .\\jenkins.war).Path
-                & .\\make.ps1
-                '''.stripIndent()
+            powershell '.\\make.ps1'
           }
         }
         stage('Results') {
