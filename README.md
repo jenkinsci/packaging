@@ -38,15 +38,8 @@ A docker image is available to run following script
 
 [![logo](https://img.shields.io/docker/pulls/jenkinsciinfra/packaging?label=jenkinsciinfra%2Fpackaging&logo=docker&logoColor=white)](https://hub.docker.com/r/jenkinsciinfra/packaging)
 
-```shell
-docker run -i -t \
-  -v $PWD:/packaging \
-  -v /gpg_password:/secrets/password \
-  -eWAR="/packaging/jenkins.war" \
-  -eGPG_KEYNAME="sandbox" \
-  -eGPG_PASSPHRASE_FILE="/secrets/password" \
-  -w /packaging jenkinsciinfra/packaging:latest make deb`
-```
+Run `docker-compose run --rm packaging bash` to get a shell in the official Docker image for this repository.
+To build the packages locally, run `./prep.sh && make war deb rpm suse` in that shell.
 
 # Generating packages
 Run `make package` to build all the native packages.
