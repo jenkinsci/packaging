@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 import os
-from string import Template
-import sys
 import re
+import string
+import sys
 
 # Applies branding to files/folders with simple templating
 # Usage is 'python branding.py {file or folder}'
@@ -14,14 +14,14 @@ import re
 BRANDING_ENV_VARIABLE_LIST = 'branding.list'
 BRANDING_ENV_PATH_LIST = 'branding-files.list'
 
-class CustomTemplate(Template):
+class CustomTemplate(string.Template):
 	delimiter = '@@'
 	pattern = r""" %(delim)s(?:
       (?P<escaped>) |   # Nope, taken care of by the delimiter not being a valid id character
       (?P<named>%(id)s)      |   # delimiter and a Python identifier
       (?P<braced>%(id)s)   |   # we don't support braced identifiers, since it's surrounded by delimiters
       (?P<invalid>)            # no matches
-    )%(delim)s """ % dict(delim=re.escape('@@'), id=Template.idpattern)
+    )%(delim)s """ % dict(delim=re.escape('@@'), id=string.Template.idpattern)
 
 def clean_text_lines(textcontent):
 	""" Splits file content by line boundaries, strips leading/trailing whitespace, 

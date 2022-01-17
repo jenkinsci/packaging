@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 
-from jinja2 import Environment, FileSystemLoader
-from pathlib import Path
-
 import getopt
+import jinja2
 import os
+import pathlib
 import sys
 
 def basename(path):
@@ -126,7 +125,7 @@ class IndexGenerator:
             'repositories': self.repositories
         }
 
-        env = Environment(loader=FileSystemLoader(self.template_directory))
+        env = jinja2.Environment(loader=jinja2.FileSystemLoader(self.template_directory))
         template = env.get_template('header.root.html')
 
         with open(self.root_header, "w") as f:
@@ -136,7 +135,7 @@ class IndexGenerator:
 
         contexts = {}
 
-        env = Environment(loader=FileSystemLoader(self.template_directory))
+        env = jinja2.Environment(loader=jinja2.FileSystemLoader(self.template_directory))
         template = env.get_template('footer.html')
 
         with open(self.root_footer, "w") as f:
@@ -148,7 +147,7 @@ class IndexGenerator:
             'product_name': self.product_name
         }
 
-        env = Environment(loader=FileSystemLoader(self.template_directory))
+        env = jinja2.Environment(loader=jinja2.FileSystemLoader(self.template_directory))
         template = env.get_template('footer.html')
 
         with open(self.footer, "w") as f:
@@ -158,7 +157,7 @@ class IndexGenerator:
         pub_key_info = ""
 
         if (self.gpg_pub_key_info_file != "."):
-            gpg_pub_key = Path(self.gpg_pub_key_info_file)
+            gpg_pub_key = pathlib.Path(self.gpg_pub_key_info_file)
             if (gpg_pub_key.is_file()): 
                 with open(self.gpg_pub_key_info_file, "r") as gpg_pub_key:
                     pub_key_info = gpg_pub_key.read()
@@ -178,7 +177,7 @@ class IndexGenerator:
             'pub_key_info': self.fetch_pubkeyinfo()
         }
 
-        env = Environment(loader=FileSystemLoader(self.template_directory))
+        env = jinja2.Environment(loader=jinja2.FileSystemLoader(self.template_directory))
         env.filters['basename'] = basename
         template = env.get_template(self.template_file)
 
@@ -199,7 +198,7 @@ class IndexGenerator:
             'pub_key_info': self.fetch_pubkeyinfo()
         }
 
-        env = Environment(loader=FileSystemLoader(self.template_directory))
+        env = jinja2.Environment(loader=jinja2.FileSystemLoader(self.template_directory))
         env.filters['basename'] = basename
         templateIndex = env.get_template('index.html')
 

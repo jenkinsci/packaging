@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-import unittest
 import branding
-import tempfile
 import os
 import string
+import tempfile
+import unittest
 
 RAW_CONTENT = """
 PRODUCTNAME
