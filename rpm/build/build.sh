@@ -3,8 +3,8 @@
 set -e
 
 # prepare fresh directories
-D=/tmp/$$
-mkdir $D
+D=$(mktemp -d)
+trap 'rm -rf "$D"' EXIT
 
 cp -R "$(dirname "$0")"/* $D
 "$BASE/bin/branding.py" $D
@@ -24,5 +24,3 @@ popd
 
 mkdir -p "$(dirname "${RPM}")" || true
 mv $D/RPMS/noarch/*.rpm "${RPM}"
-
-rm -rf $D
