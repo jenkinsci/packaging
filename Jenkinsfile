@@ -1,7 +1,6 @@
 pipeline {
   agent {
     kubernetes {
-      label 'package-linux'
       yamlFile 'KubernetesPod.yaml'
       workingDir '/home/jenkins/agent'
     }
