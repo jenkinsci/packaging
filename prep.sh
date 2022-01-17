@@ -13,7 +13,7 @@ if [[ ! -f $WAR ]]; then
 fi
 
 if ! gpg --fingerprint "${GPG_KEYNAME}"; then
-	gpg --import --batch "${GPG_KEYRING}" "${GPG_SECRET_KEYRING}"
+	gpg --import --batch "${GPG_FILE}"
 fi
 
 # produces: jenkins.war
