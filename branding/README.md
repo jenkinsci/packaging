@@ -14,7 +14,6 @@ Branding definition file has the following variables
 * `MSI_PRODUCTCODE`: Windows installer uses UUID to identify which MSI files are of the same lineage.
   If two MSIs have the same UUID, one will overwrite another. So if you are to produce your own MSI,
   you need to use a different UUID.
-* `OSX_IDPREFIX`: prefix of the various IDs in OS X. This follows the reverse domain name format.
 * `AUTHOR`: Author name & email for distributed package, i.e. Bob Smith <nobody@example.com>
 * `LICENSE`: License(s) for this distribution, such as 'Apache 2.0'
 * `HOMEPAGE`: homepage URL for this distribution of Jenkins (where users should go for more information)

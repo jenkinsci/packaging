@@ -2,7 +2,7 @@
 # Environment definition for official OSS Jenkins packaging
 # 
 
-# JENKINS used to generate OSX/MSI packages
+# JENKINS used to generate MSI packages
 export JENKINS_URL=https://cloudbees.ci.cloudbees.com/
 
 # the host to publish bits to
@@ -13,7 +13,6 @@ export SCP_OPTS=-P 22
 # where to put binary files
 export WARDIR=/srv/releases/jenkins/war${RELEASELINE}
 export MSIDIR=/srv/releases/jenkins/windows${RELEASELINE}
-export OSXDIR=/srv/releases/jenkins/osx${RELEASELINE}
 export DEBDIR=/srv/releases/jenkins/debian${RELEASELINE}
 export RPMDIR=/srv/releases/jenkins/redhat${RELEASELINE}
 export SUSEDIR=/srv/releases/jenkins/opensuse${RELEASELINE}
