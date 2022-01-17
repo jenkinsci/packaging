@@ -13,13 +13,16 @@ pipeline {
   }
 
   environment {
+    BUILDENV = "${WORKSPACE}/env/test.mk"
+    BRANDING_DIR = "${WORKSPACE}/branding"
+    BRAND = "${WORKSPACE}/branding/test.mk"
+    GPG_FILE = "${WORKSPACE}/credentials/sandbox.gpg"
+    GPG_KEYNAME = 'Bogus Test'
+    GPG_PASSPHRASE = 's3cr3t'
+    GPG_PASSPHRASE_FILE = "${WORKSPACE}/credentials/test.gpg.password.txt"
     WAR = "${WORKSPACE}/jenkins.war"
     MSI = "${WORKSPACE}/jenkins.msi"
-    BRAND = "${WORKSPACE}/branding/test.mk"
-    BUILDENV = "${WORKSPACE}/env/test.mk"
-    CREDENTIAL = "${WORKSPACE}/credentials/test.mk"
-    GPG_KEYNAME = 'Bogus Test'
-    GPG_FILE = "${WORKSPACE}/credentials/sandbox.gpg"
+    RELEASELINE = '-experimental'
   }
 
   stages {
