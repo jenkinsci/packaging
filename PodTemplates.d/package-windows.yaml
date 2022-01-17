@@ -1,0 +1,49 @@
+---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  labels:
+    jenkins: "agent"
+    job: "package"
+spec:
+  containers:
+    - name: "jnlp"
+      image: "jenkins/inbound-agent:4.3-9-windowsservercore-1809"
+      resources:
+        limits:
+          memory: "4Gi"
+          cpu: "1"
+        requests:
+          memory: "4Gi"
+          cpu: "1"
+    - name: "dotnet"
+      image: "mcr.microsoft.com/dotnet/framework/sdk:3.5"
+      command:
+        - "powershell.exe"
+      args:
+        - -Command
+        - Start-Sleep -s 2147483  # We must be sure that the process used by the container doesn't stop before the Jenkins job and second is not greater than 2147483
+      resources:
+        limits:
+          memory: "4Gi"
+          cpu: "1"
+        requests:
+          memory: "4Gi"
+          cpu: "1"
+      securityContext:
+        privileged: false
+      tty: false
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                  - windows
+  tolerations:
+    - key: "os"
+      operator: "Equal"
+      value: "windows"
+      effect: "NoSchedule"
