@@ -2,7 +2,7 @@ properties([
   buildDiscarder(logRotator(numToKeepStr: '15', artifactNumToKeepStr: '5')),
   disableConcurrentBuilds(abortPrevious: true)
 ])
-podTemplate(yaml: readTrusted('KubernetesPod.yaml', workingDir: '/home/jenkins/agent')) {
+podTemplate(yaml: readTrusted('KubernetesPod.yaml'), workingDir: '/home/jenkins/agent') {
   node(POD_LABEL) {
     timeout(time: 1, unit: 'HOURS') {
       stage('Prep') {
