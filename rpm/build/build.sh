@@ -13,7 +13,8 @@ cp "$WAR" $D/SOURCES/jenkins.war
 
 pushd $D
   mkdir -p BUILD RPMS SRPMS
-  rpmbuild -ba --define="_topdir $PWD" --define="_tmppath $PWD/tmp" --define="ver $VERSION" SPECS/jenkins.spec
+  rpmbuild -bs --define="_topdir $PWD" --define="_tmppath $PWD/tmp" --define="ver $VERSION" SPECS/jenkins.spec
+  mock --define="ver $VERSION" --resultdir=RPMS --root=epel-7-x86_64 SRPMS/*.rpm
 
   # sign the results
   for rpm in $(find RPMS -name '*.rpm'); do
@@ -23,4 +24,4 @@ pushd $D
 popd
 
 mkdir -p "$(dirname "${RPM}")" || true
-mv $D/RPMS/noarch/*.rpm "${RPM}"
+mv $D/RPMS/*.noarch*.rpm "${RPM}"
