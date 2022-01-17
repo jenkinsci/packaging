@@ -17,5 +17,5 @@ if ! gpg --fingerprint "${GPG_KEYNAME}"; then
 	gpg --import --batch "${GPG_KEYRING}" "${GPG_SECRET_KEYRING}"
 fi
 
-# produces: target/war/jenkins.war
+# produces: jenkins.war
 exit 0
