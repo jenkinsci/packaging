@@ -1,0 +1,25 @@
+---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  labels:
+    jenkins: "agent"
+    job: "package"
+spec:
+  containers:
+    - name: jnlp
+      image: jenkinsciinfra/packaging:latest
+      env:
+        - name: "HOME"
+          value: "/home/jenkins/agent/workspace"
+      resources:
+        limits:
+          memory: "1Gi"
+          cpu: "1"
+        requests:
+          memory: "1Gi"
+          cpu: "1"
+      securityContext:
+        privileged: false
+        runAsUser: 1000
+        runAsGroup: 1000
