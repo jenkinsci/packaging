@@ -9,6 +9,7 @@ pipeline {
   options {
     disableConcurrentBuilds(abortPrevious: true)
     buildDiscarder logRotator(numToKeepStr: '5') // Retain only last 5 builds to reduce space requirements
+    timeout(time: 1, unit: 'HOURS')
   }
 
   environment {
