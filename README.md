@@ -39,9 +39,9 @@ A docker image is available to run following script
 [![logo](https://img.shields.io/docker/pulls/jenkinsciinfra/packaging?label=jenkinsciinfra%2Fpackaging&logo=docker&logoColor=white)](https://hub.docker.com/r/jenkinsciinfra/packaging)
 
 Run `docker-compose run --rm packaging bash` to get a shell in the official Docker image for this repository.
-To build the packages locally, run `./prep.sh && make war deb rpm suse` in that shell.
 
 # Generating packages
+Run `./prep.sh` to perform the preparatory actions of downloading the WAR and importing the GPG key.
 Run `make package` to build all the native packages.
 At minimum, you have to specify the `WAR` variable that points to the war file to be packaged and a branding file (for licensing and package descriptions).
 You will probably need to pass in the build environment and credentials.
