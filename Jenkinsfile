@@ -23,6 +23,7 @@ podTemplate(yaml: readTrusted('KubernetesPod.yaml'), workingDir: '/home/jenkins/
         }
         stage('Build') {
           sh 'make package'
+          sh 'python3 -m unittest discover -s bin'
         }
         archiveArtifacts 'target/debian/*.deb, target/rpm/*.rpm, target/suse/*.rpm'
       }
