@@ -20,6 +20,10 @@
     name: "{{ package_list.files[0].path }}"
     disable_gpg_check: true  # TODO get this working
     state: present
+- lineinfile:
+    path: /etc/sysconfig/jenkinstest
+    regexp: '^JENKINS_JAVA_OPTIONS='
+    line: "JENKINS_JAVA_OPTIONS=\"-Djava.awt.headless=true -Xmx256m\""
 - systemd:
     daemon_reload: true
   when: ansible_service_mgr == 'systemd'
