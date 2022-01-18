@@ -2,4 +2,3 @@ ansible
 docker
 jinja2
 molecule[docker]
-wheel

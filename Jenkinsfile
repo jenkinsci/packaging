@@ -43,7 +43,7 @@ nodeWithTimeout('azure && docker') {
         sh '''
             python3 -m venv venv
             . venv/bin/activate
-            pip install -U pip
+            pip install -U pip wheel
             pip install -r requirements.txt
             ANSIBLE_FORCE_COLOR=true molecule test
             deactivate
