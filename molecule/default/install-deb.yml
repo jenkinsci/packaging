@@ -21,3 +21,4 @@
     deb: "{{ package_list.files[0].path }}"
 - systemd:
     daemon_reload: true
+  when: ansible_service_mgr == 'systemd'

@@ -33,14 +33,15 @@ podTemplate(yaml: readTrusted('KubernetesPod.yaml'), workingDir: '/home/jenkins/
   }
 }
 
-nodeWithTimeout('azure && docker') {
+nodeWithTimeout('docker') {
   stage('Test') {
     checkout scm
     unstash 'results'
     infra.withDockerCredentials {
-      sh 'sudo apt-get update && sudo apt-get install -y python3-docker python3-pip python3-venv python3-wheel' // TODO https://github.com/jenkins-infra/packer-images/pull/167
       ansiColor('xterm') {
         sh '''
+            cat /proc/cpuinfo
+            cat /proc/meminfo
             python3 -m venv venv
             . venv/bin/activate
             pip install -U pip wheel
