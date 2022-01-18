@@ -53,6 +53,13 @@ platforms:
       - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     privileged: true
+  - name: fedora-34
+    image: dokken/fedora-34:latest
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: fedora-35
     image: dokken/fedora-35:latest
     command: /sbin/init
