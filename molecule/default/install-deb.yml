@@ -1,24 +1,12 @@
 ---
-# Older Ubuntu versions don't ship OpenJDK 11. Use Eclipse Temurin instead.
-- apt_key:
-    url: https://packages.adoptium.net/artifactory/api/gpg/key/public
-    # SNI requires Python 2.7.9, but Ubuntu 14.04 only ships 2.7.6.
-    validate_certs: "{{ 'false' if ansible_distribution_release == 'trusty' else 'true' }}"
-  when: ansible_distribution_major_version|int < 18
-- apt_repository:
-    # Adoptium's trusty repository is busted, but the xenial one seems to work.
-    repo: "deb https://packages.adoptium.net/artifactory/deb {{ 'xenial' if ansible_distribution_release == 'trusty' else ansible_distribution_release }} main"
-    state: present
-    filename: adoptium
-  when: ansible_distribution_major_version|int < 18
-- package:
+- apt:
     name:
       - daemon
       - fontconfig
       - fonts-dejavu
       - libfreetype6
       - man-db
-      - "{{ 'temurin-11-jdk' if (ansible_distribution_major_version|int < 18) else 'openjdk-11-jre' }}"
+      - openjdk-11-jre
     state: present
     update_cache: true
 - find:

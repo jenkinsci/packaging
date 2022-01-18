@@ -4,19 +4,6 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: ubuntu-14-04
-    image: dokken/ubuntu-14.04:latest
-    volumes:
-      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    privileged: true
-  - name: ubuntu-16-04
-    image: dokken/ubuntu-16.04:latest
-    command: /sbin/init
-    volumes:
-      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    privileged: true
   - name: ubuntu-18-04
     image: dokken/ubuntu-18.04:latest
     command: /sbin/init
