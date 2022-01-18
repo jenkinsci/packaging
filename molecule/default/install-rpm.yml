@@ -5,7 +5,15 @@
     disable_gpg_check: true  # TODO get this working
     state: present
     update_cache: true
-  when: ansible_distribution != 'Fedora'
+  when: ansible_distribution != 'Fedora' and ansible_distribution != 'OracleLinux'
+- yum_repository:
+    name: oracle-linux-epel
+    description: "Oracle Linux {{ ansible_distribution_major_version }} EPEL ($basearch)"
+    baseurl: "https://yum.oracle.com/repo/OracleLinux/OL{{ ansible_distribution_major_version }}/developer/EPEL/$basearch/"
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
+    gpgcheck: true
+    enabled: true
+  when: ansible_distribution == 'OracleLinux'
 - dnf:
     name:
       - daemonize

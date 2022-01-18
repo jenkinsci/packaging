@@ -76,6 +76,13 @@ platforms:
       - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     privileged: true
+  - name: oraclelinux-8
+    image: dokken/oraclelinux-8:latest
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: rockylinux-8
     image: dokken/rockylinux-8:latest
     command: /sbin/init
