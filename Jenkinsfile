@@ -33,7 +33,7 @@ podTemplate(yaml: readTrusted('KubernetesPod.yaml'), workingDir: '/home/jenkins/
   }
 }
 
-nodeWithTimeout('azure && docker') {
+nodeWithTimeout('docker') {
   stage('Test') {
     checkout scm
     unstash 'results'
