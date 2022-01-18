@@ -1,0 +1,26 @@
+---
+- dnf:
+    name:
+      - daemonize
+      - dejavu-sans-fonts
+      - fontconfig
+      - freetype
+      - initscripts
+      - java-11-openjdk
+    disable_gpg_check: true  # TODO get this working
+    state: present
+    update_cache: true
+- find:
+    paths: /var/tmp/target/rpm
+    file_type: file
+    patterns: "*.rpm"
+  register: package_list
+- assert:
+    that:
+      - package_list.matched == 1
+- dnf:
+    name: "{{ package_list.files[0].path }}"
+    disable_gpg_check: true  # TODO get this working
+    state: present
+- systemd:
+    daemon_reload: true

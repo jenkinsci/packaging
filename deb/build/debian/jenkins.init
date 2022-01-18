@@ -165,7 +165,7 @@ do_start()
 #
 get_running()
 {
-    return `pgrep -U $JENKINS_USER -f jenkins.war | grep -c .`
+    return `pgrep -U $JENKINS_USER -f $JENKINS_WAR | grep -c .`
 }
 
 #

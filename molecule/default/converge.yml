@@ -1,0 +1,11 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - include_tasks: install-deb.yml
+      when: ansible_os_family == 'Debian'
+    - include_tasks: install-rpm.yml
+      when: ansible_os_family == 'RedHat'
+    - include_tasks: install-suse.yml
+      when: ansible_os_family == 'Suse'

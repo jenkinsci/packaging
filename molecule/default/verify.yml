@@ -1,0 +1,18 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - service:
+      name: jenkinstest
+      state: started
+  - uri:
+      url: "http://127.0.0.1:7777"
+      status_code: 403
+    register: result
+    until: result.status == 403
+    retries: 60
+    delay: 1
+  - service:
+      name: jenkinstest
+      state: stopped

@@ -1,0 +1,23 @@
+---
+- apt:
+    name:
+      - daemon
+      - fontconfig
+      - fonts-dejavu
+      - libfreetype6
+      - man-db
+      - openjdk-11-jre
+    state: present
+    update_cache: true
+- find:
+    paths: /var/tmp/target/debian
+    file_type: file
+    patterns: "*.deb"
+  register: package_list
+- assert:
+    that:
+      - package_list.matched == 1
+- apt:
+    deb: "{{ package_list.files[0].path }}"
+- systemd:
+    daemon_reload: true
