@@ -6,6 +6,9 @@ set -e
 D=$(mktemp -d)
 trap 'rm -rf "$D"' EXIT
 
+# HACK: needs to go in https://github.com/jenkins-infra/docker-packaging/blob/main/Dockerfile if this works
+apt update && apt -y install mock
+
 cp -R "$(dirname "$0")"/* $D
 "$BASE/bin/branding.py" $D
 
