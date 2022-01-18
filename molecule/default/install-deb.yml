@@ -19,6 +19,10 @@
       - package_list.matched == 1
 - apt:
     deb: "{{ package_list.files[0].path }}"
+- lineinfile:
+    path: /etc/default/jenkinstest
+    regexp: '^JAVA_ARGS='
+    line: "JAVA_ARGS=\"-Djava.awt.headless=true -Xmx256m\""
 - systemd:
     daemon_reload: true
   when: ansible_service_mgr == 'systemd'
