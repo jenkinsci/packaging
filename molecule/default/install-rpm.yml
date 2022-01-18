@@ -1,6 +1,13 @@
 ---
 - dnf:
     name:
+      - epel-release
+    disable_gpg_check: true  # TODO get this working
+    state: present
+    update_cache: true
+  when: ansible_distribution != 'Fedora'
+- dnf:
+    name:
       - daemonize
       - dejavu-sans-fonts
       - fontconfig
