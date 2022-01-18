@@ -1,0 +1,24 @@
+---
+- zypper:
+    name:
+      - dejavu-fonts
+      - fontconfig
+      - java-11-openjdk
+      - libfreetype6
+    disable_gpg_check: true  # TODO get this working
+    state: present
+    update_cache: true
+- find:
+    paths: /var/tmp/target/suse
+    file_type: file
+    patterns: "*.rpm"
+  register: package_list
+- assert:
+    that:
+      - package_list.matched == 1
+- zypper:
+    name: "{{ package_list.files[0].path }}"
+    disable_gpg_check: true  # TODO get this working
+    state: present
+- systemd:
+    daemon_reload: true

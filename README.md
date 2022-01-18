@@ -53,6 +53,19 @@ make package BRAND=./branding/jenkins.mk BUILDENV=./env/test.mk CREDENTIAL=./cre
 Packages will be placed into `target/` directory.
 See the definition of the `package` goal for how to build individual packages selectively.
 
+# Running functional tests
+
+The functional tests require Python 3 and Docker.
+Having built the packages as described above, run the functional tests with:
+
+```shell
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+molecule test
+deactivate
+```
+
 # Publishing packages
 This repository contains scripts for copying packages over to a remote web server to publish them.
 Run `make publish` to publish all native packages.
