@@ -38,9 +38,9 @@ nodeWithTimeout('azure && docker') {
     checkout scm
     unstash 'results'
     infra.withDockerCredentials {
+      sh 'sudo apt-get update && sudo apt-get install -y python3-docker python3-pip python3-venv python3-wheel' // TODO https://github.com/jenkins-infra/packer-images/pull/167
       ansiColor('xterm') {
         sh '''
-            sudo apt-get update && sudo apt-get install -y python3-docker python3-pip python3-venv
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
