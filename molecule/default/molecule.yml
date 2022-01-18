@@ -4,6 +4,20 @@ dependency:
 driver:
   name: docker
 platforms:
+  - name: debian-10
+    image: dokken/debian-10:latest
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+  - name: debian-11
+    image: dokken/debian-11:latest
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: ubuntu-18-04
     image: dokken/ubuntu-18.04:latest
     command: /sbin/init
