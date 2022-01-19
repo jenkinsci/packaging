@@ -1,11 +1,28 @@
 ---
+# https://docs.fedoraproject.org/en-US/epel/
 - dnf:
     name:
       - epel-release
     disable_gpg_check: true  # TODO get this working
     state: present
     update_cache: true
-  when: ansible_distribution != 'Fedora' and ansible_distribution != 'OracleLinux'
+  when: ansible_distribution != 'CentOS' and ansible_distribution != 'Fedora' and ansible_distribution != 'OracleLinux'
+- dnf:
+    name:
+      - epel-release
+      - epel-next-release
+    disable_gpg_check: true  # TODO get this working
+    state: present
+    update_cache: true
+  when: ansible_distribution == 'CentOS' and ansible_distribution_release == 'Stream' and ansible_distribution_major_version|int < 9
+- dnf:
+    name:
+      - "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
+      - "https://dl.fedoraproject.org/pub/epel/epel-next-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
+    disable_gpg_check: true  # TODO get this working
+    state: present
+    update_cache: true
+  when: ansible_distribution == 'CentOS' and ansible_distribution_release == 'Stream' and ansible_distribution_major_version|int >= 9
 - yum_repository:
     name: oracle-linux-epel
     description: "Oracle Linux {{ ansible_distribution_major_version }} EPEL ($basearch)"
