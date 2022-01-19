@@ -1,13 +1,17 @@
 ---
 # https://docs.fedoraproject.org/en-US/epel/
-- dnf:
+- package:
     name:
       - epel-release
     disable_gpg_check: true  # TODO get this working
     state: present
     update_cache: true
-  when: ansible_distribution != 'CentOS' and ansible_distribution != 'Fedora' and ansible_distribution != 'OracleLinux'
-- dnf:
+  when: ansible_distribution != 'Amazon' and ansible_distribution != 'CentOS' and ansible_distribution != 'Fedora' and ansible_distribution != 'OracleLinux'
+- command:
+    cmd: amazon-linux-extras install epel java-openjdk11 -y
+    creates: /etc/yum.repos.d/epel.repo
+  when: ansible_distribution == 'Amazon'
+- package:
     name:
       - epel-release
       - epel-next-release
@@ -15,7 +19,7 @@
     state: present
     update_cache: true
   when: ansible_distribution == 'CentOS' and ansible_distribution_release == 'Stream' and ansible_distribution_major_version|int < 9
-- dnf:
+- package:
     name:
       - "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
       - "https://dl.fedoraproject.org/pub/epel/epel-next-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
@@ -31,7 +35,7 @@
     gpgcheck: true
     enabled: true
   when: ansible_distribution == 'OracleLinux'
-- dnf:
+- package:
     name:
       - daemonize
       - dejavu-sans-fonts
@@ -50,7 +54,7 @@
 - assert:
     that:
       - package_list.matched == 1
-- dnf:
+- package:
     name: "{{ package_list.files[0].path }}"
     disable_gpg_check: true  # TODO get this working
     state: present
