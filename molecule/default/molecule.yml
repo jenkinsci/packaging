@@ -62,6 +62,13 @@ platforms:
       - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     privileged: true
+  - name: amazonlinux-2
+    image: dokken/amazonlinux-2:latest
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: centos-stream-8
     image: dokken/centos-stream-8:latest
     command: /sbin/init
