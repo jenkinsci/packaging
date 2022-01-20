@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 #
 #     SUSE system statup script for @@PRODUCTNAME@@
 #     Copyright (C) 2007  Pascal Bleser

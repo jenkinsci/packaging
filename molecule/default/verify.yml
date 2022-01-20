@@ -3,9 +3,15 @@
   hosts: all
   gather_facts: false
   tasks:
-  - service:
-      name: jenkinstest
-      state: started
+  - block:
+      - service:
+          name: jenkinstest
+          state: started
+    rescue:
+      - command: journalctl -u jenkinstest.service
+        register: journal_output
+      - debug:
+          msg: "{{ journal_output }}"
   - uri:
       url: "http://127.0.0.1:7777"
       status_code: 403
