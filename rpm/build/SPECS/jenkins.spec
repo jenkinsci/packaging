@@ -22,8 +22,6 @@ BuildRoot:	%{_tmppath}/build-%{name}-%{version}
 # TODO: If re-enable, fix the matcher for Java 11
 # Requires: java >= 1:1.8.0
 Requires: daemonize procps
-Obsoletes: hudson
-Conflicts: hudson
 PreReq: /usr/sbin/groupadd /usr/sbin/useradd
 BuildArch: noarch
 

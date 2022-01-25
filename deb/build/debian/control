@@ -9,6 +9,4 @@ Homepage: @@HOMEPAGE@@
 Package: @@ARTIFACTNAME@@
 Architecture: all
 Depends: ${misc:Depends}, daemon, adduser, procps, psmisc, net-tools
-Conflicts: hudson
-Replaces: hudson
 Description: @@DESCRIPTION_FILE@@

@@ -37,17 +37,6 @@ case "$1" in
                 "$JENKINS_USER"
         fi
 
-        # If we have an old hudson install, rename it to jenkins
-        if test -d /var/lib/hudson -a \! \( -e /var/lib/hudson/.for-jenkins \) ; then
-            # leave a marker to indicate this came from Hudson.
-            # could be useful down the road
-            # This also ensures that the .??* wildcard matches something
-            touch /var/lib/hudson/.from-hudson
-            mv -f /var/lib/hudson/* /var/lib/hudson/.??* /var/lib/@@ARTIFACTNAME@@
-            rmdir /var/lib/hudson
-            find /var/lib/@@ARTIFACTNAME@@ -user hudson -exec chown $JENKINS_USER {} + || true
-        fi
-
         # directories needed for jenkins
         # we don't do -R because it can take a long time on big installation
         chown $JENKINS_USER:$JENKINS_GROUP /var/lib/@@ARTIFACTNAME@@ /var/log/@@ARTIFACTNAME@@
