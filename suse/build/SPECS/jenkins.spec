@@ -23,7 +23,6 @@ BuildRoot:	%{_tmppath}/build-%{name}-%{version}
 # TODO: Fix the query for Java 11 if it is reenabled
 # Requires: java >= 1:1.8.0
 Requires:	procps
-Obsoletes:  hudson
 PreReq:		/usr/sbin/groupadd /usr/sbin/useradd
 #PreReq:		%{fillup_prereq}
 BuildArch:	noarch
@@ -71,21 +70,6 @@ rm -rf "%{buildroot}"
 
 %post
 [ $1 -eq 1 ] && /sbin/chkconfig --add %{name}
-
-# If we have an old hudson install, rename it to jenkins
-if test -d /var/lib/hudson; then
-    # leave a marker to indicate this came from Hudson.
-    # could be useful down the road
-    # This also ensures that the .??* wildcard matches something
-    touch /var/lib/hudson/.moving-hudson
-    mv -f /var/lib/hudson/* /var/lib/hudson/.??* /var/lib/%{name}
-    rmdir /var/lib/hudson
-    find /var/lib/%{name} -user hudson -exec chown %{name} {} + || true
-fi
-if test -d /var/run/hudson; then
-    mv -f /var/run/hudson/* /var/run/%{name}
-    rmdir /var/run/hudson
-fi
 
 %preun
 if [ "$1" = 0 ] ; then
