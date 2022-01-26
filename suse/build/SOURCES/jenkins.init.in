@@ -2,17 +2,17 @@
 #
 #     SUSE system statup script for @@PRODUCTNAME@@
 #     Copyright (C) 2007  Pascal Bleser
-#          
+#
 #     This library is free software; you can redistribute it and/or modify it
 #     under the terms of the GNU Lesser General Public License as published by
 #     the Free Software Foundation; either version 2.1 of the License, or (at
 #     your option) any later version.
-#			      
+#
 #     This library is distributed in the hope that it will be useful, but
 #     WITHOUT ANY WARRANTY; without even the implied warranty of
 #     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 #     Lesser General Public License for more details.
-#      
+#
 #     You should have received a copy of the GNU Lesser General Public
 #     License along with this library; if not, write to the Free Software
 #     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307,
@@ -32,48 +32,83 @@
 
 # Check for missing binaries (stale symlinks should not happen)
 JENKINS_WAR="~~WAR~~"
-test -r "$JENKINS_WAR" || { echo "$JENKINS_WAR not installed"; 
-	if [ "$1" = "stop" ]; then exit 0;
-	else exit 5; fi; }
+test -r "$JENKINS_WAR" || {
+	echo "$JENKINS_WAR not installed"
+	if [ "$1" = "stop" ]; then
+		exit 0
+	else
+		exit 5
+	fi
+}
 
 # Check for existence of needed config file and read it
 JENKINS_CONFIG=/etc/sysconfig/@@ARTIFACTNAME@@
-test -r "$JENKINS_CONFIG" || { echo "$JENKINS_CONFIG not existing";
-	if [ "$1" = "stop" ]; then exit 0;
-	else exit 6; fi; }
+test -r "$JENKINS_CONFIG" || {
+	echo "$JENKINS_CONFIG not existing"
+	if [ "$1" = "stop" ]; then
+		exit 0
+	else
+		exit 6
+	fi
+}
 
 JENKINS_PID_FILE="/var/run/@@ARTIFACTNAME@@.pid"
 JENKINS_USER="@@ARTIFACTNAME@@"
 JENKINS_NICE="0"
 
-# Read config	
+# Read config
 . "$JENKINS_CONFIG"
 
 . /etc/rc.status
 rc_reset # Reset status of this service
 
 # Set up environment accordingly to the configuration settings
-[ -n "$JENKINS_HOME" ] || { echo "JENKINS_HOME not configured in $JENKINS_CONFIG";
-	if [ "$1" = "stop" ]; then exit 0;
-	else exit 6; fi; }
-[ -d "$JENKINS_HOME" ] || { echo "JENKINS_HOME directory does not exist: $JENKINS_HOME";
-	if [ "$1" = "stop" ]; then exit 0;
-	else exit 1; fi; }
+[ -n "$JENKINS_HOME" ] || {
+	echo "JENKINS_HOME not configured in $JENKINS_CONFIG"
+	if [ "$1" = "stop" ]; then
+		exit 0
+	else
+		exit 6
+	fi
+}
+[ -d "$JENKINS_HOME" ] || {
+	echo "JENKINS_HOME directory does not exist: $JENKINS_HOME"
+	if [ "$1" = "stop" ]; then
+		exit 0
+	else
+		exit 1
+	fi
+}
 
 if [ -z "$JENKINS_JAVA_HOME" ]; then
-    . /etc/profile.d/alljava.sh
-    [ -n "$JAVA_HOME" ] || { echo "Failed to determine JAVA_HOME, set JENKINS_JAVA_HOME in $JENKINS_CONFIG";
-	if [ "$1" = "stop" ]; then exit 0;
-	else exit 6; fi; }
+	. /etc/profile.d/alljava.sh
+	[ -n "$JAVA_HOME" ] || {
+		echo "Failed to determine JAVA_HOME, set JENKINS_JAVA_HOME in $JENKINS_CONFIG"
+		if [ "$1" = "stop" ]; then
+			exit 0
+		else
+			exit 6
+		fi
+	}
 else
-    JAVA_HOME="$JENKINS_JAVA_HOME"
+	JAVA_HOME="$JENKINS_JAVA_HOME"
 fi
-[ -d "$JAVA_HOME" ] || { echo "Invalid JENKINS_JAVA_HOME: directory does not exist: $JAVA_HOME";
-    if [ "$1" = "stop" ]; then exit 0;
-    else exit 6; fi; }
-[ -e "$JAVA_HOME/bin/java" ] || { echo "Invalid JENKINS_JAVA_HOME: bin/java not found under $JAVA_HOME";
-    if [ "$1" = "stop" ]; then exit 0;
-    else exit 6; fi; }
+[ -d "$JAVA_HOME" ] || {
+	echo "Invalid JENKINS_JAVA_HOME: directory does not exist: $JAVA_HOME"
+	if [ "$1" = "stop" ]; then
+		exit 0
+	else
+		exit 6
+	fi
+}
+[ -e "$JAVA_HOME/bin/java" ] || {
+	echo "Invalid JENKINS_JAVA_HOME: bin/java not found under $JAVA_HOME"
+	if [ "$1" = "stop" ]; then
+		exit 0
+	else
+		exit 6
+	fi
+}
 export JAVA_HOME
 
 JAVA_CMD="$JAVA_HOME/bin/java $JENKINS_JAVA_OPTIONS -DJENKINS_HOME=$JENKINS_HOME -jar $JENKINS_WAR"
@@ -86,12 +121,17 @@ PARAMS="--javaHome=$JAVA_HOME --logfile=/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME
 [ -n "$JENKINS_ARGS" ] && PARAMS="$PARAMS $JENKINS_ARGS"
 
 if [ "$JENKINS_ENABLE_ACCESS_LOG" = "yes" ]; then
-    PARAMS="$PARAMS --accessLoggerClassName=winstone.accesslog.SimpleAccessLogger --simpleAccessLogger.format=combined --simpleAccessLogger.file=/var/log/@@ARTIFACTNAME@@/access_log"
+	PARAMS="$PARAMS --accessLoggerClassName=winstone.accesslog.SimpleAccessLogger --simpleAccessLogger.format=combined --simpleAccessLogger.file=/var/log/@@ARTIFACTNAME@@/access_log"
 fi
 
-[ -z "$JENKINS_INIT_SHELL" -o -x "$JENKINS_INIT_SHELL" ] || { echo "JENKINS_INIT_SHELL does not refer to a shell: $JENKINS_INIT_SHELL";
-        if [ "$1" = "stop" ]; then exit 0;
-        else exit 6; fi; }
+[ -z "$JENKINS_INIT_SHELL" -o -x "$JENKINS_INIT_SHELL" ] || {
+	echo "JENKINS_INIT_SHELL does not refer to a shell: $JENKINS_INIT_SHELL"
+	if [ "$1" = "stop" ]; then
+		exit 0
+	else
+		exit 6
+	fi
+}
 
 is_running() {
 	JPROC=$(pgrep java -U "$JENKINS_USER")
@@ -104,44 +144,44 @@ is_running() {
 }
 
 case "$1" in
-    start)
+start)
 	echo -n "Starting @@PRODUCTNAME@@ "
-        /sbin/checkproc -k -p "$JENKINS_PID_FILE" "$JAVA_HOME/bin/java" >/var/log/@@ARTIFACTNAME@@.rc 2>&1
-        CHECK=$?
-        if [ $CHECK -eq 7 ]; then
-                rm -f "$JENKINS_PID_FILE"
-                if [ -x "$JENKINS_INIT_SHELL" ]; then
-                       startproc -n $JENKINS_NICE -s -e -l /var/log/@@ARTIFACTNAME@@.rc -p "$JENKINS_PID_FILE" /bin/su -l -s "$JENKINS_INIT_SHELL" -c "$JAVA_CMD $PARAMS &" "$JENKINS_USER"
-                else
-                       HOME=$JENKINS_HOME startproc -n $JENKINS_NICE -s -e -l /var/log/@@ARTIFACTNAME@@.rc -u "$JENKINS_USER" -p "$JENKINS_PID_FILE" $JAVA_CMD $PARAMS
-                fi
-                attempt=1
-                is_started=false
-                while [ $attempt -le 30 ]; do
-                        if is_running; then
-                                is_started=true
-                                break
-                        fi
-                        sleep 1
-                        attempt=$((attempt + 1))
-                done
-                if $is_started; then
-                        rc_status -v
-                else
-                        rc_failed
-                        rc_status -v
-                fi
-        else
-                rc_failed $CHECK
-                rc_status -v
-        fi
+	/sbin/checkproc -k -p "$JENKINS_PID_FILE" "$JAVA_HOME/bin/java" >/var/log/@@ARTIFACTNAME@@.rc 2>&1
+	CHECK=$?
+	if [ $CHECK -eq 7 ]; then
+		rm -f "$JENKINS_PID_FILE"
+		if [ -x "$JENKINS_INIT_SHELL" ]; then
+			startproc -n $JENKINS_NICE -s -e -l /var/log/@@ARTIFACTNAME@@.rc -p "$JENKINS_PID_FILE" /bin/su -l -s "$JENKINS_INIT_SHELL" -c "$JAVA_CMD $PARAMS &" "$JENKINS_USER"
+		else
+			HOME=$JENKINS_HOME startproc -n $JENKINS_NICE -s -e -l /var/log/@@ARTIFACTNAME@@.rc -u "$JENKINS_USER" -p "$JENKINS_PID_FILE" $JAVA_CMD $PARAMS
+		fi
+		attempt=1
+		is_started=false
+		while [ $attempt -le 30 ]; do
+			if is_running; then
+				is_started=true
+				break
+			fi
+			sleep 1
+			attempt=$((attempt + 1))
+		done
+		if $is_started; then
+			rc_status -v
+		else
+			rc_failed
+			rc_status -v
+		fi
+	else
+		rc_failed $CHECK
+		rc_status -v
+	fi
 	;;
-    stop)
+stop)
 	echo -n "Shutting down @@PRODUCTNAME@@ "
 	/sbin/killproc -p "$JENKINS_PID_FILE" "$JAVA_HOME/bin/java"
 	rc_status -v
 	;;
-    try-restart|condrestart)
+try-restart | condrestart)
 	if test "$1" = "condrestart"; then
 		echo "${attn} Use try-restart ${done}(LSB)${attn} rather than condrestart ${warn}(RH)${norm}"
 	fi
@@ -149,37 +189,37 @@ case "$1" in
 	if test $? = 0; then
 		$0 restart
 	else
-		rc_reset	# Not running is not a failure.
+		rc_reset # Not running is not a failure.
 	fi
 	rc_status
 	;;
-    restart)
+restart)
 	$0 stop
 	$0 start
 	rc_status
 	;;
-    force-reload)
+force-reload)
 	echo -n "Reload service @@PRODUCTNAME@@ "
 	$0 try-restart
 	rc_status
 	;;
-    reload)
+reload)
 	rc_failed 3
 	rc_status -v
 	;;
-    status)
+status)
 	echo -n "Checking for service @@PRODUCTNAME@@ "
 	/sbin/checkproc -p "$JENKINS_PID_FILE" "$JAVA_HOME/bin/java"
 	rc_status -v
 	;;
-    probe)
+probe)
 	## Optional: Probe for the necessity of a reload, print out the
 	## argument to this init script which is required for a reload.
 	## Note: probe is not (yet) part of LSB (as of 1.9)
 
 	test "$JENKINS_CONFIG" -nt "$JENKINS_PID_FILE" && echo reload
 	;;
-    *)
+*)
 	echo "Usage: $0 {start|stop|status|try-restart|restart|force-reload|reload|probe}"
 	exit 1
 	;;

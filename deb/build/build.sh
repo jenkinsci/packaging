@@ -22,7 +22,7 @@ sed -i.bak -e 's/^\s*$/./' -e 's/^/ /' $DESCRIPTION_FILE
 # Rewrite the file
 mv "$DESCRIPTION_FILE.bak" "$DESCRIPTION_FILE"
 
-cat > $D/debian/changelog << EOF
+cat >$D/debian/changelog <<EOF
 ${ARTIFACTNAME} ($VERSION${DEB_REVISION}) unstable; urgency=low
 
   * Packaged ${VERSION} https://jenkins.io/changelog${RELEASELINE}/#v${VERSION}
@@ -34,14 +34,14 @@ EOF
 # build the debian package
 cp "${WAR}" $D/${ARTIFACTNAME}.war
 pushd $D
-  pushd debian
-    # rename jenkins.* to artifact.*
-    for f in jenkins.*; do
-      mv $f ${f}_
-      mv ${f}_ ${ARTIFACTNAME}$(echo $f | cut -b8-)
-    done
-  popd
-  debuild -Zgzip -A
+pushd debian
+# rename jenkins.* to artifact.*
+for f in jenkins.*; do
+	mv $f ${f}_
+	mv ${f}_ ${ARTIFACTNAME}$(echo $f | cut -b8-)
+done
+popd
+debuild -Zgzip -A
 popd
 
 mkdir -p "$(dirname "${DEB}")" || true
