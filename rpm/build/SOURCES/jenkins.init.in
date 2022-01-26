@@ -108,27 +108,44 @@ fi
 
 RETVAL=0
 
+is_running() {
+	: >"$JENKINS_PID_FILE" # just in case we fail to find it
+	# get PID
+	/bin/ps hww -u "$JENKINS_USER" -o pid,cmd | while read -r pid cmd; do
+		echo "$cmd" | grep "$JENKINS_WAR" >/dev/null
+		[ $? = 0 ] || continue
+		# found a PID
+		echo "$pid" >"$JENKINS_PID_FILE"
+	done
+	if [ -s "$JENKINS_PID_FILE" ]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
 case "$1" in
     start)
 	echo -n "Starting @@PRODUCTNAME@@ "
-	eval "daemonize -u \"$JENKINS_USER\" -p \"$JENKINS_PID_FILE\" \"$JENKINS_JAVA_CMD\" $JENKINS_JAVA_OPTIONS \"-DJENKINS_HOME=$JENKINS_HOME\" -jar \"$JENKINS_WAR\" $PARAMS"
+	daemon --user "$JENKINS_USER" --pidfile "$JENKINS_PID_FILE" "$JENKINS_JAVA_CMD" $JENKINS_JAVA_OPTIONS "-DJENKINS_HOME=$JENKINS_HOME" -jar "$JENKINS_WAR" $PARAMS &
 	RETVAL=$?
 	if [ $RETVAL = 0 ]; then
-	    success
-	    echo > "$JENKINS_PID_FILE"  # just in case we fail to find it
-            MY_SESSION_ID=`/bin/ps h -o sess -p $$`
-            # get PID
-            /bin/ps hww -u "$JENKINS_USER" -o sess,ppid,pid,cmd | \
-            while read sess ppid pid cmd; do
-		[ "$ppid" = 1 ] || continue
-		# this test doesn't work because Jenkins sets a new Session ID
-                # [ "$sess" = "$MY_SESSION_ID" ] || continue
-	       	echo "$cmd" | grep $JENKINS_WAR > /dev/null
-		[ $? = 0 ] || continue
-		# found a PID
-		echo $pid > "$JENKINS_PID_FILE"
-	    done
-	    touch $JENKINS_LOCKFILE
+		attempt=1
+		is_started=false
+		while [ $attempt -le 30 ]; do
+			if is_running; then
+				is_started=true
+				break
+			fi
+			sleep 1
+			attempt=$((attempt + 1))
+		done
+		if $is_started; then
+			success
+			touch "$JENKINS_LOCKFILE"
+		else
+			failure
+		fi
 	else
 	    failure
 	fi
