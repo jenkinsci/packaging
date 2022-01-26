@@ -16,7 +16,7 @@ export MSI?=$(error Required variable MSI must point to the jenkins.msi file you
 export MSI_SHASUM:=${MSI}.sha256
 
 # where to generate Debian/Ubuntu DEB file?
-export DEB=${TARGET}/debian/${ARTIFACTNAME}_${VERSION}${DEB_REVISION}_all.deb
+export DEB=${TARGET}/debian/${ARTIFACTNAME}_${VERSION}_all.deb
 
 # where to generate RHEL/CentOS RPM file?
 export RPM=${TARGET}/rpm/${ARTIFACTNAME}-${VERSION}-1.1.noarch.rpm
