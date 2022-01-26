@@ -1,8 +1,20 @@
 ---
 - name: Verify
   hosts: all
-  gather_facts: false
   tasks:
+  - stat:
+      path: "{{ '/var/run/jenkinstest/jenkinstest.pid' if ansible_os_family == 'Debian' else '/var/run/jenkinstest.pid' }}"
+    register: pid_file
+  - assert:
+      that:
+        - not pid_file.stat.exists
+  - pids:
+      name: "{{ 'daemon' if ansible_os_family == 'Debian' else 'java' }}"
+    register: service_pids
+  - assert:
+      that:
+        - (service_pids.pids | length) == 0
+      fail_msg: "{{ service_pids.pids|join(',') }}"
   - service:
       name: jenkinstest
       state: started
@@ -11,8 +23,45 @@
       status_code: 403
     register: result
     until: result.status == 403
-    retries: 60
-    delay: 1
+    retries: 20
+    delay: 5
+  - stat:
+      path: "{{ '/var/run/jenkinstest/jenkinstest.pid' if ansible_os_family == 'Debian' else '/var/run/jenkinstest.pid' }}"
+    register: pid_file
+  - assert:
+      that:
+        - pid_file.stat.exists
+  - pids:
+      name: "{{ 'daemon' if ansible_os_family == 'Debian' else 'java' }}"
+    register: service_pids
+  - assert:
+      that:
+        - (service_pids.pids | length) == 1
+      fail_msg: "{{ service_pids.pids | join(',') }}"
+  - slurp:
+      src: "{{ '/var/run/jenkinstest/jenkinstest.pid' if ansible_os_family == 'Debian' else '/var/run/jenkinstest.pid' }}"
+    register: pid_file_contents
+  - assert:
+      that:
+        - service_pids.pids[0] == (pid_file_contents['content'] | b64decode | trim | int)
+      fail_msg: "Service PID {{ service_pids.pids[0] }} does not match PID file {{ pid_file_contents['content'] | b64decode | trim | int }}"
   - service:
       name: jenkinstest
       state: stopped
+  - stat:
+      path: "{{ '/var/run/jenkinstest/jenkinstest.pid' if ansible_os_family == 'Debian' else '/var/run/jenkinstest.pid' }}"
+    register: pid_file
+  - assert:
+      that:
+        - not pid_file.stat.exists
+    # SUSE's killproc only waits 60 milliseconds for the process to die
+    # before giving up on removing the PID file. Our test systems are
+    # slower than that, so skip this test on SUSE.
+    when: ansible_os_family != 'Suse'
+  - pids:
+      name: "{{ 'daemon' if ansible_os_family == 'Debian' else 'java' }}"
+    register: service_pids
+  - assert:
+      that:
+        - (service_pids.pids | length) == 0
+      fail_msg: "{{ service_pids.pids | join(',') }}"

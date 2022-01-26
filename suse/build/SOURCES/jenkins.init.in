@@ -93,6 +93,16 @@ fi
         if [ "$1" = "stop" ]; then exit 0;
         else exit 6; fi; }
 
+is_running() {
+	JPROC=$(pgrep java -U "$JENKINS_USER")
+	if [ -n "$JPROC" ]; then
+		echo "$JPROC" >"$JENKINS_PID_FILE"
+		return 0
+	else
+		return 1
+	fi
+}
+
 case "$1" in
     start)
 	echo -n "Starting @@PRODUCTNAME@@ "
@@ -101,13 +111,21 @@ case "$1" in
         if [ $CHECK -eq 7 ]; then
                 rm -f "$JENKINS_PID_FILE"
                 if [ -x "$JENKINS_INIT_SHELL" ]; then
-                       startproc -n $JENKINS_NICE -s -e -l /var/log/@@ARTIFACTNAME@@.rc -p "$JENKINS_PID_FILE" -t 1 /bin/su -l -s "$JENKINS_INIT_SHELL" -c "$JAVA_CMD $PARAMS &" "$JENKINS_USER"
+                       startproc -n $JENKINS_NICE -s -e -l /var/log/@@ARTIFACTNAME@@.rc -p "$JENKINS_PID_FILE" /bin/su -l -s "$JENKINS_INIT_SHELL" -c "$JAVA_CMD $PARAMS &" "$JENKINS_USER"
                 else
                        HOME=$JENKINS_HOME startproc -n $JENKINS_NICE -s -e -l /var/log/@@ARTIFACTNAME@@.rc -u "$JENKINS_USER" -p "$JENKINS_PID_FILE" $JAVA_CMD $PARAMS
                 fi
-                JPROC=$( pgrep java -U $JENKINS_USER )
-                if [ -n "$JPROC" ]; then
-                        echo "$JPROC" >"$JENKINS_PID_FILE"
+                attempt=1
+                is_started=false
+                while [ $attempt -le 30 ]; do
+                        if is_running; then
+                                is_started=true
+                                break
+                        fi
+                        sleep 1
+                        attempt=$((attempt + 1))
+                done
+                if $is_started; then
                         rc_status -v
                 else
                         rc_failed
