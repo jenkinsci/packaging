@@ -1,43 +1,10 @@
 ---
-# https://docs.fedoraproject.org/en-US/epel/
-- package:
-    name:
-      - epel-release
-    disable_gpg_check: true  # TODO get this working
-    state: present
-    update_cache: true
-  when: ansible_distribution != 'Amazon' and ansible_distribution != 'CentOS' and ansible_distribution != 'Fedora' and ansible_distribution != 'OracleLinux'
 - command:
-    cmd: amazon-linux-extras install epel java-openjdk11 -y
-    creates: /etc/yum.repos.d/epel.repo
+    cmd: amazon-linux-extras install java-openjdk11 -y
+    creates: /usr/lib/jvm/jre-11-openjdk
   when: ansible_distribution == 'Amazon'
 - package:
     name:
-      - epel-release
-      - epel-next-release
-    disable_gpg_check: true  # TODO get this working
-    state: present
-    update_cache: true
-  when: ansible_distribution == 'CentOS' and ansible_distribution_release == 'Stream' and ansible_distribution_major_version|int < 9
-- package:
-    name:
-      - "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
-      - "https://dl.fedoraproject.org/pub/epel/epel-next-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
-    disable_gpg_check: true  # TODO get this working
-    state: present
-    update_cache: true
-  when: ansible_distribution == 'CentOS' and ansible_distribution_release == 'Stream' and ansible_distribution_major_version|int >= 9
-- yum_repository:
-    name: oracle-linux-epel
-    description: "Oracle Linux {{ ansible_distribution_major_version }} EPEL ($basearch)"
-    baseurl: "https://yum.oracle.com/repo/OracleLinux/OL{{ ansible_distribution_major_version }}/developer/EPEL/$basearch/"
-    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
-    gpgcheck: true
-    enabled: true
-  when: ansible_distribution == 'OracleLinux'
-- package:
-    name:
-      - daemonize
       - dejavu-sans-fonts
       - fontconfig
       - freetype
