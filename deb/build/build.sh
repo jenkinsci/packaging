@@ -1,29 +1,29 @@
-#!/bin/bash -ex
-#
+#!/bin/bash -eux
+
 # build a debian package from a release build
 
 hostname
-dir=$(dirname $0)
+dir=$(dirname "$0")
 
 # tmp dir
-D=/tmp/$$/$$
-mkdir -p $D
+D=$(mktemp -d)
+trap 'rm -rf "${D}"' EXIT
 
 # debian packaging needs to touch the file in the source tree, so do this in tmp dir
 # so that multiple builds can go on concurrently
-cp -R $dir/* $D
+cp -R "${dir}"/* "${D}"
 
 # Create a description temp file
-sed -i.bak -e 's/^\s*$/./' -e 's/^/ /' $DESCRIPTION_FILE
+sed -i.bak -e 's/^\s*$/./' -e 's/^/ /' "${DESCRIPTION_FILE}"
 
 # Expand variables in the definition
-"$BASE/bin/branding.py" $D/debian
+"${BASE}/bin/branding.py" "${D}/debian"
 
 # Rewrite the file
-mv "$DESCRIPTION_FILE.bak" "$DESCRIPTION_FILE"
+mv "${DESCRIPTION_FILE}.bak" "${DESCRIPTION_FILE}"
 
-cat >$D/debian/changelog <<EOF
-${ARTIFACTNAME} ($VERSION${DEB_REVISION}) unstable; urgency=low
+cat >"${D}/debian/changelog" <<EOF
+${ARTIFACTNAME} (${VERSION}) unstable; urgency=low
 
   * Packaged ${VERSION} https://jenkins.io/changelog${RELEASELINE}/#v${VERSION}
 
@@ -32,18 +32,19 @@ ${ARTIFACTNAME} ($VERSION${DEB_REVISION}) unstable; urgency=low
 EOF
 
 # build the debian package
-cp "${WAR}" $D/${ARTIFACTNAME}.war
-pushd $D
+cp "${WAR}" "${D}/${ARTIFACTNAME}.war"
+pushd "${D}"
 pushd debian
 # rename jenkins.* to artifact.*
 for f in jenkins.*; do
-	mv $f ${f}_
-	mv ${f}_ ${ARTIFACTNAME}$(echo $f | cut -b8-)
+	mv "${f}" "${f}_"
+	mv "${f}_" "${ARTIFACTNAME}$(echo "${f}" | cut -b8-)"
 done
 popd
 debuild -Zgzip -A
 popd
 
-mkdir -p "$(dirname "${DEB}")" || true
-mv $D/../${ARTIFACTNAME}_${VERSION}${DEB_REVISION}_all.deb ${DEB}
-rm -rf $D
+mkdir -p "$(dirname "${DEB}")"
+mv "${D}/../${ARTIFACTNAME}_${VERSION}_all.deb" "${DEB}"
+
+exit 0
