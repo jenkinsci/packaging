@@ -10,115 +10,108 @@ set -euxo pipefail
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
 
-function clean(){
-  rm -rf "$D"
+function clean() {
+	rm -rf "$D"
 }
 
 # Convert string to array to correctly escape cli parameter
 SSH_OPTS=($SSH_OPTS)
 
 # Generate and publish site content
-function generateSite(){
-
-  "$BASE/bin/indexGenerator.py" \
-    --distribution war \
-    --targetDir "$D"
-
+function generateSite() {
+	"$BASE/bin/indexGenerator.py" \
+		--distribution war \
+		--targetDir "$D"
 }
 
-function init(){
+function init() {
+	mkdir -p $D
 
-  mkdir -p $D
+	mkdir -p "${WARDIR}/${VERSION}/"
 
-  mkdir -p "${WARDIR}/${VERSION}/"
-
-  ssh "${SSH_OPTS[@]}" "$PKGSERVER" mkdir -p "$WARDIR/${VERSION}/"
-
+	ssh "${SSH_OPTS[@]}" "$PKGSERVER" mkdir -p "$WARDIR/${VERSION}/"
 }
 
-function skipIfAlreadyPublished(){
-
-  if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"; then
-    echo "File already published, nothing else todo"
-    exit 0
-
-  fi
+function skipIfAlreadyPublished() {
+	if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"; then
+		echo "File already published, nothing else todo"
+		exit 0
+	fi
 }
 
-function uploadPackage(){
+function uploadPackage() {
+	sha256sum "${WAR}" | sed "s, .*, ${ARTIFACTNAME}.war," >"${WAR_SHASUM}"
+	cat "${WAR_SHASUM}"
 
-  sha256sum "${WAR}" | sed "s, .*, ${ARTIFACTNAME}.war," > "${WAR_SHASUM}"
-  cat "${WAR_SHASUM}"
+	# Local
+	rsync \
+		--compress \
+		--recursive \
+		--verbose \
+		--ignore-existing \
+		--progress \
+		"${WAR}" "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
 
-  # Local
-  rsync \
-    --compress \
-    --recursive \
-    --verbose \
-    --ignore-existing \
-    --progress \
-    "${WAR}" "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
+	rsync \
+		--compress \
+		--recursive \
+		--verbose \
+		--ignore-existing \
+		--progress \
+		"${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
 
-  rsync \
-    --compress \
-    --recursive \
-    --verbose \
-    --ignore-existing \
-    --progress \
-    "${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
+	# Remote
+	rsync \
+		--archive \
+		--compress \
+		--verbose \
+		-e "ssh ${SSH_OPTS[*]}" \
+		--ignore-existing \
+		--progress \
+		"${WAR}" "$PKGSERVER:${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
 
-  # Remote
-  rsync \
-    --archive \
-    --compress \
-    --verbose \
-    -e "ssh ${SSH_OPTS[*]}" \
-    --ignore-existing \
-    --progress \
-    "${WAR}" "$PKGSERVER:${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
-
-  rsync \
-    --archive \
-    --compress \
-    --verbose \
-    -e "ssh ${SSH_OPTS[*]}" \
-    --ignore-existing \
-    --progress \
-    "${WAR_SHASUM}" "$PKGSERVER:${WARDIR}/${VERSION}/"
+	rsync \
+		--archive \
+		--compress \
+		--verbose \
+		-e "ssh ${SSH_OPTS[*]}" \
+		--ignore-existing \
+		--progress \
+		"${WAR_SHASUM}" "$PKGSERVER:${WARDIR}/${VERSION}/"
 }
 
 # Site html need to be located in the binary directory
-function uploadSite(){
-  rsync \
-    --compress \
-    --recursive \
-    --verbose \
-    --include "HEADER.html" \
-    --include "FOOTER.html" \
-    --exclude "*" \
-    --progress \
-    -e "ssh ${SSH_OPTS[*]}" \
-    "${D}/" "${WARDIR// /\\ }/"
+function uploadSite() {
+	rsync \
+		--compress \
+		--recursive \
+		--verbose \
+		--include "HEADER.html" \
+		--include "FOOTER.html" \
+		--exclude "*" \
+		--progress \
+		-e "ssh ${SSH_OPTS[*]}" \
+		"${D}/" "${WARDIR// /\\ }/"
 
-  rsync \
-    --archive \
-    --compress \
-    --verbose \
-    --include "HEADER.html" \
-    --include "FOOTER.html" \
-    --exclude "*" \
-    --progress \
-    -e "ssh ${SSH_OPTS[*]}" \
-    "${D}/" "$PKGSERVER:${WARDIR// /\\ }/"
+	rsync \
+		--archive \
+		--compress \
+		--verbose \
+		--include "HEADER.html" \
+		--include "FOOTER.html" \
+		--exclude "*" \
+		--progress \
+		-e "ssh ${SSH_OPTS[*]}" \
+		"${D}/" "$PKGSERVER:${WARDIR// /\\ }/"
 }
 
-function show(){
-  echo "Parameters:"
-  echo "WAR: $WAR"
-  echo "WARDIR: $WARDIR"
-  echo "SSH_OPTS: ${SSH_OPTS[*]}"
-  echo "PKGSERVER: $PKGSERVER"
-  echo "---"
+function show() {
+	echo "Parameters:"
+	echo "WAR: $WAR"
+	echo "WARDIR: $WARDIR"
+	echo "SSH_OPTS: ${SSH_OPTS[*]}"
+	echo "PKGSERVER: $PKGSERVER"
+	echo "---"
 }
 
 show

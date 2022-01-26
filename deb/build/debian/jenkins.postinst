@@ -17,52 +17,51 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-
 case "$1" in
-    configure)
-        [ -r /etc/default/@@ARTIFACTNAME@@ ] && . /etc/default/@@ARTIFACTNAME@@
-        : ${JENKINS_USER:=@@ARTIFACTNAME@@}
-        : ${JENKINS_GROUP:=@@ARTIFACTNAME@@}
+configure)
+	[ -r /etc/default/@@ARTIFACTNAME@@ ] && . /etc/default/@@ARTIFACTNAME@@
+	: ${JENKINS_USER:=@@ARTIFACTNAME@@}
+	: ${JENKINS_GROUP:=@@ARTIFACTNAME@@}
 
-        # Create @@ARTIFACTNAME@@ group and user if they don't exist.
-        # sometimes tools that users want Jenkins to run need a shell,
-        # so use /bin/bash. See JENKINS-4830
-        if ! getent group "$JENKINS_GROUP" > /dev/null; then
-            addgroup --system --quiet "$JENKINS_GROUP"
-        fi
-        if ! id "$JENKINS_USER" >/dev/null 2>&1 ; then
-            adduser --system --quiet --home /var/lib/@@ARTIFACTNAME@@ --no-create-home \
-                --ingroup "$JENKINS_GROUP" --disabled-password --shell /bin/bash \
-                --gecos '@@PRODUCTNAME@@' \
-                "$JENKINS_USER"
-        fi
+	# Create @@ARTIFACTNAME@@ group and user if they don't exist.
+	# sometimes tools that users want Jenkins to run need a shell,
+	# so use /bin/bash. See JENKINS-4830
+	if ! getent group "$JENKINS_GROUP" >/dev/null; then
+		addgroup --system --quiet "$JENKINS_GROUP"
+	fi
+	if ! id "$JENKINS_USER" >/dev/null 2>&1; then
+		adduser --system --quiet --home /var/lib/@@ARTIFACTNAME@@ --no-create-home \
+			--ingroup "$JENKINS_GROUP" --disabled-password --shell /bin/bash \
+			--gecos '@@PRODUCTNAME@@' \
+			"$JENKINS_USER"
+	fi
 
-        # directories needed for jenkins
-        # we don't do -R because it can take a long time on big installation
-        chown $JENKINS_USER:$JENKINS_GROUP /var/lib/@@ARTIFACTNAME@@ /var/log/@@ARTIFACTNAME@@
-        # we don't do "chmod 750" so that the user can choose the pemission for g and o on their own
-        chmod u+rwx /var/lib/@@ARTIFACTNAME@@ /var/log/@@ARTIFACTNAME@@
+	# directories needed for jenkins
+	# we don't do -R because it can take a long time on big installation
+	chown $JENKINS_USER:$JENKINS_GROUP /var/lib/@@ARTIFACTNAME@@ /var/log/@@ARTIFACTNAME@@
+	# we don't do "chmod 750" so that the user can choose the pemission for g and o on their own
+	chmod u+rwx /var/lib/@@ARTIFACTNAME@@ /var/log/@@ARTIFACTNAME@@
 
-        # make sure jenkins can delete everything in /var/cache/jenkins to
-        # re-explode war.
-        chown -R $JENKINS_USER:$JENKINS_GROUP /var/cache/@@ARTIFACTNAME@@
-        chmod -R 750                          /var/cache/@@ARTIFACTNAME@@
+	# make sure jenkins can delete everything in /var/cache/jenkins to
+	# re-explode war.
+	chown -R $JENKINS_USER:$JENKINS_GROUP /var/cache/@@ARTIFACTNAME@@
+	chmod -R 750 /var/cache/@@ARTIFACTNAME@@
 
-        # older installations may use /var/run/jenkins
-        # so make sure that they can delete too.
-        if [ -d "/var/run/@@ARTIFACTNAME@@" ]; then
-            chown -R $JENKINS_USER:$JENKINS_GROUP /var/run/@@ARTIFACTNAME@@
-            chmod -R 750                          /var/run/@@ARTIFACTNAME@@
-        fi
-    ;;
+	# older installations may use /var/run/jenkins
+	# so make sure that they can delete too.
+	if [ -d "/var/run/@@ARTIFACTNAME@@" ]; then
+		chown -R $JENKINS_USER:$JENKINS_GROUP /var/run/@@ARTIFACTNAME@@
+		chmod -R 750 /var/run/@@ARTIFACTNAME@@
+	fi
+	;;
 
-    abort-upgrade|abort-remove|abort-deconfigure)
-    ;;
+abort-upgrade | abort-remove | abort-deconfigure) ;;
 
-    *)
-        echo "postinst called with unknown argument \`$1'" >&2
-        exit 1
-    ;;
+\
+	*)
+	echo "postinst called with unknown argument \`$1'" >&2
+	exit 1
+	;;
 esac
 
 # dh_installdeb will replace this with shell code automatically
@@ -71,5 +70,3 @@ esac
 #DEBHELPER#
 
 exit 0
-
-

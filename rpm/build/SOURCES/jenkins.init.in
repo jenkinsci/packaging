@@ -39,18 +39,33 @@
 
 # Check for missing binaries (stale symlinks should not happen)
 JENKINS_WAR="~~WAR~~"
-test -r "$JENKINS_WAR" || { echo "$JENKINS_WAR not installed";
-	if [ "$1" = "stop" ]; then exit 0;
-	else exit 5; fi; }
+test -r "$JENKINS_WAR" || {
+	echo "$JENKINS_WAR not installed"
+	if [ "$1" = "stop" ]; then
+		exit 0
+	else
+		exit 5
+	fi
+}
 
 # Check for existence of needed config file and read it
 JENKINS_CONFIG=/etc/sysconfig/@@ARTIFACTNAME@@
-test -e "$JENKINS_CONFIG" || { echo "$JENKINS_CONFIG not existing";
-	if [ "$1" = "stop" ]; then exit 0;
-	else exit 6; fi; }
-test -r "$JENKINS_CONFIG" || { echo "$JENKINS_CONFIG not readable. Perhaps you forgot 'sudo'?";
-	if [ "$1" = "stop" ]; then exit 0;
-	else exit 6; fi; }
+test -e "$JENKINS_CONFIG" || {
+	echo "$JENKINS_CONFIG not existing"
+	if [ "$1" = "stop" ]; then
+		exit 0
+	else
+		exit 6
+	fi
+}
+test -r "$JENKINS_CONFIG" || {
+	echo "$JENKINS_CONFIG not readable. Perhaps you forgot 'sudo'?"
+	if [ "$1" = "stop" ]; then
+		exit 0
+	else
+		exit 6
+	fi
+}
 
 JENKINS_PID_FILE="/var/run/@@ARTIFACTNAME@@.pid"
 JENKINS_LOCKFILE="/var/lock/subsys/@@ARTIFACTNAME@@"
@@ -62,12 +77,22 @@ JENKINS_LOCKFILE="/var/lock/subsys/@@ARTIFACTNAME@@"
 [ -f "$JENKINS_CONFIG" ] && . "$JENKINS_CONFIG"
 
 # Set up environment accordingly to the configuration settings
-[ -n "$JENKINS_HOME" ] || { echo "JENKINS_HOME not configured in $JENKINS_CONFIG";
-	if [ "$1" = "stop" ]; then exit 0;
-	else exit 6; fi; }
-[ -d "$JENKINS_HOME" ] || { echo "JENKINS_HOME directory does not exist: $JENKINS_HOME";
-	if [ "$1" = "stop" ]; then exit 0;
-	else exit 1; fi; }
+[ -n "$JENKINS_HOME" ] || {
+	echo "JENKINS_HOME not configured in $JENKINS_CONFIG"
+	if [ "$1" = "stop" ]; then
+		exit 0
+	else
+		exit 6
+	fi
+}
+[ -d "$JENKINS_HOME" ] || {
+	echo "JENKINS_HOME directory does not exist: $JENKINS_HOME"
+	if [ "$1" = "stop" ]; then
+		exit 0
+	else
+		exit 1
+	fi
+}
 
 # Search usable Java as /usr/bin/java might not point to minimal version required by Jenkins.
 # see http://www.nabble.com/guinea-pigs-wanted-----Hudson-RPM-for-RedHat-Linux-td25673707.html
@@ -80,10 +105,9 @@ candidates="
 /usr/lib/jvm/java-11-openjdk-amd64
 /usr/bin/java
 "
-for candidate in $candidates
-do
-  [ -x "$JENKINS_JAVA_CMD" ] && break
-  JENKINS_JAVA_CMD="$candidate"
+for candidate in $candidates; do
+	[ -x "$JENKINS_JAVA_CMD" ] && break
+	JENKINS_JAVA_CMD="$candidate"
 done
 
 PARAMS="--logfile=/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log --webroot=/var/cache/@@ARTIFACTNAME@@/war"
@@ -103,7 +127,7 @@ PARAMS="--logfile=/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log --webroot=/var/
 [ -n "$JENKINS_ARGS" ] && PARAMS="$PARAMS $JENKINS_ARGS"
 
 if [ "$JENKINS_ENABLE_ACCESS_LOG" = "yes" ]; then
-    PARAMS="$PARAMS --accessLoggerClassName=winstone.accesslog.SimpleAccessLogger --simpleAccessLogger.format=combined --simpleAccessLogger.file=/var/log/@@ARTIFACTNAME@@/access_log"
+	PARAMS="$PARAMS --accessLoggerClassName=winstone.accesslog.SimpleAccessLogger --simpleAccessLogger.format=combined --simpleAccessLogger.file=/var/log/@@ARTIFACTNAME@@/access_log"
 fi
 
 RETVAL=0
@@ -125,7 +149,7 @@ is_running() {
 }
 
 case "$1" in
-    start)
+start)
 	echo -n "Starting @@PRODUCTNAME@@ "
 	daemon --user "$JENKINS_USER" --pidfile "$JENKINS_PID_FILE" "$JENKINS_JAVA_CMD" $JENKINS_JAVA_OPTIONS "-DJENKINS_HOME=$JENKINS_HOME" -jar "$JENKINS_WAR" $PARAMS &
 	RETVAL=$?
@@ -147,18 +171,18 @@ case "$1" in
 			failure
 		fi
 	else
-	    failure
+		failure
 	fi
 	echo
 	;;
-    stop)
+stop)
 	echo -n "Shutting down @@PRODUCTNAME@@ "
 	killproc @@ARTIFACTNAME@@
 	rm -f $JENKINS_LOCKFILE
 	RETVAL=$?
 	echo
 	;;
-    try-restart|condrestart)
+try-restart | condrestart)
 	if test "$1" = "condrestart"; then
 		echo "${attn} Use try-restart ${done}(LSB)${attn} rather than condrestart ${warn}(RH)${norm}"
 	fi
@@ -169,29 +193,29 @@ case "$1" in
 		: # Not running is not a failure.
 	fi
 	;;
-    restart)
+restart)
 	$0 stop
 	$0 start
 	;;
-    force-reload)
+force-reload)
 	echo -n "Reload service @@PRODUCTNAME@@ "
 	$0 try-restart
 	;;
-    reload)
-    	$0 restart
+reload)
+	$0 restart
 	;;
-    status)
-    	status @@ARTIFACTNAME@@
+status)
+	status @@ARTIFACTNAME@@
 	RETVAL=$?
 	;;
-    probe)
+probe)
 	## Optional: Probe for the necessity of a reload, print out the
 	## argument to this init script which is required for a reload.
 	## Note: probe is not (yet) part of LSB (as of 1.9)
 
 	test "$JENKINS_CONFIG" -nt "$JENKINS_PID_FILE" && echo reload
 	;;
-    *)
+*)
 	echo "Usage: $0 {start|stop|status|try-restart|restart|force-reload|reload|probe}"
 	exit 1
 	;;
