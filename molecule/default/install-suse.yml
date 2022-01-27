@@ -1,10 +1,9 @@
 ---
-- zypper:
+- package:
     name:
       - dejavu-fonts
       - fontconfig
       - java-11-openjdk
-      - libfreetype6
     disable_gpg_check: true  # TODO get this working
     state: present
     update_cache: true
@@ -16,7 +15,7 @@
 - assert:
     that:
       - package_list.matched == 1
-- zypper:
+- package:
     name: "{{ package_list.files[0].path }}"
     disable_gpg_check: true  # TODO get this working
     state: present

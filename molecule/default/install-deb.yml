@@ -1,9 +1,7 @@
 ---
-- apt:
+- package:
     name:
       - fontconfig
-      - fonts-dejavu
-      - libfreetype6
       - man-db
       - openjdk-11-jre
     state: present
