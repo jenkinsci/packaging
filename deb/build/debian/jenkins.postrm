@@ -5,12 +5,12 @@ set -e
 case "$1" in
 purge)
 	if [ -x "$(command -v deluser)" ]; then
-		deluser --quiet --system @@ARTIFACTNAME@@ >/dev/null || true
+		deluser --quiet --system @@ARTIFACTNAME@@ || echo "failed to remove @@ARTIFACTNAME@@ system user" >&2
 	else
 		userdel @@ARTIFACTNAME@@ || echo "failed to remove @@ARTIFACTNAME@@ system user" >&2
 	fi
 	if [ -x "$(command -v delgroup)" ]; then
-		delgroup --quiet --system --only-if-empty @@ARTIFACTNAME@@ >/dev/null || true
+		delgroup --quiet --system --only-if-empty @@ARTIFACTNAME@@ || echo "failed to remove @@ARTIFACTNAME@@ system user" >&2
 	else
 		groupdel @@ARTIFACTNAME@@ || echo "failed to remove @@ARTIFACTNAME@@ system group" >&2
 	fi

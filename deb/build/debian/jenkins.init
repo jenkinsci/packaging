@@ -84,7 +84,7 @@ check_tcp_port() {
 }
 
 do_start_cmd_override() {
-	check_arguments || return 2
+	check_arguments || return "$?"
 
 	# load environments
 	if [ -r /etc/default/locale ]; then
