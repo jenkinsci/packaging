@@ -1,7 +1,6 @@
 ---
 - apt:
     name:
-      - daemon
       - fontconfig
       - fonts-dejavu
       - libfreetype6

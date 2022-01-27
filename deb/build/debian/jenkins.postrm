@@ -4,8 +4,16 @@ set -e
 
 case "$1" in
 purge)
-	userdel @@ARTIFACTNAME@@ || true
-	groupdel @@ARTIFACTNAME@@ || true
+	if [ -x "$(command -v deluser)" ]; then
+		deluser --quiet --system @@ARTIFACTNAME@@ || echo "failed to remove @@ARTIFACTNAME@@ system user" >&2
+	else
+		userdel @@ARTIFACTNAME@@ || echo "failed to remove @@ARTIFACTNAME@@ system user" >&2
+	fi
+	if [ -x "$(command -v delgroup)" ]; then
+		delgroup --quiet --system --only-if-empty @@ARTIFACTNAME@@ || echo "failed to remove @@ARTIFACTNAME@@ system user" >&2
+	else
+		groupdel @@ARTIFACTNAME@@ || echo "failed to remove @@ARTIFACTNAME@@ system group" >&2
+	fi
 	rm -rf /var/lib/@@ARTIFACTNAME@@ /var/log/@@ARTIFACTNAME@@ \
 		/var/run/@@ARTIFACTNAME@@ /var/cache/@@ARTIFACTNAME@@
 	;;
