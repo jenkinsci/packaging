@@ -3,10 +3,10 @@ Section: devel
 Priority: optional
 Maintainer: @@AUTHOR@@
 Build-Depends: debhelper (>= 10)
-Standards-Version: 4.6.0
+Standards-Version: 3.9.8
 Homepage: @@HOMEPAGE@@
 
 Package: @@ARTIFACTNAME@@
 Architecture: all
-Depends: ${misc:Depends}, adduser, lsb-base (>= 3.2-14), net-tools, sysvinit-utils (>= 2.88dsf-50)
+Depends: ${misc:Depends}, adduser, lsb-base (>= 3.2-14), net-tools, sysvinit-utils
 Description: @@DESCRIPTION_FILE@@
