@@ -9,7 +9,7 @@
       that:
         - not pid_file.stat.exists
   - pids:
-      name: "{{ 'daemon' if ansible_os_family == 'Debian' else 'java' }}"
+      name: java
     register: service_pids
   - assert:
       that:
@@ -32,7 +32,7 @@
       that:
         - pid_file.stat.exists
   - pids:
-      name: "{{ 'daemon' if ansible_os_family == 'Debian' else 'java' }}"
+      name: java
     register: service_pids
   - assert:
       that:
@@ -59,7 +59,7 @@
     # slower than that, so skip this test on SUSE.
     when: ansible_os_family != 'Suse'
   - pids:
-      name: "{{ 'daemon' if ansible_os_family == 'Debian' else 'java' }}"
+      name: java
     register: service_pids
   - assert:
       that:

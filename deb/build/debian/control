@@ -1,12 +1,12 @@
 Source: @@ARTIFACTNAME@@
 Section: devel
-Priority: extra
+Priority: optional
 Maintainer: @@AUTHOR@@
-Build-Depends: debhelper (>= 9)
-Standards-Version: 3.9.4
+Build-Depends: debhelper (>= 10)
+Standards-Version: 3.9.8
 Homepage: @@HOMEPAGE@@
 
 Package: @@ARTIFACTNAME@@
 Architecture: all
-Depends: ${misc:Depends}, daemon, adduser, procps, psmisc, net-tools
+Depends: ${misc:Depends}, adduser, lsb-base (>= 3.2-14), net-tools, sysvinit-utils
 Description: @@DESCRIPTION_FILE@@
