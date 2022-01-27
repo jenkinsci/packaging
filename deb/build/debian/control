@@ -3,7 +3,7 @@ Section: devel
 Priority: optional
 Maintainer: @@AUTHOR@@
 Build-Depends: debhelper (>= 10)
-Standards-Version: 3.9.8
+Standards-Version: 4.6.0
 Homepage: @@HOMEPAGE@@
 
 Package: @@ARTIFACTNAME@@
