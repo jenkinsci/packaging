@@ -20,8 +20,8 @@ set -e
 case "$1" in
 configure)
 	[ -r /etc/default/@@ARTIFACTNAME@@ ] && . /etc/default/@@ARTIFACTNAME@@
-	: ${JENKINS_USER:=@@ARTIFACTNAME@@}
-	: ${JENKINS_GROUP:=@@ARTIFACTNAME@@}
+	: "${JENKINS_USER:=@@ARTIFACTNAME@@}"
+	: "${JENKINS_GROUP:=@@ARTIFACTNAME@@}"
 
 	# Create @@ARTIFACTNAME@@ group and user if they don't exist.
 	# sometimes tools that users want Jenkins to run need a shell,
