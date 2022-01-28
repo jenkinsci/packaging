@@ -12,6 +12,7 @@ Source:		jenkins.war
 Source1:	jenkins.init.in
 Source2:	jenkins.sysconfig.in
 Source3:	jenkins.logrotate
+Source4:	jenkins.service
 URL:		@@HOMEPAGE@@
 Group:		Development/Tools/Building
 License:	@@LICENSE@@
@@ -56,6 +57,8 @@ rm -rf "%{buildroot}"
 
 %__install -D -m0644 "%{SOURCE3}" "%{buildroot}/etc/logrotate.d/%{name}"
 
+%__install -D -m0644 "%{SOURCE4}" "%{buildroot}%{_unitdir}/%{name}.service"
+
 %pre
 /usr/sbin/groupadd -r %{name} &>/dev/null || :
 # SUSE version had -o here, but in Fedora -o isn't allowed without -u
@@ -77,7 +80,7 @@ rm -rf "%{buildroot}"
   fi
 
 %post
-/sbin/chkconfig --add %{name}
+%systemd_post %{name}.service
 
 function chownIfNecessary {
   logger -t %{name}.installer "Checking ${2} ownership"
@@ -110,18 +113,10 @@ if test x"$JENKINS_INSTALL_SKIP_CHOWN" != "xtrue"; then
 fi
 
 %preun
-if [ "$1" = 0 ] ; then
-    # if this is uninstallation as opposed to upgrade, delete the service
-    /sbin/service %{name} stop > /dev/null 2>&1
-    /sbin/chkconfig --del %{name}
-fi
-exit 0
+%systemd_preun %{name}.service
 
 %postun
-if [ "$1" -ge 1 ]; then
-    /sbin/service %{name} condrestart > /dev/null 2>&1
-fi
-exit 0
+%systemd_postun_with_restart %{name}.service
 
 %clean
 %__rm -rf "%{buildroot}"
@@ -137,6 +132,7 @@ exit 0
 %config(noreplace) /etc/init.d/%{name}
 %config(noreplace) /etc/sysconfig/%{name}
 /usr/sbin/rc%{name}
+%{_unitdir}/%{name}.service
 
 %changelog
 * Sat Apr 19 2014 mbarr@mbarr.net

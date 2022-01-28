@@ -12,6 +12,7 @@ trap 'rm -rf "${D}"' EXIT
 # debian packaging needs to touch the file in the source tree, so do this in tmp dir
 # so that multiple builds can go on concurrently
 cp -R "${dir}"/* "${D}"
+cp "${BASE}/systemd/jenkins.service" "${D}/debian"
 
 # Create a description temp file
 sed -i.bak -e 's/^\s*$/./' -e 's/^/ /' "${DESCRIPTION_FILE}"

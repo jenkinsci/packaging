@@ -1,0 +1,22 @@
+[Unit]
+Description=Jenkins Continuous Integration Server
+Requires=network.target
+After=network.target
+
+[Service]
+Type=simple
+User=@@ARTIFACTNAME@@
+Group=@@ARTIFACTNAME@@
+Environment="JAVA_ARGS=-Dhudson.lifecycle=hudson.lifecycle.ExitLifecycle -Djava.awt.headless=true"
+Environment="JENKINS_ARGS=--webroot=/var/cache/@@ARTIFACTNAME@@/war --httpPort=@@PORT@@"
+Environment="JENKINS_HOME=/var/lib/@@ARTIFACTNAME@@"
+Environment="JENKINS_WAR=/usr/lib/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.war"
+ExecStart=/bin/sh -c "exec /usr/bin/java ${JAVA_ARGS} -jar \"${JENKINS_WAR}\" ${JENKINS_ARGS}"
+LimitNOFILE=8192
+Restart=on-failure
+SuccessExitStatus=143
+UMask=0022
+WorkingDirectory=~
+
+[Install]
+WantedBy=multi-user.target
