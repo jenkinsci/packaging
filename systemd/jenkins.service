@@ -37,7 +37,7 @@ Environment="JENKINS_LOG=/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log"
 #Environment="JENKINS_JAVA_CMD=/etc/alternatives/java"
 
 # Arguments for the Jenkins JVM
-Environment="JENKINS_JAVA_ARGS=-Djava.awt.headless=true"
+Environment="JAVA_OPTS=-Dhudson.lifecycle=hudson.lifecycle.ExitLifecycle -Djava.awt.headless=true"
 
 # IP address to listen on for HTTP requests.
 # The default is to listen on all interfaces (0.0.0.0).
@@ -87,7 +87,7 @@ Environment="JENKINS_PORT=@@PORT@@"
 
 # Arbitrary additional arguments to pass to Jenkins.
 # Full option list: java -jar @@ARTIFACTNAME@@.war --help
-#Environment="JENKINS_EXTRA_ARGS="
+#Environment="JENKINS_OPTS="
 
 # File descriptor limit. Comment this out to observe /etc/security/limits.conf.
 LimitNOFILE=8192

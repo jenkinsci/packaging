@@ -52,65 +52,65 @@ check_java_version() {
 	fi
 }
 
-infer_jenkins_args() {
-	JENKINS_ARGS="--webroot='${JENKINS_WEBROOT}'"
+infer_jenkins_opts() {
+	inferred_jenkins_opts="--webroot='${JENKINS_WEBROOT}'"
 
 	if [ -n "${JENKINS_LOG}" ]; then
-		JENKINS_ARGS="${JENKINS_ARGS} --logfile='${JENKINS_LOG}'"
+		inferred_jenkins_opts="${inferred_jenkins_opts} --logfile='${JENKINS_LOG}'"
 	fi
 
 	if [ -n "${JENKINS_PORT}" ]; then
-		JENKINS_ARGS="${JENKINS_ARGS} --httpPort=${JENKINS_PORT}"
+		inferred_jenkins_opts="${inferred_jenkins_opts} --httpPort=${JENKINS_PORT}"
 	fi
 
 	if [ -n "${JENKINS_LISTEN_ADDRESS}" ]; then
-		JENKINS_ARGS="${JENKINS_ARGS} --httpListenAddress=${JENKINS_LISTEN_ADDRESS}"
+		inferred_jenkins_opts="${inferred_jenkins_opts} --httpListenAddress=${JENKINS_LISTEN_ADDRESS}"
 	fi
 
 	if [ -n "${JENKINS_HTTPS_PORT}" ]; then
-		JENKINS_ARGS="${JENKINS_ARGS} --httpsPort=${JENKINS_HTTPS_PORT}"
+		inferred_jenkins_opts="${inferred_jenkins_opts} --httpsPort=${JENKINS_HTTPS_PORT}"
 	fi
 
 	if [ -n "${JENKINS_HTTPS_KEYSTORE}" ]; then
-		JENKINS_ARGS="${JENKINS_ARGS} --httpsKeyStore='${JENKINS_HTTPS_KEYSTORE}'"
+		inferred_jenkins_opts="${inferred_jenkins_opts} --httpsKeyStore='${JENKINS_HTTPS_KEYSTORE}'"
 	fi
 
 	if [ -n "${JENKINS_HTTPS_KEYSTORE_PASSWORD}" ]; then
-		JENKINS_ARGS="${JENKINS_ARGS} --httpsKeyStorePassword='${JENKINS_HTTPS_KEYSTORE_PASSWORD}'"
+		inferred_jenkins_opts="${inferred_jenkins_opts} --httpsKeyStorePassword='${JENKINS_HTTPS_KEYSTORE_PASSWORD}'"
 	fi
 
 	if [ -n "${JENKINS_HTTPS_LISTEN_ADDRESS}" ]; then
-		JENKINS_ARGS="${JENKINS_ARGS} --httpsListenAddress=${JENKINS_HTTPS_LISTEN_ADDRESS}"
+		inferred_jenkins_opts="${inferred_jenkins_opts} --httpsListenAddress=${JENKINS_HTTPS_LISTEN_ADDRESS}"
 	fi
 
 	if [ -n "${JENKINS_HTTP2_PORT}" ]; then
-		JENKINS_ARGS="${JENKINS_ARGS} --http2Port=${JENKINS_HTTP2_PORT}"
+		inferred_jenkins_opts="${inferred_jenkins_opts} --http2Port=${JENKINS_HTTP2_PORT}"
 	fi
 
 	if [ -n "${JENKINS_HTTP2_LISTEN_ADDRESS}" ]; then
-		JENKINS_ARGS="${JENKINS_ARGS} --http2ListenAddress=${JENKINS_HTTP2_LISTEN_ADDRESS}"
+		inferred_jenkins_opts="${inferred_jenkins_opts} --http2ListenAddress=${JENKINS_HTTP2_LISTEN_ADDRESS}"
 	fi
 
 	if [ -n "${JENKINS_DEBUG_LEVEL}" ] && [ "${JENKINS_DEBUG_LEVEL}" -ne 5 ]; then
-		JENKINS_ARGS="${JENKINS_ARGS} --debug=${JENKINS_DEBUG_LEVEL}"
+		inferred_jenkins_opts="${inferred_jenkins_opts} --debug=${JENKINS_DEBUG_LEVEL}"
 	fi
 
 	if [ -n "${JENKINS_EXTRA_LIB_FOLDER}" ]; then
-		JENKINS_ARGS="${JENKINS_ARGS} --extraLibFolder='${JENKINS_EXTRA_LIB_FOLDER}'"
+		inferred_jenkins_opts="${inferred_jenkins_opts} --extraLibFolder='${JENKINS_EXTRA_LIB_FOLDER}'"
 	fi
 
 	if [ -n "${JENKINS_PREFIX}" ]; then
-		JENKINS_ARGS="${JENKINS_ARGS} --prefix='${JENKINS_PREFIX}'"
+		inferred_jenkins_opts="${inferred_jenkins_opts} --prefix='${JENKINS_PREFIX}'"
 	fi
 
-	if [ -n "${JENKINS_EXTRA_ARGS}" ]; then
-		JENKINS_ARGS="${JENKINS_ARGS} ${JENKINS_EXTRA_ARGS}"
+	if [ -n "${JENKINS_OPTS}" ]; then
+		inferred_jenkins_opts="${inferred_jenkins_opts} ${JENKINS_OPTS}"
 	fi
 
-	if [ -n "${JENKINS_ENABLE_ACCESS_LOG}" ]; then
-		JENKINS_ARGS="${JENKINS_ARGS} --accessLoggerClassName=winstone.accesslog.SimpleAccessLogger"
-		JENKINS_ARGS="${JENKINS_ARGS} --simpleAccessLogger.format=combined"
-		JENKINS_ARGS="${JENKINS_ARGS} --simpleAccessLogger.file='/var/log/@@ARTIFACTNAME@@/access_log'"
+	if [ -n "${JENKINS_ENABLE_ACCESS_LOG}" ] && $JENKINS_ENABLE_ACCESS_LOG; then
+		inferred_jenkins_opts="${inferred_jenkins_opts} --accessLoggerClassName=winstone.accesslog.SimpleAccessLogger"
+		inferred_jenkins_opts="${inferred_jenkins_opts} --simpleAccessLogger.format=combined"
+		inferred_jenkins_opts="${inferred_jenkins_opts} --simpleAccessLogger.file='/var/log/@@ARTIFACTNAME@@/access_log'"
 	fi
 }
 
@@ -123,16 +123,11 @@ main() {
 	check_java_version ||
 		die "invalid java version: $("${JENKINS_JAVA_CMD}" -version)"
 
-	if [ -z "${JENKINS_ARGS}" ]; then
-		infer_jenkins_args
-	else
-		die "JENKINS_ARGS must be unset but was set to ${JENKINS_ARGS}"
-	fi
+	infer_jenkins_opts
 
-	# TODO unsetenv JENKINS_ARGS
+	# TODO unsetenv JAVA_OPTS
 	unset JENKINS_DEBUG_LEVEL
 	unset JENKINS_ENABLE_ACCESS_LOG
-	unset JENKINS_EXTRA_ARGS
 	unset JENKINS_EXTRA_LIB_FOLDER
 	unset JENKINS_HTTP2_LISTEN_ADDRESS
 	unset JENKINS_HTTP2_PORT
@@ -140,19 +135,19 @@ main() {
 	unset JENKINS_HTTPS_KEYSTORE_PASSWORD
 	unset JENKINS_HTTPS_LISTEN_ADDRESS
 	unset JENKINS_HTTPS_PORT
-	# TODO unsetenv JENKINS_JAVA_ARGS
 	# TODO unsetenv JENKINS_JAVA_CMD
 	unset JENKINS_LISTEN_ADDRESS
 	unset JENKINS_LOG
+	unset JENKINS_OPTS
 	unset JENKINS_PORT
 	unset JENKINS_PREFIX
 	# TODO unsetenv JENKINS_WAR
 	unset JENKINS_WEBROOT
 	eval exec \
 		"${JENKINS_JAVA_CMD}" \
-		${JENKINS_JAVA_ARGS} \
+		${JAVA_OPTS} \
 		-jar "${JENKINS_WAR}" \
-		${JENKINS_ARGS}
+		${inferred_jenkins_opts}
 }
 
 [ $# -gt 0 ] && usage 'too many arguments specified'
@@ -165,7 +160,7 @@ check_env \
 	JAVA_HOME \
 	JENKINS_DEBUG_LEVEL \
 	JENKINS_ENABLE_ACCESS_LOG \
-	JENKINS_EXTRA_ARGS \
+	JENKINS_OPTS \
 	JENKINS_EXTRA_LIB_FOLDER \
 	JENKINS_HTTP2_LISTEN_ADDRESS \
 	JENKINS_HTTP2_PORT \
@@ -173,7 +168,7 @@ check_env \
 	JENKINS_HTTPS_KEYSTORE_PASSWORD \
 	JENKINS_HTTPS_LISTEN_ADDRESS \
 	JENKINS_HTTPS_PORT \
-	JENKINS_JAVA_ARGS \
+	JAVA_OPTS \
 	JENKINS_JAVA_CMD \
 	JENKINS_LISTEN_ADDRESS \
 	JENKINS_LOG \
