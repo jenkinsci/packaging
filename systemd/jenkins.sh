@@ -115,6 +115,7 @@ infer_jenkins_args() {
 }
 
 main() {
+	[ -d "${JENKINS_HOME}" ] || die "${JENKINS_HOME} is not a directory"
 	[ -f "${JENKINS_WAR}" ] || die "${JENKINS_WAR} is not a file"
 
 	infer_java_cmd || die 'failed to find a valid Java installation'
