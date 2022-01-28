@@ -46,7 +46,7 @@ NEW_JENKINS_GROUP="${NEW_JENKINS_GROUP_DEFAULT}"
 NEW_JENKINS_HOME="${NEW_JENKINS_HOME_DEFAULT}"
 NEW_JENKINS_JAVA_ARGS="${NEW_JENKINS_JAVA_ARGS_DEFAULT}"
 NEW_JENKINS_JAVA_CMD="${NEW_JENKINS_JAVA_CMD_DEFAULT}"
-NEW_JENKINS_JAVA_HOME="" # if set, check for java and set as path and java_cmd
+NEW_JENKINS_JAVA_HOME="" # TODO if set, check for java and set as path and java_cmd
 NEW_JENKINS_MAXOPENFILES="${NEW_JENKINS_MAXOPENFILES_DEFAULT}"
 NEW_JENKINS_UMASK="${NEW_JENKINS_UMASK_DEFAULT}"
 NEW_JENKINS_USER="${NEW_JENKINS_USER_DEFAULT}"
@@ -169,7 +169,7 @@ infer_jenkins_args() {
 		return
 	fi
 
-	NEW_JENKINS_ARGS="--logfile=${NEW_JENKINS_LOGFILE}"
+	NEW_JENKINS_ARGS="--logfile=${NEW_JENKINS_LOG}"
 	NEW_JENKINS_ARGS="${NEW_JENKINS_ARGS} --webroot=${NEW_JENKINS_WEBROOT}"
 	NEW_JENKINS_ARGS="${NEW_JENKINS_ARGS} --httpPort=${NEW_JENKINS_PORT}"
 
@@ -255,7 +255,7 @@ main() {
 	# TODO add lifecycle to java args if it's missing
 	infer_jenkins_args
 	get_new_config
-	# TODO write out a maker that the migration has been completed
+	# TODO write out a marker that the migration has been completed
 }
 
 [ $# -gt 1 ] && usage "too many arguments specified"
