@@ -6,6 +6,7 @@ trap 'rm -rf "${D}"' EXIT
 
 cp -R "$(dirname "$0")"/* "${D}"
 cp "${BASE}/systemd/jenkins.service" "${D}/SOURCES"
+cp "${BASE}/systemd/jenkins.sh" "${D}/SOURCES"
 "${BASE}/bin/branding.py" "${D}"
 
 cp "${WAR}" "${D}/SOURCES/jenkins.war"

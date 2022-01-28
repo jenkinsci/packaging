@@ -14,6 +14,7 @@ Source2:	jenkins.sysconfig.in
 Source3:	jenkins.logrotate
 Source4:    jenkins.repo
 Source5:	jenkins.service
+Source6:	jenkins.sh
 URL:		@@HOMEPAGE@@
 Group:		Development/Tools/Building
 License:	@@LICENSE@@
@@ -65,6 +66,8 @@ rm -rf "%{buildroot}"
 %__install -D -m0644 "%{SOURCE4}" "%{buildroot}/etc/zypp/repos.d/%{name}.repo"
 
 %__install -D -m0644 "%{SOURCE5}" "%{buildroot}%{_unitdir}/%{name}.service"
+%__install -d "%{buildroot}/usr/bin"
+%__install -D -m0755 "%{SOURCE6}" "%{buildroot}/usr/bin/%{name}"
 
 %pre
 /usr/sbin/groupadd -r %{name} &>/dev/null || :
@@ -97,6 +100,7 @@ rm -rf "%{buildroot}"
 %config(noreplace) /etc/zypp/repos.d/%{name}.repo
 /usr/sbin/rc%{name}
 %{_unitdir}/%{name}.service
+/usr/bin/%{name}
 
 %changelog
 * Wed Sep 28 2011 kk@kohsuke.org

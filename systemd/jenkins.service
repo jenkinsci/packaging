@@ -5,16 +5,108 @@ After=network.target
 
 [Service]
 Type=simple
+ExecStart=/usr/bin/jenkins
+Restart=on-failure
+SuccessExitStatus=143
+
+# Unix account that runs the Jenkins daemon
+# Be careful when you change this, as you need to update the permissions of
+# $JENKINS_HOME, $JENKINS_LOG, and (if you have already run Jenkins)
+# $JENKINS_WEBROOT.
 User=@@ARTIFACTNAME@@
 Group=@@ARTIFACTNAME@@
+
+# Directory where Jenkins stores its configuration and workspaces
 Environment="HOME=/var/lib/@@ARTIFACTNAME@@"
 Environment="JENKINS_HOME=/var/lib/@@ARTIFACTNAME@@"
 WorkingDirectory=/var/lib/@@ARTIFACTNAME@@
-ExecStart="/usr/bin/java" -Dhudson.lifecycle=hudson.lifecycle.ExitLifecycle -Djava.awt.headless=true -jar "/usr/lib/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.war" --webroot=/var/cache/@@ARTIFACTNAME@@/war --httpPort=@@PORT@@
+
+# Location of the Jenkins WAR
+Environment="JENKINS_WAR=/usr/lib/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.war"
+
+# Location of the exploded WAR
+Environment="JENKINS_WEBROOT=/var/cache/@@ARTIFACTNAME@@/war"
+
+# Location of the Jenkins log
+Environment="JENKINS_LOG=/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log"
+
+# The Java home directory. When left empty, JENKINS_JAVA_CMD and PATH are consulted.
+#Environment="JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64"
+
+# The Java executable. When left empty, JAVA_HOME and PATH are consulted.
+#Environment="JENKINS_JAVA_CMD=/etc/alternatives/java"
+
+# Arguments for the Jenkins JVM
+Environment="JENKINS_JAVA_ARGS=-Djava.awt.headless=true"
+
+# IP address to listen on for HTTP requests.
+# The default is to listen on all interfaces (0.0.0.0).
+#Environment="JENKINS_LISTEN_ADDRESS="
+
+# Port to listen on for HTTP requests. Set to -1 to disable.
+Environment="JENKINS_PORT=@@PORT@@"
+
+# IP address to listen on for HTTPS requests. Default is disabled.
+#Environment="JENKINS_HTTPS_LISTEN_ADDRESS="
+
+# Port to listen on for HTTPS requests. Default is disabled.
+#Environment="JENKINS_HTTPS_PORT=443"
+
+# Path to the keystore in JKS format (as created by the JDK's keytool).
+# Default is disabled.
+#Environment="JENKINS_HTTPS_KEYSTORE="
+
+# Password to access the keystore defined in JENKINS_HTTPS_KEYSTORE.
+# Default is disabled.
+#Environment="JENKINS_HTTPS_KEYSTORE_PASSWORD="
+
+# IP address to listen on for HTTP2 requests. Default is disabled.
+#
+# Note: HTTP2 support may require additional configuration.
+# See the Winstone documentation for more information.
+#Environment="JENKINS_HTTP2_LISTEN_ADDRESS="
+
+# HTTP2 port to listen on. Default is disabled.
+#
+# Note: HTTP2 support may require additional configuration.
+# See the Winstone documentation for more information.
+#Environment="JENKINS_HTTP2_PORT="
+
+# Debug level for logs. The higher the value, the more verbose. 5 is INFO.
+#Environment="JENKINS_DEBUG_LEVEL=5"
+
+# Set to true to enable logging to /var/log/@@ARTIFACTNAME@@/access_log.
+#Environment="JENKINS_ENABLE_ACCESS_LOG=false"
+
+# Folder for additional JAR files to add to the Jetty class loader. Default
+# is disabled. See the Winstone documentation for more information.
+#Environment="JENKINS_EXTRA_LIB_FOLDER="
+
+# Servlet context (important if you want to use Apache proxying)
+#Environment="JENKINS_PREFIX=/@@ARTIFACTNAME@@"
+
+# Arbitrary additional arguments to pass to Jenkins.
+# Full option list: java -jar @@ARTIFACTNAME@@.war --help
+#Environment="JENKINS_EXTRA_ARGS="
+
+# File descriptor limit. Comment this out to observe /etc/security/limits.conf.
 LimitNOFILE=8192
-Restart=on-failure
-SuccessExitStatus=143
-UMask=0022
+
+# Set the umask to control the permission bits of files that Jenkins creates.
+#
+# 0027 makes files read-only for group and inaccessible for others, which some
+# security sensitive users might consider beneficial, especially if Jenkins
+# is running on a server that is used for multiple purposes. Beware that 0027
+# permissions would interfere with sudo scripts that run on the controller
+# (see JENKINS-25065).
+#
+# Note also that the particularly sensitive parts of $JENKINS_HOME (such as
+# credentials) are always written without 'other' access. So the umask values
+# only affect job configuration, build records, etc.
+#
+# If commented out, the value from the OS is inherited, which is normally 0022.
+# The default umask comes from pam_umask(8) and /etc/login.defs.
+#UMask=0022
 
 [Install]
 WantedBy=multi-user.target

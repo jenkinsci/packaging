@@ -13,6 +13,7 @@ trap 'rm -rf "${D}"' EXIT
 # so that multiple builds can go on concurrently
 cp -R "${dir}"/* "${D}"
 cp "${BASE}/systemd/jenkins.service" "${D}/debian"
+cp "${BASE}/systemd/jenkins.sh" "${D}"
 
 # Create a description temp file
 sed -i.bak -e 's/^\s*$/./' -e 's/^/ /' "${DESCRIPTION_FILE}"
@@ -42,6 +43,7 @@ for f in jenkins.*; do
 	mv "${f}_" "${ARTIFACTNAME}$(echo "${f}" | cut -b8-)"
 done
 popd
+mv jenkins.sh "${ARTIFACTNAME}"
 debuild -Zgzip -A
 popd
 

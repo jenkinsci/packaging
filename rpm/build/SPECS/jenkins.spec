@@ -13,6 +13,7 @@ Source1:	jenkins.init.in
 Source2:	jenkins.sysconfig.in
 Source3:	jenkins.logrotate
 Source4:	jenkins.service
+Source5:	jenkins.sh
 URL:		@@HOMEPAGE@@
 Group:		Development/Tools/Building
 License:	@@LICENSE@@
@@ -58,6 +59,8 @@ rm -rf "%{buildroot}"
 %__install -D -m0644 "%{SOURCE3}" "%{buildroot}/etc/logrotate.d/%{name}"
 
 %__install -D -m0644 "%{SOURCE4}" "%{buildroot}%{_unitdir}/%{name}.service"
+%__install -d "%{buildroot}/usr/bin"
+%__install -D -m0755 "%{SOURCE5}" "%{buildroot}/usr/bin/%{name}"
 
 %pre
 /usr/sbin/groupadd -r %{name} &>/dev/null || :
@@ -133,6 +136,7 @@ fi
 %config(noreplace) /etc/sysconfig/%{name}
 /usr/sbin/rc%{name}
 %{_unitdir}/%{name}.service
+/usr/bin/%{name}
 
 %changelog
 * Sat Apr 19 2014 mbarr@mbarr.net
