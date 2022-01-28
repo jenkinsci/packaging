@@ -5,7 +5,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/jenkins
+ExecStart=/usr/bin/@@ARTIFACTNAME@@
 Restart=on-failure
 SuccessExitStatus=143
 
