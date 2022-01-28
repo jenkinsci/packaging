@@ -148,7 +148,7 @@ main() {
 	unset JENKINS_PREFIX
 	# TODO unsetenv JENKINS_WAR
 	unset JENKINS_WEBROOT
-	exec \
+	eval exec \
 		"${JENKINS_JAVA_CMD}" \
 		${JENKINS_JAVA_ARGS} \
 		-jar "${JENKINS_WAR}" \
