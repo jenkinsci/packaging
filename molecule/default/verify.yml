@@ -2,6 +2,19 @@
 - name: Verify
   hosts: all
   tasks:
+  - file:
+      path: /etc/systemd/system/jenkinstest.service.d
+      state: directory
+    when: ansible_service_mgr == 'systemd'
+  - copy:
+      dest: /etc/systemd/system/jenkinstest.service.d/override.conf
+      content: |
+        [Service]
+        Environment="JAVA_OPTS=-Dhudson.lifecycle=hudson.lifecycle.ExitLifecycle -Djava.awt.headless=true -Xmx256m"
+    when: ansible_service_mgr == 'systemd'
+  - systemd:
+      daemon_reload: true
+    when: ansible_service_mgr == 'systemd'
   - pids:
       name: java
     register: service_pids
