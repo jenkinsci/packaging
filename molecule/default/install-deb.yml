@@ -17,7 +17,7 @@
 - apt:
     deb: "{{ package_list.files[0].path }}"
 - lineinfile:
-    path: /etc/default/jenkinstest
+    path: /etc/default/jenkins
     regexp: '^JAVA_ARGS='
     line: "JAVA_ARGS=\"-Djava.awt.headless=true -Xmx256m\""
 - systemd:

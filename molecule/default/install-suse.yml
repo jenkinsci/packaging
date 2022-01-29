@@ -20,7 +20,7 @@
     disable_gpg_check: true  # TODO get this working
     state: present
 - lineinfile:
-    path: /etc/sysconfig/jenkinstest
+    path: /etc/sysconfig/jenkins
     regexp: '^JENKINS_JAVA_OPTIONS='
     line: "JENKINS_JAVA_OPTIONS=\"-Djava.awt.headless=true -Xmx256m\""
 - systemd:

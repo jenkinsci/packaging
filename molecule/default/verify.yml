@@ -3,7 +3,7 @@
   hosts: all
   tasks:
   - stat:
-      path: "{{ '/var/run/jenkinstest/jenkinstest.pid' if ansible_os_family == 'Debian' else '/var/run/jenkinstest.pid' }}"
+      path: "{{ '/var/run/jenkins/jenkins.pid' if ansible_os_family == 'Debian' else '/var/run/jenkins.pid' }}"
     register: pid_file
   - assert:
       that:
@@ -16,17 +16,17 @@
         - (service_pids.pids | length) == 0
       fail_msg: "{{ service_pids.pids|join(',') }}"
   - service:
-      name: jenkinstest
+      name: jenkins
       state: started
   - uri:
-      url: "http://127.0.0.1:7777"
+      url: "http://127.0.0.1:8080"
       status_code: 403
     register: result
     until: result.status == 403
     retries: 20
     delay: 5
   - stat:
-      path: "{{ '/var/run/jenkinstest/jenkinstest.pid' if ansible_os_family == 'Debian' else '/var/run/jenkinstest.pid' }}"
+      path: "{{ '/var/run/jenkins/jenkins.pid' if ansible_os_family == 'Debian' else '/var/run/jenkins.pid' }}"
     register: pid_file
   - assert:
       that:
@@ -39,17 +39,17 @@
         - (service_pids.pids | length) == 1
       fail_msg: "{{ service_pids.pids | join(',') }}"
   - slurp:
-      src: "{{ '/var/run/jenkinstest/jenkinstest.pid' if ansible_os_family == 'Debian' else '/var/run/jenkinstest.pid' }}"
+      src: "{{ '/var/run/jenkins/jenkins.pid' if ansible_os_family == 'Debian' else '/var/run/jenkins.pid' }}"
     register: pid_file_contents
   - assert:
       that:
         - service_pids.pids[0] == (pid_file_contents['content'] | b64decode | trim | int)
       fail_msg: "Service PID {{ service_pids.pids[0] }} does not match PID file {{ pid_file_contents['content'] | b64decode | trim | int }}"
   - service:
-      name: jenkinstest
+      name: jenkins
       state: stopped
   - stat:
-      path: "{{ '/var/run/jenkinstest/jenkinstest.pid' if ansible_os_family == 'Debian' else '/var/run/jenkinstest.pid' }}"
+      path: "{{ '/var/run/jenkins/jenkins.pid' if ansible_os_family == 'Debian' else '/var/run/jenkins.pid' }}"
     register: pid_file
   - assert:
       that:
