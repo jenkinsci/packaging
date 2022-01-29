@@ -1,5 +1,6 @@
 # moved from rules install
 usr/lib/@@ARTIFACTNAME@@
+usr/libexec/@@ARTIFACTNAME@@
 
 # this is where JENKINS_HOME is stored, so let's leave it as is for now
 var/lib/@@ARTIFACTNAME@@

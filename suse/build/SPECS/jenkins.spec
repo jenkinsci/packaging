@@ -15,6 +15,7 @@ Source3:	jenkins.logrotate
 Source4:    jenkins.repo
 Source5:	jenkins.service
 Source6:	jenkins.sh
+Source7:	migrate.sh
 URL:		@@HOMEPAGE@@
 Group:		Development/Tools/Building
 License:	@@LICENSE@@
@@ -68,6 +69,8 @@ rm -rf "%{buildroot}"
 %__install -D -m0644 "%{SOURCE5}" "%{buildroot}%{_unitdir}/%{name}.service"
 %__install -d "%{buildroot}/usr/bin"
 %__install -D -m0755 "%{SOURCE6}" "%{buildroot}/usr/bin/%{name}"
+%__install -d "%{buildroot}/usr/libexec/%{name}"
+%__install -D -m0755 "%{SOURCE7}" "%{buildroot}/usr/libexec/%{name}/migrate"
 
 %pre
 /usr/sbin/groupadd -r %{name} &>/dev/null || :
@@ -76,6 +79,7 @@ rm -rf "%{buildroot}"
 	-d "%{workdir}" %{name} &>/dev/null || :
 
 %post
+/usr/libexec/%{name}/migrate "/etc/sysconfig/%{name}" || true
 %systemd_post %{name}.service
 
 %preun
@@ -101,6 +105,7 @@ rm -rf "%{buildroot}"
 /usr/sbin/rc%{name}
 %{_unitdir}/%{name}.service
 /usr/bin/%{name}
+/usr/libexec/%{name}/migrate
 
 %changelog
 * Wed Sep 28 2011 kk@kohsuke.org

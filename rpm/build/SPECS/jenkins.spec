@@ -14,6 +14,7 @@ Source2:	jenkins.sysconfig.in
 Source3:	jenkins.logrotate
 Source4:	jenkins.service
 Source5:	jenkins.sh
+Source6:	migrate.sh
 URL:		@@HOMEPAGE@@
 Group:		Development/Tools/Building
 License:	@@LICENSE@@
@@ -61,6 +62,8 @@ rm -rf "%{buildroot}"
 %__install -D -m0644 "%{SOURCE4}" "%{buildroot}%{_unitdir}/%{name}.service"
 %__install -d "%{buildroot}/usr/bin"
 %__install -D -m0755 "%{SOURCE5}" "%{buildroot}/usr/bin/%{name}"
+%__install -d "%{buildroot}/usr/libexec/%{name}"
+%__install -D -m0755 "%{SOURCE6}" "%{buildroot}/usr/libexec/%{name}/migrate"
 
 %pre
 /usr/sbin/groupadd -r %{name} &>/dev/null || :
@@ -83,6 +86,7 @@ rm -rf "%{buildroot}"
   fi
 
 %post
+/usr/libexec/%{name}/migrate "/etc/sysconfig/%{name}" || true
 %systemd_post %{name}.service
 
 function chownIfNecessary {
@@ -137,6 +141,7 @@ fi
 /usr/sbin/rc%{name}
 %{_unitdir}/%{name}.service
 /usr/bin/%{name}
+/usr/libexec/%{name}/migrate
 
 %changelog
 * Sat Apr 19 2014 mbarr@mbarr.net

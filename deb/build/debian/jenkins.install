@@ -1,2 +1,3 @@
 @@ARTIFACTNAME@@ usr/bin
 @@ARTIFACTNAME@@.war usr/lib/@@ARTIFACTNAME@@
+migrate usr/libexec/@@ARTIFACTNAME@@

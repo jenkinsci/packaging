@@ -49,6 +49,8 @@ NEW_JENKINS_USER="${NEW_JENKINS_USER_DEFAULT}"
 NEW_JENKINS_WAR="${NEW_JENKINS_WAR_DEFAULT}"
 NEW_JENKINS_WEBROOT="${NEW_JENKINS_WEBROOT_DEFAULT}"
 
+has_prefix=false
+
 read_old_options() {
 	if [ -n "${JENKINS_ARGS}" ]; then
 		if [ -n "${NAME}" ]; then
@@ -80,6 +82,7 @@ read_old_options() {
 			[ -n "${TMP_JENKINS_DEBUG_LEVEL}" ] && JENKINS_DEBUG_LEVEL="${TMP_JENKINS_DEBUG_LEVEL}"
 			[ -n "${TMP_JENKINS_EXTRA_LIB_FOLDER}" ] && JENKINS_EXTRA_LIB_FOLDER="${TMP_JENKINS_EXTRA_LIB_FOLDER}"
 			[ -n "${TMP_PREFIX}" ] && PREFIX="${TMP_PREFIX}"
+			[ -n "${TMP_PREFIX}" ] && has_prefix=true
 
 			JENKINS_ARGS=$(echo "${JENKINS_ARGS}" | sed 's/--webroot=[[:alnum:][:punct:]]*//g')
 			JENKINS_ARGS=$(echo "${JENKINS_ARGS}" | sed 's/--logfile=[[:alnum:][:punct:]]*//g')
@@ -96,10 +99,10 @@ read_old_options() {
 			JENKINS_ARGS=$(echo "${JENKINS_ARGS}" | sed 's/--prefix=[[:alnum:][:punct:]]*//g')
 
 			# All that remains are the extra arguments
-			NEW_JENKINS_OPTS="${JENKINS_ARGS}"
+			NEW_JENKINS_OPTS="$(echo "${JENKINS_ARGS}" | sed 's/[[:space:]]*$//g')"
 		else
 			# For rpm and suse, these are extra arguments
-			NEW_JENKINS_OPTS="${JENKINS_ARGS}"
+			NEW_JENKINS_OPTS="$(echo "${JENKINS_ARGS}" | sed 's/[[:space:]]*$//g')"
 		fi
 	fi
 
@@ -170,7 +173,7 @@ read_old_options() {
 		NEW_JENKINS_HTTPS_KEYSTORE_PASSWORD="${JENKINS_HTTPS_KEYSTORE_PASSWORD}"
 	fi
 
-	if [ -n "${JENKINS_HTTP2_LISTEN_ADDRESS}" ] && [ "${JENKINS_HTTP2_LISTEN_ADDRESS}" -gt 0 ]; then
+	if [ -n "${JENKINS_HTTP2_LISTEN_ADDRESS}" ]; then
 		NEW_JENKINS_HTTP2_LISTEN_ADDRESS="${JENKINS_HTTP2_LISTEN_ADDRESS}"
 	fi
 
@@ -190,7 +193,7 @@ read_old_options() {
 		NEW_JENKINS_EXTRA_LIB_FOLDER="${JENKINS_EXTRA_LIB_FOLDER}"
 	fi
 
-	if [ -n "${PREFIX}" ]; then
+	if [ -n "${PREFIX}" ] && $has_prefix; then
 		NEW_JENKINS_PREFIX="${PREFIX}"
 	fi
 
@@ -331,7 +334,6 @@ migrate_options() {
 	fi
 
 	if [ -n "${NEW_JENKINS_UMASK}" ]; then
-		echo "LimitNOFILE=${NEW_JENKINS_MAXOPENFILES}" >>"${tmpfile}"
 		echo "UMask=${NEW_JENKINS_UMASK}" >>"${tmpfile}"
 		edited=true
 	fi

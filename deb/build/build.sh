@@ -14,6 +14,7 @@ trap 'rm -rf "${D}"' EXIT
 cp -R "${dir}"/* "${D}"
 cp "${BASE}/systemd/jenkins.service" "${D}/debian"
 cp "${BASE}/systemd/jenkins.sh" "${D}"
+cp "${BASE}/systemd/migrate.sh" "${D}"
 
 # Create a description temp file
 sed -i.bak -e 's/^\s*$/./' -e 's/^/ /' "${DESCRIPTION_FILE}"
@@ -44,6 +45,7 @@ for f in jenkins.*; do
 done
 popd
 mv jenkins.sh "${ARTIFACTNAME}"
+mv migrate.sh migrate
 debuild -Zgzip -A
 popd
 
