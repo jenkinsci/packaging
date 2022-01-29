@@ -54,7 +54,7 @@ configure)
 		chmod -R 750 /var/run/@@ARTIFACTNAME@@
 	fi
 
-	/usr/libexec/@@ARTIFACTNAME@@/migrate /etc/default/@@ARTIFACTNAME@ || true
+	/usr/libexec/@@ARTIFACTNAME@@/migrate /etc/default/@@ARTIFACTNAME@@ || true
 	;;
 
 abort-upgrade | abort-remove | abort-deconfigure) ;;
