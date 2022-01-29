@@ -6,6 +6,13 @@
       path: /etc/systemd/system/jenkinstest.service.d
       state: directory
     when: ansible_service_mgr == 'systemd'
+  - stat:
+      path: /etc/systemd/system/jenkinstest.service.d/override.conf
+    register: drop_in
+    when: ansible_service_mgr == 'systemd'
+  - assert:
+      that:
+        - not drop_in.stat.exists
   - copy:
       dest: /etc/systemd/system/jenkinstest.service.d/override.conf
       content: |

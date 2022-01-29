@@ -159,7 +159,7 @@ main() {
 [ $# -ne 0 ] && usage 'too many arguments specified'
 
 if [ -z "${JENKINS_WAR}" ]; then
-	JENKINS_WAR=/usr/lib/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.war
+	JENKINS_WAR=/usr/share/java/@@ARTIFACTNAME@@.war
 fi
 
 check_env \

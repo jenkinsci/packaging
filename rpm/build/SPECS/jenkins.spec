@@ -1,7 +1,6 @@
 # TODO:
 # - how to add to the trusted service of the firewall?
 
-%define _prefix	%{_usr}/lib/@@ARTIFACTNAME@@
 %define workdir	%{_var}/lib/@@ARTIFACTNAME@@
 
 Name:		@@ARTIFACTNAME@@
@@ -42,7 +41,7 @@ Authors:
 
 %install
 rm -rf "%{buildroot}"
-%__install -D -m0644 "%{SOURCE0}" "%{buildroot}%{_prefix}/%{name}.war"
+%__install -D -m0644 "%{SOURCE0}" "%{buildroot}%{_javadir}/%{name}.war"
 %__install -d "%{buildroot}%{workdir}"
 %__install -d "%{buildroot}%{workdir}/plugins"
 
@@ -50,7 +49,7 @@ rm -rf "%{buildroot}"
 %__install -d "%{buildroot}/var/cache/%{name}"
 
 %__install -D -m0755 "%{SOURCE1}" "%{buildroot}/etc/init.d/%{name}"
-%__sed -i 's,~~WAR~~,%{_prefix}/%{name}.war,g' "%{buildroot}/etc/init.d/%{name}"
+%__sed -i 's,~~WAR~~,%{_javadir}/%{name}.war,g' "%{buildroot}/etc/init.d/%{name}"
 %__install -d "%{buildroot}/usr/sbin"
 %__ln_s "../../etc/init.d/%{name}" "%{buildroot}/usr/sbin/rc%{name}"
 
@@ -60,10 +59,9 @@ rm -rf "%{buildroot}"
 %__install -D -m0644 "%{SOURCE3}" "%{buildroot}/etc/logrotate.d/%{name}"
 
 %__install -D -m0644 "%{SOURCE4}" "%{buildroot}%{_unitdir}/%{name}.service"
-%__install -d "%{buildroot}/usr/bin"
-%__install -D -m0755 "%{SOURCE5}" "%{buildroot}/usr/bin/%{name}"
-%__install -d "%{buildroot}/usr/libexec/%{name}"
-%__install -D -m0755 "%{SOURCE6}" "%{buildroot}/usr/libexec/%{name}/migrate"
+%__install -D -m0755 "%{SOURCE5}" "%{buildroot}%{_bindir}/%{name}"
+%__install -d "%{buildroot}%{_datadir}/%{name}"
+%__install -D -m0755 "%{SOURCE6}" "%{buildroot}%{_datadir}/%{name}/migrate"
 
 %pre
 /usr/sbin/groupadd -r %{name} &>/dev/null || :
@@ -86,7 +84,7 @@ rm -rf "%{buildroot}"
   fi
 
 %post
-/usr/libexec/%{name}/migrate "/etc/sysconfig/%{name}" || true
+%{_datadir}/%{name}/migrate "/etc/sysconfig/%{name}" || true
 %systemd_post %{name}.service
 
 function chownIfNecessary {
@@ -130,8 +128,7 @@ fi
 
 %files
 %defattr(-,root,root)
-%dir %{_prefix}
-%{_prefix}/%{name}.war
+%{_javadir}/%{name}.war
 %attr(0755,%{name},%{name}) %dir %{workdir}
 %attr(0750,%{name},%{name}) /var/log/%{name}
 %attr(0750,%{name},%{name}) /var/cache/%{name}
@@ -140,8 +137,9 @@ fi
 %config(noreplace) /etc/sysconfig/%{name}
 /usr/sbin/rc%{name}
 %{_unitdir}/%{name}.service
-/usr/bin/%{name}
-/usr/libexec/%{name}/migrate
+%{_bindir}/%{name}
+%dir %{_datadir}/%{name}
+%{_datadir}/%{name}/migrate
 
 %changelog
 * Sat Apr 19 2014 mbarr@mbarr.net

@@ -7,7 +7,7 @@ After=network.target
 # Note: Do not customize this section. Instead, place your customizations in
 # the following drop-in file:
 #
-#     /etc/systemd/system/jenkins.service.d/override.conf
+#     /etc/systemd/system/@@ARTIFACTNAME@@.service.d/override.conf
 #
 # For more information about drop-ins, see:
 #
@@ -32,7 +32,7 @@ Environment="JENKINS_HOME=/var/lib/@@ARTIFACTNAME@@"
 WorkingDirectory=/var/lib/@@ARTIFACTNAME@@
 
 # Location of the Jenkins WAR
-#Environment="JENKINS_WAR=/usr/lib/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.war"
+#Environment="JENKINS_WAR=/usr/share/java/@@ARTIFACTNAME@@.war"
 
 # Location of the exploded WAR
 Environment="JENKINS_WEBROOT=%C/@@ARTIFACTNAME@@/war"
@@ -92,15 +92,16 @@ Environment="JENKINS_PORT=@@PORT@@"
 # is disabled. See the Winstone documentation for more information.
 #Environment="JENKINS_EXTRA_LIB_FOLDER="
 
-# Servlet context (important if you want to use Apache proxying)
+# Servlet context (important if you want to use reverse proxying)
 #Environment="JENKINS_PREFIX=/@@ARTIFACTNAME@@"
 
 # Arbitrary additional arguments to pass to Jenkins.
 # Full option list: java -jar @@ARTIFACTNAME@@.war --help
 #Environment="JENKINS_OPTS="
 
-# File descriptor limit. Comment this out to observe /etc/security/limits.conf.
-LimitNOFILE=8192
+# File descriptor limit. If unset, the value from the OS is inherited.
+# The default limit comes from /etc/security/limits.conf.
+#LimitNOFILE=8192
 
 # Set the umask to control the permission bits of files that Jenkins creates.
 #
@@ -114,7 +115,7 @@ LimitNOFILE=8192
 # credentials) are always written without 'other' access. So the umask values
 # only affect job configuration, build records, etc.
 #
-# If commented out, the value from the OS is inherited, which is normally 0022.
+# If unset, the value from the OS is inherited, which is normally 0022.
 # The default umask comes from pam_umask(8) and /etc/login.defs.
 #UMask=0022
 
