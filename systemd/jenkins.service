@@ -22,7 +22,7 @@ Environment="JENKINS_HOME=/var/lib/@@ARTIFACTNAME@@"
 WorkingDirectory=/var/lib/@@ARTIFACTNAME@@
 
 # Location of the Jenkins WAR
-Environment="JENKINS_WAR=/usr/lib/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.war"
+#Environment="JENKINS_WAR=/usr/lib/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.war"
 
 # Location of the exploded WAR
 Environment="JENKINS_WEBROOT=/var/cache/@@ARTIFACTNAME@@/war"

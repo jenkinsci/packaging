@@ -53,7 +53,11 @@ check_java_version() {
 }
 
 infer_jenkins_opts() {
-	inferred_jenkins_opts="--webroot='${JENKINS_WEBROOT}'"
+	inferred_jenkins_opts=""
+
+	if [ -n "${JENKINS_WEBROOT}" ]; then
+		inferred_jenkins_opts="${inferred_jenkins_opts} --webroot='${JENKINS_WEBROOT}'"
+	fi
 
 	if [ -n "${JENKINS_LOG}" ]; then
 		inferred_jenkins_opts="${inferred_jenkins_opts} --logfile='${JENKINS_LOG}'"
@@ -115,7 +119,9 @@ infer_jenkins_opts() {
 }
 
 main() {
-	[ -d "${JENKINS_HOME}" ] || die "${JENKINS_HOME} is not a directory"
+	if [ -n "${JENKINS_HOME}" ]; then
+		[ -d "${JENKINS_HOME}" ] || die "${JENKINS_HOME} is not a directory"
+	fi
 	[ -f "${JENKINS_WAR}" ] || die "${JENKINS_WAR} is not a file"
 
 	infer_java_cmd || die 'failed to find a valid Java installation'
@@ -152,28 +158,32 @@ main() {
 
 [ $# -gt 0 ] && usage 'too many arguments specified'
 
+if [ -z "${JENKINS_WAR}" ]; then
+	JENKINS_WAR=/usr/lib/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.war
+fi
+
 check_env \
-	JENKINS_HOME \
 	JENKINS_WAR \
-	JENKINS_WEBROOT \
 	-- \
 	JAVA_HOME \
 	JENKINS_DEBUG_LEVEL \
 	JENKINS_ENABLE_ACCESS_LOG \
-	JENKINS_OPTS \
 	JENKINS_EXTRA_LIB_FOLDER \
+	JENKINS_HOME \
 	JENKINS_HTTP2_LISTEN_ADDRESS \
 	JENKINS_HTTP2_PORT \
 	JENKINS_HTTPS_KEYSTORE \
 	JENKINS_HTTPS_KEYSTORE_PASSWORD \
 	JENKINS_HTTPS_LISTEN_ADDRESS \
-	JENKINS_HTTPS_PORT \
 	JAVA_OPTS \
+	JENKINS_HTTPS_PORT \
 	JENKINS_JAVA_CMD \
 	JENKINS_LISTEN_ADDRESS \
 	JENKINS_LOG \
+	JENKINS_OPTS \
 	JENKINS_PORT \
-	JENKINS_PREFIX
+	JENKINS_PREFIX \
+	JENKINS_WEBROOT
 
 main
 
