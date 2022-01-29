@@ -47,7 +47,7 @@ Environment="JENKINS_WEBROOT=%C/@@ARTIFACTNAME@@/war"
 #Environment="JENKINS_JAVA_CMD=/etc/alternatives/java"
 
 # Arguments for the Jenkins JVM
-Environment="JAVA_OPTS=-Dhudson.lifecycle=hudson.lifecycle.ExitLifecycle -Djava.awt.headless=true"
+Environment="JAVA_OPTS=-Djava.awt.headless=true"
 
 # IP address to listen on for HTTP requests.
 # The default is to listen on all interfaces (0.0.0.0).

@@ -13,7 +13,7 @@ usage() {
 	exit 2
 }
 
-NEW_JAVA_OPTS_DEFAULT="-Dhudson.lifecycle=hudson.lifecycle.ExitLifecycle -Djava.awt.headless=true"
+NEW_JAVA_OPTS_DEFAULT="-Djava.awt.headless=true"
 NEW_JENKINS_DEBUG_LEVEL_DEFAULT="5"
 NEW_JENKINS_GROUP_DEFAULT="@@ARTIFACTNAME@@"
 NEW_JENKINS_HOME_DEFAULT="/var/lib/@@ARTIFACTNAME@@"
@@ -142,9 +142,6 @@ read_old_options() {
 		NEW_JAVA_OPTS="${JAVA_ARGS}"
 	elif [ -n "${JENKINS_JAVA_OPTIONS}" ]; then
 		NEW_JAVA_OPTS="${JENKINS_JAVA_OPTIONS}"
-	fi
-	if [ "${NEW_JAVA_OPTS}" = '-Djava.awt.headless=true' ]; then
-		NEW_JAVA_OPTS="${NEW_JAVA_OPTS_DEFAULT}"
 	fi
 
 	if [ -n "${JENKINS_LISTEN_ADDRESS}" ]; then
