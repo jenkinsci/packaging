@@ -156,7 +156,7 @@ main() {
 		${inferred_jenkins_opts}
 }
 
-[ $# -gt 0 ] && usage 'too many arguments specified'
+[ $# -ne 0 ] && usage 'too many arguments specified'
 
 if [ -z "${JENKINS_WAR}" ]; then
 	JENKINS_WAR=/usr/lib/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.war

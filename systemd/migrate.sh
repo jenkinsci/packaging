@@ -9,7 +9,7 @@ die() {
 
 usage() {
 	echo "$(basename "$0"): $*" >&2
-	echo "Usage: $(basename "$0") <from> <to>"
+	echo "Usage: $(basename "$0") <from>"
 	exit 2
 }
 
@@ -349,12 +349,10 @@ migrate_options() {
 main() {
 	from=$1
 
-	# TODO skip migration if the migration marker exists
 	[ -f "${from}" ] || die "${from} does not exist"
 	. "${from}"
 	read_old_options
 	migrate_options
-	# TODO write out a marker that the migration has been completed
 }
 
 [ $# -gt 1 ] && usage "too many arguments specified"
