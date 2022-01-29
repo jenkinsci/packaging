@@ -50,6 +50,59 @@ NEW_JENKINS_WAR="${NEW_JENKINS_WAR_DEFAULT}"
 NEW_JENKINS_WEBROOT="${NEW_JENKINS_WEBROOT_DEFAULT}"
 
 read_old_options() {
+	if [ -n "${JENKINS_ARGS}" ]; then
+		if [ -n "${NAME}" ]; then
+			# For deb, these are all the arguments, except for the JENKINS_ENABLE_ACCESS_LOG additions
+			TMP_JENKINS_WEBROOT=$(echo "${JENKINS_ARGS}" | sed -n 's/.*\(--webroot=[[:alnum:][:punct:]]*\).*/\1/p' | awk -F= '{print $2}')
+			TMP_JENKINS_LOG=$(echo "${JENKINS_ARGS}" | sed -n 's/.*\(--logfile=[[:alnum:][:punct:]]*\).*/\1/p' | awk -F= '{print $2}')
+			TMP_JENKINS_PORT=$(echo "${JENKINS_ARGS}" | sed -n 's/.*\(--httpPort=[[:alnum:][:punct:]]*\).*/\1/p' | awk -F= '{print $2}')
+			TMP_JENKINS_LISTEN_ADDRESS=$(echo "${JENKINS_ARGS}" | sed -n 's/.*\(--httpListenAddress=[[:alnum:][:punct:]]*\).*/\1/p' | awk -F= '{print $2}')
+			TMP_JENKINS_HTTPS_PORT=$(echo "${JENKINS_ARGS}" | sed -n 's/.*\(--httpsPort=[[:alnum:][:punct:]]*\).*/\1/p' | awk -F= '{print $2}')
+			TMP_JENKINS_HTTPS_LISTEN_ADDRESS=$(echo "${JENKINS_ARGS}" | sed -n 's/.*\(--httpsListenAddress=[[:alnum:][:punct:]]*\).*/\1/p' | awk -F= '{print $2}')
+			TMP_JENKINS_HTTPS_KEYSTORE=$(echo "${JENKINS_ARGS}" | sed -n 's/.*\(--httpsKeyStore=[[:alnum:][:punct:]]*\).*/\1/p' | awk -F= '{print $2}')
+			TMP_JENKINS_HTTPS_KEYSTORE_PASSWORD=$(echo "${JENKINS_ARGS}" | sed -n 's/.*\(--httpsKeyStorePassword=[[:alnum:][:punct:]]*\).*/\1/p' | awk -F= '{print $2}')
+			TMP_JENKINS_HTTP2_PORT=$(echo "${JENKINS_ARGS}" | sed -n 's/.*\(--http2Port=[[:alnum:][:punct:]]*\).*/\1/p' | awk -F= '{print $2}')
+			TMP_JENKINS_HTTP2_LISTEN_ADDRESS=$(echo "${JENKINS_ARGS}" | sed -n 's/.*\(--http2ListenAddress=[[:alnum:][:punct:]]*\).*/\1/p' | awk -F= '{print $2}')
+			TMP_JENKINS_DEBUG_LEVEL=$(echo "${JENKINS_ARGS}" | sed -n 's/.*\(--debug=[[:alnum:][:punct:]]*\).*/\1/p' | awk -F= '{print $2}')
+			TMP_JENKINS_EXTRA_LIB_FOLDER=$(echo "${JENKINS_ARGS}" | sed -n 's/.*\(--extraLibFolder=[[:alnum:][:punct:]]*\).*/\1/p' | awk -F= '{print $2}')
+			TMP_PREFIX=$(echo "${JENKINS_ARGS}" | sed -n 's/.*\(--prefix=[[:alnum:][:punct:]]*\).*/\1/p' | awk -F= '{print $2}')
+
+			[ -n "${TMP_JENKINS_WEBROOT}" ] && JENKINS_WEBROOT="${TMP_JENKINS_WEBROOT}"
+			[ -n "${TMP_JENKINS_LOG}" ] && JENKINS_LOG="${TMP_JENKINS_LOG}"
+			[ -n "${TMP_JENKINS_PORT}" ] && JENKINS_PORT="${TMP_JENKINS_PORT}"
+			[ -n "${TMP_JENKINS_LISTEN_ADDRESS}" ] && JENKINS_LISTEN_ADDRESS="${TMP_JENKINS_LISTEN_ADDRESS}"
+			[ -n "${TMP_JENKINS_HTTPS_PORT}" ] && JENKINS_HTTPS_PORT="${TMP_JENKINS_HTTPS_PORT}"
+			[ -n "${TMP_JENKINS_HTTPS_LISTEN_ADDRESS}" ] && JENKINS_HTTPS_LISTEN_ADDRESS="${TMP_JENKINS_HTTPS_LISTEN_ADDRESS}"
+			[ -n "${TMP_JENKINS_HTTPS_KEYSTORE}" ] && JENKINS_HTTPS_KEYSTORE="${TMP_JENKINS_HTTPS_KEYSTORE}"
+			[ -n "${TMP_JENKINS_HTTPS_KEYSTORE_PASSWORD}" ] && JENKINS_HTTPS_KEYSTORE_PASSWORD="${TMP_JENKINS_HTTPS_KEYSTORE_PASSWORD}"
+			[ -n "${TMP_JENKINS_HTTP2_PORT}" ] && JENKINS_HTTP2_PORT="${TMP_JENKINS_HTTP2_PORT}"
+			[ -n "${TMP_JENKINS_HTTP2_LISTEN_ADDRESS}" ] && JENKINS_HTTP2_LISTEN_ADDRESS="${TMP_JENKINS_HTTP2_LISTEN_ADDRESS}"
+			[ -n "${TMP_JENKINS_DEBUG_LEVEL}" ] && JENKINS_DEBUG_LEVEL="${TMP_JENKINS_DEBUG_LEVEL}"
+			[ -n "${TMP_JENKINS_EXTRA_LIB_FOLDER}" ] && JENKINS_EXTRA_LIB_FOLDER="${TMP_JENKINS_EXTRA_LIB_FOLDER}"
+			[ -n "${TMP_PREFIX}" ] && PREFIX="${TMP_PREFIX}"
+
+			JENKINS_ARGS=$(echo "${JENKINS_ARGS}" | sed 's/--webroot=[[:alnum:][:punct:]]*//g')
+			JENKINS_ARGS=$(echo "${JENKINS_ARGS}" | sed 's/--logfile=[[:alnum:][:punct:]]*//g')
+			JENKINS_ARGS=$(echo "${JENKINS_ARGS}" | sed 's/--httpPort=[[:alnum:][:punct:]]*//g')
+			JENKINS_ARGS=$(echo "${JENKINS_ARGS}" | sed 's/--httpListenAddress=[[:alnum:][:punct:]]*//g')
+			JENKINS_ARGS=$(echo "${JENKINS_ARGS}" | sed 's/--httpsPort=[[:alnum:][:punct:]]*//g')
+			JENKINS_ARGS=$(echo "${JENKINS_ARGS}" | sed 's/--httpsListenAddress=[[:alnum:][:punct:]]*//g')
+			JENKINS_ARGS=$(echo "${JENKINS_ARGS}" | sed 's/--httpsKeyStore=[[:alnum:][:punct:]]*//g')
+			JENKINS_ARGS=$(echo "${JENKINS_ARGS}" | sed 's/--httpsKeyStorePassword=[[:alnum:][:punct:]]*//g')
+			JENKINS_ARGS=$(echo "${JENKINS_ARGS}" | sed 's/--http2Port=[[:alnum:][:punct:]]*//g')
+			JENKINS_ARGS=$(echo "${JENKINS_ARGS}" | sed 's/--http2ListenAddress=[[:alnum:][:punct:]]*//g')
+			JENKINS_ARGS=$(echo "${JENKINS_ARGS}" | sed 's/--debug=[[:alnum:][:punct:]]*//g')
+			JENKINS_ARGS=$(echo "${JENKINS_ARGS}" | sed 's/--extraLibFolder=[[:alnum:][:punct:]]*//g')
+			JENKINS_ARGS=$(echo "${JENKINS_ARGS}" | sed 's/--prefix=[[:alnum:][:punct:]]*//g')
+
+			# All that remains are the extra arguments
+			NEW_JENKINS_OPTS="${JENKINS_ARGS}"
+		else
+			# For rpm and suse, these are extra arguments
+			NEW_JENKINS_OPTS="${JENKINS_ARGS}"
+		fi
+	fi
+
 	if [ -n "${JENKINS_USER}" ]; then
 		NEW_JENKINS_USER="${JENKINS_USER}"
 	fi
@@ -87,7 +140,9 @@ read_old_options() {
 	elif [ -n "${JENKINS_JAVA_OPTIONS}" ]; then
 		NEW_JAVA_OPTS="${JENKINS_JAVA_OPTIONS}"
 	fi
-	# TODO add lifecycle to java args if it's missing
+	if [ "${NEW_JAVA_OPTS}" = '-Djava.awt.headless=true' ]; then
+		NEW_JAVA_OPTS="${NEW_JAVA_OPTS_DEFAULT}"
+	fi
 
 	if [ -n "${JENKINS_LISTEN_ADDRESS}" ]; then
 		NEW_JENKINS_LISTEN_ADDRESS="${JENKINS_LISTEN_ADDRESS}"
@@ -137,18 +192,6 @@ read_old_options() {
 
 	if [ -n "${PREFIX}" ]; then
 		NEW_JENKINS_PREFIX="${PREFIX}"
-	fi
-
-	if [ -n "${JENKINS_ARGS}" ]; then
-		if [ -n "${NAME}" ]; then
-			# For deb, these are all the arguments, except for the JENKINS_ENABLE_ACCESS_LOG additions
-			# TODO parse these out into the rpm/suse style variables, and put the remainder in NEW_JENKINS_OPTS
-			# TODO also add -logfile if it's missing
-			echo 'implement me'
-		else
-			# For rpm and suse, these are extra arguments
-			NEW_JENKINS_OPTS="${JENKINS_ARGS}"
-		fi
 	fi
 
 	if [ -n "${MAXOPENFILES}" ] && [ "${MAXOPENFILES}" -gt 0 ]; then
@@ -238,7 +281,7 @@ migrate_options() {
 	fi
 
 	if [ -n "${NEW_JENKINS_HTTPS_KEYSTORE}" ]; then
-		echo "LoadCredential=keystore.jks:${NEW_JENKINS_HTTPS_KEYSTORE}">> "${tmpfile}"
+		echo "LoadCredential=keystore.jks:${NEW_JENKINS_HTTPS_KEYSTORE}" >>"${tmpfile}"
 		edited=true
 	fi
 

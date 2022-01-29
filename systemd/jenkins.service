@@ -27,8 +27,8 @@ WorkingDirectory=%S/@@ARTIFACTNAME@@
 # Location of the exploded WAR
 Environment="JENKINS_WEBROOT=%C/@@ARTIFACTNAME@@/war"
 
-# Location of the Jenkins log
-Environment="JENKINS_LOG=%L/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log"
+# Location of the Jenkins log. By default, systemd-journald(8) is used.
+#Environment="JENKINS_LOG=%L/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log"
 
 # The Java home directory. When left empty, JENKINS_JAVA_CMD and PATH are consulted.
 #Environment="JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64"
