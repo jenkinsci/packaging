@@ -17,9 +17,9 @@ User=@@ARTIFACTNAME@@
 Group=@@ARTIFACTNAME@@
 
 # Directory where Jenkins stores its configuration and workspaces
-Environment="HOME=%S/@@ARTIFACTNAME@@"
-Environment="JENKINS_HOME=%S/@@ARTIFACTNAME@@"
-WorkingDirectory=%S/@@ARTIFACTNAME@@
+Environment="HOME=/var/lib/@@ARTIFACTNAME@@"
+Environment="JENKINS_HOME=/var/lib/@@ARTIFACTNAME@@"
+WorkingDirectory=/var/lib/@@ARTIFACTNAME@@
 
 # Location of the Jenkins WAR
 #Environment="JENKINS_WAR=/usr/lib/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.war"
