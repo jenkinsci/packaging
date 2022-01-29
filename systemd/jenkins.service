@@ -54,11 +54,11 @@ Environment="JENKINS_PORT=@@PORT@@"
 
 # Path to the keystore in JKS format (as created by the JDK's keytool).
 # Default is disabled.
-#Environment="JENKINS_HTTPS_KEYSTORE="
+#LoadCredential=keystore.jks:/path/to/keystore.jks
 
 # Password to access the keystore defined in JENKINS_HTTPS_KEYSTORE.
 # Default is disabled.
-#Environment="JENKINS_HTTPS_KEYSTORE_PASSWORD="
+#SetCredential=keystore.pass:s3cR3tPa55w0rD
 
 # IP address to listen on for HTTP2 requests. Default is disabled.
 #

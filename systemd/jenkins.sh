@@ -75,12 +75,12 @@ infer_jenkins_opts() {
 		inferred_jenkins_opts="${inferred_jenkins_opts} --httpsPort=${JENKINS_HTTPS_PORT}"
 	fi
 
-	if [ -n "${JENKINS_HTTPS_KEYSTORE}" ]; then
-		inferred_jenkins_opts="${inferred_jenkins_opts} --httpsKeyStore='${JENKINS_HTTPS_KEYSTORE}'"
+	if [ -n "${CREDENTIALS_DIRECTORY}" ] && [ -f "${CREDENTIALS_DIRECTORY}/keystore.jks" ]; then
+		inferred_jenkins_opts="${inferred_jenkins_opts} --httpsKeyStore='${CREDENTIALS_DIRECTORY}/keystore.jks'"
 	fi
 
-	if [ -n "${JENKINS_HTTPS_KEYSTORE_PASSWORD}" ]; then
-		inferred_jenkins_opts="${inferred_jenkins_opts} --httpsKeyStorePassword='${JENKINS_HTTPS_KEYSTORE_PASSWORD}'"
+	if [ -n "${CREDENTIALS_DIRECTORY}" ] && [ -f "${CREDENTIALS_DIRECTORY}/keystore.pass" ]; then
+		inferred_jenkins_opts="${inferred_jenkins_opts} --httpsKeyStorePassword='$(cat "${CREDENTIALS_DIRECTORY}/keystore.pass")'"
 	fi
 
 	if [ -n "${JENKINS_HTTPS_LISTEN_ADDRESS}" ]; then
