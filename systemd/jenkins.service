@@ -17,18 +17,18 @@ User=@@ARTIFACTNAME@@
 Group=@@ARTIFACTNAME@@
 
 # Directory where Jenkins stores its configuration and workspaces
-Environment="HOME=/var/lib/@@ARTIFACTNAME@@"
-Environment="JENKINS_HOME=/var/lib/@@ARTIFACTNAME@@"
-WorkingDirectory=/var/lib/@@ARTIFACTNAME@@
+Environment="HOME=%S/@@ARTIFACTNAME@@"
+Environment="JENKINS_HOME=%S/@@ARTIFACTNAME@@"
+WorkingDirectory=%S/@@ARTIFACTNAME@@
 
 # Location of the Jenkins WAR
 #Environment="JENKINS_WAR=/usr/lib/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.war"
 
 # Location of the exploded WAR
-Environment="JENKINS_WEBROOT=/var/cache/@@ARTIFACTNAME@@/war"
+Environment="JENKINS_WEBROOT=%C/@@ARTIFACTNAME@@/war"
 
 # Location of the Jenkins log
-Environment="JENKINS_LOG=/var/log/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log"
+Environment="JENKINS_LOG=%L/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.log"
 
 # The Java home directory. When left empty, JENKINS_JAVA_CMD and PATH are consulted.
 #Environment="JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64"
