@@ -4,7 +4,7 @@ set -e
 
 die() {
 	echo "$(basename "$0"): $*" >&2
-	exit 2
+	exit 1
 }
 
 usage() {
