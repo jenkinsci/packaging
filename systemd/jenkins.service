@@ -3,6 +3,16 @@ Description=Jenkins Continuous Integration Server
 Requires=network.target
 After=network.target
 
+#
+# Note: Do not customize this section. Instead, place your customizations in
+# the following drop-in file:
+#
+#     /etc/systemd/system/jenkins.service.d/override.conf
+#
+# For more information about drop-ins, see:
+#
+#     https://www.freedesktop.org/software/systemd/man/systemd.unit.html
+#
 [Service]
 Type=simple
 ExecStart=/usr/bin/@@ARTIFACTNAME@@
