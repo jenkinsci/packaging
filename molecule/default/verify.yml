@@ -3,18 +3,18 @@
   hosts: all
   tasks:
   - file:
-      path: /etc/systemd/system/jenkinstest.service.d
+      path: /etc/systemd/system/jenkins.service.d
       state: directory
     when: ansible_service_mgr == 'systemd'
   - stat:
-      path: /etc/systemd/system/jenkinstest.service.d/override.conf
+      path: /etc/systemd/system/jenkins.service.d/override.conf
     register: drop_in
     when: ansible_service_mgr == 'systemd'
   - assert:
       that:
         - not drop_in.stat.exists
   - copy:
-      dest: /etc/systemd/system/jenkinstest.service.d/override.conf
+      dest: /etc/systemd/system/jenkins.service.d/override.conf
       content: |
         [Service]
         Environment="JAVA_OPTS=-Djava.awt.headless=true -Xmx256m"
@@ -30,10 +30,10 @@
         - (service_pids.pids | length) == 0
       fail_msg: "{{ service_pids.pids|join(',') }}"
   - service:
-      name: jenkinstest
+      name: jenkins
       state: started
   - uri:
-      url: "http://127.0.0.1:7777"
+      url: "http://127.0.0.1:8080"
       status_code: 403
     register: result
     until: result.status == 403
@@ -47,7 +47,7 @@
         - (service_pids.pids | length) == 1
       fail_msg: "{{ service_pids.pids | join(',') }}"
   - service:
-      name: jenkinstest
+      name: jenkins
       state: stopped
   - pids:
       name: java

@@ -10,7 +10,7 @@ services:
     environment:
     - "BUILDENV=/srv/releases/jenkins/env/test.mk"
     - "BRANDING_DIR=/srv/releases/jenkins/branding"
-    - "BRAND=/srv/releases/jenkins/branding/test.mk"
+    - "BRAND=/srv/releases/jenkins/branding/jenkins.mk"
     - "GPG_FILE=/srv/releases/jenkins/credentials/sandbox.gpg"
     - "GPG_KEYNAME=Bogus Test"
     - "GPG_PASSPHRASE=s3cr3t"
