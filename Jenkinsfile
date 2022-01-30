@@ -8,7 +8,7 @@ podTemplate(yaml: readTrusted('KubernetesPod.yaml'), workingDir: '/home/jenkins/
     withEnv([
       "BUILDENV=${WORKSPACE}/env/test.mk",
       "BRANDING_DIR=${WORKSPACE}/branding",
-      "BRAND=${WORKSPACE}/branding/test.mk",
+      "BRAND=${WORKSPACE}/branding/jenkins.mk",
       "GPG_FILE=${WORKSPACE}/credentials/sandbox.gpg",
       "GPG_KEYNAME=Bogus Test",
       "GPG_PASSPHRASE=s3cr3t",
