@@ -6,7 +6,6 @@
 - package:
     name:
       - fontconfig
-      - initscripts
       - java-11-openjdk
     disable_gpg_check: true  # TODO get this working
     state: present

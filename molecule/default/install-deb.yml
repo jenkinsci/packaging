@@ -2,7 +2,6 @@
 - package:
     name:
       - fontconfig
-      - man-db
       - openjdk-11-jre
     state: present
     update_cache: true
