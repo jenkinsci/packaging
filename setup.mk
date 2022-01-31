@@ -3,7 +3,7 @@ export WAR?=$(error Required variable WAR must point to the jenkins.war file you
 export WAR_SHASUM=${ARTIFACTNAME}.war.sha256
 
 # sanitized version number
-export VERSION:=$(shell unzip -p "${WAR}" META-INF/MANIFEST.MF | grep Implementation-Version | cut -d ' ' -f2 | tr -d '\r' | sed -e "s/-SNAPSHOT//" | sed -e "s/-alpha-.*//" | sed -e "s/-beta-.*//" | sed -e "s/-rc-.*//" | tr - .)
+export VERSION:=$(shell unzip -p "${WAR}" META-INF/MANIFEST.MF | grep Implementation-Version | cut -d ' ' -f2 | tr -d '\r' | sed -e "s/-SNAPSHOT//" | sed -e "s/-alpha-.*//" | sed -e "s/-beta-.*//" | sed -e "s/-rc-.*//" | sed -e "s/-rc.*//" | tr - .)
 
 # directory to place marker files for build artifacts
 export TARGET:=target

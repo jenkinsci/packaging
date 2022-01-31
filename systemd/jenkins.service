@@ -14,10 +14,17 @@ After=network.target
 #     https://www.freedesktop.org/software/systemd/man/systemd.unit.html
 #
 [Service]
-Type=simple
+Type=notify
+NotifyAccess=main
 ExecStart=/usr/bin/@@ARTIFACTNAME@@
 Restart=on-failure
 SuccessExitStatus=143
+
+# Configures the time to wait for start-up. If Jenkins does not signal start-up
+# completion within the configured time, the service will be considered failed
+# and will be shut down again. Takes a unit-less value in seconds, or a time span
+# value such as "5min 20s". Pass "infinity" to disable the timeout logic.
+#TimeoutStartSec=90
 
 # Unix account that runs the Jenkins daemon
 # Be careful when you change this, as you need to update the permissions of

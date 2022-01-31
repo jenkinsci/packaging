@@ -18,6 +18,7 @@
       content: |
         [Service]
         Environment="JAVA_OPTS=-Djava.awt.headless=true -Xmx256m"
+        TimeoutStartSec=300
     when: ansible_service_mgr == 'systemd'
   - systemd:
       daemon_reload: true
