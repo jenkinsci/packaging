@@ -224,7 +224,6 @@ migrate_options() {
 	fi
 
 	if [ "${NEW_JENKINS_HOME}" != "${NEW_JENKINS_HOME_DEFAULT}" ]; then
-		echo "Environment=\"HOME=${NEW_JENKINS_HOME}\"" >>"${tmpfile}"
 		echo "Environment=\"JENKINS_HOME=${NEW_JENKINS_HOME}\"" >>"${tmpfile}"
 		echo "WorkingDirectory=${NEW_JENKINS_HOME}" >>"${tmpfile}"
 		edited=true
