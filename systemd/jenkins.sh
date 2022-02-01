@@ -5,12 +5,6 @@ die() {
 	exit 1
 }
 
-usage() {
-	echo "$(basename "$0"): $*" >&2
-	echo "Usage: $(basename "$0")"
-	exit 2
-}
-
 check_env() {
 	required=true
 	for var in "$@"; do
@@ -159,7 +153,11 @@ main() {
 		${inferred_jenkins_opts}
 }
 
-[ $# -ne 0 ] && usage 'too many arguments specified'
+if [ -z "${JENKINS_OPTS}" ]; then
+	JENKINS_OPTS="$*"
+else
+	JENKINS_OPTS="${JENKINS_OPTS} $*"
+fi
 
 if [ -z "${JENKINS_WAR}" ]; then
 	JENKINS_WAR=/usr/share/java/@@ARTIFACTNAME@@.war
