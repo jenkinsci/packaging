@@ -131,7 +131,8 @@ main() {
 
 	infer_jenkins_opts
 
-	# TODO unsetenv JAVA_OPTS
+	java_opts_tmp="${JAVA_OPTS}"
+	unset JAVA_OPTS
 	unset JENKINS_DEBUG_LEVEL
 	unset JENKINS_ENABLE_ACCESS_LOG
 	unset JENKINS_EXTRA_LIB_FOLDER
@@ -141,18 +142,20 @@ main() {
 	unset JENKINS_HTTPS_KEYSTORE_PASSWORD
 	unset JENKINS_HTTPS_LISTEN_ADDRESS
 	unset JENKINS_HTTPS_PORT
-	# TODO unsetenv JENKINS_JAVA_CMD
+	java_cmd="${JENKINS_JAVA_CMD}"
+	unset JENKINS_JAVA_CMD
 	unset JENKINS_LISTEN_ADDRESS
 	unset JENKINS_LOG
 	unset JENKINS_OPTS
 	unset JENKINS_PORT
 	unset JENKINS_PREFIX
-	# TODO unsetenv JENKINS_WAR
+	jenkins_war_tmp="${JENKINS_WAR}"
+	unset JENKINS_WAR
 	unset JENKINS_WEBROOT
 	eval exec \
-		"${JENKINS_JAVA_CMD}" \
-		${JAVA_OPTS} \
-		-jar "${JENKINS_WAR}" \
+		"${java_cmd}" \
+		${java_opts_tmp} \
+		-jar "${jenkins_war_tmp}" \
 		${inferred_jenkins_opts}
 }
 
