@@ -281,12 +281,12 @@ migrate_options() {
 	fi
 
 	if [ -n "${NEW_JENKINS_HTTPS_KEYSTORE}" ]; then
-		echo "LoadCredential=keystore.jks:${NEW_JENKINS_HTTPS_KEYSTORE}" >>"${tmpfile}"
+		echo "Environment=\"JENKINS_HTTPS_KEYSTORE=${NEW_JENKINS_HTTPS_KEYSTORE}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ -n "${NEW_JENKINS_HTTPS_KEYSTORE_PASSWORD}" ]; then
-		echo "SetCredential=keystore.pass:${NEW_JENKINS_HTTPS_KEYSTORE_PASSWORD}" >>"${tmpfile}"
+		echo "Environment=\"JENKINS_HTTPS_KEYSTORE_PASSWORD=${NEW_JENKINS_HTTPS_KEYSTORE_PASSWORD}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
