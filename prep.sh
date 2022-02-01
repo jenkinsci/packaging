@@ -9,8 +9,7 @@ cd "$(dirname "$0")"
 # jenkins-infra/release should be refactored to consume the new functionality.
 
 if [[ ! -f $WAR ]]; then
-	# TODO Jenkins 2.333
-	curl -o jenkins.war https://repo.jenkins-ci.org/incrementals/org/jenkins-ci/main/jenkins-war/2.333-rc32035.1a_4204434750/jenkins-war-2.333-rc32035.1a_4204434750.war
+	jv download
 fi
 
 if ! gpg --fingerprint "${GPG_KEYNAME}"; then
