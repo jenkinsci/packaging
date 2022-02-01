@@ -7,9 +7,17 @@
     name:
       - fontconfig
       - java-11-openjdk
-    disable_gpg_check: true  # TODO get this working
     state: present
     update_cache: true
+- file:
+    path: /var/tmp/target/credentials
+    state: directory
+- copy:
+    src: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/credentials/test.ascii.key"
+    dest: /var/tmp/target/credentials/test.ascii.key
+- rpm_key:
+    state: present
+    key: /var/tmp/target/credentials/test.ascii.key
 - find:
     paths: /var/tmp/target/rpm
     file_type: file
@@ -20,7 +28,6 @@
       - package_list.matched == 1
 - package:
     name: "{{ package_list.files[0].path }}"
-    disable_gpg_check: true  # TODO get this working
     state: present
 - lineinfile:
     path: /etc/sysconfig/jenkins
