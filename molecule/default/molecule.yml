@@ -76,6 +76,13 @@ platforms:
       - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     privileged: true
+  - name: centos-stream-9
+    image: dokken/centos-stream-9:latest
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: fedora-34
     image: dokken/fedora-34:latest
     command: /sbin/init
