@@ -121,6 +121,9 @@ read_old_options() {
 	if [ -n "${JENKINS_WAR}" ] && [ -f "${JENKINS_WAR}" ]; then
 		NEW_JENKINS_WAR="${JENKINS_WAR}"
 	fi
+	if [ "${NEW_JENKINS_WAR}" = "/usr/share/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.war" ]; then
+		NEW_JENKINS_WAR="${NEW_JENKINS_WAR_DEFAULT}"
+	fi
 
 	if [ -n "${JENKINS_WEBROOT}" ] && [ -d "${JENKINS_WEBROOT}" ]; then
 		NEW_JENKINS_WEBROOT="${JENKINS_WEBROOT}"
