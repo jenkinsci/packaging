@@ -275,12 +275,12 @@ read_old_options() {
 }
 
 migrate_options() {
-	tmpfile=$(mktemp)
-	edited=false
-
 	if [ -f /etc/systemd/system/@@ARTIFACTNAME@@.service.d/override.conf ]; then
 		return
 	fi
+
+	tmpfile=$(mktemp)
+	edited=false
 
 	echo '[Service]' >>"${tmpfile}"
 
