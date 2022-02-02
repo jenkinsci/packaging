@@ -217,92 +217,110 @@ migrate_options() {
 	echo '[Service]' >>"${tmpfile}"
 
 	if [ "${NEW_JENKINS_USER}" != "${NEW_JENKINS_USER_DEFAULT}" ]; then
+		NEW_JENKINS_USER="$(printf '%s' "${NEW_JENKINS_USER}" | sed -e 's/"/\\"/g')"
 		echo "User=${NEW_JENKINS_USER}" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ "${NEW_JENKINS_GROUP}" != "${NEW_JENKINS_GROUP_DEFAULT}" ]; then
+		NEW_JENKINS_GROUP="$(printf '%s' "${NEW_JENKINS_GROUP}" | sed -e 's/"/\\"/g')"
 		echo "Group=${NEW_JENKINS_GROUP}" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ "${NEW_JENKINS_HOME}" != "${NEW_JENKINS_HOME_DEFAULT}" ]; then
+		NEW_JENKINS_HOME="$(printf '%s' "${NEW_JENKINS_HOME}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_HOME=${NEW_JENKINS_HOME}\"" >>"${tmpfile}"
 		echo "WorkingDirectory=${NEW_JENKINS_HOME}" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ "${NEW_JENKINS_WAR}" != "${NEW_JENKINS_WAR_DEFAULT}" ]; then
+		NEW_JENKINS_WAR="$(printf '%s' "${NEW_JENKINS_WAR}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_WAR=${NEW_JENKINS_WAR}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ "${NEW_JENKINS_WEBROOT}" != "${NEW_JENKINS_WEBROOT_DEFAULT}" ]; then
+		NEW_JENKINS_WEBROOT="$(printf '%s' "${NEW_JENKINS_WEBROOT}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_WEBROOT=${NEW_JENKINS_WEBROOT}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ "${NEW_JENKINS_LOG}" != "${NEW_JENKINS_LOG_DEFAULT}" ]; then
+		NEW_JENKINS_LOG="$(printf '%s' "${NEW_JENKINS_LOG}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_LOG=${NEW_JENKINS_LOG}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ -n "${NEW_JAVA_HOME}" ]; then
+		NEW_JENKINS_HOME="$(printf '%s' "${NEW_JENKINS_HOME}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JAVA_HOME=${NEW_JAVA_HOME}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ -n "${NEW_JENKINS_JAVA_CMD}" ]; then
+		NEW_JENKINS_JAVA_CMD="$(printf '%s' "${NEW_JENKINS_JAVA_CMD}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_JAVA_CMD=${NEW_JENKINS_JAVA_CMD}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ "${NEW_JAVA_OPTS}" != "${NEW_JAVA_OPTS_DEFAULT}" ]; then
+		NEW_JAVA_OPTS="$(printf '%s' "${NEW_JAVA_OPTS}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JAVA_OPTS=${NEW_JAVA_OPTS}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ -n "${NEW_JENKINS_LISTEN_ADDRESS}" ]; then
+		NEW_JENKINS_LISTEN_ADDRESS="$(printf '%s' "${NEW_JENKINS_LISTEN_ADDRESS}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_LISTEN_ADDRESS=${NEW_JENKINS_LISTEN_ADDRESS}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ "${NEW_JENKINS_PORT}" != "${NEW_JENKINS_PORT_DEFAULT}" ]; then
+		NEW_JENKINS_PORT="$(printf '%s' "${NEW_JENKINS_PORT}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_PORT=${NEW_JENKINS_PORT}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ -n "${NEW_JENKINS_HTTPS_LISTEN_ADDRESS}" ]; then
+		NEW_JENKINS_HTTPS_LISTEN_ADDRESS="$(printf '%s' "${NEW_JENKINS_HTTPS_LISTEN_ADDRESS}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_HTTPS_LISTEN_ADDRESS=${NEW_JENKINS_HTTPS_LISTEN_ADDRESS}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ -n "${NEW_JENKINS_HTTPS_PORT}" ]; then
+		NEW_JENKINS_HTTPS_PORT="$(printf '%s' "${NEW_JENKINS_HTTPS_PORT}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_HTTPS_PORT=${NEW_JENKINS_HTTPS_PORT}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ -n "${NEW_JENKINS_HTTPS_KEYSTORE}" ]; then
+		NEW_JENKINS_HTTPS_KEYSTORE="$(printf '%s' "${NEW_JENKINS_HTTPS_KEYSTORE}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_HTTPS_KEYSTORE=${NEW_JENKINS_HTTPS_KEYSTORE}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ -n "${NEW_JENKINS_HTTPS_KEYSTORE_PASSWORD}" ]; then
+		NEW_JENKINS_HTTPS_KEYSTORE_PASSWORD="$(printf '%s' "${NEW_JENKINS_HTTPS_KEYSTORE_PASSWORD}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_HTTPS_KEYSTORE_PASSWORD=${NEW_JENKINS_HTTPS_KEYSTORE_PASSWORD}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ -n "${NEW_JENKINS_HTTP2_LISTEN_ADDRESS}" ]; then
+		NEW_JENKINS_HTTP2_LISTEN_ADDRESS="$(printf '%s' "${NEW_JENKINS_HTTP2_LISTEN_ADDRESS}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_HTTP2_LISTEN_ADDRESS=${NEW_JENKINS_HTTP2_LISTEN_ADDRESS}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ -n "${NEW_JENKINS_HTTP2_PORT}" ]; then
+		NEW_JENKINS_HTTP2_PORT="$(printf '%s' "${NEW_JENKINS_HTTP2_PORT}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_HTTP2_PORT=${NEW_JENKINS_HTTP2_PORT}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ "${NEW_JENKINS_DEBUG_LEVEL}" != "${NEW_JENKINS_DEBUG_LEVEL_DEFAULT}" ]; then
+		NEW_JENKINS_DEBUG_LEVEL="$(printf '%s' "${NEW_JENKINS_DEBUG_LEVEL}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_DEBUG_LEVEL=${NEW_JENKINS_DEBUG_LEVEL}\"" >>"${tmpfile}"
 		edited=true
 	fi
@@ -313,26 +331,31 @@ migrate_options() {
 	fi
 
 	if [ -n "${NEW_JENKINS_EXTRA_LIB_FOLDER}" ]; then
+		NEW_JENKINS_EXTRA_LIB_FOLDER="$(printf '%s' "${NEW_JENKINS_EXTRA_LIB_FOLDER}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_EXTRA_LIB_FOLDER=${NEW_JENKINS_EXTRA_LIB_FOLDER}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ -n "${NEW_JENKINS_PREFIX}" ]; then
+		NEW_JENKINS_PREFIX="$(printf '%s' "${NEW_JENKINS_PREFIX}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_PREFIX=${NEW_JENKINS_PREFIX}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ -n "${NEW_JENKINS_OPTS}" ]; then
+		NEW_JENKINS_OPTS="$(printf '%s' "${NEW_JENKINS_OPTS}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_OPTS=${NEW_JENKINS_OPTS}\"" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ "${NEW_JENKINS_MAXOPENFILES}" != "${NEW_JENKINS_MAXOPENFILES_DEFAULT}" ]; then
+		NEW_JENKINS_MAXOPENFILES="$(printf '%s' "${NEW_JENKINS_MAXOPENFILES}" | sed -e 's/"/\\"/g')"
 		echo "LimitNOFILE=${NEW_JENKINS_MAXOPENFILES}" >>"${tmpfile}"
 		edited=true
 	fi
 
 	if [ -n "${NEW_JENKINS_UMASK}" ]; then
+		NEW_JENKINS_UMASK="$(printf '%s' "${NEW_JENKINS_UMASK}" | sed -e 's/"/\\"/g')"
 		echo "UMask=${NEW_JENKINS_UMASK}" >>"${tmpfile}"
 		edited=true
 	fi
