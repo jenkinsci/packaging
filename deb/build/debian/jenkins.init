@@ -130,6 +130,7 @@ do_start_cmd_override() {
 		LOGNAME="${JENKINS_USER}" \
 		USERNAME="${JENKINS_USER}" \
 		PWD="${JENKINS_HOME}" \
+		eval \
 		start-stop-daemon \
 		--start \
 		--quiet \

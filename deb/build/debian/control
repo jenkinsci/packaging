@@ -8,5 +8,5 @@ Homepage: @@HOMEPAGE@@
 
 Package: @@ARTIFACTNAME@@
 Architecture: all
-Depends: ${misc:Depends}, adduser, lsb-base (>= 3.2-14), net-tools
+Depends: ${misc:Depends}, adduser, lsb-base (>= 3.2-14), net-tools, sysvinit-utils (>= 2.88dsf-50)
 Description: @@DESCRIPTION_FILE@@
