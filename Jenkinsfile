@@ -1,6 +1,7 @@
 properties([
   buildDiscarder(logRotator(numToKeepStr: '50', artifactNumToKeepStr: '5')),
-  disableConcurrentBuilds(abortPrevious: true)
+  disableConcurrentBuilds(abortPrevious: true),
+  pipelineTriggers([cron('@weekly')]) // Run at least weekly to assure we test recent releases
 ])
 
 podTemplate(yaml: readTrusted('KubernetesPod.yaml'), workingDir: '/home/jenkins/agent') {
