@@ -29,10 +29,3 @@
 - zypper_repository:
     name: jenkins
     state: absent
-- lineinfile:
-    path: /etc/sysconfig/jenkins
-    regexp: '^JENKINS_JAVA_OPTIONS='
-    line: "JENKINS_JAVA_OPTIONS=\"-Djava.awt.headless=true -Xmx256m -Dhudson.model.DirectoryBrowserSupport.CSP=\\\"default-src 'self';\\\"\""
-- systemd:
-    daemon_reload: true
-  when: ansible_service_mgr == 'systemd'
