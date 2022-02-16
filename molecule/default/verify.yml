@@ -18,7 +18,6 @@
       content: |
         [Service]
         Environment="JAVA_OPTS=-Djava.awt.headless=true -Xmx256m -Dhudson.model.DirectoryBrowserSupport.CSP=\"default-src 'self';\""
-        TimeoutStartSec=600
     when: ansible_service_mgr == 'systemd'
   - systemd:
       daemon_reload: true
