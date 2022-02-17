@@ -17,8 +17,8 @@
       dest: /etc/systemd/system/jenkins.service.d/override.conf
       content: |
         [Service]
-        TimeoutStartSec=120
-        Environment="JAVA_OPTS=-Djava.awt.headless=true -Xmx256m -Dhudson.model.DirectoryBrowserSupport.CSP=\"default-src 'self';\" -Djenkins.model.Jenkins.extendTimeoutSeconds=120"
+        TimeoutStartSec=180
+        Environment="JAVA_OPTS=-Djava.awt.headless=true -Xmx256m -Dhudson.model.DirectoryBrowserSupport.CSP=\"default-src 'self';\" -Djenkins.model.Jenkins.extendTimeoutSeconds=180"
     when: ansible_service_mgr == 'systemd'
   - systemd:
       daemon_reload: true
