@@ -345,7 +345,10 @@ migrate_options() {
 		edited=true
 	fi
 
+	privileged_port=false
+
 	if [ "${NEW_JENKINS_PORT}" != "${NEW_JENKINS_PORT_DEFAULT}" ]; then
+		[ "${NEW_JENKINS_PORT}" -lt 1024 ] && privileged_port=true
 		NEW_JENKINS_PORT="$(printf '%s' "${NEW_JENKINS_PORT}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_PORT=${NEW_JENKINS_PORT}\"" >>"${tmpfile}"
 		edited=true
@@ -358,6 +361,7 @@ migrate_options() {
 	fi
 
 	if [ -n "${NEW_JENKINS_HTTPS_PORT}" ]; then
+		[ "${NEW_JENKINS_HTTPS_PORT}" -lt 1024 ] && privileged_port=true
 		NEW_JENKINS_HTTPS_PORT="$(printf '%s' "${NEW_JENKINS_HTTPS_PORT}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_HTTPS_PORT=${NEW_JENKINS_HTTPS_PORT}\"" >>"${tmpfile}"
 		edited=true
@@ -382,8 +386,14 @@ migrate_options() {
 	fi
 
 	if [ -n "${NEW_JENKINS_HTTP2_PORT}" ]; then
+		[ "${NEW_JENKINS_HTTP2_PORT}" -lt 1024 ] && privileged_port=true
 		NEW_JENKINS_HTTP2_PORT="$(printf '%s' "${NEW_JENKINS_HTTP2_PORT}" | sed -e 's/"/\\"/g')"
 		echo "Environment=\"JENKINS_HTTP2_PORT=${NEW_JENKINS_HTTP2_PORT}\"" >>"${tmpfile}"
+		edited=true
+	fi
+
+	if $privileged_port; then
+		echo "AmbientCapabilities=CAP_NET_BIND_SERVICE" >>"${tmpfile}"
 		edited=true
 	fi
 

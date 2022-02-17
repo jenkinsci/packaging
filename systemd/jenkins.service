@@ -61,12 +61,18 @@ Environment="JAVA_OPTS=-Djava.awt.headless=true"
 #Environment="JENKINS_LISTEN_ADDRESS="
 
 # Port to listen on for HTTP requests. Set to -1 to disable.
+# To be able to listen on privileged ports (port numbers less than 1024),
+# add the CAP_NET_BIND_SERVICE capability to the AmbientCapabilities
+# directive below.
 Environment="JENKINS_PORT=@@PORT@@"
 
 # IP address to listen on for HTTPS requests. Default is disabled.
 #Environment="JENKINS_HTTPS_LISTEN_ADDRESS="
 
 # Port to listen on for HTTPS requests. Default is disabled.
+# To be able to listen on privileged ports (port numbers less than 1024),
+# add the CAP_NET_BIND_SERVICE capability to the AmbientCapabilities
+# directive below.
 #Environment="JENKINS_HTTPS_PORT=443"
 
 # Path to the keystore in JKS format (as created by the JDK's keytool).
@@ -84,10 +90,22 @@ Environment="JENKINS_PORT=@@PORT@@"
 #Environment="JENKINS_HTTP2_LISTEN_ADDRESS="
 
 # HTTP2 port to listen on. Default is disabled.
+# To be able to listen on privileged ports (port numbers less than 1024),
+# add the CAP_NET_BIND_SERVICE capability to the AmbientCapabilities
+# directive below.
 #
 # Note: HTTP2 support may require additional configuration.
 # See the Winstone documentation for more information.
 #Environment="JENKINS_HTTP2_PORT="
+
+# Controls which capabilities to include in the ambient capability set for the
+# executed process. Takes a whitespace-separated list of capability names, e.g.
+# CAP_SYS_ADMIN, CAP_DAC_OVERRIDE, CAP_SYS_PTRACE. Ambient capability sets are
+# useful if you want to execute a process as a non-privileged user but still
+# want to give it some capabilities. For example, add the CAP_NET_BIND_SERVICE
+# capability to be able to listen on privileged ports (port numbers less than
+# 1024).
+#AmbientCapabilities=CAP_NET_BIND_SERVICE
 
 # Debug level for logs. The higher the value, the more verbose. 5 is INFO.
 #Environment="JENKINS_DEBUG_LEVEL=5"
