@@ -1,9 +1,4 @@
 <?xml version="1.0"?>
-
-<!--
-  WiX variables are supposed to look like <DOLLAR>(var.VARNAME), which means
-  it has to be written like <BACKSLASH><DOLLAR>(var.VARNAME) to survive the first processing
--->
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'
      xmlns:fire="http://schemas.microsoft.com/wix/FirewallExtension"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
@@ -17,7 +12,6 @@
 
     <Icon Id="installer.ico" SourceFile="$(var.InstallerIco)" />
     <Binary Id="Cryptography" SourceFile="msiext-1.5\CustomActions\Cryptography.dll" />
-
 
     <!-- Save the command line value INSTALLDIR and restore it later in the sequence or it will be overwritten by the value saved to the registry during an upgrade -->
     <!-- http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/ -->
@@ -214,7 +208,7 @@
                   ErrorControl="normal"
                   Description="$(var.ProductSummary)"
                   Account="[SERVICE_USERNAME]"
-                  Password="[SERVICE_PASSWORD]" />            
+                  Password="[SERVICE_PASSWORD]" />
           </Component>
 
           <!-- Registry entries -->
@@ -236,8 +230,8 @@
             <ServiceControl Id="Control$(var.ArtifactName)Service" Name="$(var.ArtifactName)" Start="install" Stop="both" Wait="yes" Remove="uninstall" />
           </Component>
 
-          <!-- 
-            We have this for the case if someone doesn't have the service started during install, if that component isn't installed, then the service will 
+          <!--
+            We have this for the case if someone doesn't have the service started during install, if that component isn't installed, then the service will
             not be uninstalled during uninstallation. This component makes sure that the service will be uninstalled correctly in this case.
           -->
           <Component Id="UninstallService" Guid="9D0DEE31-5560-4FDD-8A73-236A4102BFE0">
