@@ -39,7 +39,7 @@
     <!-- Save the command line value PORT and restore it later in the sequence or it will be overwritten by the value saved to the registry during an upgrade -->
     <!-- http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/ -->
     <CustomAction Id='SaveCmdLineValuePORT' Property='CMDLINE_PORT' Value='[PORT]' Execute='firstSequence' />
-    <CustomAction Id='SetFromCmdLineValuePORT' Property='PORT' Value='[CMDLINE_PORT]' Execute='firstSequence' />
+    <CustomAction Id='SetFromCmdLineValuePORT' Property='PORTNUMBER' Value='[CMDLINE_PORT]' Execute='firstSequence' />
     <InstallUISequence>
         <Custom Action='SaveCmdLineValuePORT' Before='AppSearch' />
         <Custom Action='SetFromCmdLineValuePORT' After='AppSearch'>
