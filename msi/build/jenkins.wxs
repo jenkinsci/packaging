@@ -22,7 +22,7 @@
     <!-- Save the command line value INSTALLDIR and restore it later in the sequence or it will be overwritten by the value saved to the registry during an upgrade -->
     <!-- http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/ -->
     <CustomAction Id='SaveCmdLineValueINSTALLDIR' Property='CMDLINE_INSTALLDIR' Value='[INSTALLDIR]' Execute='firstSequence' />
-    <CustomAction Id='SetFromCmdLineValueINSTALLDIR' Property='INSTALLDIR' Value='[CMDLINE_INSTALLDIR]' Execute='firstSequence' />
+    <CustomAction Id='SetFromCmdLineValueINSTALLDIR' Property='JENKINSDIR' Value='[CMDLINE_INSTALLDIR]' Execute='firstSequence' />
     <InstallUISequence>
         <Custom Action='SaveCmdLineValueINSTALLDIR' Before='AppSearch' />
         <Custom Action='SetFromCmdLineValueINSTALLDIR' After='AppSearch'>
@@ -104,8 +104,8 @@
         </Custom>
     </InstallExecuteSequence>
 
-    <!-- Determine the directory of a previous installation (if one exists). If not INSTALLDIR stays empty -->
-    <Property Id="INSTALLDIR">
+    <!-- Determine the directory of a previous installation (if one exists). If not JENKINSDIR stays empty -->
+    <Property Id="JENKINSDIR">
         <RegistrySearch Id="DetermineInstallLocation" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="InstallLocation" Win64="yes" />
     </Property>
 
