@@ -3,8 +3,8 @@ def jobProperties = [
   disableConcurrentBuilds(abortPrevious: true)
 ]
 
-if (env.BRANCH_NAME == 'master') {
-  jobProperties << pipelineTriggers([cron('@weekly')]) // Run at least weekly on the master branch to assure we test recent releases
+if (env.BRANCH_IS_PRIMARY) {
+  jobProperties << pipelineTriggers([cron('@weekly')]) // Run at least weekly on the primary branch to assure we test recent releases
 }
 
 properties(jobProperties)
