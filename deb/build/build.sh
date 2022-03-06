@@ -12,12 +12,15 @@ trap 'rm -rf "${D}"' EXIT
 # debian packaging needs to touch the file in the source tree, so do this in tmp dir
 # so that multiple builds can go on concurrently
 cp -R "${dir}"/* "${D}"
+cp "${BASE}/systemd/jenkins.service" "${D}/debian"
+cp "${BASE}/systemd/jenkins.sh" "${D}"
+cp "${BASE}/systemd/migrate.sh" "${D}"
 
 # Create a description temp file
 sed -i.bak -e 's/^\s*$/./' -e 's/^/ /' "${DESCRIPTION_FILE}"
 
 # Expand variables in the definition
-"${BASE}/bin/branding.py" "${D}/debian"
+"${BASE}/bin/branding.py" "${D}"
 
 # Rewrite the file
 mv "${DESCRIPTION_FILE}.bak" "${DESCRIPTION_FILE}"
@@ -41,6 +44,8 @@ for f in jenkins.*; do
 	mv "${f}_" "${ARTIFACTNAME}$(echo "${f}" | cut -b8-)"
 done
 popd
+mv jenkins.sh "${ARTIFACTNAME}"
+mv migrate.sh migrate
 debuild -Zgzip -A
 popd
 

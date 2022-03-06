@@ -29,10 +29,3 @@
 - package:
     name: "{{ package_list.files[0].path }}"
     state: present
-- lineinfile:
-    path: /etc/sysconfig/jenkins
-    regexp: '^JENKINS_JAVA_OPTIONS='
-    line: "JENKINS_JAVA_OPTIONS=\"-Djava.awt.headless=true -Xmx256m -Dhudson.model.DirectoryBrowserSupport.CSP=\\\"default-src 'self';\\\"\""
-- systemd:
-    daemon_reload: true
-  when: ansible_service_mgr == 'systemd'
