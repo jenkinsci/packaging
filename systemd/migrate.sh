@@ -219,10 +219,10 @@ read_old_options() {
 		NEW_JENKINS_LISTEN_ADDRESS="${JENKINS_LISTEN_ADDRESS}"
 	fi
 
-	if [ -n "${HTTP_PORT}" ] && [ "${HTTP_PORT}" -gt 0 ]; then
-		NEW_JENKINS_PORT="${HTTP_PORT}"
-	elif [ -n "${JENKINS_PORT}" ] && [ "${JENKINS_PORT}" -gt 0 ]; then
+	if [ -n "${JENKINS_PORT}" ] && [ "${JENKINS_PORT}" -gt 0 ]; then
 		NEW_JENKINS_PORT="${JENKINS_PORT}"
+	elif [ -n "${HTTP_PORT}" ] && [ "${HTTP_PORT}" -gt 0 ]; then
+		NEW_JENKINS_PORT="${HTTP_PORT}"
 	fi
 
 	if [ -n "${JENKINS_HTTPS_LISTEN_ADDRESS}" ]; then
