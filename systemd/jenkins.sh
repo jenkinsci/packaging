@@ -125,7 +125,7 @@ main() {
 	infer_jenkins_opts
 
 	check_java_version ||
-		die "invalid java version: $("${JENKINS_JAVA_CMD}" -version)"
+		die "invalid Java version: $("${JENKINS_JAVA_CMD}" -version 2>&1)"
 
 	java_opts_tmp="${JAVA_OPTS}"
 	unset JAVA_OPTS
