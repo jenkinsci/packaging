@@ -125,19 +125,15 @@ Environment="JENKINS_PORT=@@PORT@@"
 #Environment="JENKINS_OPTS="
 
 # Maximum core file size. If unset, the value from the OS is inherited.
-# The default limit comes from /etc/security/limits.conf.
 #LimitCORE=infinity
 
 # Maximum file size. If unset, the value from the OS is inherited.
-# The default limit comes from /etc/security/limits.conf.
 #LimitFSIZE=infinity
 
 # File descriptor limit. If unset, the value from the OS is inherited.
-# The default limit comes from /etc/security/limits.conf.
 #LimitNOFILE=8192
 
 # Maximum number of processes. If unset, the value from the OS is inherited.
-# The default limit comes from /etc/security/limits.conf.
 #LimitNPROC=32768
 
 # Set the umask to control the permission bits of files that Jenkins creates.
