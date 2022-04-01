@@ -196,6 +196,10 @@ read_old_options() {
 		NEW_JENKINS_WAR="${JENKINS_WAR}"
 	fi
 	if [ "${NEW_JENKINS_WAR}" = "/usr/share/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.war" ]; then
+		# deb
+		NEW_JENKINS_WAR="${NEW_JENKINS_WAR_DEFAULT}"
+	elif [ "${NEW_JENKINS_WAR}" = "/usr/lib/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.war" ]; then
+		# rpm
 		NEW_JENKINS_WAR="${NEW_JENKINS_WAR_DEFAULT}"
 	fi
 
