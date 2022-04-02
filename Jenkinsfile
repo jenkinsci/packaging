@@ -1,7 +1,13 @@
-properties([
+def jobProperties = [
   buildDiscarder(logRotator(numToKeepStr: '50', artifactNumToKeepStr: '5')),
   disableConcurrentBuilds(abortPrevious: true)
-])
+]
+
+if (env.BRANCH_IS_PRIMARY) {
+  jobProperties << pipelineTriggers([cron('@weekly')]) // Run at least weekly on the primary branch to assure we test recent releases
+}
+
+properties(jobProperties)
 
 podTemplate(yaml: readTrusted('KubernetesPod.yaml'), workingDir: '/home/jenkins/agent') {
   nodeWithTimeout(POD_LABEL) {
