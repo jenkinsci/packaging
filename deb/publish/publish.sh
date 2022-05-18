@@ -47,7 +47,7 @@ function generateSite() {
 	# Remote ftparchive-merge
 	# https://github.com/kohsuke/apt-ftparchive-merge
 	pushd $D/binary
-	mvn org.kohsuke:apt-ftparchive-merge:1.6:merge -Durl="$DEB_URL/binary/" -Dout=../merged
+	mvn -V org.kohsuke:apt-ftparchive-merge:1.6:merge -Durl="$DEB_URL/binary/" -Dout=../merged
 	popd
 
 	# Local ftparchive-merge
