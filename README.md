@@ -17,7 +17,7 @@ Run `make setup` to install (most of the) necessary tools.  Alternatively you ca
 * debhelper
 * rpm
 * expect
-* createrepo
+* createrepo-c
 * ruby
   * net-sftp  (`gem install net-sftp`)
 * maven
