@@ -42,10 +42,10 @@ EOF
 	# generate index
 	# locally
 	# disable this for now, as it's currently now used and generate errors
-	# createrepo_c --update -o "$RPM_WEBDIR" "$RPMDIR/"
+	# createrepo --update -o "$RPM_WEBDIR" "$RPMDIR/"
 	# on the server
 	# shellcheck disable=SC2029
-	ssh "${SSH_OPTS[@]}" "$PKGSERVER" createrepo_c --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
+	ssh "${SSH_OPTS[@]}" "$PKGSERVER" createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
 }
 
 function skipIfAlreadyPublished() {
