@@ -2,6 +2,9 @@
 # and leave all files detected as binary untouched.
 * text=auto
 
+# Git will always convert line endings to LF on checkout. You should use this for files that must keep LF endings, even on Windows.
+* text eol=lf
+
 #
 # The above will handle all files NOT found below
 #
