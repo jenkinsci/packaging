@@ -17,6 +17,7 @@
 *.jellytag      text
 *.less          text
 *.properties    text
+*.py            text
 *.rb            text
 *.sh            text
 *.txt           text
