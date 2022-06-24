@@ -8,17 +8,54 @@
 {% endblock %}
 
 {% block java_instructions %}
-<p>
-  You will need to pre-install a supported version of Java:
-<p>
+  <p>
+    You will need to explicitly install a supported Java runtime environment (JRE),
+    e.g. <a href="https://adoptium.net/">Eclipse Temurin</a>.
+  </p>
 
-<ul>
-  <li>2.164 (2019-02) and newer: Java 8 or Java 11</li>
-  <li>2.54 (2017-04) and newer: Java 8</li>
-  <li>1.612 (2015-05) and newer: Java 7</li>
-</ul>
+  <h2>
+    Weekly Release Line
+  </h2>
 
-With that set up, the {{product_name}} package can be run with: <code>java -jar jenkins.war</code>
+  <p>
+    Supported Java versions for the weekly release line are:
+  </p>
+
+  <dl>
+    <dt>2.357 (June 2022) and newer</dt>
+    <dd>Java 11 or Java 17</dd>
+
+    <dt>2.164 (February 2019) and newer</dt>
+    <dd>Java 8 or Java 11</dd>
+
+    <dt>2.54 (April 2017) and newer</dt>
+    <dd>Java 8</dd>
+
+    <dt>1.612 (May 2015) and newer</dt>
+    <dd>Java 7</dd>
+  </dl>
+
+  <h2>
+    <a href="https://www.jenkins.io/download/lts/">Long Term Support (LTS)</a> Release Line
+  </h2>
+
+  <p>
+    Supported Java versions for the LTS release line are:
+  </p>
+
+  <dl>
+    <dt>2.346.1 (June 2022) and newer</dt>
+    <dd>Java 8, Java 11, or Java 17</dd>
+
+    <dt>2.164.1 (March 2019) and newer</dt>
+    <dd>Java 8 or Java 11</dd>
+
+    <dt>2.60.1 (June 2017) and newer</dt>
+    <dd>Java 8</dd>
+
+    <dt>1.625.1 (October 2015) and newer</dt>
+    <dd>Java 7</dd>
+  </dl>
 {% endblock %}
 
 {% block  individual_package_instruction  %}
