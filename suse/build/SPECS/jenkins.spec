@@ -25,7 +25,7 @@ BuildRoot:	%{_tmppath}/build-%{name}-%{version}
 # TODO: Fix the query for Java 11 if it is reenabled
 # Requires: java >= 1:1.8.0
 Requires:	procps
-PreReq:		/usr/sbin/groupadd /usr/sbin/useradd
+Requires(pre): /usr/sbin/useradd, /usr/sbin/groupadd
 #PreReq:		%{fillup_prereq}
 BuildArch:	noarch
 
@@ -71,10 +71,10 @@ rm -rf "%{buildroot}"
 %__install -D -m0755 "%{SOURCE7}" "%{buildroot}%{_datadir}/%{name}/migrate"
 
 %pre
-/usr/sbin/groupadd -r %{name} &>/dev/null || :
+/usr/bin/getent group %{name} &>/dev/null || /usr/sbin/groupadd -r %{name} &>/dev/null
 # SUSE version had -o here, but in Fedora -o isn't allowed without -u
-/usr/sbin/useradd -g %{name} -s /bin/false -r -c "@@SUMMARY@@" \
-	-d "%{workdir}" %{name} &>/dev/null || :
+/usr/bin/getent passwd %{name} &>/dev/null || /usr/sbin/useradd -g %{name} -s /bin/false -r -c "@@SUMMARY@@" \
+	-d "%{workdir}" %{name} &>/dev/null
 
 %post
 %{_datadir}/%{name}/migrate "/etc/sysconfig/%{name}" || true
