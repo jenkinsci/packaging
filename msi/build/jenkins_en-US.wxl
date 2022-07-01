@@ -16,4 +16,9 @@
   <String Id="ServiceCredDlg_LocalSystemText" Overridable="yes">Run service as LocalSystem (not recommended)</String>
   <String Id="FirewallException_Description">Enables a firewall exception for the Java running Jenkins on port [PORTNUMBER] (not recommended).</String>
   <String Id="StartJenkinsService_Description">Starts the Jenkins service after install.</String>
+
+  <!-- Java 8 Deprectation Warning Dialog -->
+  <String Id="Java8DeprecationWarningTitle" Overridable="yes">Java 11 Recommended</String>
+  <String Id="Java8DeprecationWarningMessage" Overridable="yes">Java 11 is the recommended version of Java for running Jenkins. In the future, Java 8 will be deprecated and no longer work to run Jenkins. Please upgrade to Java 11 at your earliest convenience.</String>
+  <String Id="Java8DeprecationWarningIcon" Overridable="yes">WixUI_Ico_Info</String>
 </WixLocalization>

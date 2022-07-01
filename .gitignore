@@ -11,3 +11,5 @@ generated
 *.orig
 
 msi/build
+venv/
+

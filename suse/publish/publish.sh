@@ -109,7 +109,7 @@ function uploadSite() {
 	# generate index on the server
 	# server needs 'createrepo' pacakge
 	# Disable this for now as not critical
-	# createrepo --update -o "$SUSE_WEBDIR" "$SUSEDIR/" #Local
+	# createrepc --update -o "$SUSE_WEBDIR" "$SUSEDIR/" #Local
 	# cp "${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Local
 
 	# shellcheck disable=SC2029

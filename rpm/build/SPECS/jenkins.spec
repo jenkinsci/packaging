@@ -24,7 +24,7 @@ BuildRoot:	%{_tmppath}/build-%{name}-%{version}
 # TODO: If re-enable, fix the matcher for Java 11
 # Requires: java >= 1:1.8.0
 Requires: procps
-PreReq: /usr/sbin/groupadd /usr/sbin/useradd
+Requires(pre): /usr/sbin/useradd, /usr/sbin/groupadd
 BuildArch: noarch
 
 %description
@@ -64,10 +64,10 @@ rm -rf "%{buildroot}"
 %__install -D -m0755 "%{SOURCE6}" "%{buildroot}%{_datadir}/%{name}/migrate"
 
 %pre
-/usr/sbin/groupadd -r %{name} &>/dev/null || :
+/usr/bin/getent group %{name} &>/dev/null || /usr/sbin/groupadd -r %{name} &>/dev/null
 # SUSE version had -o here, but in Fedora -o isn't allowed without -u
-/usr/sbin/useradd -g %{name} -s /bin/false -r -c "@@SUMMARY@@" \
-	-d "%{workdir}" %{name} &>/dev/null || :
+/usr/bin/getent passwd %{name} &>/dev/null || /usr/sbin/useradd -g %{name} -s /bin/false -r -c "@@SUMMARY@@" \
+	-d "%{workdir}" %{name} &>/dev/null
 
   # Used to decide later if we should perform a chown in case JENKINS_INSTALL_SKIP_CHOWN is false
   # Check if a previous installation exists, if so check the JENKINS_HOME value and existing owners of work, log and cache dir, need to to this check

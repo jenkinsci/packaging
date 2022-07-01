@@ -2,3 +2,8 @@
 
 %:
 	dh $@
+
+# debian doesn't support the zstd compression which is the default on Ubuntu
+# see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=892664
+override_dh_builddeb:
+	dh_builddeb -- -Zxz

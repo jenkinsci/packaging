@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<!-- generated. do not manually edit -->
+<!-- Do not manually edit this file, it is generated from https://github.com/jenkinsci/packaging/blob/master/templates/base.html -->
 
 <html lang="en">
 
@@ -28,6 +28,25 @@
       src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"></script>
+
+    <style type="text/css">
+      dl {
+        padding: 0;
+      }
+
+      dl dt {
+        padding: 0;
+        margin-top: 1em;
+        font-size: 1em;
+        font-style: italic;
+        font-weight: bold;
+      }
+
+      dl dd {
+        padding: 0 1em;
+        margin-bottom: 1em;
+      }
+    </style>
 
 </head>
 
@@ -122,19 +141,54 @@
 
           {% block java_instructions %}
             <p>
-              You will need to explicitly install a Java runtime environment, because Oracle's Java RPMs are incorrect and fail to register as providing a java dependency.
-              Thus, adding an explicit dependency requirement on Java would force installation of the OpenJDK JVM.
+              You will need to explicitly install a supported Java runtime environment (JRE), either from your distribution
+              (as described above) or another Java vendor (e.g., <a href="https://adoptium.net/">Adoptium</a>).
+            </p>
+
+            <h2>
+              Weekly Release Line
+            </h2>
+
             <p>
+              Supported Java versions for the weekly release line are:
+            </p>
 
-            <ul>
-              <li>2.164 (2019-02) and newer: Java 8 or Java 11</li>
-              <li>2.54 (2017-04) and newer: Java 8</li>
-              <li>1.612 (2015-05) and newer: Java 7</li>
-            </ul>
+            <dl>
+              <dt>2.357 (June 2022) and newer</dt>
+              <dd>Java 11 or Java 17</dd>
 
-            With that set up, the {{product_name}} package can be installed with:
+              <dt>2.164 (February 2019) and newer</dt>
+              <dd>Java 8 or Java 11</dd>
+
+              <dt>2.54 (April 2017) and newer</dt>
+              <dd>Java 8</dd>
+
+              <dt>1.612 (May 2015) and newer</dt>
+              <dd>Java 7</dd>
+            </dl>
+
+            <h2>
+              <a href="https://www.jenkins.io/download/lts/">Long Term Support (LTS)</a> Release Line
+            </h2>
+
+            <p>
+              Supported Java versions for the LTS release line are:
+            </p>
+
+            <dl>
+              <dt>2.346.1 (June 2022) and newer</dt>
+              <dd>Java 8, Java 11, or Java 17</dd>
+
+              <dt>2.164.1 (March 2019) and newer</dt>
+              <dd>Java 8 or Java 11</dd>
+
+              <dt>2.60.1 (June 2017) and newer</dt>
+              <dd>Java 8</dd>
+
+              <dt>1.625.1 (October 2015) and newer</dt>
+              <dd>Java 7</dd>
+            </dl>
           {% endblock %}
-
 
           <p>
             See <a href="https://www.jenkins.io/doc/book/installing/">the installation guide</a> for more information, including how {{ product_name }} is run and where the configuration is stored, etc.

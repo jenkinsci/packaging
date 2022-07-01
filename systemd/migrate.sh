@@ -52,6 +52,12 @@ NEW_JENKINS_WEBROOT="${NEW_JENKINS_WEBROOT_DEFAULT}"
 has_prefix=false
 
 read_old_options() {
+	# This could only be the case for deb
+	if [ -n "${HTTP_PORT}" ] && [ "${HTTP_PORT}" -gt 0 ]; then
+		# Normalize to rpm convention
+		JENKINS_PORT="${HTTP_PORT}"
+	fi
+
 	if [ -n "${JENKINS_ARGS}" ]; then
 		if [ -n "${NAME}" ]; then
 			# For deb, these are all the arguments, except for the JENKINS_ENABLE_ACCESS_LOG additions
@@ -190,6 +196,10 @@ read_old_options() {
 		NEW_JENKINS_WAR="${JENKINS_WAR}"
 	fi
 	if [ "${NEW_JENKINS_WAR}" = "/usr/share/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.war" ]; then
+		# deb
+		NEW_JENKINS_WAR="${NEW_JENKINS_WAR_DEFAULT}"
+	elif [ "${NEW_JENKINS_WAR}" = "/usr/lib/@@ARTIFACTNAME@@/@@ARTIFACTNAME@@.war" ]; then
+		# rpm
 		NEW_JENKINS_WAR="${NEW_JENKINS_WAR_DEFAULT}"
 	fi
 
@@ -219,9 +229,7 @@ read_old_options() {
 		NEW_JENKINS_LISTEN_ADDRESS="${JENKINS_LISTEN_ADDRESS}"
 	fi
 
-	if [ -n "${HTTP_PORT}" ] && [ "${HTTP_PORT}" -gt 0 ]; then
-		NEW_JENKINS_PORT="${HTTP_PORT}"
-	elif [ -n "${JENKINS_PORT}" ] && [ "${JENKINS_PORT}" -gt 0 ]; then
+	if [ -n "${JENKINS_PORT}" ] && [ "${JENKINS_PORT}" -gt 0 ]; then
 		NEW_JENKINS_PORT="${JENKINS_PORT}"
 	fi
 
