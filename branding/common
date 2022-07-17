@@ -10,8 +10,8 @@ export PORT=8080
 export MSI_PRODUCTCODE=415933d8-4104-47c3-aee9-66b31de07a57
 export AUTHOR=Kohsuke Kawaguchi <kk@kohsuke.org>
 export LICENSE=MIT/X License, GPL/CDDL, ASL2
-export HOMEPAGE=https://jenkins.io/
-export CHANGELOG_PAGE=https://jenkins.io/changelog
+export HOMEPAGE=https://www.jenkins.io/
+export CHANGELOG_PAGE=https://www.jenkins.io/changelog
 
 # figure out the directory of this file
 BRANDING_DIR:=$(shell dirname "$(realpath $(lastword $(MAKEFILE_LIST)))")
