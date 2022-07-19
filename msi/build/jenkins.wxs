@@ -369,7 +369,6 @@
             <Publish Property="ERROR_TITLE" Value="!(loc.JavaHomeDlgErrorTitle)" Order="2"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "11" AND JAVA_EXE_VERSION <> "17")]]></Publish>
             <Publish Property="ERROR_MESSAGE" Value="!(loc.JavaJomeDlgErrorMessage)" Order="3"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "11" AND JAVA_EXE_VERSION = "17")]]></Publish>
             <Publish Event="SpawnDialog" Value="GenericErrorDlg" Order="4"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "11" AND JAVA_EXE_VERSION <> "17")]]></Publish>
-
             <Publish Property="JAVA_HOME" Value="[JAVA_HOME]">1</Publish>
           </Control>
           <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
