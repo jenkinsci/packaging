@@ -124,8 +124,6 @@
       <RegistrySearch Id="DetermineServicePassword" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="SP" Win64="yes" />
     </Property>
 
-    <SetProperty After='AppSearch' Id='JAVA11_RECOMMENDED_SHOWN' Value='0'>1</SetProperty>
-
     <Property Id="CRYPTUNPROTECT_FLAGS" Value="CRYPTPROTECT_LOCAL_MACHINE|CRYPTPROTECT_UI_FORBIDDEN" />
     <CustomAction Id="SetEncryptedServicePASSWORD" Property="CRYPTUNPROTECT_DATA" Value="[SERVICE_PASSWORD_ENC]" />
     <CustomAction Id="DecryptServicePassword" BinaryKey="Cryptography" DllEntry="CryptUnprotectDataHex" Execute="immediate" />
@@ -170,16 +168,9 @@
         Return="check"
         Impersonate="no" />
 
-    <!-- Find a Java 8 JRE/JDK installation (by default) -->
-    <Property Id="JDK11_VERSION">
-      <RegistrySearch Id="JDK11_VERSION_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK" Name="CurrentVersion" Type="raw" Win64="yes" />
-    </Property>
-
-    <!-- these are in reverse preference order...e.g., we look for JDK11, but if JRE8 is available, we use that unless JDK8 is available -->
+    <!-- This will find the JRE/JDK directory for the most recently installed Java 11 -->
     <Property Id="JAVA_HOME">
-      <RegistrySearch Id="JDK11_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK\[JDK11_VERSION]" Name="JavaHome" Type="raw" Win64="yes" />
-      <RegistrySearch Id="JRE8_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\Java Runtime Environment\1.8" Name="JavaHome" Type="raw" Win64="yes"/>
-      <RegistrySearch Id="JDK8_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\Java Development Kit\1.8" Name="JavaHome" Type="raw" Win64="yes"/>
+      <RegistrySearch Id="JDK11_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK\11" Name="JavaHome" Type="raw" Win64="yes" />
     </Property>
 
     <Property Id="ARPPRODUCTICON" Value="installer.ico" />
@@ -370,28 +361,14 @@
 
       <Property Id="WixUI_Mode" Value="FeatureTree" />
 
-      <Dialog Id="InfoMessageDlg" Width="260" Height="100" Title="[INFO_TITLE]">
-        <Control Id="Return" Type="PushButton" X="102" Y="75" Width="56" Height="17" Default="yes" Cancel="yes" Text="OK">
-            <Publish Property="JAVA11_RECOMMENDED_SHOWN" Value="1">1</Publish>
-            <Publish Event="EndDialog" Value="Return">1</Publish>
-        </Control>
-        <Control Id="Text" Type="Text" X="48" Y="15" Width="200" Height="55" Text="[INFO_MESSAGE]" />
-        <Control Id="Icon" Type="Icon" X="15" Y="15" Width="24" Height="24" FixedSize="yes" IconSize="32" Text="!(loc.Java8DeprecationWarningIcon)" />
-      </Dialog>
-
       <Dialog Id="JavaHomeDlg" Width="370" Height="270" Title="!(loc.JavaHomeDlgTitle)">
           <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)">
             <Publish Event="DoAction" Value="ValidateJavaHome" Order="1">1</Publish>
 
             <!-- Spawn the error dialog if java.exe can't be found. -->
-            <Publish Property="ERROR_TITLE" Value="!(loc.JavaHomeDlgErrorTitle)" Order="2"><![CDATA[JAVA_EXE_FOUND = "0" OR JAVA_EXE_VERSION = "10" OR JAVA_EXE_VERSION = "9"]]></Publish>
-            <Publish Property="ERROR_MESSAGE" Value="!(loc.JavaJomeDlgErrorMessage)" Order="3"><![CDATA[JAVA_EXE_FOUND = "0" OR JAVA_EXE_VERSION = "10" OR JAVA_EXE_VERSION = "9"]]></Publish>
-            <Publish Event="SpawnDialog" Value="GenericErrorDlg" Order="4"><![CDATA[JAVA_EXE_FOUND = "0" OR JAVA_EXE_VERSION = "10" OR JAVA_EXE_VERSION = "9"]]></Publish>
-
-            <!-- Spawn the info dialog if Java 8 was found. -->
-            <Publish Property="INFO_TITLE" Value="!(loc.Java8DeprecationWarningTitle)" Order="5"><![CDATA[JAVA_EXE_FOUND <> "0" AND JAVA_EXE_VERSION = "8"]]></Publish>
-            <Publish Property="INFO_MESSAGE" Value="!(loc.Java8DeprecationWarningMessage)" Order="6"><![CDATA[JAVA_EXE_FOUND <> "0" AND JAVA_EXE_VERSION = "8"]]></Publish>
-            <Publish Event="SpawnDialog" Value="InfoMessageDlg" Order="7"><![CDATA[JAVA_EXE_FOUND <> "0" AND JAVA_EXE_VERSION = "8" AND JAVA11_RECOMMENDED_SHOWN = "0" ]]></Publish>
+            <Publish Property="ERROR_TITLE" Value="!(loc.JavaHomeDlgErrorTitle)" Order="2"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "11" AND JAVA_EXE_VERSION <> "17")]]></Publish>
+            <Publish Property="ERROR_MESSAGE" Value="!(loc.JavaJomeDlgErrorMessage)" Order="3"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "11" AND JAVA_EXE_VERSION = "17")]]></Publish>
+            <Publish Event="SpawnDialog" Value="GenericErrorDlg" Order="4"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "11" AND JAVA_EXE_VERSION <> "17")]]></Publish>
 
             <Publish Property="JAVA_HOME" Value="[JAVA_HOME]">1</Publish>
           </Control>
