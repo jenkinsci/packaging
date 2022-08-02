@@ -25,9 +25,6 @@ platforms:
   - name: ubuntu-20-04
     image: dokken/ubuntu-20.04:latest
     <<: *jenkins_systemd_platform_anchor
-  - name: ubuntu-21-04
-    image: dokken/ubuntu-21.04:latest
-    <<: *jenkins_systemd_platform_anchor
   - name: ubuntu-21-10
     image: dokken/ubuntu-21.10:latest
     <<: *jenkins_systemd_platform_anchor
