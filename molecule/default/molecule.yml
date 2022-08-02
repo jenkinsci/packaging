@@ -25,12 +25,6 @@ platforms:
   - name: ubuntu-20-04
     image: dokken/ubuntu-20.04:latest
     <<: *jenkins_systemd_platform_anchor
-  - name: ubuntu-21-04
-    image: dokken/ubuntu-21.04:latest
-    <<: *jenkins_systemd_platform_anchor
-  - name: ubuntu-21-10
-    image: dokken/ubuntu-21.10:latest
-    <<: *jenkins_systemd_platform_anchor
   - name: ubuntu-22-04
     image: dokken/ubuntu-22.04:latest
     <<: *jenkins_systemd_platform_anchor
@@ -46,9 +40,6 @@ platforms:
     <<: *jenkins_systemd_platform_anchor
   - name: centos-stream-9
     image: dokken/centos-stream-9:latest
-    <<: *jenkins_systemd_platform_anchor
-  - name: fedora-34
-    image: dokken/fedora-34:latest
     <<: *jenkins_systemd_platform_anchor
   - name: fedora-35
     image: dokken/fedora-35:latest
