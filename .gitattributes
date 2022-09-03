@@ -20,24 +20,30 @@
 *.jellytag      text
 *.less          text
 *.properties    text
+*.ps1           -text
 *.py            text
 *.rb            text
+*.rtf           -text
 *.sh            text
 *.txt           text
 *.xml           text
 
 # These files are binary and should be left untouched
 # (binary is a macro for -text -diff)
+*.bmp           binary
 *.class         binary
 *.gz            binary
 *.tgz           binary
 *.ear           binary
+*.exe           binary
 *.gif           binary
+*.gpg           binary
 *.hpi           binary
 *.ico           binary
 *.jar           binary
 *.jpg           binary
 *.jpeg          binary
+*.keychain      binary
 *.png           binary
 *.war           binary
 *.zip           binary
