@@ -84,18 +84,12 @@ Environment="JENKINS_PORT=@@PORT@@"
 #Environment="JENKINS_HTTPS_KEYSTORE_PASSWORD=s3cR3tPa55w0rD"
 
 # IP address to listen on for HTTP2 requests. Default is disabled.
-#
-# Note: HTTP2 support may require additional configuration.
-# See the Winstone documentation for more information.
 #Environment="JENKINS_HTTP2_LISTEN_ADDRESS="
 
 # HTTP2 port to listen on. Default is disabled.
 # To be able to listen on privileged ports (port numbers less than 1024),
 # add the CAP_NET_BIND_SERVICE capability to the AmbientCapabilities
 # directive below.
-#
-# Note: HTTP2 support may require additional configuration.
-# See the Winstone documentation for more information.
 #Environment="JENKINS_HTTP2_PORT="
 
 # Controls which capabilities to include in the ambient capability set for the
