@@ -32,6 +32,9 @@ platforms:
   - name: almalinux-8
     image: dokken/almalinux-8:latest
     <<: *jenkins_systemd_platform_anchor
+  - name: almalinux-9
+    image: dokken/almalinux-9:latest
+    <<: *jenkins_systemd_platform_anchor
   - name: amazonlinux-2
     image: dokken/amazonlinux-2:latest
     <<: *jenkins_systemd_platform_anchor
@@ -47,8 +50,14 @@ platforms:
   - name: oraclelinux-8
     image: dokken/oraclelinux-8:latest
     <<: *jenkins_systemd_platform_anchor
+  - name: oraclelinux-9
+    image: dokken/oraclelinux-9:latest
+    <<: *jenkins_systemd_platform_anchor
   - name: rockylinux-8
     image: dokken/rockylinux-8:latest
+    <<: *jenkins_systemd_platform_anchor
+  - name: rockylinux-9
+    image: dokken/rockylinux-9:latest
     <<: *jenkins_systemd_platform_anchor
   # suse
   - name: opensuse-leap-15
