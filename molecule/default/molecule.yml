@@ -44,6 +44,9 @@ platforms:
   - name: fedora-35
     image: dokken/fedora-35:latest
     <<: *jenkins_systemd_platform_anchor
+  - name: fedora-36
+    image: dokken/fedora-36:latest
+    <<: *jenkins_systemd_platform_anchor
   - name: oraclelinux-8
     image: dokken/oraclelinux-8:latest
     <<: *jenkins_systemd_platform_anchor
