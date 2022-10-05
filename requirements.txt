@@ -1,4 +1,4 @@
 ansible
 docker
 jinja2
-molecule[docker]
+molecule-docker==2.0.0
