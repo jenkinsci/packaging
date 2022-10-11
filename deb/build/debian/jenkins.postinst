@@ -19,7 +19,13 @@ set -e
 
 case "$1" in
 configure)
-	[ -r /etc/default/@@ARTIFACTNAME@@ ] && . /etc/default/@@ARTIFACTNAME@@
+	if [ -d /run/systemd/system ]; then
+		# TODO --value would eliminate the need for cut, but older versions of systemd do not support it
+		JENKINS_USER=$(systemctl show @@ARTIFACTNAME@@ --property=User 2>/dev/null | cut -d= -f2-)
+		JENKINS_GROUP=$(systemctl show @@ARTIFACTNAME@@ --property=Group 2>/dev/null | cut -d= -f2-)
+	elif [ -r /etc/default/@@ARTIFACTNAME@@ ]; then
+		. /etc/default/@@ARTIFACTNAME@@
+	fi
 	: "${JENKINS_USER:=@@ARTIFACTNAME@@}"
 	: "${JENKINS_GROUP:=@@ARTIFACTNAME@@}"
 
