@@ -4,68 +4,129 @@ dependency:
 driver:
   name: docker
 
-x-jenkins-systemd-platform: &jenkins_systemd_platform_anchor
-  command: /sbin/init
-  volumes:
-    - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
-    - /sys/fs/cgroup:/sys/fs/cgroup:ro
-  privileged: true
-
 platforms:
   # deb
   - name: debian-10
     image: dokken/debian-10:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: debian-11
     image: dokken/debian-11:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: ubuntu-18-04
     image: dokken/ubuntu-18.04:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: ubuntu-20-04
     image: dokken/ubuntu-20.04:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: ubuntu-22-04
     image: dokken/ubuntu-22.04:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   # rpm
   - name: almalinux-8
     image: dokken/almalinux-8:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: almalinux-9
     image: dokken/almalinux-9:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: amazonlinux-2
     image: dokken/amazonlinux-2:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: centos-stream-8
     image: dokken/centos-stream-8:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: centos-stream-9
     image: dokken/centos-stream-9:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: fedora-35
     image: dokken/fedora-35:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: fedora-36
     image: dokken/fedora-36:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: oraclelinux-8
     image: dokken/oraclelinux-8:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: oraclelinux-9
     image: dokken/oraclelinux-9:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: rockylinux-8
     image: dokken/rockylinux-8:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   - name: rockylinux-9
     image: dokken/rockylinux-9:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
   # suse
   - name: opensuse-leap-15
     image: dokken/opensuse-leap-15:latest
-    <<: *jenkins_systemd_platform_anchor
+    command: /sbin/init
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
 provisioner:
   name: ansible
 verifier:
