@@ -1,0 +1,20 @@
+---
+- copy:
+    dest: "/usr/local/tomcat/bin/setenv.sh"
+    content: "export CATALINA_OPTS=-DJENKINS_HOME=/var/tmp/jenkins_home"
+    mode: "0755"
+- xml:
+    path: "/usr/local/tomcat/conf/server.xml"
+    xpath: "/Server/Service/Engine/Host"
+    set_children:
+      - Valve:
+          className: "org.apache.catalina.valves.AccessLogValve"
+          directory: "logs"
+          prefix: "localhost_access_log"
+          suffix: ".txt"
+          pattern: '%h %l %u %t "%r" %s %b'
+      - Valve:
+          className: "org.apache.catalina.valves.RemoteIpValve"
+          remoteIpHeader: "X-Forwarded-For"
+          proxiesHeader: "X-Forwarded-By"
+          protocolHeader: "X-Forwarded-Proto"
