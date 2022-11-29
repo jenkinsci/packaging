@@ -35,7 +35,6 @@
       state: started
   - uri:
       url: "http://127.0.0.1:8080/login"
-      status_code: [-1, 200]
       return_content: true
     register: result
     until: result.status == 200
