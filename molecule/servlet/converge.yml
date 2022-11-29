@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - include_tasks: configure-tomcat.yml
+      when: ansible_hostname == 'tomcat-9'
+    - include_tasks: configure-wildfly.yml
+      when: ansible_hostname == 'wildfly-26'

@@ -53,6 +53,7 @@ nodeWithTimeout('docker') {
             pip install -U pip wheel
             pip install -r requirements.txt
             ANSIBLE_FORCE_COLOR=true molecule test
+            ANSIBLE_FORCE_COLOR=true molecule test -s servlet
             deactivate
         '''.stripIndent()
       }
