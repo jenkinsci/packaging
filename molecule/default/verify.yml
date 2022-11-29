@@ -34,12 +34,16 @@
       name: jenkins
       state: started
   - uri:
-      url: "http://127.0.0.1:8080"
-      status_code: 403
+      url: "http://127.0.0.1:8080/login"
+      return_content: true
     register: result
-    until: result.status == 403
+    until: result.status == 200
     retries: 20
     delay: 5
+  - assert:
+      that:
+        - "'<title>Sign in [Jenkins]</title>' in result.content"
+      fail_msg: "{{ result.content }}"
   - pids:
       name: java
     register: service_pids
