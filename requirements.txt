@@ -1,4 +1,4 @@
-ansible
-docker
-jinja2
-git+https://github.com/ansible-community/molecule-docker.git@main#egg=molecule-docker
+ansible==6.6.0
+jinja2==3.1.2
+# Pending the release of https://github.com/ansible-community/molecule-docker/pull/185
+git+https://github.com/ansible-community/molecule-docker.git@5b26cc6cedb59de813229fd8a5bed7eb194db230#egg=molecule-docker
