@@ -267,6 +267,9 @@ read_old_options() {
 
 migrate_options() {
 	if [ -f /etc/systemd/system/@@ARTIFACTNAME@@.service.d/override.conf ]; then
+		if grep -q '\-\-handlerCount' /etc/systemd/system/@@ARTIFACTNAME@@.service.d/override.conf; then
+			sed -ibak -r -e 's/--handlerCount[A-Za-z]+=[0-9]+//g' /etc/systemd/system/@@ARTIFACTNAME@@.service.d/override.conf
+		fi
 		return
 	fi
 
