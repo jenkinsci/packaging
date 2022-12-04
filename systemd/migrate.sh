@@ -28,7 +28,6 @@ NEW_JAVA_HOME=""
 NEW_JAVA_OPTS="${NEW_JAVA_OPTS_DEFAULT}"
 NEW_JENKINS_DEBUG_LEVEL="${NEW_JENKINS_DEBUG_LEVEL_DEFAULT}"
 NEW_JENKINS_ENABLE_ACCESS_LOG=false
-NEW_JENKINS_EXTRA_LIB_FOLDER=""
 NEW_JENKINS_GROUP="${NEW_JENKINS_GROUP_DEFAULT}"
 NEW_JENKINS_HOME="${NEW_JENKINS_HOME_DEFAULT}"
 NEW_JENKINS_HTTP2_LISTEN_ADDRESS=""
@@ -95,11 +94,6 @@ read_old_options() {
 
 			TMP_JENKINS_DEBUG_LEVEL="$(printf '%s' "${JENKINS_ARGS}" | sed -n 's/.*--debug=\([[:alnum:][:punct:]]*\).*/\1/p')"
 
-			extra_lib_folder_quoted=false
-			TMP_JENKINS_EXTRA_LIB_FOLDER="$(printf '%s' "${JENKINS_ARGS}" | sed -n "s/.*--extraLibFolder=[\"']\\([[:alnum:][:space:]+,-\\./:;@\\_]*\\)[\"'].*/\\1/p")"
-			[ -n "${TMP_JENKINS_EXTRA_LIB_FOLDER}" ] && extra_lib_folder_quoted=true
-			[ -z "${TMP_JENKINS_EXTRA_LIB_FOLDER}" ] && TMP_JENKINS_EXTRA_LIB_FOLDER="$(printf '%s' "${JENKINS_ARGS}" | sed -n 's/.*--extraLibFolder=\([[:alnum:][:punct:]]*\).*/\1/p')"
-
 			prefix_quoted=false
 			TMP_PREFIX="$(printf '%s' "${JENKINS_ARGS}" | sed -n "s/.*--prefix=[\"']\\([[:alnum:][:space:]+,-\\./:;@\\_]*\\)[\"'].*/\\1/p")"
 			[ -n "${TMP_PREFIX}" ] && prefix_quoted=true
@@ -116,7 +110,6 @@ read_old_options() {
 			[ -n "${TMP_JENKINS_HTTP2_PORT}" ] && JENKINS_HTTP2_PORT="${TMP_JENKINS_HTTP2_PORT}"
 			[ -n "${TMP_JENKINS_HTTP2_LISTEN_ADDRESS}" ] && JENKINS_HTTP2_LISTEN_ADDRESS="${TMP_JENKINS_HTTP2_LISTEN_ADDRESS}"
 			[ -n "${TMP_JENKINS_DEBUG_LEVEL}" ] && JENKINS_DEBUG_LEVEL="${TMP_JENKINS_DEBUG_LEVEL}"
-			[ -n "${TMP_JENKINS_EXTRA_LIB_FOLDER}" ] && JENKINS_EXTRA_LIB_FOLDER="${TMP_JENKINS_EXTRA_LIB_FOLDER}"
 			[ -n "${TMP_PREFIX}" ] && PREFIX="${TMP_PREFIX}"
 			[ -n "${TMP_PREFIX}" ] && has_prefix=true
 
@@ -157,12 +150,6 @@ read_old_options() {
 			JENKINS_ARGS="$(printf '%s' "${JENKINS_ARGS}" | sed 's/--http2ListenAddress=[[:alnum:][:punct:]]*//g')"
 
 			JENKINS_ARGS="$(printf '%s' "${JENKINS_ARGS}" | sed 's/--debug=[[:alnum:][:punct:]]*//g')"
-
-			if $extra_lib_folder_quoted; then
-				JENKINS_ARGS="$(printf '%s' "${JENKINS_ARGS}" | sed "s/--extraLibFolder=[\"'][[:alnum:][:space:]+,-\\./:;@\\_]*[\"']//g")"
-			else
-				JENKINS_ARGS="$(printf '%s' "${JENKINS_ARGS}" | sed 's/--extraLibFolder=[[:alnum:][:punct:]]*//g')"
-			fi
 
 			if $prefix_quoted; then
 				JENKINS_ARGS="$(printf '%s' "${JENKINS_ARGS}" | sed "s/--prefix=[\"'][[:alnum:][:space:]+,-\\./:;@\\_]*[\"']//g")"
@@ -263,10 +250,6 @@ read_old_options() {
 
 	if [ -n "${JENKINS_ENABLE_ACCESS_LOG}" ] && [ "${JENKINS_ENABLE_ACCESS_LOG}" = "yes" ]; then
 		NEW_JENKINS_ENABLE_ACCESS_LOG=true
-	fi
-
-	if [ -n "${JENKINS_EXTRA_LIB_FOLDER}" ] && [ -d "${JENKINS_EXTRA_LIB_FOLDER}" ]; then
-		NEW_JENKINS_EXTRA_LIB_FOLDER="${JENKINS_EXTRA_LIB_FOLDER}"
 	fi
 
 	if [ -n "${PREFIX}" ] && $has_prefix; then
@@ -413,12 +396,6 @@ migrate_options() {
 
 	if $NEW_JENKINS_ENABLE_ACCESS_LOG; then
 		echo "Environment=\"JENKINS_ENABLE_ACCESS_LOG=${NEW_JENKINS_ENABLE_ACCESS_LOG}\"" >>"${tmpfile}"
-		edited=true
-	fi
-
-	if [ -n "${NEW_JENKINS_EXTRA_LIB_FOLDER}" ]; then
-		NEW_JENKINS_EXTRA_LIB_FOLDER="$(printf '%s' "${NEW_JENKINS_EXTRA_LIB_FOLDER}" | sed -e 's/"/\\"/g')"
-		echo "Environment=\"JENKINS_EXTRA_LIB_FOLDER=${NEW_JENKINS_EXTRA_LIB_FOLDER}\"" >>"${tmpfile}"
 		edited=true
 	fi
 

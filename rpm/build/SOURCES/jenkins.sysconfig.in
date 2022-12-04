@@ -143,32 +143,6 @@ JENKINS_DEBUG_LEVEL="5"
 #
 JENKINS_ENABLE_ACCESS_LOG="no"
 
-## Type:        integer
-## Default:     100
-## ServiceRestart: @@ARTIFACTNAME@@
-#
-# Maximum number of HTTP worker threads.
-#
-JENKINS_HANDLER_MAX="100"
-
-## Type:        integer
-## Default:     20
-## ServiceRestart: @@ARTIFACTNAME@@
-#
-# Maximum number of idle HTTP worker threads.
-#
-JENKINS_HANDLER_IDLE="20"
-
-## Type:        string
-## Default:     ""
-## ServiceRestart: @@ARTIFACTNAME@@
-#
-# Folder for additional jar files to add to the Jetty class loader.
-# See Winstone documentation for more information.
-# Default is disabled.
-#
-JENKINS_EXTRA_LIB_FOLDER=""
-
 ## Type:        string
 ## Default:     ""
 ## ServiceRestart: @@ARTIFACTNAME@@

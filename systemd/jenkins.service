@@ -107,10 +107,6 @@ Environment="JENKINS_PORT=@@PORT@@"
 # Set to true to enable logging to /var/log/@@ARTIFACTNAME@@/access_log.
 #Environment="JENKINS_ENABLE_ACCESS_LOG=false"
 
-# Folder for additional JAR files to add to the Jetty class loader. Default
-# is disabled. See the Winstone documentation for more information.
-#Environment="JENKINS_EXTRA_LIB_FOLDER="
-
 # Servlet context (important if you want to use reverse proxying)
 #Environment="JENKINS_PREFIX=/@@ARTIFACTNAME@@"
 

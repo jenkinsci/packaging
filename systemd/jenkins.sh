@@ -95,10 +95,6 @@ infer_jenkins_opts() {
 		inferred_jenkins_opts="${inferred_jenkins_opts} --debug=${JENKINS_DEBUG_LEVEL}"
 	fi
 
-	if [ -n "${JENKINS_EXTRA_LIB_FOLDER}" ]; then
-		inferred_jenkins_opts="${inferred_jenkins_opts} --extraLibFolder='${JENKINS_EXTRA_LIB_FOLDER}'"
-	fi
-
 	if [ -n "${JENKINS_PREFIX}" ]; then
 		inferred_jenkins_opts="${inferred_jenkins_opts} --prefix='${JENKINS_PREFIX}'"
 	fi
@@ -131,7 +127,6 @@ main() {
 	unset JAVA_OPTS
 	unset JENKINS_DEBUG_LEVEL
 	unset JENKINS_ENABLE_ACCESS_LOG
-	unset JENKINS_EXTRA_LIB_FOLDER
 	unset JENKINS_HTTP2_LISTEN_ADDRESS
 	unset JENKINS_HTTP2_PORT
 	unset JENKINS_HTTPS_KEYSTORE
@@ -171,7 +166,6 @@ check_env \
 	JAVA_HOME \
 	JENKINS_DEBUG_LEVEL \
 	JENKINS_ENABLE_ACCESS_LOG \
-	JENKINS_EXTRA_LIB_FOLDER \
 	JENKINS_HOME \
 	JENKINS_HTTP2_LISTEN_ADDRESS \
 	JENKINS_HTTP2_PORT \

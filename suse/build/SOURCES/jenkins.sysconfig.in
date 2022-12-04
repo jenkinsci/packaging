@@ -87,22 +87,6 @@ JENKINS_DEBUG_LEVEL="5"
 #
 JENKINS_ENABLE_ACCESS_LOG="no"
 
-## Type:        integer
-## Default:     100
-## ServiceRestart: @@ARTIFACTNAME@@
-#
-# Maximum number of HTTP worker threads.
-#
-JENKINS_HANDLER_MAX="100"
-
-## Type:        integer
-## Default:     20
-## ServiceRestart: @@ARTIFACTNAME@@
-#
-# Maximum number of idle HTTP worker threads.
-#
-JENKINS_HANDLER_IDLE="20"
-
 ## Type: string
 ## Default: ""
 ## ServiceRestart: @@ARTIFACTNAME@@
