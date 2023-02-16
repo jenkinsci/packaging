@@ -51,84 +51,12 @@
 </head>
 
 <body style="min-height:100%; height:100%; padding-top:100px">
+<script src="https://cdn.jsdelivr.net/npm/lit@2.6.1/polyfill-support.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2.6.0/webcomponents-loader.js"></script>
+<script data="jio" src="https://cdn.jsdelivr.net/npm/@jenkinsci/jenkins-io-components/+esm" type="module"></script>
+<script data="jio" nomodule="" src="https://cdn.jsdelivr.net/npm/@jenkinsci/jenkins-io-components/"></script>
   <div class="fixed-top">
-    <nav class='navbar top navbar-expand-lg navbar-dark bg-dark'>
-      <div class='container'>
-        <button class='navbar-toggler navbar-toggler-rght float-left' data-target='#CollapsingNavbar' data-toggle='collapse' type='button'>
-          <i class="fa fa-bars" aria-hidden="true"></i>
-        </button>
-        <div class='collapse navbar-collapse' id='CollapsingNavbar'>
-          <a class='navbar-brand' href='https://www.jenkins.io'>Jenkins</a>
-          <ul class='nav navbar-nav ml-auto'>
-            <li class='nav-item'>
-                <a class='nav-link' href='https://www.jenkins.io/node'>Blog</a>
-            </li>
-            <li class='nav-item'>
-                <a class='nav-link' href='https://www.jenkins.io/doc'>Documentation</a>
-            </li>
-            <li class='nav-item'>
-                <a class='nav-link' href='https://plugins.jenkins.io/'>Plugins</a>
-            </li>
-            <li class='nav-item dropdown'>
-                <div aria-expanded='false' aria-haspopup='true' class='nav-link dropdown-toggle' data-toggle='dropdown' role='button'>
-                    Use-cases
-                </div>
-                <div class='dropdown-menu'>
-                    <a class='dropdown-item feature' href='https://www.jenkins.io/solutions/android'>Android</a>
-                    <a class='dropdown-item feature' href='https://www.jenkins.io/solutions/c'>C/C++</a>
-                    <a class='dropdown-item feature' href='https://www.jenkins.io/solutions/docker'>Docker</a>
-                    <a class='dropdown-item feature' href='https://www.jenkins.io/solutions/embedded'>Embedded</a>
-                    <a class='dropdown-item feature' href='https://www.jenkins.io/solutions/github'>GitHub</a>
-                    <a class='dropdown-item feature' href='https://www.jenkins.io/solutions/java'>Java</a>
-                    <a class='dropdown-item feature' href='https://www.jenkins.io/solutions/pipeline'>Continuous Delivery</a>
-                    <a class='dropdown-item feature' href='https://www.jenkins.io/solutions/python'>Python</a>
-                    <a class='dropdown-item feature' href='https://www.jenkins.io/solutions/ruby'>Ruby</a>
-                </div>
-            </li>
-            <li class='nav-item'>
-                <a class='nav-link' href='https://www.jenkins.io/participate'>Participate</a>
-            </li>
-            <li class='dropdown nav-item'>
-                <div aria-expanded='false' aria-haspopup='true' class='nav-link dropdown-toggle' data-toggle='dropdown' role='button'>
-                    Sub-projects
-                </div>
-                <div class='dropdown-menu'>
-                    <a class='dropdown-item feature' href='https://www.jenkins.io/projects/'>Overview</a>
-                    <a class='dropdown-item feature' href='https://www.jenkins.io//projects/blueocean/'>Blue Ocean</a>
-                    <a class='dropdown-item feature' href='https://www.jenkins.io//projects/gsoc/'>Google Summer of Code</a>
-                    <a class='dropdown-item feature' href='https://www.jenkins.io//projects/infrastructure/'>Infrastructure</a>
-                    <a class='dropdown-item feature' href='https://www.jenkins.io//projects/jam/'>Jenkins Area Meetups</a>
-                </div>
-            </li>
-            <li class='nav-item dropdown'>
-                <div aria-expanded='false' aria-haspopup='true' class='nav-link dropdown-toggle' data-toggle='dropdown' role='button'>
-                    Resources
-                </div>
-                <div class='dropdown-menu'>
-                    <a class='dropdown-item feature' href='https://accounts.jenkins.io/' title='Create/manage your account for accessing wiki, issue tracker, etc'>Account Management</a>
-                    <a class='dropdown-item' href='https://www.jenkins.io/chat' title='Chat with the rest of the Jenkins community on IRC'>Chat</a>
-                    <a class='dropdown-item feature' href='https://issues.jenkins-ci.org/'>Issue Tracker</a>
-                    <a class='dropdown-item' href='https://www.jenkins.io/mailing-lists' title='Browse Jenkins mailing list archives and/or subscribe to lists'>Mailing Lists</a>
-                    <a class='dropdown-item feature' href='https://wiki.jenkins-ci.org/'>Wiki</a>
-                </div>
-            </li>
-            <li class='nav-item dropdown'>
-                <div aria-expanded='false' aria-haspopup='true' class='nav-link dropdown-toggle' data-toggle='dropdown' role='button'>
-                    About
-                </div>
-                <div class='dropdown-menu'>
-                    <a class='dropdown-item' href='https://www.jenkins.io/security'>Security</a>
-                    <a class='dropdown-item' href='https://www.jenkins.io/press'>Press</a>
-                    <a class='dropdown-item' href='https://www.jenkins.io/project/conduct'>Conduct</a>
-                </div>
-            </li>
-            <li class='nav-item'>
-                <a class='nav-link btn btn-outline-secondary' href='https://www.jenkins.io/download'>Download</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+    <jio-navbar class="fixed-top" property="https://jenkins.io"/>
   </div>
 
   <div class='container'>
