@@ -38,9 +38,11 @@ Important: now run Windows Update to check for security updates.
 
 If it is not installed yet, you can install [.NET Framework 3.5](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net35-sp1) from the Windows Features.
 
-### Check if you have Windows PowerShell 5.1
+### Check if you have Windows PowerShell
 
 In recent versions of Windows, PowerShell is already installed and accessible through the [terminal](https://support.microsoft.com/en-us/topic/6453ce98-da91-476f-8651-5c14d5777c20#:~:text=In%20Windows%2011%2022H2%2C%20the,an%20instance%20of%20Windows%20Terminal) application.
+At the time of writing, the pre-installed version is `5.1.22621.963`.
+You can also install the latest version from the [Microsoft Store](https://www.microsoft.com/en-us/p/powershell/9mz1snwt0n5d?activetab=pivot:overviewtab) (7.3.2 at the time of writing).
 
 ## Build the MSI
 
