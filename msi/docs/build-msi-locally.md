@@ -35,7 +35,7 @@ Important: now run Windows Update to check for security updates.
 
 If it is not installed yet, you can install [.NET Framework 3.5](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net35-sp1) from the Windows Features.
 
-### Check if you have Windows PowerShell
+### Check if you have PowerShell
 
 In recent versions of Windows, PowerShell is already installed and accessible through the [terminal](https://support.microsoft.com/en-us/topic/6453ce98-da91-476f-8651-5c14d5777c20#:~:text=In%20Windows%2011%2022H2%2C%20the,an%20instance%20of%20Windows%20Terminal) application.
 At the time of writing, the pre-installed version is `5.1.22621.963`.
@@ -59,7 +59,7 @@ $env:War = "$env:USERPROFILE\jenkins.war"
 If you ever moved it into your repository clone folder, you can use this command instead:
 
 ```powershell
-$env:War = "C:\dev\jenkinsci\packaging\msi\build\jenkins.war"
+$env:War = "C:\jenkinsci\packaging\msi\build\jenkins.war"
 ```
 
 ### Build the MSI
@@ -80,7 +80,7 @@ All packages listed in packages.config are already installed.
 Building MSI
 MSBuild version 17.4.0+18d5aef85 for .NET Framework
 Build started 01/12/2022 20:53:30.
-Project "C:\dev\jenkins\git\ci\packaging\msi\build\jenkins.wixproj" on node 1 (default targets).
+Project "C:\jenkins\git\ci\packaging\msi\build\jenkins.wixproj" on node 1 (default targets).
 SetConstants:
   EncodedVersion = 2.255.3920
 Compile:
