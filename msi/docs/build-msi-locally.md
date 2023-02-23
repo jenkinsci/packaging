@@ -8,9 +8,6 @@ First of all, you should get the Jenkins war file that will be inside that MSI f
 You can get it from the official Jenkins website or from [the Jenkins update center](https://updates.jenkins.io/).
 
 Check [Jenkins download page](https://www.jenkins.io/download/) and download the latest weekly version of Jenkins for example.
-Currently, it is [jenkins.war](https://get.jenkins.io/war/2.392/jenkins.war) version 2.392.
-
-Change the URL according to the version you want to download.
 
 ### Git
 
