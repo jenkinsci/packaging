@@ -6,10 +6,9 @@ Should you ever need to rebuild a Jenkins MSI on your Windows machine, here is a
 
 First of all, you should get the Jenkins war file that will be inside that MSI file.
 You can get it from the official Jenkins website or from the Jenkins update center.
-I will use the official Jenkins website in this article.
 
 Check [Jenkins download page](https://www.jenkins.io/download/) and download the latest weekly version of Jenkins for example.
-Currently it is [jenkins.war](https://get.jenkins.io/war/2.380/jenkins.war) version 2.380.
+Currently, it is [jenkins.war](https://get.jenkins.io/war/2.380/jenkins.war) version 2.380.
 
 Change the URL according to the version you want to download.
 
