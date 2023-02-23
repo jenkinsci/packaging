@@ -9,7 +9,7 @@ You can get it from the official Jenkins website or from the Jenkins update cent
 I will use the official Jenkins website in this article.
 
 Check [Jenkins download page](https://www.jenkins.io/download/) and download the latest weekly version of Jenkins for example.
-For me, it is [jenkins.war](https://get.jenkins.io/war/2.380/jenkins.war) version 2.380.
+Currently it is [jenkins.war](https://get.jenkins.io/war/2.380/jenkins.war) version 2.380.
 
 Change the URL according to the version you want to download.
 
@@ -34,7 +34,7 @@ This command line tool is used to build the MSI file.
 You may already have it installed on your machine, but not activated.
 You can activate it from the Windows Features dialog box.
 
-To access this dialog box, smash the `WinKey` plus `R`, then enter the command `appwiz.cpl` and push enter.
+To access this dialog box, smash `<kbd>⊞ Win</kbd> + <kbd>R</kbd>, then enter the command `appwiz.cpl` and push enter.
 Search for
 
 > Turn Windows features on or off.
@@ -134,6 +134,3 @@ Mode                 LastWriteTime         Length Name
 -a----        01/12/2022     20:53      105107456 jenkins-2.380.msi
 -a----        01/12/2022     20:53             84 jenkins-2.380.msi.sha256
 ```
-
-
-
