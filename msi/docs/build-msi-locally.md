@@ -34,7 +34,7 @@ This command line tool is used to build the MSI file.
 You may already have it installed on your machine, but not activated.
 You can activate it from the Windows Features dialog box.
 
-To access this dialog box, smash `<kbd>⊞ Win</kbd> + <kbd>R</kbd>, then enter the command `appwiz.cpl` and push enter.
+To access this dialog box, smash <kbd>⊞ Win</kbd> + <kbd>R</kbd>, then enter the command `appwiz.cpl` and push enter.
 Search for
 
 > Turn Windows features on or off.
