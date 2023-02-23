@@ -80,7 +80,7 @@ All packages listed in packages.config are already installed.
 Building MSI
 MSBuild version 17.4.0+18d5aef85 for .NET Framework
 Build started 01/12/2022 20:53:30.
-Project "C:\jenkins\git\ci\packaging\msi\build\jenkins.wixproj" on node 1 (default targets).
+Project "C:\jenkinsci\packaging\msi\build\jenkins.wixproj" on node 1 (default targets).
 SetConstants:
   EncodedVersion = 2.255.3920
 Compile:
