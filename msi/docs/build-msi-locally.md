@@ -12,15 +12,9 @@ Currently, it is [jenkins.war](https://get.jenkins.io/war/2.380/jenkins.war) ver
 
 Change the URL according to the version you want to download.
 
-## Git tool
+## Git
 
-You have a few options here:
-* Install [Git for Windows](https://community.chocolatey.org/packages/git)
-* Use your IDE to clone the repository
-* Use [GitHub Desktop](https://desktop.github.com/)
-* Use [SourceTree](https://www.sourcetreeapp.com/)
-* Use Cygwin integrated [Git command](https://cygwin.com/packages/summary/git.html)
-* [...]
+There are quite a few ways to get Git on Windows, but the most straightforward is to see what the [official Git website recommends](https://git-scm.com/download/win).
 
 ## Install MSBuild
 
