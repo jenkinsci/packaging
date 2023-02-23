@@ -8,7 +8,7 @@ First of all, you should get the Jenkins war file that will be inside that MSI f
 You can get it from the official Jenkins website or from [the Jenkins update center](https://updates.jenkins.io/).
 
 Check [Jenkins download page](https://www.jenkins.io/download/) and download the latest weekly version of Jenkins for example.
-Currently, it is [jenkins.war](https://get.jenkins.io/war/2.380/jenkins.war) version 2.380.
+Currently, it is [jenkins.war](https://get.jenkins.io/war/2.392/jenkins.war) version 2.392.
 
 Change the URL according to the version you want to download.
 
@@ -77,7 +77,7 @@ You should get an output similar to:
 
 ```powershell
 Extracting components
-JenkinsVersion = 2.380
+JenkinsVersion = 2.392
 Restoring packages before build
 All packages listed in packages.config are already installed.
 Building MSI
@@ -85,14 +85,14 @@ MSBuild version 17.4.0+18d5aef85 for .NET Framework
 Build started 01/12/2022 20:53:30.
 Project "C:\dev\jenkins\git\ci\packaging\msi\build\jenkins.wixproj" on node 1 (default targets).
 SetConstants:
-  EncodedVersion = 2.255.3800
+  EncodedVersion = 2.255.3920
 Compile:
 Skipping target "Compile" because all output files are up-to-date with respect to the input files.
 AssignCultures:
   Culture: en-US
 Link:
   C:\jenkinsci\packaging\msi\build\packages\WiX.3.11.1\build\..\tools\Light.exe -out C:\jenkinsci\packaging\msi\build\bi
-  n\Release\en-US\jenkins-2.380.msi -pdbout C:\jenkinsci\packaging\msi\build\bin\Release\en-US\jenkins-2.380.wixpdb -sw1076 -cultures:en-US -ext C:\S
+  n\Release\en-US\jenkins-2.392.msi -pdbout C:\jenkinsci\packaging\msi\build\bin\Release\en-US\jenkins-2.392.wixpdb -sw1076 -cultures:en-US -ext C:\S
   upport\users\jenkinsci\packaging\packaging\msi\build\packages\WiX.3.11.1\build\..\tools\\WixUIExtension.dll -ext C:\jenkinsci\packaging\msi\bu
   ild\packages\WiX.3.11.1\build\..\tools\\WixNetFxExtension.dll -ext C:\jenkinsci\packaging\msi\build\packages\WiX.3.11.1\build\..\tools\\WixUtilExte
   nsion.dll -ext .\msiext-1.5\WixExtensions\WixCommonUIExtension.dll -ext C:\jenkinsci\packaging\msi\build\packages\WiX.3.11.1\build\..\tools\\WixFir
@@ -102,7 +102,7 @@ Link:
   Windows Installer XML Toolset Linker version 3.11.1.2318
   Copyright (c) .NET Foundation and contributors. All rights reserved.
 
-  jenkins -> C:\jenkinsci\packaging\msi\build\bin\Release\en-US\jenkins-2.380.msi
+  jenkins -> C:\jenkinsci\packaging\msi\build\bin\Release\en-US\jenkins-2.392.msi
 Done Building Project "C:\jenkinsci\packaging\msi\build\jenkins.wixproj" (default targets).
 
 
@@ -126,6 +126,6 @@ You will find there the generated MSI file and its `sha256` file.
 
 Mode                 LastWriteTime         Length Name
 ----                 -------------         ------ ----
--a----        01/12/2022     20:53      105107456 jenkins-2.380.msi
--a----        01/12/2022     20:53             84 jenkins-2.380.msi.sha256
+-a----        01/12/2022     20:53      105107456 jenkins-2.392.msi
+-a----        01/12/2022     20:53             84 jenkins-2.392.msi.sha256
 ```
