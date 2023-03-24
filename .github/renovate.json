@@ -1,0 +1,38 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",
+    ":semanticCommitsDisabled",
+    "schedule:earlyMondays"
+  ],
+  "packageRules": [
+    {
+      "matchDatasources": ["npm"],
+      "addLabels": ["javascript"],
+      "stabilityDays": 3
+    }
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": ["ansible"],
+      "allowedVersions": "<=7.0.0",
+      "description": "Starting with 7.x, Ansible requires Python >=3.9, which our Ubuntu 20.04-based agent VMs do not provide.",
+      "enabled": false
+    }
+  ],
+  "regexManagers": [
+    {
+      "fileMatch": ["templates/base.html"],
+      "matchStrings": ["webcomponentsjs@(?<currentValue>.*?)/"],
+      "depNameTemplate": "@webcomponents/webcomponentsjs",
+      "datasourceTemplate": "npm"
+    },
+    {
+      "fileMatch": ["templates/base.html"],
+      "matchStrings": ["lit@(?<currentValue>.*?)/"],
+      "depNameTemplate": "lit",
+      "datasourceTemplate": "npm"
+    }
+  ],
+  "rebaseWhen": "conflicted"
+}
