@@ -5,19 +5,12 @@
     ":semanticCommitsDisabled",
     "schedule:earlyMondays"
   ],
+  "enabledManagers": ["npm", "regex"],
   "packageRules": [
     {
       "matchDatasources": ["npm"],
       "addLabels": ["javascript"],
       "stabilityDays": 3
-    }
-  ],
-  "packageRules": [
-    {
-      "matchPackageNames": ["ansible"],
-      "allowedVersions": "<=7.0.0",
-      "description": "Starting with 7.x, Ansible requires Python >=3.9, which our Ubuntu 20.04-based agent VMs do not provide.",
-      "enabled": false
     }
   ],
   "regexManagers": [
