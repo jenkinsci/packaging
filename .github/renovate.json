@@ -10,9 +10,7 @@
       "matchDatasources": ["npm"],
       "addLabels": ["javascript"],
       "stabilityDays": 3
-    }
-  ],
-  "packageRules": [
+    },
     {
       "matchPackageNames": ["ansible"],
       "allowedVersions": "<=7.0.0",
