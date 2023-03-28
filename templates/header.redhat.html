@@ -2,6 +2,11 @@
 
 {% block distribution_instruction %}
 
+<div class="alert alert-danger">
+    <b>Important Notice:</b> Beginning with LTS 2.387.2 and weekly 2.397, releases will be signed with a new GPG key. <br>
+    Administrators <b>must</b> install the new key on their servers <b>before</b> attempting to update Jenkins. <br>
+    <a target="_blank" href="https://jenkins.io/blog/2023/03/27/repository-signing-keys-changing/">Read more about the key rotation on the blog</a>.
+</div>
 
   <p>
   To use this repository, run the following command:
@@ -9,7 +14,7 @@
   <pre class="text-white bg-dark">
 
   sudo wget -O /etc/yum.repos.d/{{artifactName}}.repo {{ web_url }}/{{artifactName}}.repo
-  sudo rpm --import {{ web_url }}/{{organization}}.key
+  sudo rpm --import {{ web_url }}/{{organization}}-2023.key
   </pre>
 
   <p>
