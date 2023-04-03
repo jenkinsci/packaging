@@ -4,6 +4,11 @@ Param(
     [String] $target = "package"
 )
 
+# TODO: Remove when MSI code signing certificate is available
+echo "Not packaging Windows components until code signing certificate is available"
+echo "Exiting make.ps1 early"
+exit 0
+
 # # refers to the definition of a release target
 # BRAND:=./branding/test.mk
 # include ${BRAND}

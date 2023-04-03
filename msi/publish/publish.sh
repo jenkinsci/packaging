@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# TODO: Remove this when code signing certificate is installed and configured
+exit 0
+
 set -euxo pipefail
 
 : "${AGENT_WORKDIR:=/tmp}"
