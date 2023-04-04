@@ -29,13 +29,11 @@ class IndexGenerator:
             "web_url": os.getenv("SUSE_URL"),
         },
         "war": {"extension": ".war", "template": "header.war.html", "web_url": "unset"},
-        # TODO: Restore when MSI code signing certificate is installed and configured
-        #
-        # "windows": {
-        #     "extension": ".msi",
-        #     "template": "header.msi.html",
-        #     "web_url": "unset",
-        # },
+        "windows": {
+            "extension": ".msi",
+            "template": "header.msi.html",
+            "web_url": "unset",
+        },
     }
 
     HELP_MESSAGE = """
