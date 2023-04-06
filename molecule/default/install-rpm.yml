@@ -1,14 +1,19 @@
 ---
-- command:
-    cmd: amazon-linux-extras install java-openjdk11 -y
-    creates: /usr/lib/jvm/jre-11-openjdk
-  when: ansible_distribution == 'Amazon'
 - package:
     name:
       - fontconfig
-      - java-11-openjdk
     state: present
     update_cache: true
+- package:
+    name:
+      - java-11-openjdk
+    state: present
+  when: ansible_distribution != 'Amazon'
+- package:
+    name:
+      - java-11-amazon-corretto-headless
+    state: present
+  when: ansible_distribution == 'Amazon'
 - file:
     path: /var/tmp/target/credentials
     state: directory
