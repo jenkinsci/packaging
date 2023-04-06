@@ -6,8 +6,3 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    ignore:
-      # Starting with 7.x, Ansible requires Python >=3.9, which our Ubuntu
-      # 20.04-based agent VMs do not provide.
-      - dependency-name: "ansible"
-        versions: [">=7.0.0"]
