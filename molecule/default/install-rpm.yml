@@ -11,7 +11,7 @@
   when: ansible_distribution != 'Amazon'
 - package:
     name:
-      - java-11-amazon-corretto-headless
+      - java-11-amazon-corretto
     state: present
   when: ansible_distribution == 'Amazon'
 - file:
