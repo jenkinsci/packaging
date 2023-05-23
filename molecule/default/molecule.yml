@@ -87,16 +87,16 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
-  - name: fedora-36  # EOL 2023-05-16
-    image: dokken/fedora-36:latest
-    override_command: false
-    volumes:
-      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
   - name: fedora-37  # EOL 2023-12-15
     image: dokken/fedora-37:latest
+    override_command: false
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+  - name: fedora-38  # EOL 2024-05-18
+    image: dokken/fedora-38:latest
     override_command: false
     volumes:
       - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
