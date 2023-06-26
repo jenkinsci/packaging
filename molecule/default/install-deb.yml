@@ -2,7 +2,6 @@
 - package:
     name:
       - fontconfig
-      - openjdk-11-jre
       - openjdk-17-jre
     state: present
     update_cache: true
