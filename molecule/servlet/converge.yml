@@ -5,4 +5,4 @@
     - include_tasks: configure-tomcat.yml
       when: ansible_hostname == 'tomcat-9'
     - include_tasks: configure-wildfly.yml
-      when: ansible_hostname == 'wildfly-26'
+      when: ansible_hostname == 'wildfly-27'

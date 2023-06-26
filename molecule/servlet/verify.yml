@@ -14,7 +14,7 @@
       when: ansible_hostname == 'tomcat-9'
     - shell:
         cmd: "/opt/jboss/wildfly/bin/standalone.sh &"
-      when: ansible_hostname == 'wildfly-26'
+      when: ansible_hostname == 'wildfly-27'
     - uri:
         url: "http://127.0.0.1:8080/jenkins/login"
         return_content: true
@@ -45,7 +45,7 @@
       when: ansible_hostname == 'tomcat-9'
     - command:
         cmd: /opt/jboss/wildfly/bin/jboss-cli.sh --connect command=:shutdown
-      when: ansible_hostname == 'wildfly-26'
+      when: ansible_hostname == 'wildfly-27'
     - pids:
         name: java
       register: service_pids
