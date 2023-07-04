@@ -10,6 +10,7 @@ Summary:	@@SUMMARY@@
 Source:		jenkins.war
 Source1:	jenkins.service
 Source2:	jenkins.sh
+Source3:	migrate.sh
 URL:		@@HOMEPAGE@@
 License:	@@LICENSE@@
 BuildRoot:	%{_tmppath}/build-%{name}-%{version}
@@ -40,6 +41,7 @@ rm -rf "%{buildroot}"
 %__install -D -m0644 "%{SOURCE0}" "%{buildroot}%{_javadir}/%{name}.war"
 %__install -D -m0644 "%{SOURCE1}" "%{buildroot}%{_unitdir}/%{name}.service"
 %__install -D -m0755 "%{SOURCE2}" "%{buildroot}%{_bindir}/%{name}"
+%__install -D -m0755 "%{SOURCE3}" "%{buildroot}%{_datadir}/%{name}/migrate"
 
 %pre
 /usr/bin/getent group %{name} &>/dev/null || /usr/sbin/groupadd -r %{name} &>/dev/null
@@ -48,11 +50,13 @@ rm -rf "%{buildroot}"
 	-d "%{workdir}" %{name} &>/dev/null
 
 %post
-%systemd_post %{name}.service
 if [ $1 -eq 1 ]; then
     %__install -d -m 0755 -o %{name} -g %{name} %{workdir}
     %__install -d -m 0750 -o %{name} -g %{name} %{_localstatedir}/cache/%{name}
+elif [ -f "%{_sysconfdir}/sysconfig/%{name}" ]; then
+    %{_datadir}/%{name}/migrate "/etc/sysconfig/%{name}" || true
 fi
+%systemd_post %{name}.service
 
 %preun
 if [ $1 -eq 0 ]; then
@@ -69,6 +73,7 @@ fi
 %ghost %{_localstatedir}/cache/%{name}
 %{_unitdir}/%{name}.service
 %{_bindir}/%{name}
+%{_datadir}/%{name}/migrate
 
 %changelog
 * Mon Jun 19 2023 projects@unixadm.org
