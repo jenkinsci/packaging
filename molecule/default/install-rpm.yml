@@ -7,12 +7,12 @@
     update_cache: true
 - package:
     name:
-      - java-11-openjdk
+      - java-17-openjdk
     state: present
   when: ansible_distribution != 'Amazon'
 - package:
     name:
-      - java-11-amazon-corretto
+      - java-17-amazon-corretto
     state: present
   when: ansible_distribution == 'Amazon'
 - file:

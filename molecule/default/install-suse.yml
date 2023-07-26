@@ -3,7 +3,7 @@
     name:
       - dejavu-fonts
       - fontconfig
-      - java-11-openjdk
+      - java-17-openjdk
     state: present
     update_cache: true
 - file:
