@@ -2,9 +2,18 @@
 - package:
     name:
       - fontconfig
-      - openjdk-17-jre
     state: present
     update_cache: true
+- package:
+    name:
+      - openjdk-17-jre
+    state: present
+  when: ansible_hostname != 'debian-10'
+- package:
+    name:
+      - openjdk-11-jre
+    state: present
+  when: ansible_hostname == 'debian-10'
 - find:
     paths: /var/tmp/target/debian
     file_type: file
