@@ -8,14 +8,10 @@ Version:	%{ver}
 Release:	1.1
 Summary:	@@SUMMARY@@
 Source:		jenkins.war
-Source1:	jenkins.init.in
-Source2:	jenkins.sysconfig.in
-Source3:	jenkins.logrotate
-Source4:	jenkins.service
-Source5:	jenkins.sh
-Source6:	migrate.sh
+Source1:	jenkins.service
+Source2:	jenkins.sh
+Source3:	migrate.sh
 URL:		@@HOMEPAGE@@
-Group:		Development/Tools/Building
 License:	@@LICENSE@@
 BuildRoot:	%{_tmppath}/build-%{name}-%{version}
 # Unfortunately the Oracle Java RPMs do not register as providing anything (including "java" or "jdk")
@@ -26,6 +22,7 @@ BuildRoot:	%{_tmppath}/build-%{name}-%{version}
 Requires: procps
 Requires(pre): /usr/sbin/useradd, /usr/sbin/groupadd
 BuildArch: noarch
+%systemd_requires
 
 %description
 @@DESCRIPTION_FILE@@
@@ -42,26 +39,9 @@ Authors:
 %install
 rm -rf "%{buildroot}"
 %__install -D -m0644 "%{SOURCE0}" "%{buildroot}%{_javadir}/%{name}.war"
-%__install -d "%{buildroot}%{workdir}"
-%__install -d "%{buildroot}%{workdir}/plugins"
-
-%__install -d "%{buildroot}/var/log/%{name}"
-%__install -d "%{buildroot}/var/cache/%{name}"
-
-%__install -D -m0755 "%{SOURCE1}" "%{buildroot}/etc/init.d/%{name}"
-%__sed -i 's,~~WAR~~,%{_javadir}/%{name}.war,g' "%{buildroot}/etc/init.d/%{name}"
-%__install -d "%{buildroot}/usr/sbin"
-%__ln_s "../../etc/init.d/%{name}" "%{buildroot}/usr/sbin/rc%{name}"
-
-%__install -D -m0600 "%{SOURCE2}" "%{buildroot}/etc/sysconfig/%{name}"
-%__sed -i 's,~~HOME~~,%{workdir},g' "%{buildroot}/etc/sysconfig/%{name}"
-
-%__install -D -m0644 "%{SOURCE3}" "%{buildroot}/etc/logrotate.d/%{name}"
-
-%__install -D -m0644 "%{SOURCE4}" "%{buildroot}%{_unitdir}/%{name}.service"
-%__install -D -m0755 "%{SOURCE5}" "%{buildroot}%{_bindir}/%{name}"
-%__install -d "%{buildroot}%{_datadir}/%{name}"
-%__install -D -m0755 "%{SOURCE6}" "%{buildroot}%{_datadir}/%{name}/migrate"
+%__install -D -m0644 "%{SOURCE1}" "%{buildroot}%{_unitdir}/%{name}.service"
+%__install -D -m0755 "%{SOURCE2}" "%{buildroot}%{_bindir}/%{name}"
+%__install -D -m0755 "%{SOURCE3}" "%{buildroot}%{_datadir}/%{name}/migrate"
 
 %pre
 /usr/bin/getent group %{name} &>/dev/null || /usr/sbin/groupadd -r %{name} &>/dev/null
@@ -69,79 +49,37 @@ rm -rf "%{buildroot}"
 /usr/bin/getent passwd %{name} &>/dev/null || /usr/sbin/useradd -g %{name} -s /bin/false -r -c "@@SUMMARY@@" \
 	-d "%{workdir}" %{name} &>/dev/null
 
-  # Used to decide later if we should perform a chown in case JENKINS_INSTALL_SKIP_CHOWN is false
-  # Check if a previous installation exists, if so check the JENKINS_HOME value and existing owners of work, log and cache dir, need to to this check
-  # here because the %files directive overwrites folder owners, I have not found a simple way to make the
-  # files directive to use JENKINS_USER as owner.
-  if [ -f "/etc/sysconfig/%{name}" ]; then
-      logger -t %{name}.installer "Found previous config file /etc/sysconfig/%{name}"
-      . "/etc/sysconfig/%{name}"
-      stat --format=%U "/var/cache/%{name}" > "/tmp/%{name}.installer.cacheowner"
-      stat --format=%U "/var/log/%{name}"  >  "/tmp/%{name}.installer.logowner"
-      stat --format=%U ${JENKINS_HOME:-%{workdir}}  > "/tmp/%{name}.installer.workdirowner"
-  else
-      logger -t %{name}.installer "No previous config file /etc/sysconfig/%{name} found"
-  fi
-
 %post
-%{_datadir}/%{name}/migrate "/etc/sysconfig/%{name}" || true
+if [ $1 -eq 1 ]; then
+    %__install -d -m 0755 -o %{name} -g %{name} %{workdir}
+    %__install -d -m 0750 -o %{name} -g %{name} %{_localstatedir}/cache/%{name}
+elif [ -f "%{_sysconfdir}/sysconfig/%{name}" ]; then
+    %{_datadir}/%{name}/migrate "/etc/sysconfig/%{name}" || true
+fi
 %systemd_post %{name}.service
 
-function chownIfNecessary {
-  logger -t %{name}.installer "Checking ${2} ownership"
-  if [ -f "${1}" ] ; then
-    owner=$(cat "$1")
-    rm -f "$1"
-    logger -t %{name}.installer "Found previous owner of ${2}: ${owner} "
-  fi
-  if  [ "${owner:-%{name}}" != "${JENKINS_USER:-%{name}}" ] ; then
-    logger -t %{name}.installer "Previous owner of ${2} is different than configured JENKINS_USER... Doing a recursive chown of ${2} "
-    chown -R ${JENKINS_USER:-%{name}} "$2"
-  elif [ "${JENKINS_USER:-%{name}}" != "%{name}" ] ; then
-    # User has changed ownership of files and JENKINS_USER, chown only the folder
-    logger -t %{name}.installer "Configured JENKINS_USER is different than default... Doing a non recursive chown of ${2} "
-    chown ${JENKINS_USER:-%{name}} "$2"
-  else
-    logger -t %{name}.installer "No chown needed for ${2} "
-  fi
-}
-
-# Ensure the right ownership on files only if not owned by JENKINS_USER and JENKINS_USER
-# != %{name}, namely all cases but the default one (configured for %{name} owned by %{name})
-# In any case if JENKINS_INSTALL_SKIP_CHOWN is true we do not chown anything to maintain
-# the existing semantics
-. /etc/sysconfig/%{name}
-if test x"$JENKINS_INSTALL_SKIP_CHOWN" != "xtrue"; then
-      chownIfNecessary "/tmp/%{name}.installer.cacheowner"  "/var/cache/%{name}"
-      chownIfNecessary "/tmp/%{name}.installer.logowner"  "/var/log/%{name}"
-      chownIfNecessary "/tmp/%{name}.installer.workdirowner"  ${JENKINS_HOME:-%{workdir}}
-fi
-
 %preun
+if [ $1 -eq 0 ]; then
+    %__rm -rf %{_localstatedir}/cache/%{name}/war
+fi
 %systemd_preun %{name}.service
 
 %postun
 %systemd_postun_with_restart %{name}.service
 
-%clean
-%__rm -rf "%{buildroot}"
-
 %files
-%defattr(-,root,root)
 %{_javadir}/%{name}.war
-%attr(0755,%{name},%{name}) %dir %{workdir}
-%attr(0750,%{name},%{name}) /var/log/%{name}
-%attr(0750,%{name},%{name}) /var/cache/%{name}
-%config /etc/logrotate.d/%{name}
-%config(noreplace) /etc/init.d/%{name}
-%config(noreplace) /etc/sysconfig/%{name}
-/usr/sbin/rc%{name}
+%ghost %{workdir}
+%ghost %{_localstatedir}/cache/%{name}
 %{_unitdir}/%{name}.service
 %{_bindir}/%{name}
-%dir %{_datadir}/%{name}
 %{_datadir}/%{name}/migrate
 
 %changelog
+* Mon Jun 19 2023 projects@unixadm.org
+- removed sysv initscript for el>=7
+- removed logrotate config
+- avoid re-chowning workdir and cachedir on upgrades
 * Sat Apr 19 2014 mbarr@mbarr.net
 - Removed the jenkins.repo installation.  Per https://issues.jenkins-ci.org/browse/JENKINS-22690
 * Wed Sep 28 2011 kk@kohsuke.org
