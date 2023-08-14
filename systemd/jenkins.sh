@@ -41,7 +41,7 @@ check_java_version() {
 
 	if [ -z "${java_version}" ]; then
 		return 1
-	elif [ "${java_version}" != "17" ] && [ "${java_version}" != "11" ]; then
+	elif [ "${java_version}" != "21" ] && [ "${java_version}" != "17" ] && [ "${java_version}" != "11" ]; then
 		return 1
 	else
 		return 0
