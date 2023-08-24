@@ -36,8 +36,8 @@ infer_java_cmd() {
 check_java_version() {
 	printf '%s' "${JENKINS_OPTS}" | grep -q '\--enable-future-java' && return 0
 
-	java_version=$("${JENKINS_JAVA_CMD}" -version 2>&1 |
-		sed -n ';s/.* version "\([0-9]\{2,\}\|[0-9]\.[0-9]\)\..*".*/\1/p;')
+  java_version=$("${JENKINS_JAVA_CMD}" -version 2>&1 |
+    sed -n ';s/.* version "\([0-9]*\|-beta\)\{1,\}".*/\1/p;')
 
 	if [ -z "${java_version}" ]; then
 		return 1
