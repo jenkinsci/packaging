@@ -33,21 +33,6 @@ infer_java_cmd() {
 	JENKINS_JAVA_CMD="$(command -v java)" || return "$?"
 }
 
-check_java_version() {
-	printf '%s' "${JENKINS_OPTS}" | grep -q '\--enable-future-java' && return 0
-
-	java_version=$("${JENKINS_JAVA_CMD}" -version 2>&1 |
-		sed -n ';s/.* version "\([0-9]\{2,\}\|[0-9]\.[0-9]\)\..*".*/\1/p;')
-
-	if [ -z "${java_version}" ]; then
-		return 1
-	elif [ "${java_version}" != "17" ] && [ "${java_version}" != "11" ]; then
-		return 1
-	else
-		return 0
-	fi
-}
-
 infer_jenkins_opts() {
 	inferred_jenkins_opts=""
 
@@ -119,9 +104,6 @@ main() {
 	infer_java_cmd || die 'failed to find a valid Java installation'
 
 	infer_jenkins_opts
-
-	check_java_version ||
-		die "invalid Java version: $("${JENKINS_JAVA_CMD}" -version 2>&1)"
 
 	java_opts_tmp="${JAVA_OPTS}"
 	unset JAVA_OPTS
