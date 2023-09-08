@@ -213,7 +213,4 @@ if __name__ == "__main__":
     headerGenerator = IndexGenerator(sys.argv[1:])
     headerGenerator.show_information()
     headerGenerator.generate_repository_header()
-    headerGenerator.generate_footer()
     headerGenerator.generate_repository_index()
-    headerGenerator.generate_root_header()
-    headerGenerator.generate_root_footer()
