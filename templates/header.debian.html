@@ -1,51 +1,12 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
 
-{% block distribution_instruction %}
+<!-- Do not manually edit this file, it is generated from https://github.com/jenkinsci/packaging/blob/master/templates/base.html -->
 
-<p>
-  This is the Debian package repository of {{product_name}} to automate installation and upgrade.
+<html lang="en">
 
-  To use this repository, first add the key to your system:
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content="1; url='https://www.jenkins.io/doc/book/installing/linux/'" />
+</head>
 
-  <pre class="text-white bg-dark">
-    <code>
-  curl -fsSL <a href="{{web_url}}/{{organization}}-2023.key" style="color:white">{{web_url}}/{{organization}}-2023.key</a> | sudo tee \
-    /usr/share/keyrings/jenkins-keyring.asc > /dev/null</code>
-  </pre>
-
-  Then add a Jenkins apt repository entry:
-
-  <pre class="text-white bg-dark">
-    <code>
-  echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
-    {{ web_url }} binary/ | sudo tee \
-    /etc/apt/sources.list.d/jenkins.list > /dev/null</code>
-  </pre>
-</p>
-
-<p>
-Update your local package index, then finally install {{product_name}}:
-
-  <pre class="text-white bg-dark">
-   <code>
-  sudo apt-get update
-  sudo apt-get install fontconfig openjdk-17-jre
-  sudo apt-get install {{artifactName}}
-   </code>
-  </pre>
-</p>
-
-<p>
-The apt packages were signed using this key:
-</p>
-
-<pre class="text-white bg-dark" style="box-sizing:border-box; padding:1.5rem 1rem;">{{ pub_key_info|trim }}</pre>
-{% endblock %}
-
-{% block  individual_package_instruction  %}
-
-<p>
-  If you need *.deb for a specific version, use these.
-</p>
-
-{% endblock %}
+<h1>You are getting redirected to https://www.jenkins.io/doc/book/installing/linux/</h1>

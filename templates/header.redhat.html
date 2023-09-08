@@ -1,35 +1,10 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
 
-{% block distribution_instruction %}
+<html lang="en">
 
-  <p>
-  To use this repository, run the following command:
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content="1; url='https://www.jenkins.io/doc/book/installing/linux/'" />
+</head>
 
-  <pre class="text-white bg-dark">
-
-  sudo wget -O /etc/yum.repos.d/{{artifactName}}.repo {{ web_url }}/{{artifactName}}.repo
-  sudo rpm --import {{ web_url }}/{{organization}}-2023.key
-  </pre>
-
-  <p>
-  If you've previously imported the key from Jenkins, the <code>rpm --import</code> will fail because
-  you already have a key. Please ignore that and move on.
-
-  <pre class="text-white bg-dark">
-
-  yum install fontconfig tzdata-java java-17-openjdk
-  yum install {{artifactName}}
-  </pre>
-
-  <p>
-  The rpm packages were signed using this key:
-  </p>
-
-  <pre class="text-white bg-dark" style="box-sizing:border-box; padding:1.5rem 1rem;">{{ pub_key_info|trim }}</pre>
-
-
-{% endblock %}
-
-{% block  individual_package_instruction  %}
-  If you need *.rpm for a specific version, use these.
-{% endblock %}
+<h1>You are getting redirected to https://www.jenkins.io/doc/book/installing/linux/</h1>
