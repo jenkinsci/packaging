@@ -16,7 +16,7 @@
     state: present
     key: /var/tmp/target/credentials/test.ascii.key
 - find:
-    paths: /var/tmp/target/suse
+    paths: /var/tmp/target/rpm
     file_type: file
     patterns: "*.rpm"
   register: package_list

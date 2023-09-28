@@ -5,7 +5,7 @@
 
 Name:		@@ARTIFACTNAME@@
 Version:	%{ver}
-Release:	1.1
+Release:	1
 Summary:	@@SUMMARY@@
 Source:		jenkins.war
 Source1:	jenkins.service
@@ -73,6 +73,7 @@ fi
 %ghost %{_localstatedir}/cache/%{name}
 %{_unitdir}/%{name}.service
 %{_bindir}/%{name}
+%dir %{_datadir}/%{name}
 %{_datadir}/%{name}/migrate
 
 %changelog

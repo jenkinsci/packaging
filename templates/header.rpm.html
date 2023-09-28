@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block distribution_instruction %}
+
+  <h2>Red Hat and derivatives</h2>
+
+  <p>
+  To use this repository with Red Hat or derivatives, run the following command:
+
+  <pre class="text-white bg-dark">
+
+  # el8 and up using dnf
+  sudo dnf config-manager --add-repo {{ web_url }}/{{artifactName}}.repo
+
+  # el7 using yum
+  sudo yum-config-manager --add-repo {{ web_url}}/{{artifactName}}.repo
+  </pre>
+
+  <pre class="text-white bg-dark">
+
+  # el8 and up using dnf
+  dnf install fontconfig tzdata-java java-17-openjdk
+  dnf install {{artifactName}}
+
+  # el7 using yum
+  yum install fontconfig tzdata-java java-17-openjdk
+  yum install {{artifactName}}
+  </pre>
+
+  <p>
+  The rpm packages were signed using this key:
+  </p>
+
+  <pre class="text-white bg-dark" style="box-sizing:border-box; padding:1.5rem 1rem;">{{ pub_key_info|trim }}</pre>
+
+  <h2>openSUSE</h2>
+
+  To use this repository with openSUSE, run the following command:
+  
+  <pre class="text-white bg-dark">
+
+    sudo zypper addrepo -f {{web_url}}/ {{artifactName}}
+  </pre>
+  
+  <p>
+  With that set up, the {{ product_name }} package can be installed with:
+  
+  <pre class="text-white bg-dark">
+
+    zypper install dejavu-fonts fontconfig java-17-openjdk
+    zypper install {{ artifactName }}
+  </pre>
+  </p>
+{% endblock %}
+
+{% block  individual_package_instruction  %}
+  If you need *.rpm for a specific version, use these.
+{% endblock %}
