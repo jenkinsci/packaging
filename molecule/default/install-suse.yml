@@ -2,7 +2,7 @@
 - package:
     name:
       - dejavu-fonts
-      - fontconfig
+      - libfontconfig1
       - java-17-openjdk
     state: present
     update_cache: true

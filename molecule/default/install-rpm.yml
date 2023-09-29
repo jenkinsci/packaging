@@ -1,7 +1,7 @@
 ---
 - package:
     name:
-      - fontconfig
+      - libfontconfig1
     state: present
     update_cache: true
 - package:
