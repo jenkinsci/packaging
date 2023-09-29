@@ -2,7 +2,6 @@
 - package:
     name:
       - fontconfig
-      - tzdata-java
     state: present
     update_cache: true
 - package:
