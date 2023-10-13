@@ -5,12 +5,12 @@
 <p>
   This is the Debian package repository of {{product_name}} to automate installation and upgrade.
 
-  To use this repository, first add the key to your system:
+  To use this repository, first add the key to your system (for the Weekly Release Line):
 
   <pre class="text-white bg-dark">
     <code>
-  curl -fsSL <a href="{{web_url}}/{{organization}}-2023.key" style="color:white">{{web_url}}/{{organization}}-2023.key</a> | sudo tee \
-    /usr/share/keyrings/jenkins-keyring.asc > /dev/null</code>
+  sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+    <a href="{{web_url}}/{{organization}}-2023.key" style="color:white">{{web_url}}/{{organization}}-2023.key</a></code>
   </pre>
 
   Then add a Jenkins apt repository entry:
@@ -27,11 +27,10 @@
 Update your local package index, then finally install {{product_name}}:
 
   <pre class="text-white bg-dark">
-   <code>
+  <code>
   sudo apt-get update
   sudo apt-get install fontconfig openjdk-11-jre
-  sudo apt-get install {{artifactName}}
-   </code>
+  sudo apt-get install {{artifactName}}</code>
   </pre>
 </p>
 
