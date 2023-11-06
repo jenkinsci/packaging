@@ -52,6 +52,10 @@ infer_jenkins_opts() {
 		inferred_jenkins_opts="${inferred_jenkins_opts} --httpListenAddress=${JENKINS_LISTEN_ADDRESS}"
 	fi
 
+	if [ -n "${JENKINS_UNIX_DOMAIN_PATH}" ]; then
+		inferred_jenkins_opts="${inferred_jenkins_opts} --httpUnixDomainPath=${JENKINS_UNIX_DOMAIN_PATH}"
+	fi
+
 	if [ -n "${JENKINS_HTTPS_PORT}" ]; then
 		inferred_jenkins_opts="${inferred_jenkins_opts} --httpsPort=${JENKINS_HTTPS_PORT}"
 	fi
@@ -117,6 +121,7 @@ main() {
 	unset JENKINS_HTTPS_PORT
 	java_cmd="${JENKINS_JAVA_CMD}"
 	unset JENKINS_JAVA_CMD
+	unset JENKINS_UNIX_DOMAIN_PATH
 	unset JENKINS_LISTEN_ADDRESS
 	unset JENKINS_LOG
 	unset JENKINS_OPTS
@@ -157,6 +162,7 @@ check_env \
 	JAVA_OPTS \
 	JENKINS_HTTPS_PORT \
 	JENKINS_JAVA_CMD \
+	JENKINS_UNIX_DOMAIN_PATH \
 	JENKINS_LISTEN_ADDRESS \
 	JENKINS_LOG \
 	JENKINS_OPTS \

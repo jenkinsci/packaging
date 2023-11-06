@@ -15,6 +15,7 @@ cp -R "${dir}"/* "${D}"
 cp "${BASE}/systemd/jenkins.service" "${D}/debian"
 cp "${BASE}/systemd/jenkins.sh" "${D}"
 cp "${BASE}/systemd/migrate.sh" "${D}"
+cp "${BASE}/systemd/jenkins.conf" "${D}/debian/jenkins.tmpfiles"
 
 # Create a description temp file
 sed -i.bak -e 's/^\s*$/./' -e 's/^/ /' "${DESCRIPTION_FILE}"

@@ -8,6 +8,7 @@ cp -R "$(dirname "$0")"/* "${D}"
 cp "${BASE}/systemd/jenkins.service" "${D}/SOURCES"
 cp "${BASE}/systemd/jenkins.sh" "${D}/SOURCES"
 cp "${BASE}/systemd/migrate.sh" "${D}/SOURCES"
+cp "${BASE}/systemd/jenkins.conf" "${D}/SOURCES"
 "${BASE}/bin/branding.py" "${D}"
 
 cp "${WAR}" "${D}/SOURCES/jenkins.war"

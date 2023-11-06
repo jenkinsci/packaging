@@ -56,6 +56,9 @@ Environment="JENKINS_WEBROOT=%C/@@ARTIFACTNAME@@/war"
 # Arguments for the Jenkins JVM
 Environment="JAVA_OPTS=-Djava.awt.headless=true"
 
+# Unix Domain Socket to listen on for local HTTP requests. Default is disabled.
+#Environment="JENKINS_UNIX_DOMAIN_PATH=/run/jenkins/jenkins.socket"
+
 # IP address to listen on for HTTP requests.
 # The default is to listen on all interfaces (0.0.0.0).
 #Environment="JENKINS_LISTEN_ADDRESS="

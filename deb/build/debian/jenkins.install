@@ -1,3 +1,4 @@
 @@ARTIFACTNAME@@ usr/bin
 @@ARTIFACTNAME@@.war usr/share/java
 migrate usr/share/@@ARTIFACTNAME@@
+@@ARTIFACTNAME@@.conf usr/lib/tmpfiles.d/
