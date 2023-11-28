@@ -11,6 +11,7 @@ Source:		jenkins.war
 Source1:	jenkins.service
 Source2:	jenkins.sh
 Source3:	migrate.sh
+Source4:	jenkins.conf
 URL:		@@HOMEPAGE@@
 License:	@@LICENSE@@
 BuildRoot:	%{_tmppath}/build-%{name}-%{version}
@@ -42,6 +43,7 @@ rm -rf "%{buildroot}"
 %__install -D -m0644 "%{SOURCE1}" "%{buildroot}%{_unitdir}/%{name}.service"
 %__install -D -m0755 "%{SOURCE2}" "%{buildroot}%{_bindir}/%{name}"
 %__install -D -m0755 "%{SOURCE3}" "%{buildroot}%{_datadir}/%{name}/migrate"
+%__install -D -m0755 "%{SOURCE4}" "%{buildroot}%{_tmpfilesdir}/%{name}.conf"
 
 %pre
 /usr/bin/getent group %{name} &>/dev/null || /usr/sbin/groupadd -r %{name} &>/dev/null
@@ -74,8 +76,11 @@ fi
 %{_unitdir}/%{name}.service
 %{_bindir}/%{name}
 %{_datadir}/%{name}/migrate
+%{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Mon Nov 06 2023 minfrin@sharp.fm
+- added unix domain socket support
 * Mon Jun 19 2023 projects@unixadm.org
 - removed sysv initscript for el>=7
 - removed logrotate config
