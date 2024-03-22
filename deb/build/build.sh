@@ -47,7 +47,7 @@ done
 popd
 mv jenkins.sh "${ARTIFACTNAME}"
 mv migrate.sh migrate
-debuild -Zgzip -A
+debuild -A
 popd
 
 mkdir -p "$(dirname "${DEB}")"
