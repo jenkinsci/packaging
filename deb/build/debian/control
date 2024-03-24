@@ -2,11 +2,12 @@ Source: @@ARTIFACTNAME@@
 Section: devel
 Priority: optional
 Maintainer: @@AUTHOR@@
-Build-Depends: debhelper (>= 10)
+Build-Depends: debhelper-compat (= 13)
 Standards-Version: 4.6.0
 Homepage: @@HOMEPAGE@@
 
 Package: @@ARTIFACTNAME@@
 Architecture: all
 Depends: ${misc:Depends}, adduser, lsb-base (>= 3.2-14), net-tools, sysvinit-utils (>= 2.88dsf-50)
+Pre-Depends: ${misc:Pre-Depends}
 Description: @@DESCRIPTION_FILE@@
