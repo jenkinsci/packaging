@@ -17,7 +17,7 @@
 
   <pre class="text-white bg-dark">
     <code>
-  echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
     {{ web_url }} binary/ | sudo tee \
     /etc/apt/sources.list.d/jenkins.list > /dev/null</code>
   </pre>
