@@ -5,6 +5,7 @@ set -euxo pipefail
 : "${AGENT_WORKDIR:=/tmp}"
 : "${WAR:?Require Jenkins War file}"
 : "${WARDIR:? Require where to put binary files}"
+: "${JENKINS_ASC:=${WAR}.asc}"
 
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
