@@ -9,7 +9,16 @@ if (env.BRANCH_IS_PRIMARY) {
 
 properties(jobProperties)
 
-podTemplate(yaml: readTrusted('KubernetesPod.yaml'), workingDir: '/home/jenkins/agent') {
+podTemplate(
+  inheritFrom: 'jnlp-maven-17',
+  workingDir: '/home/jenkins/agent',
+  containers: [
+    containerTemplate(name: 'jnlp', image: 'jenkinsciinfra/packaging:latest')
+  ],
+  envVars: [
+      envVar(key: 'HOME', value: '/home/jenkins/agent/workspace'),
+  ],
+) {
   nodeWithTimeout(POD_LABEL) {
     withEnv([
       "BUILDENV=${WORKSPACE}/env/test.mk",
@@ -19,6 +28,7 @@ podTemplate(yaml: readTrusted('KubernetesPod.yaml'), workingDir: '/home/jenkins/
       "GPG_KEYNAME=Bogus Test",
       "GPG_PASSPHRASE=s3cr3t",
       "GPG_PASSPHRASE_FILE=${WORKSPACE}/credentials/test.gpg.password.txt",
+      "HOME=/home/jenkins/agent/workspace",
       "WAR=${WORKSPACE}/jenkins.war",
       "MSI=${WORKSPACE}/jenkins.msi",
       "RELEASELINE=-experimental",
