@@ -168,10 +168,9 @@
         Return="check"
         Impersonate="no" />
 
-    <!-- This will find the JRE/JDK directory either Java 11, 17 or 21 (prefer 17) -->
+    <!-- This will find the JRE/JDK directory either Java 17 or 21 (prefer 17) -->
     <Property Id="JAVA_HOME">
       <RegistrySearch Id="JDK21_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK\21" Name="JavaHome" Type="raw" Win64="yes" />
-      <RegistrySearch Id="JDK11_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK\11" Name="JavaHome" Type="raw" Win64="yes" />
       <RegistrySearch Id="JDK17_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK\17" Name="JavaHome" Type="raw" Win64="yes" />
     </Property>
 
@@ -368,9 +367,9 @@
             <Publish Event="DoAction" Value="ValidateJavaHome" Order="1">1</Publish>
 
             <!-- Spawn the error dialog if java.exe can't be found. -->
-            <Publish Property="ERROR_TITLE" Value="!(loc.JavaHomeDlgErrorTitle)" Order="2"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "11" AND JAVA_EXE_VERSION <> "17" AND JAVA_EXE_VERSION <> "21")]]></Publish>
-            <Publish Property="ERROR_MESSAGE" Value="!(loc.JavaHomeDlgErrorMessage)" Order="3"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "11" AND JAVA_EXE_VERSION <> "17" AND JAVA_EXE_VERSION <> "21")]]></Publish>
-            <Publish Event="SpawnDialog" Value="GenericErrorDlg" Order="4"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "11" AND JAVA_EXE_VERSION <> "17" AND JAVA_EXE_VERSION <> "21")]]></Publish>
+            <Publish Property="ERROR_TITLE" Value="!(loc.JavaHomeDlgErrorTitle)" Order="2"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "17" AND JAVA_EXE_VERSION <> "21")]]></Publish>
+            <Publish Property="ERROR_MESSAGE" Value="!(loc.JavaHomeDlgErrorMessage)" Order="3"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "17" AND JAVA_EXE_VERSION <> "21")]]></Publish>
+            <Publish Event="SpawnDialog" Value="GenericErrorDlg" Order="4"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "17" AND JAVA_EXE_VERSION <> "21")]]></Publish>
             <Publish Property="JAVA_HOME" Value="[JAVA_HOME]">1</Publish>
           </Control>
           <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
