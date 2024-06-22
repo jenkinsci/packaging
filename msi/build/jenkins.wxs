@@ -369,7 +369,7 @@
 
             <!-- Spawn the error dialog if java.exe can't be found. -->
             <Publish Property="ERROR_TITLE" Value="!(loc.JavaHomeDlgErrorTitle)" Order="2"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "11" AND JAVA_EXE_VERSION <> "17" AND JAVA_EXE_VERSION <> "21")]]></Publish>
-            <Publish Property="ERROR_MESSAGE" Value="!(loc.JavaJomeDlgErrorMessage)" Order="3"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "11" AND JAVA_EXE_VERSION = "17" AND JAVA_EXE_VERSION <> "21")]]></Publish>
+            <Publish Property="ERROR_MESSAGE" Value="!(loc.JavaHomeDlgErrorMessage)" Order="3"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "11" AND JAVA_EXE_VERSION <> "17" AND JAVA_EXE_VERSION <> "21")]]></Publish>
             <Publish Event="SpawnDialog" Value="GenericErrorDlg" Order="4"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "11" AND JAVA_EXE_VERSION <> "17" AND JAVA_EXE_VERSION <> "21")]]></Publish>
             <Publish Property="JAVA_HOME" Value="[JAVA_HOME]">1</Publish>
           </Control>

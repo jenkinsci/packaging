@@ -6,7 +6,7 @@
   <String Id="JavaHomeDlgLabel" Overridable="yes">Please select the path of a Java Development Kit or Java Runtime Environment. Only Java 11, 17 and 21 are supported by Jenkins.</String>
   <String Id="JavaHomeDlgChange" Overridable="yes">&amp;Change...</String>
   <String Id="JavaHomeDlgErrorTitle" Overridable="yes">Invalid Java Directory</String>
-  <String Id="JavaJomeDlgErrorMessage" Overridable="yes">Failed to find compatible Java version (11, 17 or 21) in [JAVA_HOME]</String>
+  <String Id="JavaHomeDlgErrorMessage" Overridable="yes">Failed to find compatible Java version (11, 17 or 21) in [JAVA_HOME]</String>
   
   <!-- Java Browse Dialog Strings -->
   <String Id="JavaBrowseDlgDescription" Overridable="yes">Browse to the Java Home directory</String>
