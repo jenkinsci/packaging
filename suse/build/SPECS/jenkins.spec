@@ -22,7 +22,7 @@ BuildRoot:	%{_tmppath}/build-%{name}-%{version}
 # Unfortunately the Oracle Java RPMs do not register as providing anything (including "java" or "jdk")
 # So either we make a hard requirement on the OpenJDK or none at all
 # Only workaround would be to use a java virtual package, see https://github.com/keystep/virtual-java-rpm
-# TODO: Fix the query for Java 11 if it is reenabled
+# TODO: Fix the query for Java 17 if it is reenabled
 # Requires: java >= 1:1.8.0
 Requires:	procps
 Requires(pre): /usr/sbin/useradd, /usr/sbin/groupadd
