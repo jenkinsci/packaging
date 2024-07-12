@@ -3,15 +3,15 @@
   <!-- Java Home Dialog Strings -->
   <String Id="JavaHomeDlgTitle" Overridable="yes">[ProductName] Setup</String>
   <String Id="JavaHomeDlgDescription" Overridable="yes">Select Java home directory (JDK or JRE)</String>
-  <String Id="JavaHomeDlgLabel" Overridable="yes">Please select the path of a Java Development Kit or Java Runtime Environment. Only Java 11, 17 and 21 are supported by Jenkins.</String>
+  <String Id="JavaHomeDlgLabel" Overridable="yes">Please select the path of a Java Development Kit or Java Runtime Environment. Only Java 17 and 21 are supported by Jenkins.</String>
   <String Id="JavaHomeDlgChange" Overridable="yes">&amp;Change...</String>
   <String Id="JavaHomeDlgErrorTitle" Overridable="yes">Invalid Java Directory</String>
-  <String Id="JavaHomeDlgErrorMessage" Overridable="yes">Failed to find compatible Java version (11, 17 or 21) in [JAVA_HOME]</String>
-  
+  <String Id="JavaHomeDlgErrorMessage" Overridable="yes">Failed to find compatible Java version (17 or 21) in [JAVA_HOME]</String>
+
   <!-- Java Browse Dialog Strings -->
   <String Id="JavaBrowseDlgDescription" Overridable="yes">Browse to the Java Home directory</String>
   <String Id="JavaBrowseDlgTitle" Overridable="yes">{\WixUI_Font_Title}Select Java folder</String>
-  
+
   <!-- Override the string on the service credential dialog -->
   <String Id="ServiceCredDlg_LocalSystemText" Overridable="yes">Run service as LocalSystem (not recommended)</String>
   <String Id="FirewallException_Description">Enables a firewall exception for the Java running Jenkins on port [PORTNUMBER] (not recommended).</String>

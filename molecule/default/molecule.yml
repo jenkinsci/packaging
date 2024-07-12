@@ -38,6 +38,14 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
+  - name: ubuntu-24-04  # EOL 2029-04-01
+    image: dokken/ubuntu-24.04:latest
+    override_command: false
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns_mode: host
+    privileged: true
   # rpm
   - name: almalinux-9  # EOL 2027-05-31
     image: dokken/almalinux-9:latest
@@ -63,8 +71,16 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
-  - name: fedora-37  # EOL 2023-12-15
-    image: dokken/fedora-37:latest
+  - name: eurolinux-9  # EOL 2032-06-30
+    image: dokken/eurolinux-9:latest
+    override_command: false
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns_mode: host
+    privileged: true
+  - name: fedora-40  # EOL 2025-05-13
+    image: dokken/fedora-40:latest
     override_command: false
     volumes:
       - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
@@ -96,8 +112,16 @@ platforms:
     cgroupns_mode: host
     privileged: true
   # suse
-  - name: opensuse-leap-15  # EOL N/A, but 15.4 is 2023-12-01
-    image: dokken/opensuse-leap-15:latest
+  - name: opensuse-leap-15.5  # EOL 2024-12-01
+    image: dokken/opensuse-leap-15.5:latest
+    override_command: false
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns_mode: host
+    privileged: true
+  - name: opensuse-leap-15.6  # EOL 2025-12-01
+    image: dokken/opensuse-leap-15.6:latest
     override_command: false
     volumes:
       - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
