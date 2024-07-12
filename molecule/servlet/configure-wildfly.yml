@@ -1,5 +1,0 @@
----
-- lineinfile:
-    path: "/opt/jboss/wildfly/bin/standalone.conf"
-    regexp: '^#?JAVA_OPTS="\$JAVA_OPTS -DJENKINS_HOME='
-    line: 'JAVA_OPTS="$JAVA_OPTS -DJENKINS_HOME=/var/tmp/jenkins_home"'

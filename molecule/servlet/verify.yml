@@ -12,11 +12,6 @@
     - command:
         cmd: /usr/local/tomcat/bin/catalina.sh start
       when: ansible_hostname == 'tomcat-9'
-    - command:
-        cmd: /opt/jboss/wildfly/bin/standalone.sh
-      async: 3600
-      poll: 0
-      when: ansible_hostname == 'wildfly-26'
     - uri:
         url: "http://127.0.0.1:8080/jenkins/login"
         return_content: true
@@ -45,9 +40,6 @@
     - command:
         cmd: /usr/local/tomcat/bin/catalina.sh stop
       when: ansible_hostname == 'tomcat-9'
-    - command:
-        cmd: /opt/jboss/wildfly/bin/jboss-cli.sh --connect command=:shutdown
-      when: ansible_hostname == 'wildfly-26'
     - pids:
         name: java
       register: service_pids
