@@ -13,6 +13,8 @@
 Description=Jenkins Continuous Integration Server
 Requires=network.target
 After=network.target
+StartLimitBurst=5
+StartLimitIntervalSec=5m
 
 [Service]
 Type=notify
