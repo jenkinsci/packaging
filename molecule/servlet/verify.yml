@@ -11,7 +11,7 @@
         fail_msg: "{{ service_pids.pids | join(',') }}"
     - command:
         cmd: /usr/local/tomcat/bin/catalina.sh start
-      when: ansible_hostname == 'tomcat-9'
+      when: ansible_hostname == 'tomcat-10'
     - uri:
         url: "http://127.0.0.1:8080/jenkins/login"
         return_content: true
@@ -39,7 +39,7 @@
         fail_msg: "{{ jenkins_dir.state }}"
     - command:
         cmd: /usr/local/tomcat/bin/catalina.sh stop
-      when: ansible_hostname == 'tomcat-9'
+      when: ansible_hostname == 'tomcat-10'
     - pids:
         name: java
       register: service_pids
