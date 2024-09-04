@@ -4,8 +4,8 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: tomcat-9
-    image: tomcat:9-jdk17-temurin
+  - name: tomcat-10
+    image: tomcat:10-jdk17-temurin
     volumes:
       - ${MOLECULE_PROJECT_DIRECTORY}/jenkins.war:/usr/local/tomcat/webapps/jenkins.war
 provisioner:
