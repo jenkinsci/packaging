@@ -188,7 +188,6 @@
             <File Id="JenkinsXml" Name="jenkins.xml" Source='tmp/jenkins.xml' DiskId='1' />
             <File Name="jenkins.exe.config" Source='jenkins.exe.config' DiskId='1' />
             <File Name="$(var.ArtifactName).war" Source='$(var.WAR)' DiskId='1' />
-            <File Name="Update-JenkinsVersion.ps1" Source='tmp/Update-JenkinsVersion.ps1' DiskId='1' />
 
             <!-- Update the XML file with the values selected during install -->
             <util:XmlFile Id='JenkinsXmlJenkinsData' Action='setValue' ElementPath='//service/env/@value' File='[#JenkinsXml]' Value='[JENKINS_ROOT].jenkins' Sequence="1"/>

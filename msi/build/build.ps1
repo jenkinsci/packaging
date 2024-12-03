@@ -73,57 +73,7 @@ if($MSBuildPath -ne '') {
         $MSBuildPath = [System.IO.Path]::GetDirectoryName($MSBuildPath)
     }
     $env:PATH = $env:PATH + ";" + $MSBuildPath
-} else {
-    # try to find it with vswhere
-    $MSBuildPath = & 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe' -products * -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
-    if(($MSBuildPath -ne '') -and $MSBuildPath.ToLower().EndsWith('msbuild.exe')) {
-        $MSBuildPath = [System.IO.Path]::GetDirectoryName($MSBuildPath)
-    }
-    $env:PATH = $env:PATH + ";" + $MSBuildPath
 }
-
-Copy-Item -Force -Path .\Update-JenkinsVersion.ps1 -Destination tmp
-# Sign the Update-JenkinsVersion.ps1 script if we have PKCS files
-if((-not ([System.String]::IsNullOrWhiteSpace($env:PKCS12_FILE)) -and (Test-Path $env:PKCS12_FILE)) -and (-not [System.String]::IsNullOrWhiteSpace($env:SIGN_STOREPASS))) {
-    Write-Host "Signing Update-JenkinsVersion.ps1"
-    # always disable tracing
-    Set-PSDebug -Trace 0
-
-    $retries = 10
-    $i = $retries
-    # Create an array of timestamp servers that includes each of the known timestamp servers duplicated $retries times so that the list won't be exhausted during retry
-    # Start with digicert because we purchased the code signing certificate from digicert
-    $timestampservers = "http://timestamp.digicert.com", "http://rfc3161timestamp.globalsign.com/advanced", "http://timestamp.sectigo.com/", "http://timestamp.verisign.com/scripts/timstamp.dll" * $retries
-    for(; $i -gt 0; $i--) {
-        $Error.Clear() # clear out errors
-        # Pop first entry from timestamp server array, use it as timestamp server for this attempt
-        $timestamp, $timestampservers = $timestampservers
-        # Submit SHA256 digest to RFC 3161 timestamp server
-        $store_password = ConvertTo-SecureString "${env:SIGN_STOREPASS}" -AsPlainText -Force
-        $cert = Get-PfxCertificate -FilePath "${env:PKCS12_FILE}" -Password $store_password
-        Set-AuthenticodeSignature -Certificate $cert -FilePath .\tmp\Update-JenkinsVersion.ps1 -TimestampServer $timestamp -HashAlgorithm SHA256 -ErrorAction SilentlyContinue
-        if($Error.Count -eq 0) {
-            break
-        } else {
-            Start-Sleep -Seconds 15
-        }
-    }
-    
-    if($i -le 0) {
-        Write-Error "Set-AuthenticodeSignature did not complete successfully after $retries tries"
-        exit -1
-    }
-
-    if($UseTracing) { Set-PSDebug -Trace 1 }
-
-    Write-Host "Checking the signature"
-    $signature = Get-AuthenticodeSignature .\tmp\Update-JenkinsVersion.ps1
-    if($signature.Status -ne 'Valid') {
-        Write-Error "Signature is not valid for Update-JenkinsVersion.ps1!"
-        exit -1
-    }
-}
-
 
 msbuild "jenkins.wixproj" /p:Stable="${isLts}" /p:WAR="${War}" /p:Configuration=Release /p:DisplayVersion=$JenkinsVersion /p:ProductName="${ProductName}" /p:ProductSummary="${ProductSummary}" /p:ProductVendor="${ProductVendor}" /p:ArtifactName="${ArtifactName}" /p:BannerBmp="${BannerBmp}" /p:DialogBmp="${DialogBmp}" /p:InstallerIco="${InstallerIco}"
 
