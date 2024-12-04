@@ -3,30 +3,12 @@
 {% block distribution_instruction %}
 
   <p>
-  To use this repository, run the following command:
-
-  <pre class="text-white bg-dark">
-
-  sudo wget -O /etc/yum.repos.d/{{artifactName}}.repo {{ web_url }}/{{artifactName}}.repo
-  sudo rpm --import {{ web_url }}/{{organization}}-2023.key
-  </pre>
+  To install Jenkins through Fedora, use the instructions provided in our <a href="https://www.jenkins.io/doc/book/installing/linux/#fedora">Fedora installation guide</a>.
 
   <p>
-  If you've previously imported the key from Jenkins, the <code>rpm --import</code> will fail because
-  you already have a key. Please ignore that and move on.
+  If you are trying to install Jenkins through Red Hat Enterprise Linux, Alma Linux, Rocky Linux, Oracle Linux, or another Red Hat based distribution, you can utilize the instructions provided in our <a href="https://www.jenkins.io/doc/book/installing/linux/#red-hat-centos">Red Hat Enterprise Linux installation guide.</a> 
 
-  <pre class="text-white bg-dark">
-
-  yum install fontconfig java-17-openjdk
-  yum install {{artifactName}}
-  </pre>
-
-  <p>
-  The rpm packages were signed using this key:
   </p>
-
-  <pre class="text-white bg-dark" style="box-sizing:border-box; padding:1.5rem 1rem;">{{ pub_key_info|trim }}</pre>
-
 
 {% endblock %}
 
