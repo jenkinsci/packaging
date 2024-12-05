@@ -76,17 +76,12 @@ stage('Build Packages') {
     nodeWithTimeout('docker-windows') {
       stage('Preparation') {
         checkout scm
+        powershell '.\\prep.ps1'
       }
 
       stage('Build') {
         withEnv([
-          "GPG_FILE=${WORKSPACE}/credentials/sandbox.gpg",
-          "GPG_KEYNAME=Bogus Test",
-          "GPG_PASSPHRASE=s3cr3t",
-          "GPG_PASSPHRASE_FILE=${WORKSPACE}/credentials/test.gpg.password.txt",
-          "WAR=${WORKSPACE}/jenkins.war",
-          "MSI=${WORKSPACE}/jenkins.msi",
-          "RELEASELINE=-experimental",
+          "WAR=${WORKSPACE}/jenkins.war"
         ]) {
           powershell ".\\make.ps1"
         }
