@@ -19,6 +19,8 @@ if([String]::IsNullOrWhiteSpace($War)) {
     exit 1
 }
 
+[Reflection.Assembly]::LoadWithPartialName( "System.IO.Compression")
+
 $ErrorActionPreference = "Stop"
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
