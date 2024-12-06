@@ -1,7 +1,7 @@
 
 Set-Location $PSScriptRoot
 
-[Reflection.Assembly]::LoadWithPartialName( "System.IO.Compression")
+Add-Type -AssemblyName System.IO.Compression
 
 if(-not (Test-Path -Path $env:WAR)) {
     $latestJson = (Invoke-WebRequest -Uri "https://api.github.com/repos/jenkins-infra/jenkins-version/releases/latest" -UseBasicParsing).Content | ConvertFrom-Json
