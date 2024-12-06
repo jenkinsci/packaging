@@ -74,15 +74,15 @@ stage('Build Packages') {
     }
   }, Windows: {
     nodeWithTimeout('docker-windows') {
-      stage('Preparation') {
-        checkout scm
-        powershell '.\\prep.ps1'
-      }
-
-      stage('Build') {
-        withEnv([
+      withEnv([
           "WAR=${WORKSPACE}/jenkins.war"
         ]) {
+        stage('Preparation') {
+          checkout scm
+          powershell '.\\prep.ps1'
+        }
+
+        stage('Build') {
           powershell ".\\make.ps1"
         }
       }
