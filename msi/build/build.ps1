@@ -75,6 +75,13 @@ if($MSBuildPath -ne '') {
         $MSBuildPath = [System.IO.Path]::GetDirectoryName($MSBuildPath)
     }
     $env:PATH = $env:PATH + ";" + $MSBuildPath
+} else {
+    # try to find it with vswhere
+    $MSBuildPath = & 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe' -products * -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+    if(($MSBuildPath -ne '') -and $MSBuildPath.ToLower().EndsWith('msbuild.exe')) {
+        $MSBuildPath = [System.IO.Path]::GetDirectoryName($MSBuildPath)
+        $env:PATH = $env:PATH + ";" + $MSBuildPath
+    }
 }
 
 msbuild "jenkins.wixproj" /p:Stable="${isLts}" /p:WAR="${War}" /p:Configuration=Release /p:DisplayVersion=$JenkinsVersion /p:ProductName="${ProductName}" /p:ProductSummary="${ProductSummary}" /p:ProductVendor="${ProductVendor}" /p:ArtifactName="${ArtifactName}" /p:BannerBmp="${BannerBmp}" /p:DialogBmp="${DialogBmp}" /p:InstallerIco="${InstallerIco}"
