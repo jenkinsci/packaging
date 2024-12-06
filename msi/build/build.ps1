@@ -37,7 +37,7 @@ if(!(Test-Path $tmpDir)) {
 
 if(!(Test-Path (Join-Path $PSScriptRoot 'msiext-1.5/WixExtensions/WixCommonUiExtension.dll'))) {
     Invoke-WebRequest -Uri "https://github.com/dblock/msiext/releases/download/1.5/msiext-1.5.zip" -OutFile (Join-Path $PSScriptRoot 'msiext-1.5.zip') -UseBasicParsing
-    [IO.Compression.ZipFile]::ExtractToDirectory((Join-Path $PSScriptRoot 'msiext-1.5.zip'), $PSScriptRoot)
+    [System.IO.Compression.ZipFile]::ExtractToDirectory((Join-Path $PSScriptRoot 'msiext-1.5.zip'), $PSScriptRoot)
 }
 
 Write-Host "Extracting components"
@@ -45,7 +45,7 @@ if($UseTracing) { Set-PSDebug -Trace 0 }
 # get the components we need from the war file
 
 $maniFestFile = Join-Path $tmpDir "MANIFEST.MF"
-$zip = [IO.Compression.ZipFile]::OpenRead($War)
+$zip = [System.IO.Compression.ZipFile]::OpenRead($War)
 $zip.Entries | Where-Object {$_.Name -like 'MANIFEST.MF'} | ForEach-Object { [System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, $maniFestFile, $true)}
 
 $JenkinsVersion = $(Get-Content $maniFestFile | Select-String -Pattern "^Jenkins-Version:\s*(.*)" | ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value } | Select-Object -First 1)
@@ -54,11 +54,11 @@ Write-Host "JenkinsVersion = $JenkinsVersion"
 $zip.Entries | Where-Object {$_.Name -like "jenkins-core-${JenkinsVersion}.jar"} | ForEach-Object {[System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, [System.IO.Path]::Combine($tmpDir, "core.jar"), $true)}
 $zip.Dispose()
 
-$zip = [IO.Compression.ZipFile]::OpenRead([System.IO.Path]::Combine($tmpDir, 'core.jar'))
+$zip = [System.IO.Compression.ZipFile]::OpenRead([System.IO.Path]::Combine($tmpDir, 'core.jar'))
 $zip.Entries | Where-Object {$_.Name -like 'jenkins.exe'} | ForEach-Object {[System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, [System.IO.Path]::Combine($tmpDir, "jenkins.exe"), $true)}
 $zip.Dispose()
 
-$zip = [IO.Compression.ZipFile]::OpenRead([System.IO.Path]::Combine($tmpDir, 'core.jar'))
+$zip = [System.IO.Compression.ZipFile]::OpenRead([System.IO.Path]::Combine($tmpDir, 'core.jar'))
 $zip.Entries | Where-Object {$_.Name -like 'jenkins.xml'} | ForEach-Object {[System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, [System.IO.Path]::Combine($tmpDir, "jenkins.xml"), $true)}
 $zip.Dispose()
 if($UseTracing) { Set-PSDebug -Trace 1 }
