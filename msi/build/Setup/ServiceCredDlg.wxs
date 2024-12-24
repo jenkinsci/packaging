@@ -1,0 +1,97 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <Fragment>
+        <Property Id="SERVICE_DISPLAY_USERNAME" Value="LocalSystem" />
+
+        <Property Id="LOGON_PASSWORD" Hidden="yes" />
+        <Property Id="SERVICE_PASSWORD" Hidden="yes" />
+
+        <UI>
+          <!--
+                Prompts for service credentials.
+
+                \return SERVICE_USERNAME verified service username, blank if LocalSystem
+                \return SERVICE_PASSWORD verified service password, blank if LocalSystem
+                \return SERVICE_DISPLAY_USERNAME service username, LocalSystem if ServiceLocalSystem
+
+                Custom action CheckCredentials is used to test for username/password combination.
+                Custom action CheckPrivilege is used to test whether username has log on as service rights.
+            -->
+            <TextStyle Id="WixUI_Font_Bold" FaceName="Tahoma" Size="8" Bold="yes" />
+            <Dialog Id="ServiceCredDlg" Width="370" Height="270" Title="!(loc.ServiceCredDlg_Header)">
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" DisableCondition="(LOGON_VALID &lt;&gt; &quot;1&quot; OR LOGON_HAS_PRIVILEGE &lt;&gt; &quot;1&quot; OR LOGON_IS_MEMBER &lt;&gt; &quot;1&quot;) AND TEST_CONNECTIONS &lt;&gt; &quot;0&quot; AND (VersionNT &gt; 500 OR VersionNT64)" EnableCondition="(LOGON_VALID = &quot;1&quot; AND LOGON_HAS_PRIVILEGE = &quot;1&quot; AND LOGON_IS_MEMBER = &quot;1&quot;)">
+                    <Publish Property="SERVICE_USERNAME" Value="[SERVICE_USERNAME]" />
+                    <Publish Property="SERVICE_PASSWORD" Value="[SERVICE_PASSWORD]" />
+                    <Publish Property="SERVICE_DISPLAY_USERNAME" Value="[SERVICE_USERNAME]" />
+                </Control>
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+                    <Publish Event="SpawnDialog" Value="CancelDlg" />
+                </Control>
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="220" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.ServiceCredDlg_Title)" />
+                <Control Id="SubTitle" Type="Text" X="25" Y="23" Width="200" Height="20" Transparent="yes" NoPrefix="yes" Text="!(loc.ServiceCredDlg_SubTitle)" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.ServiceCredDlg_BannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="369" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="369" Height="0" />
+
+                <Control Id="Description" Type="Text" X="20" Y="55" Width="330" Height="40" Text="!(loc.ServiceCredDlg_Description)" />
+
+                <Control Id="SelectorLabel" Type="Text" X="20" Y="103" Width="330" Height="10" Text="!(loc.ServiceCredDlg_SelectorLabel)" />
+                <Control Id="UsernameLabel" Type="Text" X="40" Y="115" Width="41" Height="10" TabSkip="no" Text="!(loc.ServiceCredDlg_UsernameLabel)" />
+                <Control Id="Username" Type="Edit" X="81" Y="113" Width="150" Height="15" Property="SERVICE_USERNAME" Text="{64}">
+                    <Publish Property="LOGON_VALID" Value="0" />
+                    <!-- look for "\" or "@" -->
+                    <Publish Property="REGEX_MATCH_INPUT_STRING" Value="[SERVICE_USERNAME]" Condition="SERVICE_USERNAME &lt;&gt; &quot;&quot;" />
+                    <Publish Property="REGEX_MATCH_EXPRESSION" Value=".*(\\|@).*" Condition="SERVICE_USERNAME &lt;&gt; &quot;&quot;" />
+                    <Publish Event="DoAction" Value="Regex_Match" Condition="SERVICE_USERNAME &lt;&gt; &quot;&quot;" />
+                    <Publish Property="SERVICE_USERNAME" Value="[ComputerName]\[SERVICE_USERNAME]" Condition="SERVICE_USERNAME &lt;&gt; &quot;&quot; AND REGEX_MATCH_RESULT = &quot;0&quot;" />
+                </Control>
+                
+                <Control Id="PasswordLabel" Type="Text" X="40" Y="130" Width="41" Height="10" TabSkip="no" Text="!(loc.ServiceCredDlg_PasswordLabel)" />
+                <Control Id="Password" Password="yes" Type="Edit" X="81" Y="128" Width="150" Height="15" Property="SERVICE_PASSWORD" >
+                    <Publish Property="LOGON_VALID" Value="0" />
+                </Control>
+
+                <!-- \todo Testing credentials on Vista requires elevation, ElevationShield just puts a pretty icon here -->
+                <Control Id="Test" Type="PushButton" X="40" Y="153" Width="100" Height="15" Text="!(loc.ServiceCredDlg_AccountTestLabel)" DisableCondition="LOGON_VALID = &quot;1&quot;" EnableCondition="LOGON_VALID &lt;&gt; &quot;1&quot;" HideCondition="VersionNT &lt;= 500">
+                    <!-- check whether the credentials are valid -->
+                    <Publish Property="LOGON_USERNAME" Value="[SERVICE_USERNAME]" Order="1" />
+                    <Publish Property="LOGON_PASSWORD" Value="[SERVICE_PASSWORD]" Order="1" />
+                    <Publish Property="LOGON_TYPE" Value="LOGON32_LOGON_NETWORK" Order="1" />
+                    <Publish Event="DoAction" Value="Check_Credentials" Order="2" />
+                    <Publish Property="ERROR_MESSAGE" Order="3" />
+                    <Publish Property="USERNAME_PASSWORD_VALID" Value="[LOGON_VALID]" Order="4" />
+                    <Publish Property="ERROR_TITLE" Value="!(loc.ServiceCredDlg_InvalidLogonErrorTitle)" Order="5" />
+                    <Publish Property="ERROR_MESSAGE" Value="[LOGON_ERROR]" Order="6" Condition="LOGON_ERROR &lt;&gt; &quot;&quot; AND USERNAME_PASSWORD_VALID = &quot;0&quot;" />
+                    <Publish Property="ERROR_MESSAGE" Value="!(loc.ServiceCredDlg_InvalidLogonError)" Order="7" Condition="LOGON_ERROR = &quot;&quot; AND USERNAME_PASSWORD_VALID = &quot;0&quot;" />
+
+                    <!-- check whether this user has logon as a service privilege, only if username/password is valid -->
+                    <Publish Property="LOGON_TYPE" Value="LOGON32_LOGON_SERVICE" Order="8" Condition="USERNAME_PASSWORD_VALID = &quot;1&quot;" />
+                    <Publish Property="ERROR_MESSAGE" Order="8" Condition="USERNAME_PASSWORD_VALID = &quot;1&quot;" />
+                    <Publish Event="DoAction" Value="Check_CredentialsWithPrivilege" Order="9" Condition="USERNAME_PASSWORD_VALID = &quot;1&quot;" />
+                    <Publish Property="LOGON_HAS_PRIVILEGE" Value="[LOGON_VALID]" Order="10" Condition="USERNAME_PASSWORD_VALID = &quot;1&quot;" />
+                    <Publish Property="ERROR_MESSAGE" Value="!(loc.ServiceCredDlg_AccountDoesNotHaveLogonAsServiceRights)" Order="11" Condition="USERNAME_PASSWORD_VALID = &quot;1&quot; AND LOGON_HAS_PRIVILEGE = &quot;0&quot;" />
+
+                    <!-- check whether this user is an administrator. S-1-5-32-544 is the SID of the Administrators group -->
+                    <Publish Property="IMPERSONATE_LOGON_TYPE" Value="LOGON32_LOGON_NETWORK" Order="21" Condition="SERVICE_REQUIRE_ADMIN" />
+                    <Publish Property="IMPERSONATE_USERNAME" Value="[SERVICE_USERNAME]" Order="21" Condition="SERVICE_REQUIRE_ADMIN" />
+                    <Publish Property="IMPERSONATE_PASSWORD" Value="[SERVICE_PASSWORD]" Order="22" Condition="SERVICE_REQUIRE_ADMIN" />
+                    <Publish Property="SID" Value="S-1-5-32-544" Order="23" Condition="SERVICE_REQUIRE_ADMIN" />
+                    <Publish Event="DoAction" Value="Check_Membership" Order="24" Condition="SERVICE_REQUIRE_ADMIN AND USERNAME_PASSWORD_VALID = &quot;1&quot; AND LOGON_HAS_PRIVILEGE=&quot;1&quot;" />
+                    <Publish Property="ERROR_MESSAGE" Value="!(loc.ServiceCredDlg_AccountNotInAdministratorsGroup)" Order="26" Condition="SERVICE_REQUIRE_ADMIN AND USERNAME_PASSWORD_VALID = &quot;1&quot; AND LOGON_HAS_PRIVILEGE = &quot;1&quot; AND LOGON_IS_MEMBER = &quot;0&quot; AND ERROR_MESSAGE = &quot;&quot;" />
+
+                    <!-- Need to publish this so that the installer can move on if adminstrative user is not required -->
+                    <Publish Property="LOGON_IS_MEMBER" Value="1" Condition="NOT SERVICE_REQUIRE_ADMIN" />
+
+                    <!-- spawn error dialog, ERROR_MESSAGE will be set accordingly -->
+                    <Publish Event="SpawnDialog" Value="GenericErrorDlg" Order="31" Condition="USERNAME_PASSWORD_VALID = &quot;0&quot; OR LOGON_HAS_PRIVILEGE = &quot;0&quot; OR LOGON_IS_MEMBER = &quot;0&quot;" />
+                    <!-- clear impersonation properties for any subsequent CA -->
+                    <Publish Property="IMPERSONATE_USERNAME" Order="32" />
+                    <Publish Property="IMPERSONATE_PASSWORD" Order="33" />
+                </Control>
+                <Control Id="TestResult_Success" Type="Icon" IconSize="16" X="145" Y="154" Width="12" Height="12" Text="SuccessIco" HideCondition="LOGON_VALID = &quot;0&quot; OR LOGON_HAS_PRIVILEGE = &quot;0&quot; OR LOGON_IS_MEMBER = &quot;0&quot;" ShowCondition="LOGON_VALID = &quot;1&quot; AND LOGON_HAS_PRIVILEGE = &quot;1&quot; AND LOGON_IS_MEMBER = &quot;1&quot;" />
+                <Control Id="TestResult_Failure" Type="Icon" IconSize="16" X="145" Y="154" Width="12" Height="12" Text="ErrorIco" HideCondition="(LOGON_VALID = &quot;1&quot; AND LOGON_HAS_PRIVILEGE = &quot;1&quot; AND LOGON_IS_MEMBER = &quot;1&quot;)" ShowCondition="(LOGON_VALID = &quot;0&quot; OR LOGON_HAS_PRVILEGE = &quot;0&quot; OR LOGON_IS_MEMBER = &quot;0&quot;)" />
+                <Control Id="TestPrompt" Type="Text" X="160" Y="155" Width="155" Height="10" Text="!(loc.ServiceCredDlg_TestPrompt)" HideCondition="(LOGON_VALID = &quot;1&quot; AND LOGON_HAS_PRIVILEGE = &quot;1&quot; AND LOGON_IS_MEMBER = &quot;1&quot;)" ShowCondition="(LOGON_VALID = &quot;0&quot; OR LOGON_HAS_PRIVILEGE = &quot;0&quot; OR LOGON_IS_MEMBER = &quot;0&quot;)" />
+            </Dialog>
+        </UI>
+    </Fragment>
+</Wix>

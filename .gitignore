@@ -13,6 +13,10 @@ generated
 *.war.asc
 *.sha256
 
+<<<<<<< HEAD
+=======
+.vscode/
+>>>>>>> ff8b61f (Upgrade to Wix5)
 venv/
 pkg.jenkins.io/
 jenkins.io.key

@@ -1,0 +1,73 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <Fragment>
+
+        <Property Id="HOSTNAME" Value="localhost" />
+        <CustomAction Id="String_Trim" DllEntry="StringTrim" BinaryRef="JenkinsCA" Execute="immediate" Return="check"/>
+        <CustomAction Id="BindSocket" DllEntry="BindSocket" BinaryRef="JenkinsCA" Execute="immediate" Return="check"/>
+
+        <UI>
+            <!--
+                Prompts for a service port number.
+
+                \param CURRENTPORTNUMBER optional current port number, in use, that should not be checked.
+                       This is useful for upgrades when the service is currently running on a given port.
+                \return PORTNUMBER port number selected by the user.
+            -->
+            <Dialog Id="ServicePortDlg" Width="370" Height="270" Title="!(loc.ServicePortDlg_Header)">
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" EnableCondition="BIND_SUCCEEDED = &quot;1&quot;" DisableCondition="BIND_SUCCEEDED &lt;&gt; &quot;1&quot;" />
+
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+                    <Publish Event="SpawnDialog" Value="CancelDlg" />
+                </Control>
+
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.ServicePortDlg_Title)" />
+                <Control Id="SubTitle" Type="Text" X="25" Y="23" Width="200" Height="20" Transparent="yes" NoPrefix="yes" Text="!(loc.ServicePortDlg_SubTitle)" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.ServicePortDlg_BannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="369" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="369" Height="0" />
+
+                <Control Id="Description" Type="Text" X="20" Y="55" Width="330" Height="40" Text="!(loc.ServicePortDlg_Description)" />
+
+                <Control Id="SelectorLabel" Type="Text" X="20" Y="103" Width="330" Height="10" Text="!(loc.ServicePortDlg_SelectorLabel)" />
+                <Control Id="Port" Type="Edit" X="20" Y="115" Width="75" Height="15" Property="PORTNUMBER" Text="{6}">
+                    <Publish Property="BIND_SUCCEEDED" Value="0" />
+                </Control>
+
+                <Control Id="Test" Type="PushButton" X="20" Y="140" Width="100" Height="15" Text="!(loc.ServicePortDlg_TestPortLabel)" DisableCondition="BIND_SUCCEEDED = &quot;1&quot;" EnableCondition="BIND_SUCCEEDED &lt;&gt; &quot;1&quot;">
+                    <Publish Property="STRING_TRIM_INPUT" Value="[PORTNUMBER]" Order="2" />
+                    <Publish Event="DoAction" Value="String_Trim" Order="3" />
+                    <Publish Property="PORTNUMBER" Value="[STRING_TRIM_RESULT]" Order="4" />
+                    <!-- Try to bind to the user specified SE host & port values. -->
+                    <Publish Property="CA_ERROR" Order="5" Condition="HOSTNAME &lt;&gt; &quot;&quot;" />
+                    <Publish Property="TCP_PORT" Value="[PORTNUMBER]" Order="6" Condition="HOSTNAME &lt;&gt; &quot;&quot;" />
+                    <Publish Property="TCP_IPADDRESS" Value="[HOSTNAME]" Order="7" Condition="HOSTNAME &lt;&gt; &quot;&quot;" />
+                    <Publish Property="TCPIP_CONNECTION_ESTABLISHED" Value="0" Order="8" />
+                    <Publish Event="DoAction" Value="BindSocket" Order="9" Condition="HOSTNAME &lt;&gt; &quot;&quot; AND PORTNUMBER &lt;&gt; &quot;&quot; AND PORTNUMBER &lt;&gt; CURRENTPORTNUMBER" />
+                    <!-- Use the values returned by the TcpIp_BindSocket CA to control the work flow. -->
+                    <Publish Property="CA_ERROR" Value="[CA_ERROR]" Order="10" />
+                    <Publish Property="BIND_SUCCEEDED" Value="1" Order="11" Condition="PORTNUMBER = CURRENTPORTNUMBER" />
+                    <Publish Property="BIND_SUCCEEDED" Value="[TCPIP_BIND_SUCCEEDED]" Order="11" Condition="PORTNUMBER &lt;&gt; CURRENTPORTNUMBER" />
+                    <!-- Spawn the error dialog if the connection fails. -->
+                    <Publish Property="ERROR_TITLE" Value="!(loc.ServicePortDlg_ErrorTitle)" Order="12" Condition="BIND_SUCCEEDED &lt;&gt; &quot;1&quot;" />
+                    <Publish Property="ERROR_MESSAGE" Value="!(loc.ServicePortDlg_TestPortFailedMessage) [CA_ERROR]" Order="13" Condition="BIND_SUCCEEDED &lt;&gt; &quot;1&quot; AND CA_ERROR &lt;&gt; &quot;&quot;" />
+                    <Publish Property="ERROR_MESSAGE" Value="!(loc.ServicePortDlg_InvalidPortMessage)" Order="14" Condition="BIND_SUCCEEDED &lt;&gt; &quot;1&quot; AND CA_ERROR = &quot;&quot;" />
+                    <Publish Event="SpawnDialog" Value="GenericErrorDlg" Order="15" Condition="BIND_SUCCEEDED &lt;&gt; &quot;1&quot;" />
+                    <Publish Property="HOSTNAME" Value="[HOSTNAME]" />
+                    <Publish Property="PORTNUMBER" Value="[PORTNUMBER]" />
+                </Control>
+
+                <!-- Display success bitmap in the UI if socket bind succeeds. -->
+                <Control Id="TestResult_Success" Type="Icon" IconSize="16" X="125" Y="141" Width="12" Height="12" Text="SuccessIco" HideCondition="BIND_SUCCEEDED &lt;&gt; &quot;1&quot;" ShowCondition="BIND_SUCCEEDED = &quot;1&quot;" />
+
+                <!-- Display warning bitmap in the UI if socket bind fails. -->
+                <Control Id="TestResult_Failure" Type="Icon" IconSize="16" X="125" Y="141" Width="12" Height="12" Text="ErrorIco" HideCondition="BIND_SUCCEEDED = &quot;1&quot;" ShowCondition="BIND_SUCCEEDED &lt;&gt; &quot;1&quot;" />
+
+                <Control Id="TestPrompt" Type="Text" X="140" Y="143" Width="197" Height="10" Text="!(loc.ServicePortDlg_TestPrompt)" HideCondition="BIND_SUCCEEDED = &quot;1&quot;" ShowCondition="BIND_SUCCEEDED &lt;&gt; &quot;1&quot;" />
+
+                <Control Id="Recomendation" Type="Text" X="20" Y="182" Width="330" Height="20" Text="!(loc.ServicePortDlg_Recomendation)" />
+            </Dialog>
+        </UI>
+
+    </Fragment>
+</Wix>
