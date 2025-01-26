@@ -71,7 +71,7 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
-  - name: fedora-40  # EOL 2025-05-13
+  - name: fedora-40  # EOL 2025-05-28
     image: dokken/fedora-40:latest
     override_command: false
     volumes:
@@ -104,14 +104,6 @@ platforms:
     cgroupns_mode: host
     privileged: true
   # suse
-  - name: opensuse-leap-15.5  # EOL 2024-12-01
-    image: dokken/opensuse-leap-15.5:latest
-    override_command: false
-    volumes:
-      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    cgroupns_mode: host
-    privileged: true
   - name: opensuse-leap-15.6  # EOL 2025-12-01
     image: dokken/opensuse-leap-15.6:latest
     override_command: false
