@@ -79,14 +79,6 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
-  - name: oraclelinux-8  # EOL 2029-07-01
-    image: dokken/oraclelinux-8:latest
-    override_command: false
-    volumes:
-      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    cgroupns_mode: host
-    privileged: true
   - name: oraclelinux-9  # EOL 2032-06-30
     image: dokken/oraclelinux-9:latest
     override_command: false
