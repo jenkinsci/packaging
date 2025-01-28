@@ -79,7 +79,7 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
-  - name: fedora-41  # Update EOL when known
+  - name: fedora-41  # EOL 2025-11-19
     image: fedora:41
     override_command: false
     volumes:
