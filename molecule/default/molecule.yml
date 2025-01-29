@@ -80,7 +80,7 @@ platforms:
     cgroupns_mode: host
     privileged: true
   - name: fedora-41  # EOL 2025-11-19
-    image: fedora:41
+    image: dokken/fedora-41:latest
     override_command: false
     volumes:
       - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
