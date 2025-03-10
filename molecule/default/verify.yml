@@ -42,7 +42,7 @@
     delay: 5
   - assert:
       that:
-        - "'<title>Sign in [Jenkins]</title>' in result.content"
+        - "'<title>Sign in - Jenkins</title>' in result.content"
       fail_msg: "{{ result.content }}"
   - pids:
       name: java
