@@ -10,6 +10,5 @@ generated
 .idea/
 *.orig
 
-msi/build
 venv/
 
