@@ -8,12 +8,17 @@
     name:
       - java-17-openjdk
     state: present
-  when: ansible_distribution != 'Amazon'
+  when: ansible_distribution != 'Amazon' and (ansible_distribution != 'CentOS' or ansible_distribution_major_version != '10')
 - package:
     name:
       - java-17-amazon-corretto
     state: present
   when: ansible_distribution == 'Amazon'
+- package:
+    name:
+      - java-21-openjdk
+    state: present
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '10'
 - file:
     path: /var/tmp/target/credentials
     state: directory
