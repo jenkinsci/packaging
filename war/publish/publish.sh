@@ -6,6 +6,7 @@ set -euxo pipefail
 : "${WAR:?Require Jenkins War file}"
 : "${WARDIR:? Require where to put binary files}"
 : "${WAR_WEBDIR:? Require where to put repository index and other web contents}"
+: "${JENKINS_ASC:=${WAR}.asc}"
 
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
@@ -60,6 +61,14 @@ function uploadPackage() {
 		--progress \
 		"${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
 
+	rsync \
+		--compress \
+		--recursive \
+		--verbose \
+		--ignore-existing \
+		--progress \
+		"${JENKINS_ASC}" "${WARDIR}/${VERSION}/"
+
 	# Remote
 	rsync \
 		--archive \
@@ -78,6 +87,15 @@ function uploadPackage() {
 		--ignore-existing \
 		--progress \
 		"${WAR_SHASUM}" "$PKGSERVER:${WARDIR}/${VERSION}/"
+
+	rsync \
+		--archive \
+		--compress \
+		--verbose \
+		-e "ssh ${SSH_OPTS[*]}" \
+		--ignore-existing \
+		--progress \
+		"${JENKINS_ASC}" "$PKGSERVER:${WARDIR}/${VERSION}/"
 }
 
 # Site html need to be located in the binary directory
