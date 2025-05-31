@@ -1,28 +1,45 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base",
+    "config:recommended",
     ":semanticCommitsDisabled",
     "schedule:earlyMondays"
   ],
-  "enabledManagers": ["npm", "regex"],
+  "enabledManagers": [
+    "npm",
+    "custom.regex"
+  ],
   "packageRules": [
     {
-      "matchDatasources": ["npm"],
-      "addLabels": ["javascript"],
-      "stabilityDays": 3
+      "matchDatasources": [
+        "npm"
+      ],
+      "addLabels": [
+        "javascript"
+      ],
+      "minimumReleaseAge": "3 days"
     }
   ],
-  "regexManagers": [
+  "customManagers": [
     {
-      "fileMatch": ["templates/base.html"],
-      "matchStrings": ["webcomponentsjs@(?<currentValue>.*?)/"],
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/templates/base.html/"
+      ],
+      "matchStrings": [
+        "webcomponentsjs@(?<currentValue>.*?)/"
+      ],
       "depNameTemplate": "@webcomponents/webcomponentsjs",
       "datasourceTemplate": "npm"
     },
     {
-      "fileMatch": ["templates/base.html"],
-      "matchStrings": ["lit@(?<currentValue>.*?)/"],
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/templates/base.html/"
+      ],
+      "matchStrings": [
+        "lit@(?<currentValue>.*?)/"
+      ],
       "depNameTemplate": "lit",
       "datasourceTemplate": "npm"
     }
