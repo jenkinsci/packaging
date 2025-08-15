@@ -19,8 +19,8 @@ services:
     - "MSI=/srv/releases/jenkins/jenkins.msi"
     - "RELEASELINE=-experimental"
     volumes:
-      - ".:/srv/releases/jenkins"
-      - "./credentials/ssh:/home/jenkins/.ssh"
+      - ".:/srv/releases/jenkins:z"
+      - "./credentials/ssh:/home/jenkins/.ssh:z"
     working_dir: "/srv/releases/jenkins"
 
   remote:
