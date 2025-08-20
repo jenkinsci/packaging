@@ -23,7 +23,7 @@ function generateSite() {
 	cp -R "$bin/contents/." "$D/contents"
 
 	gpg --export -a --output "$D/contents/${ORGANIZATION}.key" "${GPG_KEYNAME}"
-	echo "$(gpg --import-options show-only --import $D/contents/${ORGANIZATION}.key)" >"$D/contents/${ORGANIZATION}.key.info"
+	gpg --import-options show-only --import "$D/contents/${ORGANIZATION}.key" >"$D/contents/${ORGANIZATION}.key.info"
 
 	"$BASE/bin/indexGenerator.py" \
 		--distribution debian \
@@ -43,13 +43,13 @@ function generateSite() {
 
 	# Remote ftparchive-merge
 	# https://github.com/kohsuke/apt-ftparchive-merge
-	pushd $D/binary
+	pushd "$D/binary"
 	mvn -V org.kohsuke:apt-ftparchive-merge:1.6:merge -Durl="$DEB_URL/binary/" -Dout=../merged
 	popd
 
 	# Local ftparchive-merge
 
-	cat $D/merged/Packages >$D/binary/Packages
+	cat "$D/merged/Packages" >"$D/binary/Packages"
 	gzip -9c "$D/merged/Packages" >"$D/binary/Packages.gz"
 	bzip2 -c "$D/merged/Packages" >"$D/binary/Packages.bz2"
 	lzma -c "$D/merged/Packages" >"$D/binary/Packages.lzma"
@@ -69,7 +69,7 @@ function init() {
 }
 
 function skipIfAlreadyPublished() {
-	if test -e "${DEBDIR}/$(basename "$DEB")"; then
+	if [[ -f "${DEBDIR}/$(basename "$DEB")" ]]; then
 		echo "File already published, nothing else todo"
 		return 0
 	fi
