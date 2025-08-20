@@ -66,6 +66,7 @@ function show() {
 function uploadPackage() {
 	rsync \
 		--recursive \
+		--times \
 		--verbose \
 		--compress \
 		--ignore-existing \
@@ -74,6 +75,7 @@ function uploadPackage() {
 
 	rsync \
 		--archive \
+		--times \
 		--verbose \
 		--compress \
 		--ignore-existing \
@@ -86,6 +88,7 @@ function uploadSite() {
 	pushd $D
 	rsync \
 		--recursive \
+		--times \
 		--verbose \
 		--compress \
 		--progress \
@@ -97,6 +100,7 @@ function uploadSite() {
 	# shellcheck disable=SC2029
 	rsync \
 		--archive \
+		--times \
 		--verbose \
 		--compress \
 		--progress \
@@ -140,6 +144,7 @@ function uploadSite() {
 	# Following html need to be located inside the binary directory
 	rsync \
 		--compress \
+		--times \
 		--verbose \
 		--recursive \
 		--include "HEADER.html" \
@@ -150,6 +155,7 @@ function uploadSite() {
 
 	rsync \
 		--archive \
+		--times \
 		--compress \
 		--verbose \
 		-e "ssh ${SSH_OPTS[*]}" \
