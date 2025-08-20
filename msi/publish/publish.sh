@@ -6,9 +6,6 @@ set -euxo pipefail
 : "${MSI:?Require Jenkins War file}"
 : "${MSIDIR:? Require where to put binary files}"
 
-# Convert string to array to correctly escape cli parameter
-SSH_OPTS=($SSH_OPTS)
-
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
 
@@ -27,12 +24,10 @@ function init() {
 	mkdir -p $D
 
 	mkdir -p "${MSIDIR}/${VERSION}/"
-
-	ssh "${SSH_OPTS[@]}" "$PKGSERVER" mkdir -p "$MSIDIR/${VERSION}/"
 }
 
 function skipIfAlreadyPublished() {
-	if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${MSIDIR}/${VERSION}/$(basename "$MSI")"; then
+	if test -e "${MSIDIR}/${VERSION}/$(basename "$MSI")"; then
 		echo "File already published, nothing else todo"
 		exit 0
 
@@ -49,6 +44,7 @@ function uploadPackage() {
 	# Local
 	rsync \
 		--compress \
+		--times \
 		--verbose \
 		--recursive \
 		--ignore-existing \
@@ -57,30 +53,12 @@ function uploadPackage() {
 
 	rsync \
 		--compress \
+		--times \
 		--ignore-existing \
 		--recursive \
 		--progress \
 		--verbose \
 		"${MSI_SHASUM}" "${MSIDIR}/${VERSION}/"
-
-	# Remote
-	rsync \
-		--archive \
-		--compress \
-		--verbose \
-		--ignore-existing \
-		--progress \
-		-e "ssh ${SSH_OPTS[*]}" \
-		"${MSI}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
-
-	rsync \
-		--archive \
-		--compress \
-		--verbose \
-		--ignore-existing \
-		--progress \
-		-e "ssh ${SSH_OPTS[*]}" \
-		"${MSI_SHASUM}" "$PKGSERVER:${MSIDIR}/${VERSION}/"
 
 	# Update the symlink to point to most recent Windows build
 	#
@@ -92,16 +70,15 @@ function uploadPackage() {
 	# Don't need VERSION directory or MSI locally, just the unresolved symlink.
 	# The jenkins.io page downloads http://mirrors.jenkins-ci.org/windows/latest
 	# and assumes it points to the most recent MSI file.
-	ln -s ${VERSION}/"$(basename "$MSI")" latest
+	ln -s "${VERSION}/$(basename "$MSI")" latest
 
-	# Copy the symlink to PKGSERVER in the root of MSIDIR
 	# Overwrites the existing symlink on the destination
 	rsync \
+		--times \
 		--archive \
 		--links \
 		--verbose \
-		-e "ssh ${SSH_OPTS[*]}" \
-		latest "$PKGSERVER:${MSIDIR}/"
+		latest "${MSIDIR}/"
 
 	# Remove the local symlink
 	rm latest
@@ -111,27 +88,17 @@ function uploadPackage() {
 function uploadSite() {
 	rsync \
 		--compress \
+		--times \
 		--verbose \
 		--recursive \
 		--progress \
-		-e "ssh ${SSH_OPTS[*]}" \
 		"${D}/" "${MSIDIR// /\\ }/"
-
-	rsync \
-		--archive \
-		--compress \
-		--verbose \
-		--progress \
-		-e "ssh ${SSH_OPTS[*]}" \
-		"${D}/" "$PKGSERVER:${MSIDIR// /\\ }/"
 }
 
 function show() {
 	echo "Parameters:"
 	echo "MSI: $MSI"
 	echo "MSIDIR: $MSIDIR"
-	echo "SSH_OPTS: ${SSH_OPTS[*]}"
-	echo "PKGSERVER: $PKGSERVER"
 	echo "---"
 }
 
