@@ -12,9 +12,6 @@ set -euxo pipefail
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
 
-# Convert string to array to correctly escape cli parameter
-SSH_OPTS=($SSH_OPTS)
-
 bin="$(dirname "$0")"
 
 function clean() {
@@ -69,13 +66,10 @@ function init() {
 
 	# where to put repository index and other web contents
 	mkdir -p "$DEB_WEBDIR"
-	## On remote serve
-	# shellcheck disable=SC2029
-	ssh "${SSH_OPTS[@]}" "$PKGSERVER" mkdir -p "$DEBDIR/"
 }
 
 function skipIfAlreadyPublished() {
-	if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${DEBDIR}/$(basename "$DEB")"; then
+	if test -e "${DEBDIR}/$(basename "$DEB")"; then
 		echo "File already published, nothing else todo"
 		return 0
 	fi
@@ -88,18 +82,10 @@ function uploadPackage() {
 		--verbose \
 		--recursive \
 		--compress \
+		--times \
 		--ignore-existing \
 		--progress \
 		"$DEB" "$DEBDIR/"
-
-	rsync \
-		--archive \
-		--verbose \
-		--compress \
-		--ignore-existing \
-		--progress \
-		-e "ssh ${SSH_OPTS[*]}" \
-		"${DEB}" "$PKGSERVER:${DEBDIR// /\\ }"
 }
 
 function uploadPackageSite() {
@@ -114,12 +100,14 @@ function uploadPackageSite() {
 		--verbose \
 		--recursive \
 		--compress \
+		--times \
 		--progress \
 		"$D/contents/" "$DEB_WEBDIR/"
 
 	rsync \
 		--archive \
 		--compress \
+		--times \
 		--progress \
 		--verbose \
 		-e "ssh ${SSH_OPTS[*]}" \
@@ -133,6 +121,7 @@ function uploadHtmlSite() {
 		--include "FOOTER.html" \
 		--exclude "*" \
 		--compress \
+		--times \
 		--recursive \
 		--progress \
 		--verbose \
@@ -141,23 +130,13 @@ function uploadHtmlSite() {
 	rsync \
 		--archive \
 		--compress \
+		--times \
 		--include "index.html" \
 		--exclude "*" \
 		--progress \
 		--verbose \
 		-e "ssh ${SSH_OPTS[*]}" \
 		"$D/html/" "$PKGSERVER:${DEB_WEBDIR// /\\ }/"
-
-	rsync \
-		--archive \
-		--compress \
-		--include "HEADER.html" \
-		--include "FOOTER.html" \
-		--exclude "*" \
-		--progress \
-		--verbose \
-		-e "ssh ${SSH_OPTS[*]}" \
-		"$D/html/" "$PKGSERVER:${DEBDIR// /\\ }/"
 }
 
 function show() {
