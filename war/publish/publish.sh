@@ -21,13 +21,13 @@ function generateSite() {
 }
 
 function init() {
-	mkdir -p $D
+	mkdir -p "$D"
 
 	mkdir -p "${WARDIR}/${VERSION}/"
 }
 
 function skipIfAlreadyPublished() {
-	if test -e "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"; then
+	if [[ -f "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war" ]]; then
 		echo "File already published, nothing else todo"
 		exit 0
 	fi

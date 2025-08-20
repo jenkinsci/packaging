@@ -16,7 +16,7 @@ SSH_OPTS=($SSH_OPTS)
 SCP_OPTS=($SCP_OPTS)
 
 function clean() {
-	rm -rf $D
+	rm -rf "$D"
 }
 
 function generateSite() {
@@ -26,9 +26,9 @@ function generateSite() {
 
 	gpg --export -a --output "$D/repodata/repomd.xml.key" "${GPG_KEYNAME}"
 
-	"$BASE/bin/branding.py" $D
+	"$BASE/bin/branding.py" "$D"
 
-	cp "$SUSE" $D/RPMS/noarch
+	cp "$SUSE" "$D/RPMS/noarch"
 }
 
 function init() {
@@ -41,7 +41,7 @@ function init() {
 	# where to put repository index and other web contents
 	mkdir -p "$SUSE_WEBDIR"
 
-	mkdir -p $D/RPMS/noarch $D/repodata
+	mkdir -p "$D/RPMS/noarch" "$D/repodata"
 }
 
 function skipIfAlreadyPublished() {
@@ -85,7 +85,7 @@ function uploadPackage() {
 }
 
 function uploadSite() {
-	pushd $D
+	pushd "$D"
 	rsync \
 		--recursive \
 		--times \

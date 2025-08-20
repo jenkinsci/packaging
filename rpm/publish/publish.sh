@@ -16,12 +16,12 @@ D="$AGENT_WORKDIR/$$"
 SSH_OPTS=($SSH_OPTS)
 
 function clean() {
-	rm -rf $D
+	rm -rf "$D"
 }
 
 function generateSite() {
 	gpg --export -a --output "$D/${ORGANIZATION}.key" "${GPG_KEYNAME}"
-	echo "$(gpg --import-options show-only --import $D/${ORGANIZATION}.key)" >"$D/${ORGANIZATION}.key.info"
+	gpg --import-options show-only --import "$D/${ORGANIZATION}.key" >"$D/${ORGANIZATION}.key.info"
 
 	"$BASE/bin/indexGenerator.py" \
 		--distribution redhat \

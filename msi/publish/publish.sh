@@ -21,13 +21,13 @@ function generateSite() {
 }
 
 function init() {
-	mkdir -p $D
+	mkdir -p "$D"
 
 	mkdir -p "${MSIDIR}/${VERSION}/"
 }
 
 function skipIfAlreadyPublished() {
-	if test -e "${MSIDIR}/${VERSION}/$(basename "$MSI")"; then
+	if [[ -f "${MSIDIR}/${VERSION}/$(basename "$MSI")" ]]; then
 		echo "File already published, nothing else todo"
 		exit 0
 
