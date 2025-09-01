@@ -12,6 +12,9 @@ set -euxo pipefail
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
 
+# Convert string to array to correctly escape cli parameter
+SSH_OPTS=($SSH_OPTS)
+
 bin="$(dirname "$0")"
 
 function clean() {
