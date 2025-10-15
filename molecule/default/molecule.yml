@@ -22,6 +22,14 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
+  - name: debian-13  # EOL 2030-06-30 (LTS)
+    image: dokken/debian-13:latest
+    override_command: false
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns_mode: host
+    privileged: true
   - name: ubuntu-22-04  # EOL 2027-04-01
     image: dokken/ubuntu-22.04:latest
     override_command: false
