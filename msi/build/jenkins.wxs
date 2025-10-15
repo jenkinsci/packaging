@@ -168,7 +168,7 @@
         Return="check"
         Impersonate="no" />
 
-    <!-- This will find the JRE/JDK directory either Java 17 or 21 (prefer 17) -->
+    <!-- This will find the JRE/JDK directory either Java 17 or 21 (prefer 21) -->
     <Property Id="JAVA_HOME">
       <RegistrySearch Id="JDK21_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK\21" Name="JavaHome" Type="raw" Win64="yes" />
       <RegistrySearch Id="JDK17_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK\17" Name="JavaHome" Type="raw" Win64="yes" />

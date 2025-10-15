@@ -6,7 +6,7 @@
     update_cache: true
 - package:
     name:
-      - openjdk-17-jre
+      - openjdk-21-jre
     state: present
 - find:
     paths: /var/tmp/target/debian

@@ -10,7 +10,7 @@ if (env.BRANCH_IS_PRIMARY) {
 properties(jobProperties)
 
 podTemplate(
-  inheritFrom: 'jnlp-maven-17',
+  inheritFrom: 'jnlp-maven-21',
   workingDir: '/home/jenkins/agent',
   containers: [
     containerTemplate(name: 'jnlp', image: 'jenkinsciinfra/packaging:latest')
