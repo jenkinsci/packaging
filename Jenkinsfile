@@ -39,7 +39,13 @@ podTemplate(
       }
 
       stage('Build') {
-        sh 'make package && python3 -m pytest bin --junitxml target/junit.xml'
+        sh '''
+          echo "Fixing /var/tmp/target/rpm issue..."
+          sudo rm -f /var/tmp/target/rpm || true
+          sudo mkdir -p /var/tmp/target/rpm
+          sudo chmod -R 777 /var/tmp/target
+          make package && python3 -m pytest bin --junitxml target/junit.xml
+        '''
         junit 'target/junit.xml'
         def results = '*.war, target/debian/*.deb, target/rpm/*.rpm, target/suse/*.rpm'
         stash includes: results, name: 'results'
