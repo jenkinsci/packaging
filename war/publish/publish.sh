@@ -5,6 +5,7 @@ set -euxo pipefail
 : "${AGENT_WORKDIR:=/tmp}"
 : "${WAR:?Require Jenkins War file}"
 : "${WARDIR:? Require where to put binary files}"
+: "${JENKINS_ASC:=${WAR}.asc}"
 
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
@@ -54,6 +55,16 @@ function uploadPackage() {
 		--ignore-existing \
 		--progress \
 		"${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
+
+	rsync \
+		--compress \
+		--times \
+		--recursive \
+		--verbose \
+		--ignore-existing \
+		--progress \
+		"${JENKINS_ASC}" "${WARDIR}/${VERSION}/"
+
 
 	# TODO: generate symlink like in windows
 }
