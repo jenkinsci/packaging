@@ -109,7 +109,7 @@ function uploadSite() {
 	# generate index on the server
 	ssh "${SSH_OPTS[@]}" "$PKGSERVER" createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
 
-	ssh "${SSH_OPTS[@]}" "$PKGSERVER" "cat $RPMDIR/repodata/repomd.xml" | \
+	ssh "${SSH_OPTS[@]}" "$PKGSERVER" "cat $RPM_WEBDIR/repodata/repomd.xml" | \
 	gpg \
 		--batch \
 		--pinentry-mode loopback \
@@ -118,7 +118,7 @@ function uploadSite() {
 		--detach-sign \
 		--passphrase-file "$GPG_PASSPHRASE_FILE" \
 		--yes | \
-	ssh "${SSH_OPTS[@]}" "$PKGSERVER" "cat > $RPMDIR/repodata/repomd.xml.asc"
+	ssh "${SSH_OPTS[@]}" "$PKGSERVER" "cat > $RPM_WEBDIR/repodata/repomd.xml.asc"
 
 	# Following html need to be located inside the binary directory
 	rsync \
