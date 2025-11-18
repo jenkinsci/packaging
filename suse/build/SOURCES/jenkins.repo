@@ -1,7 +1,0 @@
-[@@ARTIFACTNAME@@]
-name=@@PRODUCTNAME@@
-enabled=1
-autorefresh=0
-baseurl=@@SUSE_URL@@
-type=rpm-md
-keeppackages=0

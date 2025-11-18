@@ -41,7 +41,7 @@ podTemplate(
       stage('Build') {
         sh 'make package && python3 -m pytest bin --junitxml target/junit.xml'
         junit 'target/junit.xml'
-        def results = '*.war, target/debian/*.deb, target/rpm/*.rpm, target/suse/*.rpm'
+        def results = '*.war, target/debian/*.deb, target/rpm/*.rpm'
         stash includes: results, name: 'results'
         archiveArtifacts results
       }
