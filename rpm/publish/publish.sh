@@ -12,9 +12,6 @@ set -euxo pipefail
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
 
-# Convert string to array to correctly escape cli parameter
-SSH_OPTS=($SSH_OPTS)
-
 function clean() {
 	rm -rf "$D"
 }
@@ -42,45 +39,21 @@ gpgkey=${RPM_URL}/repodata/repomd.xml.key
 gpgcheck=1
 repo_gpgcheck=1
 EOF
-}
-
-function skipIfAlreadyPublished() {
-	if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${RPMDIR}/$(basename "$RPM")"; then
-		echo "File already published, nothing else todo"
-		exit 0
-
-	fi
+	# TODO: move it here?
+	#createrepo_c --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
 }
 
 function init() {
-	mkdir -p "$D/RPMS/noarch"
-
-	mkdir -p "$RPMDIR/"
-	# shellcheck disable=SC2029
-	ssh "${SSH_OPTS[@]}" "$PKGSERVER" mkdir -p "'$RPMDIR/'"
+	mkdir -p "$D/RPMS/noarch" "$RPMDIR/"
 }
 
 function uploadPackage() {
-	# Local
-	rsync \
+	rsync --recursive \
 		--verbose \
 		--times \
-		--compress \
-		--ignore-existing \
-		--recursive \
+		--links \
 		--progress \
 		"$RPM" "$RPMDIR/"
-
-	# Remote
-	rsync \
-		--archive \
-		--times \
-		--verbose \
-		--compress \
-		-e "ssh ${SSH_OPTS[*]}" \
-		--ignore-existing \
-		--progress \
-		"${RPM}" "$PKGSERVER:${RPMDIR// /\\ }/"
 }
 
 function show() {
@@ -88,7 +61,6 @@ function show() {
 	echo "RPM: $RPM"
 	echo "RPMDIR: $RPMDIR"
 	echo "RPM_WEBDIR: $RPM_WEBDIR"
-	echo "SSH_OPTS: ${SSH_OPTS[*]}"
 	echo "PKGSERVER: $PKGSERVER"
 	echo "GPG_KEYNAME: $GPG_KEYNAME"
 	echo "---"
@@ -96,22 +68,21 @@ function show() {
 
 function uploadSite() {
 	pushd "$D"
-	rsync \
+	rsync --recursive \
 		--archive \
-		--times \
-		--compress \
 		--verbose \
-		-e "ssh ${SSH_OPTS[*]}" \
+		--times \
+		--links \
+		--progress \
 		--exclude RPMS \
 		--exclude "HEADER.html" \
 		--exclude "FOOTER.html" \
 		--progress \
-		. "$PKGSERVER:${RPM_WEBDIR// /\\ }/"
+		. "${RPM_WEBDIR}/"
 
-	# generate index on the server
-	ssh "${SSH_OPTS[@]}" "$PKGSERVER" createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
-
-	ssh "${SSH_OPTS[@]}" "$PKGSERVER" "cat $RPM_WEBDIR/repodata/repomd.xml" | \
+	# TODO: move to the "generateSite" function instead?
+	createrepo_c --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
+	cat "${RPM_WEBDIR}/repodata/repomd.xml" | \
 	gpg \
 		--batch \
 		--pinentry-mode loopback \
@@ -120,38 +91,23 @@ function uploadSite() {
 		--detach-sign \
 		--passphrase-file "$GPG_PASSPHRASE_FILE" \
 		--yes | \
-	ssh "${SSH_OPTS[@]}" "$PKGSERVER" "cat > $RPM_WEBDIR/repodata/repomd.xml.asc"
+		cat > "$RPM_WEBDIR/repodata/repomd.xml.asc"
+	# End TODO
 
 	# Following html need to be located inside the binary directory
-	rsync \
-		--compress \
-		--times \
+	rsync --recursive \
 		--verbose \
-		--recursive \
+		--times \
+		--links \
+		--progress \
 		--include "HEADER.html" \
 		--include "FOOTER.html" \
 		--exclude "*" \
-		--progress \
-		. "$RPMDIR/"
-
-	rsync \
-		--archive \
-		--times \
-		--compress \
-		--verbose \
-		-e "ssh ${SSH_OPTS[*]}" \
-		--include "HEADER.html" \
-		--include "FOOTER.html" \
-		--exclude "*" \
-		--progress \
-		. "$PKGSERVER:${RPMDIR// /\\ }/"
+		. "${RPMDIR}/"
 	popd
 }
 
 show
-## Disabling this function allow us to recreate and sign the rpm repository.
-# the rpm package won't be overrided as we use the parameter '--ignore-existing' when we upload it
-#skipIfAlreadyPublished
 init
 uploadPackage
 generateSite

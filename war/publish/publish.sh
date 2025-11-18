@@ -54,8 +54,6 @@ function uploadPackage() {
 		--ignore-existing \
 		--progress \
 		"${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
-
-	# TODO: generate symlink like in windows
 }
 
 # Site html need to be located in the binary directory

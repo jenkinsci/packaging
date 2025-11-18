@@ -12,9 +12,6 @@ set -euxo pipefail
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
 
-# Convert string to array to correctly escape cli parameter
-SSH_OPTS=($SSH_OPTS)
-
 bin="$(dirname "$0")"
 
 function clean() {
@@ -106,15 +103,6 @@ function uploadPackageSite() {
 		--times \
 		--progress \
 		"$D/contents/" "$DEB_WEBDIR/"
-
-	rsync \
-		--archive \
-		--compress \
-		--times \
-		--progress \
-		--verbose \
-		-e "ssh ${SSH_OPTS[*]}" \
-		"$D/contents/" "$PKGSERVER:${DEB_WEBDIR// /\\ }/"
 }
 
 function uploadHtmlSite() {
@@ -129,17 +117,6 @@ function uploadHtmlSite() {
 		--progress \
 		--verbose \
 		"$D/html/" "$DEBDIR/"
-
-	rsync \
-		--archive \
-		--compress \
-		--times \
-		--include "index.html" \
-		--exclude "*" \
-		--progress \
-		--verbose \
-		-e "ssh ${SSH_OPTS[*]}" \
-		"$D/html/" "$PKGSERVER:${DEB_WEBDIR// /\\ }/"
 }
 
 function show() {
@@ -147,8 +124,6 @@ function show() {
 	echo "DEB: $DEB"
 	echo "DEBDIR: $DEBDIR"
 	echo "DEB_WEBDIR: $DEB_WEBDIR"
-	echo "SSH_OPTS: ${SSH_OPTS[*]}"
-	echo "PKGSERVER: $PKGSERVER"
 	echo "GPG_KEYNAME: $GPG_KEYNAME"
 	echo "---"
 }
