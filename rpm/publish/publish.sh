@@ -20,8 +20,10 @@ function clean() {
 }
 
 function generateSite() {
-	gpg --export -a --output "$D/repodata/repomd.xml.key" "${GPG_KEYNAME}"
-	gpg --import-options show-only --import "$D/repodata/repomd.xml.key" >"$D/${ORGANIZATION}.key.info"
+	local gpg_publickey="$D/repodata/repomd.xml.key"
+	mkdir -p "$(dirname "${gpg_publickey}")"
+	gpg --export -a --output "${gpg_publickey}" "${GPG_KEYNAME}"
+	gpg --import-options show-only --import "${gpg_publickey}" >"$D/${ORGANIZATION}.key.info"
 
 	"$BASE/bin/indexGenerator.py" \
 		--distribution rpm \
