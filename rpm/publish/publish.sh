@@ -20,8 +20,8 @@ function clean() {
 }
 
 function generateSite() {
-	gpg --export -a --output "$D/${ORGANIZATION}.key" "${GPG_KEYNAME}"
-	gpg --import-options show-only --import "$D/${ORGANIZATION}.key" >"$D/${ORGANIZATION}.key.info"
+	gpg --export -a --output "$D/repodata/repomd.xml.key" "${GPG_KEYNAME}"
+	gpg --import-options show-only --import "$D/repodata/repomd.xml.key" >"$D/${ORGANIZATION}.key.info"
 
 	"$BASE/bin/indexGenerator.py" \
 		--distribution rpm \
@@ -36,7 +36,7 @@ function generateSite() {
 [${ARTIFACTNAME}]
 name=${PRODUCTNAME}${RELEASELINE}
 baseurl=${RPM_URL}
-gpgkey=${RPM_URL}/${ORGANIZATION}-2023.key
+gpgkey=${RPM_URL}/repodata/repomd.xml.key
 gpgcheck=1
 repo_gpgcheck=1
 EOF
