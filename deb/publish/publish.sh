@@ -59,31 +59,16 @@ function generateSite() {
 }
 
 function init() {
-	mkdir -p "$D/binary" "$D/contents" "$D/html"
-
-	# where to put binary files
-	mkdir -p "$DEBDIR" # where to put binary files
-
-	# where to put repository index and other web contents
-	mkdir -p "$DEB_WEBDIR"
-}
-
-function skipIfAlreadyPublished() {
-	if [[ -f "${DEBDIR}/$(basename "$DEB")" ]]; then
-		echo "File already published, nothing else todo"
-		return 0
-	fi
-	return 1
+	mkdir -p "$D/binary" "$D/contents" "$D/html" \
+		"$DEBDIR" `# where to put binary files` \
+		"$DEB_WEBDIR" `# where to put repository index and other web contents`
 }
 
 # Upload Debian Package
 function uploadPackage() {
-	rsync \
-		--verbose \
-		--recursive \
-		--compress \
+	rsync --archive \
 		--times \
-		--ignore-existing \
+		--verbose \
 		--progress \
 		"$DEB" "$DEBDIR/"
 }
@@ -96,26 +81,22 @@ function uploadPackageSite() {
 		"$D"/binary/Contents* \
 		"$D"/contents/binary
 
-	rsync \
-		--verbose \
-		--recursive \
-		--compress \
+	rsync --archive \
 		--times \
+		--verbose \
 		--progress \
 		"$D/contents/" "$DEB_WEBDIR/"
 }
 
 function uploadHtmlSite() {
 	# Html file need to be located in the binary directory
-	rsync \
+	rsync --archive \
+		--times \
+		--verbose \
+		--progress \
 		--include "HEADER.html" \
 		--include "FOOTER.html" \
 		--exclude "*" \
-		--compress \
-		--times \
-		--recursive \
-		--progress \
-		--verbose \
 		"$D/html/" "$DEBDIR/"
 }
 
@@ -146,17 +127,12 @@ function signSite() {
 }
 
 show
-## Disabling this function allow us to recreate and sign the repository.
-# the debian package won't be overrided as we use the parameter '--ignore-existing'
-#skipIfAlreadyPublished
 init
 generateSite
 signSite
 
-if ! skipIfAlreadyPublished; then
-	uploadPackage
-	uploadPackageSite
-fi
+uploadPackage
+uploadPackageSite
 
 uploadHtmlSite
 clean
