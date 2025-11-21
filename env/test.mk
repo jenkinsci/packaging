@@ -12,7 +12,6 @@ export RPMDIR=${TESTDIR}/rpm${RELEASELINE}
 # where to put repository index and other web contents
 export  RPM_WEBDIR=${TESTDIR}/rpm${RELEASELINE}
 export  DEB_WEBDIR=${TESTDIR}/debian${RELEASELINE}
-export  WAR_WEBDIR=${TESTDIR}/war${RELEASELINE}
 export  MSI_WEBDIR=${TESTDIR}/windows${RELEASELINE}
 
 # URL to the aforementioned webdir.
