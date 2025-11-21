@@ -21,16 +21,7 @@ function generateSite() {
 }
 
 function init() {
-	mkdir -p "$D"
-
-	mkdir -p "${WARDIR}/${VERSION}/"
-}
-
-function skipIfAlreadyPublished() {
-	if [[ -f "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war" ]]; then
-		echo "File already published, nothing else todo"
-		exit 0
-	fi
+	mkdir -p "$D" "${WARDIR}/${VERSION}/"
 }
 
 function uploadPackage() {
@@ -78,7 +69,6 @@ function show() {
 }
 
 show
-skipIfAlreadyPublished
 init
 generateSite
 uploadPackage

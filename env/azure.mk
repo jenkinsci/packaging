@@ -13,7 +13,6 @@ export RPMDIR="${BASE_PKG_DIR}/jenkins/rpm${RELEASELINE}"
 export  RPM_WEBDIR=/srv/releases/jenkins/rpm${RELEASELINE}
 export  MSI_WEBDIR=/srv/releases/jenkins/windows${RELEASELINE}
 export  DEB_WEBDIR=/srv/releases/jenkins/debian${RELEASELINE}
-export  WAR_WEBDIR=/srv/releases/jenkins/war${RELEASELINE}
 
 # URL to the aforementioned webdir.
 WEBSERVER=https://pkg.jenkins.io
