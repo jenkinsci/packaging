@@ -21,17 +21,7 @@ function generateSite() {
 }
 
 function init() {
-	mkdir -p "$D"
-
-	mkdir -p "${MSIDIR}/${VERSION}/"
-}
-
-function skipIfAlreadyPublished() {
-	if [[ -f "${MSIDIR}/${VERSION}/$(basename "$MSI")" ]]; then
-		echo "File already published, nothing else todo"
-		exit 0
-
-	fi
+	mkdir -p "$D" "${MSIDIR}/${VERSION}"
 }
 
 function uploadPackage() {
@@ -42,22 +32,16 @@ function uploadPackage() {
 	cat "${MSI_SHASUM}"
 
 	# Local
-	rsync \
-		--compress \
+	rsync --archive \
 		--times \
 		--verbose \
-		--recursive \
-		--ignore-existing \
 		--progress \
 		"${MSI}" "${MSIDIR}/${VERSION}/"
 
-	rsync \
-		--compress \
+	rsync --archive \
 		--times \
-		--ignore-existing \
-		--recursive \
-		--progress \
 		--verbose \
+		--progress \
 		"${MSI_SHASUM}" "${MSIDIR}/${VERSION}/"
 
 	# Update the symlink to point to most recent Windows build
@@ -73,24 +57,21 @@ function uploadPackage() {
 	ln -s "${VERSION}/$(basename "$MSI")" latest
 
 	# Overwrites the existing symlink on the destination
-	rsync \
+	rsync --archive \
 		--times \
-		--archive \
-		--links \
 		--verbose \
+		--progress \
 		latest "${MSIDIR}/"
 
 	# Remove the local symlink
-	rm latest
+	rm -f latest
 }
 
 # The site need to be located in the binary directory
 function uploadSite() {
-	rsync \
-		--compress \
+	rsync --archive \
 		--times \
 		--verbose \
-		--recursive \
 		--progress \
 		"${D}/" "${MSIDIR// /\\ }/"
 }
@@ -103,7 +84,6 @@ function show() {
 }
 
 show
-skipIfAlreadyPublished
 init
 generateSite
 uploadPackage
