@@ -22,6 +22,15 @@ function generateSite() {
 	gpg --export -a --output "${gpg_publickey}" "${GPG_KEYNAME}"
 	gpg --import-options show-only --import "${gpg_publickey}" >"$D/${ORGANIZATION}.key.info"
 
+	cat >"$D/${ARTIFACTNAME}.repo" <<EOF
+[${ARTIFACTNAME}]
+name=${PRODUCTNAME}${RELEASELINE}
+baseurl=${RPM_URL}
+gpgkey=${RPM_URL}/repodata/repomd.xml.key
+gpgcheck=1
+repo_gpgcheck=1
+EOF
+
 	"$BASE/bin/indexGenerator.py" \
 		--distribution rpm \
 		--gpg-key-info-file "${D}/${ORGANIZATION}.key.info" \
@@ -31,57 +40,7 @@ function generateSite() {
 
 	cp "$RPM" "$D/RPMS/noarch"
 
-	cat >"$D/${ARTIFACTNAME}.repo" <<EOF
-[${ARTIFACTNAME}]
-name=${PRODUCTNAME}${RELEASELINE}
-baseurl=${RPM_URL}
-gpgkey=${RPM_URL}/repodata/repomd.xml.key
-gpgcheck=1
-repo_gpgcheck=1
-EOF
-	# TODO: move it here?
-	#createrepo_c --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
-}
-
-function init() {
-	mkdir -p "$D/RPMS/noarch" "$RPMDIR/"
-}
-
-function uploadPackage() {
-	rsync --recursive \
-		--verbose \
-		--times \
-		--links \
-		--progress \
-		"$RPM" "$RPMDIR/"
-}
-
-function show() {
-	echo "Parameters:"
-	echo "RPM: $RPM"
-	echo "RPMDIR: $RPMDIR"
-	echo "RPM_WEBDIR: $RPM_WEBDIR"
-	echo "PKGSERVER: $PKGSERVER"
-	echo "GPG_KEYNAME: $GPG_KEYNAME"
-	echo "---"
-}
-
-function uploadSite() {
-	pushd "$D"
-	rsync --recursive \
-		--archive \
-		--verbose \
-		--times \
-		--links \
-		--progress \
-		--exclude RPMS \
-		--exclude "HEADER.html" \
-		--exclude "FOOTER.html" \
-		--progress \
-		. "${RPM_WEBDIR}/"
-
-	# TODO: move to the "generateSite" function instead?
-	createrepo_c --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
+	createrepo_c --update -o "${RPM_WEBDIR}" "${RPMDIR}"
 	cat "${RPM_WEBDIR}/repodata/repomd.xml" | \
 	gpg \
 		--batch \
@@ -92,13 +51,44 @@ function uploadSite() {
 		--passphrase-file "$GPG_PASSPHRASE_FILE" \
 		--yes | \
 		cat > "$RPM_WEBDIR/repodata/repomd.xml.asc"
-	# End TODO
+}
+
+function init() {
+	mkdir -p "$D/RPMS/noarch" "${RPMDIR}" "${RPM_WEBDIR}"
+}
+
+function uploadPackage() {
+	rsync --archive \
+		--times \
+		--verbose \
+		--progress \
+		"$RPM" "$RPMDIR/"
+}
+
+function show() {
+	echo "Parameters:"
+	echo "RPM: $RPM"
+	echo "RPMDIR: $RPMDIR"
+	echo "RPM_WEBDIR: $RPM_WEBDIR"
+	echo "GPG_KEYNAME: $GPG_KEYNAME"
+	echo "---"
+}
+
+function uploadSite() {
+	pushd "$D"
+	rsync --archive \
+		--times \
+		--verbose \
+		--progress \
+		--exclude RPMS \
+		--exclude "HEADER.html" \
+		--exclude "FOOTER.html" \
+		. "${RPM_WEBDIR}/"
 
 	# Following html need to be located inside the binary directory
-	rsync --recursive \
-		--verbose \
+	rsync --archive \
 		--times \
-		--links \
+		--verbose \
 		--progress \
 		--include "HEADER.html" \
 		--include "FOOTER.html" \
