@@ -28,21 +28,7 @@ function uploadPackage() {
 	cp "${ARTIFACTNAME}-${VERSION}${RELEASELINE}.msi" "${MSI}"
 
 	sha256sum "${MSI}" >"${MSI_SHASUM}"
-
 	cat "${MSI_SHASUM}"
-
-	# Local
-	rsync --archive \
-		--times \
-		--verbose \
-		--progress \
-		"${MSI}" "${MSIDIR}/${VERSION}/"
-
-	rsync --archive \
-		--times \
-		--verbose \
-		--progress \
-		"${MSI_SHASUM}" "${MSIDIR}/${VERSION}/"
 
 	# Update the symlink to point to most recent Windows build
 	#
@@ -56,15 +42,12 @@ function uploadPackage() {
 	# and assumes it points to the most recent MSI file.
 	ln -s "${VERSION}/$(basename "$MSI")" latest
 
-	# Overwrites the existing symlink on the destination
+	# Local
 	rsync --archive \
 		--times \
 		--verbose \
 		--progress \
-		latest "${MSIDIR}/"
-
-	# Remove the local symlink
-	rm -f latest
+		"${MSI}" "${MSI_SHASUM}" latest "${MSIDIR}/${VERSION}/"
 }
 
 # The site need to be located in the binary directory
