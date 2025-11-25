@@ -1,77 +1,41 @@
 ---
-- name: Install base dependencies
-  ansible.builtin.package:
+- package:
     name:
       - fontconfig
     state: present
     update_cache: true
-
-# Add Eclipse Temurin repo for Fedora 42+
-- name: Add Eclipse Temurin repo for Fedora 42+
-  ansible.builtin.command:
-    cmd: dnf install -y https://packages.adoptium.net/artifactory/rpm/temurin.repo
-  when:
-    - ansible_distribution == "Fedora"
-    - ansible_distribution_major_version | int >= 42
-
-# Install Temurin 17 JRE for Fedora 42+
-- name: Install Temurin 17 JRE for Fedora 42+
-  ansible.builtin.package:
-    name: temurin-17-jre
+- package:
+    name:
+      - java-21-openjdk
     state: present
-  when:
-    - ansible_distribution == "Fedora"
-    - ansible_distribution_major_version | int >= 42
-
-# Install Java 21 for all other distros
-- name: Install Java 21 OpenJDK / Corretto
-  ansible.builtin.package:
-    name: >-
-      {{
-        'java-21-amazon-corretto' if ansible_distribution == 'Amazon' else
-        'java-21-openjdk'
-      }}
+  when: ansible_distribution != 'Amazon' and (ansible_distribution != 'CentOS' or ansible_distribution_major_version != '10')
+- package:
+    name:
+      - java-21-amazon-corretto
     state: present
-
-# Create credentials directory
-- name: Create credentials directory
-  ansible.builtin.file:
+  when: ansible_distribution == 'Amazon'
+- package:
+    name:
+      - java-21-openjdk
+    state: present
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '10'
+- file:
     path: /var/tmp/target/credentials
     state: directory
-    mode: "0755"
-
-# Copy GPG key
-- name: Copy GPG key
-  ansible.builtin.copy:
+- copy:
     src: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/credentials/test.ascii.key"
     dest: /var/tmp/target/credentials/test.ascii.key
-    mode: "0644"
-
-# Import GPG key
-- name: Import GPG key
-  ansible.builtin.rpm_key:
+- rpm_key:
     state: present
     key: /var/tmp/target/credentials/test.ascii.key
-
-# Find built RPM
-- name: Locate built RPM package
-  ansible.builtin.find:
+- find:
     paths: /var/tmp/target/rpm
     file_type: file
     patterns: "*.rpm"
   register: package_list
-
-# Ensure at least one RPM exists
-- name: Verify RPM presence
-  ansible.builtin.assert:
+- assert:
     that:
-      - package_list.matched >= 1
-    success_msg: "Found {{ package_list.matched }} RPM(s): {{ package_list.files | map(attribute='path') | list }}"
-    fail_msg: "No RPM found in /var/tmp/target/rpm"
-
-# Install local RPM (disable GPG check for unsigned builds)
-- name: Install local RPM without GPG validation
-  ansible.builtin.package:
+      - package_list.matched == 1
+- package:
     name: "{{ package_list.files[0].path }}"
     state: present
-    disable_gpg_check: true
