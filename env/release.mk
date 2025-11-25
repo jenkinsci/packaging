@@ -14,17 +14,14 @@ export SCP_OPTS=-P 22
 export WARDIR=/srv/releases/jenkins/war${RELEASELINE}
 export MSIDIR=/srv/releases/jenkins/windows${RELEASELINE}
 export DEBDIR=/srv/releases/jenkins/debian${RELEASELINE}
-export RPMDIR=/srv/releases/jenkins/redhat${RELEASELINE}
-export SUSEDIR=/srv/releases/jenkins/opensuse${RELEASELINE}
+export RPMDIR=/srv/releases/jenkins/rpm${RELEASELINE}
 
 # where to put repository index and other web contents
-export  RPM_WEBDIR=/var/www/pkg.jenkins.io.staging/redhat${RELEASELINE}
-export SUSE_WEBDIR=/var/www/pkg.jenkins.io.staging/opensuse${RELEASELINE}
+export  RPM_WEBDIR=/var/www/pkg.jenkins.io.staging/rpm${RELEASELINE}
 export  DEB_WEBDIR=/var/www/pkg.jenkins.io.staging/debian${RELEASELINE}
 export  WAR_WEBDIR=/var/www/pkg.jenkins.io.staging/war${RELEASELINE}
 export  MSI_WEBDIR=/var/www/pkg.jenkins.io.staging/windows${RELEASELINE}
 
 # URL to the aforementioned webdir
-export  RPM_URL=https://pkg.jenkins.io/redhat${RELEASELINE}
-export SUSE_URL=https://pkg.jenkins.io/opensuse${RELEASELINE}
+export  RPM_URL=https://pkg.jenkins.io/rpm${RELEASELINE}
 export  DEB_URL=https://pkg.jenkins.io/debian${RELEASELINE}
