@@ -19,10 +19,7 @@ export MSI_SHASUM:=${MSI}.sha256
 export DEB=${TARGET}/debian/${ARTIFACTNAME}_${VERSION}_all.deb
 
 # where to generate RHEL/CentOS RPM file?
-export RPM=${TARGET}/rpm/${ARTIFACTNAME}-${VERSION}-1.1.noarch.rpm
-
-# where to generate SUSE RPM file?
-export SUSE=${TARGET}/suse/${ARTIFACTNAME}-${VERSION}-1.2.noarch.rpm
+export RPM=${TARGET}/rpm/${ARTIFACTNAME}-${VERSION}-1.noarch.rpm
 
 # anchored to the root of the repository
 export BASE:=$(CURDIR)

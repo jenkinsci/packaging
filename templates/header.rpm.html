@@ -2,6 +2,8 @@
 
 {% block distribution_instruction %}
 
+  <h2>Red Hat and derivatives</h2>
+
   <p>
   To install Jenkins on Red Hat Enterprise Linux, AlmaLinux, Rocky Linux, Oracle Linux, or another Red
   Hat based distribution, you can utilize the instructions provided in our <a
@@ -14,6 +16,24 @@
   <a href="https://www.jenkins.io/doc/book/installing/linux/#fedora">Fedora installation guide</a>.
   </p>
 
+  <h2>openSUSE</h2>
+
+  To use this repository with openSUSE, run the following command:
+  
+  <pre class="text-white bg-dark">
+
+    sudo zypper addrepo -f {{web_url}}/ {{artifactName}}
+  </pre>
+  
+  <p>
+  With that set up, the {{ product_name }} package can be installed with:
+  
+  <pre class="text-white bg-dark">
+
+    zypper install dejavu-fonts fontconfig java-21-openjdk
+    zypper install {{ artifactName }}
+  </pre>
+  </p>
 {% endblock %}
 
 {% block  individual_package_instruction  %}

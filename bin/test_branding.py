@@ -20,7 +20,6 @@ LICENSE
 CHANGELOG_PAGE
 ----------------------------------
 
-SUSE_URL
   # INVALID
 DEB_URL
 LICENSE_TEXT
@@ -56,7 +55,6 @@ class TestBranding(unittest.TestCase):
             "LICENSE",
             "HOMEPAGE",
             "CHANGELOG_PAGE",
-            "SUSE_URL",
             "DEB_URL",
             "LICENSE_TEXT",
         }

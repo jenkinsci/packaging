@@ -18,18 +18,15 @@ export TESTDIR=$(realpath .)/pkg.jenkins.io
 export WARDIR=${TESTDIR}/war${RELEASELINE}
 export MSIDIR=${TESTDIR}/windows${RELEASELINE}
 export DEBDIR=${TESTDIR}/debian${RELEASELINE}/binary
-export RPMDIR=${TESTDIR}/redhat${RELEASELINE}
-export SUSEDIR=${TESTDIR}/opensuse${RELEASELINE}
+export RPMDIR=${TESTDIR}/rpm${RELEASELINE}
 
 # where to put repository index and other web contents
-export  RPM_WEBDIR=${TESTDIR}/redhat${RELEASELINE}
-export SUSE_WEBDIR=${TESTDIR}/opensuse${RELEASELINE}
+export  RPM_WEBDIR=${TESTDIR}/rpm${RELEASELINE}
 export  DEB_WEBDIR=${TESTDIR}/debian${RELEASELINE}
 export  WAR_WEBDIR=${TESTDIR}/war${RELEASELINE}
 export  MSI_WEBDIR=${TESTDIR}/windows${RELEASELINE}
 
 # URL to the aforementioned webdir.
 WEBSERVER=pkg.jenkins.io
-export  RPM_URL=https://${WEBSERVER}/redhat${RELEASELINE}
-export SUSE_URL=https://${WEBSERVER}/opensuse${RELEASELINE}
+export  RPM_URL=https://${WEBSERVER}/rpm${RELEASELINE}
 export  DEB_URL=https://${WEBSERVER}/debian${RELEASELINE}
