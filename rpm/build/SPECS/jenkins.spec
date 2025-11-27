@@ -21,7 +21,6 @@ BuildRoot:	%{_tmppath}/build-%{name}-%{version}
 # TODO: If re-enable, fix the matcher for Java 17
 # Fedora 42+ removes openjdk-{8,11,17}. Jenkins now uses Eclipse Temurin JDK 21.
 %if 0%{?fedora}
-%if 0%{?fedora}
 Requires: java >= 21
 %else
 Requires: java >= 17
