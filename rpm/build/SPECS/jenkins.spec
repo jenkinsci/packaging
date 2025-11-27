@@ -26,7 +26,7 @@ Requires: java >= 21
 Requires: java >= 17
 %endif
 Requires: procps
-Requires(pre): /usr/sbin/useradd , /usr/sbin/groupadd
+Requires(pre): /usr/sbin/useradd, /usr/sbin/groupadd
 BuildArch: noarch
 %systemd_requires
 
