@@ -41,7 +41,8 @@ Run `docker-compose run --rm packaging bash` to get a shell in the official Dock
 # Generating packages
 Run `./prep.sh` to perform the preparatory actions of downloading the WAR and importing the GPG key.
 Run `make package` to build all the native packages.
-At minimum, you have to specify the `WAR` variable that points to the war file to be packaged and a branding file (for licensing and package descriptions).
+At minimum, you have to specify the `WAR` variable that points to the war file to be packaged and the `BRAND` variable that points to the branding file for licensing, artifact names, and package descriptions.
+If a branding file is not provided, the branding/test.mk file is used with the artifact names and package descriptions it provides.
 You will probably need to pass in the build environment and credentials.
 
 For example:
