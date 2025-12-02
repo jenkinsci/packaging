@@ -19,7 +19,12 @@ BuildRoot:	%{_tmppath}/build-%{name}-%{version}
 # So either we make a hard requirement on the OpenJDK or none at all
 # Only workaround would be to use a java virtual package, see https://github.com/keystep/virtual-java-rpm
 # TODO: If re-enable, fix the matcher for Java 17
-# Requires: java >= 1:1.8.0
+# Fedora 42+ removes openjdk-{8,11,17}. Jenkins now uses Eclipse Temurin JDK 21.
+%if 0%{?fedora}
+Requires: java >= 21
+%else
+Requires: java >= 17
+%endif
 Requires: procps
 Requires(pre): /usr/sbin/useradd, /usr/sbin/groupadd
 BuildArch: noarch
