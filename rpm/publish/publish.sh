@@ -25,10 +25,16 @@ function generateSite() {
 	cat >"$D/${ARTIFACTNAME}.repo" <<EOF
 [${ARTIFACTNAME}]
 name=${PRODUCTNAME}${RELEASELINE}
+enabled=1
+type=rpm-md
 baseurl=${RPM_URL}
 gpgkey=${RPM_URL}/repodata/repomd.xml.key
 gpgcheck=1
 repo_gpgcheck=1
+
+# Only for SUSE/openSUSE distributions with zypper
+autorefresh=1
+keeppackages=0
 EOF
 
 	"$BASE/bin/indexGenerator.py" \
