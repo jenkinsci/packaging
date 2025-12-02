@@ -1,6 +1,0 @@
-[@@ARTIFACTNAME@@]
-name=@@PRODUCTNAME@@
-baseurl=@@RPM_URL@@
-# TODO 'jenkins.io' {{ web_url }}/{{organization}}-2023.key
-gpgkey=@@RPM_URL@@/jenkins.io-2023.key
-gpgcheck=1
