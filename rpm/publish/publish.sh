@@ -7,7 +7,7 @@ set -euxo pipefail
 : "${RPM_WEBDIR:?Require where to put index and other web contents}"
 : "${RPM_URL:?Require rpm repository url}"
 : "${RELEASELINE?Require rpm release line}"
-: "${BASE:? Required base directory}"
+: "${BASE:?Require base directory}"
 
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
@@ -17,12 +17,16 @@ function clean() {
 }
 
 function generateSite() {
-	gpg --export -a --output "$D/${ORGANIZATION}.key" "${GPG_KEYNAME}"
-	gpg --import-options show-only --import "$D/${ORGANIZATION}.key" >"$D/${ORGANIZATION}.key.info"
+	local gpg_publickey="$D/repodata/repomd.xml.key"
+	mkdir -p "$(dirname "${gpg_publickey}")"
+	gpg --export -a --output "${gpg_publickey}" "${GPG_KEYNAME}"
+	gpg --import-options show-only --import "${gpg_publickey}" >"$D/${ORGANIZATION}.key.info"
 
 	cat >"$D/${ARTIFACTNAME}.repo" <<EOF
 [${ARTIFACTNAME}]
 name=${PRODUCTNAME}${RELEASELINE}
+enabled=1
+type=rpm-md
 baseurl=${RPM_URL}
 gpgkey=${RPM_URL}/repodata/repomd.xml.key
 gpgcheck=1
