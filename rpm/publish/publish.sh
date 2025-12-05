@@ -7,21 +7,31 @@ set -euxo pipefail
 : "${RPM_WEBDIR:?Require where to put index and other web contents}"
 : "${RPM_URL:?Require rpm repository url}"
 : "${RELEASELINE?Require rpm release line}"
-: "${BASE:? Required base directory}"
+: "${BASE:?Require base directory}"
 
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
-
-# Convert string to array to correctly escape cli parameter
-SSH_OPTS=($SSH_OPTS)
 
 function clean() {
 	rm -rf "$D"
 }
 
 function generateSite() {
-	gpg --export -a --output "$D/${ORGANIZATION}.key" "${GPG_KEYNAME}"
-	gpg --import-options show-only --import "$D/${ORGANIZATION}.key" >"$D/${ORGANIZATION}.key.info"
+	local gpg_publickey="$D/repodata/repomd.xml.key"
+	mkdir -p "$(dirname "${gpg_publickey}")"
+	gpg --export -a --output "${gpg_publickey}" "${GPG_KEYNAME}"
+	gpg --import-options show-only --import "${gpg_publickey}" >"$D/${ORGANIZATION}.key.info"
+
+	cat >"$D/${ARTIFACTNAME}.repo" <<EOF
+[${ARTIFACTNAME}]
+name=${PRODUCTNAME}${RELEASELINE}
+enabled=1
+type=rpm-md
+baseurl=${RPM_URL}
+gpgkey=${RPM_URL}/repodata/repomd.xml.key
+gpgcheck=1
+repo_gpgcheck=1
+EOF
 
 	"$BASE/bin/indexGenerator.py" \
 		--distribution redhat \
@@ -32,60 +42,28 @@ function generateSite() {
 
 	cp "$RPM" "$D/RPMS/noarch"
 
-	cat >"$D/${ARTIFACTNAME}.repo" <<EOF
-[${ARTIFACTNAME}]
-name=${PRODUCTNAME}${RELEASELINE}
-baseurl=${RPM_URL}
-gpgcheck=1
-EOF
-
-	# generate index
-	# locally
-	# disable this for now, as it's currently now used and generate errors
-	# createrepo --update -o "$RPM_WEBDIR" "$RPMDIR/"
-	# on the server
-	# shellcheck disable=SC2029
-	ssh "${SSH_OPTS[@]}" "$PKGSERVER" createrepo --update -o "'$RPM_WEBDIR'" "'$RPMDIR/'"
-}
-
-function skipIfAlreadyPublished() {
-	if ssh "${SSH_OPTS[@]}" "$PKGSERVER" test -e "${RPMDIR}/$(basename "$RPM")"; then
-		echo "File already published, nothing else todo"
-		exit 0
-
-	fi
+	createrepo_c --update -o "${RPM_WEBDIR}" "${RPMDIR}"
+	cat "${RPM_WEBDIR}/repodata/repomd.xml" | \
+	gpg \
+		--batch \
+		--pinentry-mode loopback \
+		-u "$GPG_KEYNAME" \
+		-a \
+		--detach-sign \
+		--passphrase-file "$GPG_PASSPHRASE_FILE" \
+		--yes | \
+		cat > "$RPM_WEBDIR/repodata/repomd.xml.asc"
 }
 
 function init() {
-	mkdir -p "$D/RPMS/noarch"
-
-	mkdir -p "$RPMDIR/"
-	# mkdir -p "$RPM_WEBDIR/" # May not be necessary
-	# shellcheck disable=SC2029
-	ssh "${SSH_OPTS[@]}" "$PKGSERVER" mkdir -p "'$RPMDIR/'"
+	mkdir -p "$D/RPMS/noarch" "${RPMDIR}" "${RPM_WEBDIR}"
 }
 
 function uploadPackage() {
-	# Local
-	rsync \
+	rsync --archive \
 		--verbose \
-		--times \
-		--compress \
-		--ignore-existing \
-		--recursive \
 		--progress \
 		"$RPM" "$RPMDIR/"
-
-	# Remote
-	rsync \
-		--archive \
-		--times \
-		--verbose \
-		--compress \
-		-e "ssh ${SSH_OPTS[*]}" \
-		--ignore-existing \
-		--progress \
-		"$RPM" "$PKGSERVER:${RPMDIR// /\\ }/"
 }
 
 function show() {
@@ -93,68 +71,32 @@ function show() {
 	echo "RPM: $RPM"
 	echo "RPMDIR: $RPMDIR"
 	echo "RPM_WEBDIR: $RPM_WEBDIR"
-	echo "SSH_OPTS: ${SSH_OPTS[*]}"
-	echo "PKGSERVER: $PKGSERVER"
 	echo "GPG_KEYNAME: $GPG_KEYNAME"
 	echo "---"
 }
 
 function uploadSite() {
 	pushd "$D"
-	# Disable copy on local network storage
-	#rsync \
-	#  --compress \
-	#  --times \
-	#  --recursive \
-	#  --verbose \
-	#  --exclude RPMS \
-	#  --exclude "HEADER.html" \
-	#  --exclude "FOOTER.html" \
-	#  --progress \
-	#  . "$RPM_WEBDIR/"
-
-	rsync \
-		--archive \
-		--times \
-		--compress \
+	rsync --archive \
 		--verbose \
-		-e "ssh ${SSH_OPTS[*]}" \
+		--progress \
 		--exclude RPMS \
 		--exclude "HEADER.html" \
 		--exclude "FOOTER.html" \
-		--progress \
-		. "$PKGSERVER:${RPM_WEBDIR// /\\ }/"
+		. "${RPM_WEBDIR}/"
 
 	# Following html need to be located inside the binary directory
-	rsync \
-		--compress \
-		--times \
+	rsync --archive \
 		--verbose \
-		--recursive \
+		--progress \
 		--include "HEADER.html" \
 		--include "FOOTER.html" \
 		--exclude "*" \
-		--progress \
-		. "$RPMDIR/"
-
-	rsync \
-		--archive \
-		--times \
-		--compress \
-		--verbose \
-		-e "ssh ${SSH_OPTS[*]}" \
-		--include "HEADER.html" \
-		--include "FOOTER.html" \
-		--exclude "*" \
-		--progress \
-		. "$PKGSERVER:${RPMDIR// /\\ }/"
+		. "${RPMDIR}/"
 	popd
 }
 
 show
-## Disabling this function allow us to recreate and sign the RedHat repository.
-# the rpm package won't be overrided as we use the parameter '--ignore-existing' when we upload it
-#skipIfAlreadyPublished
 init
 uploadPackage
 generateSite

@@ -11,119 +11,40 @@ set -euxo pipefail
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
 
-# Convert string to array to correctly escape cli parameter
-SSH_OPTS=($SSH_OPTS)
-SCP_OPTS=($SCP_OPTS)
-
 function clean() {
 	rm -rf "$D"
 }
 
 function generateSite() {
+	local gpg_publickey="$D/repodata/repomd.xml.key"
+	mkdir -p "$(dirname "${gpg_publickey}")"
+	gpg --export -a --output "${gpg_publickey}" "${GPG_KEYNAME}"
+	gpg --import-options show-only --import "${gpg_publickey}" >"$D/${ORGANIZATION}.key.info"
+
+	cat >"$D/${ARTIFACTNAME}.repo" <<EOF
+[${ARTIFACTNAME}]
+name=${PRODUCTNAME}${RELEASELINE}
+enabled=1
+type=rpm-md
+baseurl=${SUSE_URL}
+gpgkey=${SUSE_URL}/repodata/repomd.xml.key
+gpgcheck=1
+repo_gpgcheck=1
+
+autorefresh=1
+keeppackages=0
+EOF
+
 	"$BASE/bin/indexGenerator.py" \
 		--distribution opensuse \
 		--targetDir "${D}"
 
-	gpg --export -a --output "$D/repodata/repomd.xml.key" "${GPG_KEYNAME}"
-
 	"$BASE/bin/branding.py" "$D"
 
 	cp "$SUSE" "$D/RPMS/noarch"
-}
 
-function init() {
-	# where to put binary files
-	mkdir -p "$SUSEDIR/" # Local
-
-	# shellcheck disable=SC2029
-	ssh "${SSH_OPTS[@]}" "$PKGSERVER" mkdir -p "'$SUSEDIR/'" # Remote
-
-	# where to put repository index and other web contents
-	mkdir -p "$SUSE_WEBDIR"
-
-	mkdir -p "$D/RPMS/noarch" "$D/repodata"
-}
-
-function skipIfAlreadyPublished() {
-	if ssh "${SSH_OPTS[@]}" "$PKGSERVER" "test -e ${SUSEDIR}/$(basename $SUSE)"; then
-		echo "File already published, nothing else todo"
-		exit 0
-
-	fi
-}
-
-function show() {
-	echo "Parameters:"
-	echo "SUSE: $SUSE"
-	echo "SUSEDIR: $SUSEDIR"
-	echo "SUSE_WEBDIR: $SUSE_WEBDIR"
-	echo "SSH_OPTS: ${SSH_OPTS[*]}"
-	echo "PKGSERVER: $PKGSERVER"
-	echo "GPG_KEYNAME: $GPG_KEYNAME"
-	echo "---"
-}
-
-function uploadPackage() {
-	rsync \
-		--recursive \
-		--times \
-		--verbose \
-		--compress \
-		--ignore-existing \
-		--progress \
-		"$SUSE" "$SUSEDIR/" # Local
-
-	rsync \
-		--archive \
-		--times \
-		--verbose \
-		--compress \
-		--ignore-existing \
-		--progress \
-		-e "ssh ${SSH_OPTS[*]}" \
-		"${SUSE}" "$PKGSERVER:${SUSEDIR// /\\ }" # Remote
-}
-
-function uploadSite() {
-	pushd "$D"
-	rsync \
-		--recursive \
-		--times \
-		--verbose \
-		--compress \
-		--progress \
-		--exclude RPMS \
-		--exclude "HEADER.html" \
-		--exclude "FOOTER.html" \
-		. "$SUSE_WEBDIR/" #Local
-
-	# shellcheck disable=SC2029
-	rsync \
-		--archive \
-		--times \
-		--verbose \
-		--compress \
-		--progress \
-		-e "ssh ${SSH_OPTS[*]}" \
-		--exclude RPMS \
-		--exclude "HEADER.html" \
-		--exclude "FOOTER.html" \
-		. "$PKGSERVER:${SUSE_WEBDIR// /\\ }/" # Remote
-
-	# generate index on the server
-	# server needs 'createrepo' pacakge
-	# Disable this for now as not critical
-	# createrepc --update -o "$SUSE_WEBDIR" "$SUSEDIR/" #Local
-	# cp "${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" repodata/ # Local
-
-	# shellcheck disable=SC2029
-	ssh "${SSH_OPTS[@]}" "$PKGSERVER" createrepo --update -o "'$SUSE_WEBDIR'" "'$SUSEDIR/'" # Remote
-
-	scp \
-		"${SCP_OPTS[@]}" \
-		"$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/repomd.xml" \
-		repodata/ # Remote
-
+	createrepo_c --update -o "${SUSE_WEBDIR}" "${SUSEDIR}"
+	cat "${SUSE_WEBDIR}/repodata/repomd.xml" | \
 	gpg \
 		--batch \
 		--pinentry-mode loopback \
@@ -131,47 +52,54 @@ function uploadSite() {
 		-a \
 		--detach-sign \
 		--passphrase-file "$GPG_PASSPHRASE_FILE" \
-		--yes \
-		repodata/repomd.xml
+		--yes | \
+		cat > "$SUSE_WEBDIR/repodata/repomd.xml.asc"
+}
 
-	scp \
-		"${SCP_OPTS[@]}" \
-		repodata/repomd.xml.asc \
-		"$PKGSERVER:${SUSE_WEBDIR// /\\ }/repodata/"
+function init() {
+	mkdir -p "${D}/RPMS/noarch" "${D}/repodata" "${SUSEDIR}" "${SUSE_WEBDIR}"
+}
 
-	cp repodata/repomd.xml.asc "${SUSE_WEBDIR// /\\ }/repodata/"
+function show() {
+	echo "Parameters:"
+	echo "SUSE: $SUSE"
+	echo "SUSEDIR: $SUSEDIR"
+	echo "SUSE_WEBDIR: $SUSE_WEBDIR"
+	echo "SUSE_URL: $SUSE_URL"
+	echo "GPG_KEYNAME: $GPG_KEYNAME"
+	echo "---"
+}
+
+function uploadPackage() {
+	rsync --archive \
+		--verbose \
+		--progress \
+		"${SUSE}" "${SUSEDIR}/" # Local
+}
+
+function uploadSite() {
+	pushd "$D"
+	rsync --archive \
+		--verbose \
+		--progress \
+		--exclude RPMS \
+		--exclude "HEADER.html" \
+		--exclude "FOOTER.html" \
+		. "${SUSE_WEBDIR}/" #Local
 
 	# Following html need to be located inside the binary directory
-	rsync \
-		--compress \
-		--times \
+	rsync --archive \
 		--verbose \
-		--recursive \
+		--progress \
 		--include "HEADER.html" \
 		--include "FOOTER.html" \
 		--exclude "*" \
 		--progress \
-		. "$SUSEDIR/"
-
-	rsync \
-		--archive \
-		--times \
-		--compress \
-		--verbose \
-		-e "ssh ${SSH_OPTS[*]}" \
-		--include "HEADER.html" \
-		--include "FOOTER.html" \
-		--exclude "*" \
-		--progress \
-		. "$PKGSERVER:${SUSEDIR// /\\ }/"
-
+		. "${SUSEDIR}/"
 	popd
 }
 
 show
-## Disabling this function allow us to recreate and sign the Suse repository.
-# the rpm package won't be overrided as we use the parameter '--ignore-existing' when we upload it
-#skipIfAlreadyPublished
 init
 uploadPackage
 generateSite

@@ -12,9 +12,6 @@ set -euxo pipefail
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
 
-# Convert string to array to correctly escape cli parameter
-SSH_OPTS=($SSH_OPTS)
-
 bin="$(dirname "$0")"
 
 function clean() {
@@ -62,31 +59,15 @@ function generateSite() {
 }
 
 function init() {
-	mkdir -p "$D/binary" "$D/contents" "$D/html"
-
-	# where to put binary files
-	mkdir -p "$DEBDIR" # where to put binary files
-
-	# where to put repository index and other web contents
-	mkdir -p "$DEB_WEBDIR"
-}
-
-function skipIfAlreadyPublished() {
-	if [[ -f "${DEBDIR}/$(basename "$DEB")" ]]; then
-		echo "File already published, nothing else todo"
-		return 0
-	fi
-	return 1
+	mkdir -p "$D/binary" "$D/contents" "$D/html" \
+		"$DEBDIR" `# where to put binary files` \
+		"$DEB_WEBDIR" `# where to put repository index and other web contents`
 }
 
 # Upload Debian Package
 function uploadPackage() {
-	rsync \
+	rsync --archive \
 		--verbose \
-		--recursive \
-		--compress \
-		--times \
-		--ignore-existing \
 		--progress \
 		"$DEB" "$DEBDIR/"
 }
@@ -99,47 +80,21 @@ function uploadPackageSite() {
 		"$D"/binary/Contents* \
 		"$D"/contents/binary
 
-	rsync \
+	rsync --archive \
 		--verbose \
-		--recursive \
-		--compress \
-		--times \
 		--progress \
 		"$D/contents/" "$DEB_WEBDIR/"
-
-	rsync \
-		--archive \
-		--compress \
-		--times \
-		--progress \
-		--verbose \
-		-e "ssh ${SSH_OPTS[*]}" \
-		"$D/contents/" "$PKGSERVER:${DEB_WEBDIR// /\\ }/"
 }
 
 function uploadHtmlSite() {
 	# Html file need to be located in the binary directory
-	rsync \
+	rsync --archive \
+		--verbose \
+		--progress \
 		--include "HEADER.html" \
 		--include "FOOTER.html" \
 		--exclude "*" \
-		--compress \
-		--times \
-		--recursive \
-		--progress \
-		--verbose \
 		"$D/html/" "$DEBDIR/"
-
-	rsync \
-		--archive \
-		--compress \
-		--times \
-		--include "index.html" \
-		--exclude "*" \
-		--progress \
-		--verbose \
-		-e "ssh ${SSH_OPTS[*]}" \
-		"$D/html/" "$PKGSERVER:${DEB_WEBDIR// /\\ }/"
 }
 
 function show() {
@@ -147,8 +102,6 @@ function show() {
 	echo "DEB: $DEB"
 	echo "DEBDIR: $DEBDIR"
 	echo "DEB_WEBDIR: $DEB_WEBDIR"
-	echo "SSH_OPTS: ${SSH_OPTS[*]}"
-	echo "PKGSERVER: $PKGSERVER"
 	echo "GPG_KEYNAME: $GPG_KEYNAME"
 	echo "---"
 }
@@ -171,17 +124,12 @@ function signSite() {
 }
 
 show
-## Disabling this function allow us to recreate and sign the repository.
-# the debian package won't be overrided as we use the parameter '--ignore-existing'
-#skipIfAlreadyPublished
 init
 generateSite
 signSite
 
-if ! skipIfAlreadyPublished; then
-	uploadPackage
-	uploadPackageSite
-fi
+uploadPackage
+uploadPackageSite
 
 uploadHtmlSite
 clean
