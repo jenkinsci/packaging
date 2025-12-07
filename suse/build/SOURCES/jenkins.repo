@@ -1,7 +1,11 @@
 [@@ARTIFACTNAME@@]
 name=@@PRODUCTNAME@@
 enabled=1
-autorefresh=0
-baseurl=@@SUSE_URL@@
 type=rpm-md
+baseurl=@@SUSE_URL@@
+gpgkey=@@SUSE_URL@@/repodata/repomd.xml.key
+gpgcheck=1
+repo_gpgcheck=1
+
+autorefresh=0
 keeppackages=0
