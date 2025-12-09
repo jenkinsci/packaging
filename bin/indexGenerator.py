@@ -18,15 +18,10 @@ class IndexGenerator:
             "template": "header.debian.html",
             "web_url": os.getenv("DEB_URL"),
         },
-        "redhat": {
+        "rpm": {
             "extension": ".rpm",
-            "template": "header.redhat.html",
+            "template": "header.rpm.html",
             "web_url": os.getenv("RPM_URL"),
-        },
-        "opensuse": {
-            "extension": ".rpm",
-            "template": "header.opensuse.html",
-            "web_url": os.getenv("SUSE_URL"),
         },
         "war": {"extension": ".war", "template": "header.war.html", "web_url": "unset"},
         "windows": {
@@ -38,7 +33,7 @@ class IndexGenerator:
 
     HELP_MESSAGE = """
     Generate header.html for package distribution site
-    It supports debian, redhat and opensuse packages
+    It supports debian and rpm packages
 
     indexGenerator.py
         -d <distribution>: Which package distribution to target

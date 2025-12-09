@@ -23,11 +23,11 @@ clean:
 setup:
 	bash -ex -c 'for f in */setup.sh; do $$f; done'
 
-package: war deb rpm suse
+package: war deb rpm
 
-publish: war.publish deb.publish rpm.publish suse.publish
+publish: war.publish deb.publish rpm.publish
 
-test: deb.test rpm.test suse.test
+test: deb.test rpm.test
 
 war: ${WAR}
 war.publish: ${WAR}
@@ -48,12 +48,6 @@ ${RPM}: ${WAR}  $(shell find rpm/build -type f)
 	./rpm/build/build.sh
 rpm.publish: ${RPM} $(shell find rpm/publish -type f)
 	./rpm/publish/publish.sh
-
-suse: ${SUSE}
-${SUSE}: ${WAR}  $(shell find suse/build -type f)
-	./suse/build/build.sh
-suse.publish: ${SUSE} $(shell find suse/publish -type f)
-	./suse/publish/publish.sh
 
 msi.publish:
 	./msi/publish/publish.sh

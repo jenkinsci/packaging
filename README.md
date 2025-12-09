@@ -4,9 +4,8 @@ This repository contains scripts for packaging `jenkins.war` into various platfo
 The following platforms are currently supported:
 
   * Windows MSI: `msi/`
-  * RedHat/CentOS RPM: `rpm/`
+  * RedHat/CentOS/openSUSE RPM: `rpm/`
   * Debian/Ubuntu DEB: `deb/`
-  * OpenSUSE RPM: `suse/`
 
 # Pre-requisites
 Running the main package script requires a Linux environment (currently Ubuntu, see [JENKINS-27744](https://issues.jenkins-ci.org/browse/JENKINS-27744).)
