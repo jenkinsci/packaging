@@ -21,54 +21,39 @@ function generateSite() {
 }
 
 function init() {
-	mkdir -p "$D"
-
-	mkdir -p "${WARDIR}/${VERSION}/"
-}
-
-function skipIfAlreadyPublished() {
-	if [[ -f "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war" ]]; then
-		echo "File already published, nothing else todo"
-		exit 0
-	fi
+	mkdir -p "$D" "${WARDIR}/${VERSION}/"
 }
 
 function uploadPackage() {
 	sha256sum "${WAR}" | sed "s, .*, ${ARTIFACTNAME}.war," >"${WAR_SHASUM}"
 	cat "${WAR_SHASUM}"
 
-	rsync \
-		--compress \
-		--times \
-		--recursive \
-		--verbose \
-		--ignore-existing \
-		--progress \
-		"${WAR}" "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
+	# Update the symlink to point to most recent Windows build
+	#
+	# Remove anything in current directory named 'latest'
+	# This is a safety measure just in case something was left there previously
+	rm -rf latest
 
-	rsync \
-		--compress \
-		--times \
-		--recursive \
-		--verbose \
-		--ignore-existing \
-		--progress \
-		"${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
+	# Create a local symlink pointing to the MSI file in the VERSION directory.
+	# Don't need VERSION directory or MSI locally, just the unresolved symlink.
+	# The jenkins.io page downloads http://mirrors.jenkins-ci.org/windows/latest
+	# and assumes it points to the most recent MSI file.
+	ln -s "${VERSION}/$(basename "$WAR")" latest
 
-	# TODO: generate symlink like in windows
+	rsync --archive \
+		--verbose \
+		--progress \
+		"${WAR}" "${WAR_SHASUM}" latest "${WARDIR}/${VERSION}/"
 }
 
 # Site html need to be located in the binary directory
 function uploadSite() {
-	rsync \
-		--compress \
-		--times \
-		--recursive \
+	rsync --archive \
 		--verbose \
+		--progress \
 		--include "HEADER.html" \
 		--include "FOOTER.html" \
 		--exclude "*" \
-		--progress \
 		"${D}/" "${WARDIR// /\\ }/"
 }
 
@@ -80,7 +65,6 @@ function show() {
 }
 
 show
-skipIfAlreadyPublished
 init
 generateSite
 uploadPackage
