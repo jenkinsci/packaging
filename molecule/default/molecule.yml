@@ -53,8 +53,8 @@ platforms:
     privileged: true
 
   # rpm
-  - name: almalinux-9  # EOL 2027-05-31
-    image: dokken/almalinux-9:latest
+  - name: almalinux-10
+    image: dokken/almalinux-10:latest
     override_command: false
     volumes:
       - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
