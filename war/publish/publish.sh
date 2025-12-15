@@ -28,22 +28,16 @@ function uploadPackage() {
 	sha256sum "${WAR}" | sed "s, .*, ${ARTIFACTNAME}.war," >"${WAR_SHASUM}"
 	cat "${WAR_SHASUM}"
 
-	# Update the symlink to point to most recent Windows build
-	#
-	# Remove anything in current directory named 'latest'
-	# This is a safety measure just in case something was left there previously
-	rm -rf latest
-
-	# Create a local symlink pointing to the MSI file in the VERSION directory.
-	# Don't need VERSION directory or MSI locally, just the unresolved symlink.
-	# The jenkins.io page downloads http://mirrors.jenkins-ci.org/windows/latest
-	# and assumes it points to the most recent MSI file.
-	ln -s "${VERSION}/$(basename "$WAR")" latest
-
 	rsync --archive \
 		--verbose \
 		--progress \
-		"${WAR}" "${WAR_SHASUM}" latest "${WARDIR}/${VERSION}/"
+		"${WAR}" "${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
+
+	# Update the symlink to point to most recent WAR directory
+	pushd "${WARDIR}"
+	rm -rf latest # This is a safety measure just in case something was left there previously
+	ln -s "${VERSION}" latest
+	popd
 }
 
 # Site html need to be located in the binary directory
