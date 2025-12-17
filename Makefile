@@ -35,10 +35,10 @@ war.publish: ${WAR}
 
 
 
-deb: ${DEB}
-${DEB}: ${WAR} $(shell find deb/build -type f)
-	./deb/build/build.sh
-deb.publish: ${DEB} $(shell find deb/publish -type f)
+# deb: ${DEB}
+# ${DEB}: ${WAR} $(shell find deb/build -type f)
+# 	./deb/build/build.sh
+deb.publish: #${DEB} $(shell find deb/publish -type f)
 	./deb/publish/publish.sh
 
 
