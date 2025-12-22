@@ -93,10 +93,7 @@ function uploadHtmlSite() {
 	rsync --archive \
 		--verbose \
 		--progress \
-		--include "HEADER.html" \
-		--include "FOOTER.html" \
-		--exclude "*" \
-		"$D/html/" "$DEBDIR/"
+		"$D/html/" "$DEB_WEBDIR/"
 }
 
 function show() {
