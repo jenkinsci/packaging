@@ -11,4 +11,4 @@ generated
 *.orig
 
 venv/
-
+pkg.jenkins.io/
