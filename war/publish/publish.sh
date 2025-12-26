@@ -5,6 +5,7 @@ set -euxo pipefail
 : "${AGENT_WORKDIR:=/tmp}"
 : "${WAR:?Require Jenkins War file}"
 : "${WARDIR:? Require where to put binary files}"
+: "${JENKINS_ASC:=${WAR}.asc}"
 
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
@@ -31,7 +32,7 @@ function uploadPackage() {
 	rsync --archive \
 		--verbose \
 		--progress \
-		"${WAR}" "${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
+		"${WAR}" "${WAR_SHASUM}" "${JENKINS_ASC}" "${WARDIR}/${VERSION}/"
 
 	# Update the symlink to point to most recent WAR directory
 	pushd "${WARDIR}"
