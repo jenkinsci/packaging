@@ -34,7 +34,7 @@ function uploadPackage() {
 		--progress \
 		"${WAR}" "${WAR_SHASUM}" "${JENKINS_ASC}" "${WARDIR}/${VERSION}/"
 
-    # Update the symlink to point to most recent WAR directory
+	# Update the symlink to point to most recent WAR directory
 	pushd "${WARDIR}"
 	rm -rf latest # This is a safety measure just in case something was left there previously
 	ln -s "${VERSION}" latest
