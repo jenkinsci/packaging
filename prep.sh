@@ -19,7 +19,7 @@ if [[ ! -f "${WAR}.asc" ]]; then
 
 	# Download signature from Artifactory (signed by Maven during the release process)
 	# TODO: switch to get.jenkins.io once https://github.com/jenkins-infra/helpdesk/issues/4055 is finished
-	warSignatureUrl="https://repo.jenkins-ci.org/releases/org/jenkins-ci/main/jenkins-war/${jenkinsVersion}/jenkins-war-${jenkinsVersion}.war"
+	warSignatureUrl="https://repo.jenkins-ci.org/releases/org/jenkins-ci/main/jenkins-war/${jenkinsVersion}/jenkins-war-${jenkinsVersion}.war.asc"
 	curl --fail --silent --show-error --location --output "${WAR}.asc" \
 		"${warSignatureUrl}"
 fi
