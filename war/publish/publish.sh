@@ -5,6 +5,9 @@ set -euxo pipefail
 : "${AGENT_WORKDIR:=/tmp}"
 : "${WAR:?Require Jenkins War file}"
 : "${WARDIR:? Require where to put binary files}"
+: "${JENKINS_ASC:=${WAR}.asc}"
+: "${GPG_PUBLIC_KEY_FILENAME:="${ORGANIZATION}.key"}"
+: "${GPG_KEYNAME:?Require valid gpg keyname}"
 
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
@@ -28,10 +31,13 @@ function uploadPackage() {
 	sha256sum "${WAR}" | sed "s, .*, ${ARTIFACTNAME}.war," >"${WAR_SHASUM}"
 	cat "${WAR_SHASUM}"
 
+	gpg --export -a --output "${GPG_PUBLIC_KEY_FILENAME}" "${GPG_KEYNAME}"
+
 	rsync --archive \
 		--verbose \
 		--progress \
-		"${WAR}" "${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
+		"${WAR}" "${WAR_SHASUM}" "${JENKINS_ASC}" "${GPG_PUBLIC_KEY_FILENAME}" `# Sources` \
+		"${WARDIR}/${VERSION}/" `# Destination`
 
 	# Update the symlink to point to most recent WAR directory
 	pushd "${WARDIR}"
