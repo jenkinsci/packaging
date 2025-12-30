@@ -3,7 +3,7 @@
 #
 
 # where to put binary files
-export TESTDIR=$(realpath .)/pkg.jenkins.io
+export TESTDIR=$(realpath .)/target
 export WARDIR=${TESTDIR}/war${RELEASELINE}
 export MSIDIR=${TESTDIR}/windows${RELEASELINE}
 export DEBDIR=${TESTDIR}/debian${RELEASELINE}/binary
