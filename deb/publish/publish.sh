@@ -21,8 +21,6 @@ function clean() {
 
 # Generate and publish site content
 function generateSite() {
-	cp -R "$bin/contents/." "$D/contents"
-
 	local gpg_publickey_file="$D/contents/${GPG_PUBLIC_KEY_FILENAME}"
 	local gpg_publickey_info_file="$D/contents/${GPG_PUBLIC_KEY_FILENAME}.info"
 	gpg --export -a --output "${gpg_publickey_file}" "${GPG_KEYNAME}"
@@ -62,7 +60,7 @@ function generateSite() {
 }
 
 function init() {
-	mkdir -p "$D/binary" "$D/contents" "$D/html" \
+	mkdir -p "$D/binary" "$D/contents" "$D/html" "$D/contents/binary" \
 		"$DEBDIR" `# where to put binary files` \
 		"$DEB_WEBDIR" `# where to put repository index and other web contents`
 }
