@@ -121,7 +121,6 @@
     </Property>
 
     <Property Id="SERVICE_PASSWORD" Secure="yes" Hidden="yes" />
-
     <Property Id="SERVICE_PASSWORD_ENC">
       <RegistrySearch Id="DetermineServicePassword" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="SP" Win64="yes" />
     </Property>
