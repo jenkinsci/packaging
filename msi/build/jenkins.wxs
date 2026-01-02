@@ -119,8 +119,8 @@
     <Property Id="SERVICE_USERNAME" Secure="yes">
       <RegistrySearch Id="DetermineServiceUsername" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="SU" Win64="yes" />
     </Property>
-
-    <Property Id="SERVICE_PASSWORD" Secure="yes" Hidden="yes" />
+    <SetProperty Id="SecureCustomProperties" Value=";SERVICE_PASSWORD" Sequence="first" After="AppSearch" />
+    <SetProperty Id="MsiHiddenProperties" Value="[MsiHiddenProperties];SERVICE_PASSWORD" Sequence="first" After="AppSearch" />
     <Property Id="SERVICE_PASSWORD_ENC">
       <RegistrySearch Id="DetermineServicePassword" Type="raw" Root="HKLM" Key="Software\Jenkins\InstalledProducts\Jenkins" Name="SP" Win64="yes" />
     </Property>
