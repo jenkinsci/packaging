@@ -169,11 +169,10 @@
         Return="check"
         Impersonate="no" />
 
-    <!-- This will find the JRE/JDK directory either Java 17 or 21 (prefer 21) -->
+    <!-- This will find the JRE/JDK directory either Java 21 or 25 (prefer 25) -->
     <Property Id="JAVA_HOME">
-      <RegistrySearch Id="JDK25_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK\25" Name="JavaHome" Type="raw" Win64="yes" />
       <RegistrySearch Id="JDK21_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK\21" Name="JavaHome" Type="raw" Win64="yes" />
-      <RegistrySearch Id="JDK17_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK\17" Name="JavaHome" Type="raw" Win64="yes" />
+      <RegistrySearch Id="JDK25_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK\25" Name="JavaHome" Type="raw" Win64="yes" />
     </Property>
 
     <Property Id="ARPPRODUCTICON" Value="installer.ico" />
@@ -370,9 +369,9 @@
             <Publish Event="DoAction" Value="ValidateJavaHome" Order="1">1</Publish>
 
             <!-- Spawn the error dialog if java.exe can't be found. -->
-            <Publish Property="ERROR_TITLE" Value="!(loc.JavaHomeDlgErrorTitle)" Order="2"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "17" AND JAVA_EXE_VERSION <> "21" AND JAVA_EXE_VERSION <> "25")]]></Publish>
-            <Publish Property="ERROR_MESSAGE" Value="!(loc.JavaHomeDlgErrorMessage)" Order="3"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "17" AND JAVA_EXE_VERSION <> "21" AND JAVA_EXE_VERSION <> "25")]]></Publish>
-            <Publish Event="SpawnDialog" Value="GenericErrorDlg" Order="4"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "17" AND JAVA_EXE_VERSION <> "21" AND JAVA_EXE_VERSION <> "25")]]></Publish>
+            <Publish Property="ERROR_TITLE" Value="!(loc.JavaHomeDlgErrorTitle)" Order="2"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "21" AND JAVA_EXE_VERSION <> "25")]]></Publish>
+            <Publish Property="ERROR_MESSAGE" Value="!(loc.JavaHomeDlgErrorMessage)" Order="3"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "21" AND JAVA_EXE_VERSION <> "25")]]></Publish>
+            <Publish Event="SpawnDialog" Value="GenericErrorDlg" Order="4"><![CDATA[JAVA_EXE_FOUND = "0" OR (JAVA_EXE_VERSION <> "21" AND JAVA_EXE_VERSION <> "25")]]></Publish>
             <Publish Property="JAVA_HOME" Value="[JAVA_HOME]">1</Publish>
           </Control>
           <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)" />
