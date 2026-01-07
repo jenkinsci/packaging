@@ -5,7 +5,7 @@
 
 Name:		@@ARTIFACTNAME@@
 Version:	%{ver}
-Release:	1
+Release:	2
 Summary:	@@SUMMARY@@
 Source:		jenkins.war
 Source1:	jenkins.service
