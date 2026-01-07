@@ -41,9 +41,8 @@ podTemplate(
 
       stage('Build') {
         sh '''
-            make package && python3 -m pytest bin --junitxml target/junit.xml
-            mkdir -p /var/tmp/target/rpm
-            cp -r target/rpm/*.rpm /var/tmp/target/rpm/ || true
+          make package
+          python3 -m pytest bin --junitxml target/junit.xml
         '''
         junit 'target/junit.xml'
       }
