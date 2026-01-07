@@ -3,10 +3,10 @@
   <!-- Java Home Dialog Strings -->
   <String Id="JavaHomeDlgTitle" Overridable="yes">[ProductName] Setup</String>
   <String Id="JavaHomeDlgDescription" Overridable="yes">Select Java home directory (JDK or JRE)</String>
-  <String Id="JavaHomeDlgLabel" Overridable="yes">Please select the path of a Java Development Kit or Java Runtime Environment. Only Java 17, 21 and 25 are supported by Jenkins.</String>
+  <String Id="JavaHomeDlgLabel" Overridable="yes">Please select the path of a Java Development Kit or Java Runtime Environment. Only Java 21 and 25 are supported by Jenkins.</String>
   <String Id="JavaHomeDlgChange" Overridable="yes">&amp;Change...</String>
   <String Id="JavaHomeDlgErrorTitle" Overridable="yes">Invalid Java Directory</String>
-  <String Id="JavaHomeDlgErrorMessage" Overridable="yes">Failed to find compatible Java version (17, 21 or 25) in [JAVA_HOME]</String>
+  <String Id="JavaHomeDlgErrorMessage" Overridable="yes">Failed to find compatible Java version (21 or 25) in [JAVA_HOME]</String>
 
   <!-- Java Browse Dialog Strings -->
   <String Id="JavaBrowseDlgDescription" Overridable="yes">Browse to the Java Home directory</String>
