@@ -8,6 +8,7 @@ set -euxo pipefail
 : "${DEBDIR:? Require where to put binary files}"
 : "${DEB_WEBDIR:? Require where to put repository index and other web contents}"
 : "${DEB_URL:? Require Debian repository Url}"
+: "${GPG_PUBLIC_KEY_FILENAME:="${ORGANIZATION}.key"}"
 
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
@@ -20,14 +21,14 @@ function clean() {
 
 # Generate and publish site content
 function generateSite() {
-	cp -R "$bin/contents/." "$D/contents"
-
-	gpg --export -a --output "$D/contents/${ORGANIZATION}.key" "${GPG_KEYNAME}"
-	gpg --import-options show-only --import "$D/contents/${ORGANIZATION}.key" >"$D/contents/${ORGANIZATION}.key.info"
+	local gpg_publickey_file="$D/contents/${GPG_PUBLIC_KEY_FILENAME}"
+	local gpg_publickey_info_file="$D/contents/${GPG_PUBLIC_KEY_FILENAME}.info"
+	gpg --export -a --output "${gpg_publickey_file}" "${GPG_KEYNAME}"
+	gpg --import-options show-only --import "${gpg_publickey_file}" > "${gpg_publickey_info_file}"
 
 	"$BASE/bin/indexGenerator.py" \
 		--distribution debian \
-		--gpg-key-info-file "${D}/contents/${ORGANIZATION}.key.info" \
+		--gpg-key-info-file "${gpg_publickey_info_file}" \
 		--targetDir "$D/html"
 
 	"$BASE/bin/branding.py" "$D"
@@ -59,7 +60,7 @@ function generateSite() {
 }
 
 function init() {
-	mkdir -p "$D/binary" "$D/contents" "$D/html" \
+	mkdir -p "$D/binary" "$D/contents" "$D/html" "$D/contents/binary" \
 		"$DEBDIR" `# where to put binary files` \
 		"$DEB_WEBDIR" `# where to put repository index and other web contents`
 }
@@ -87,14 +88,10 @@ function uploadPackageSite() {
 }
 
 function uploadHtmlSite() {
-	# Html file need to be located in the binary directory
 	rsync --archive \
 		--verbose \
 		--progress \
-		--include "HEADER.html" \
-		--include "FOOTER.html" \
-		--exclude "*" \
-		"$D/html/" "$DEBDIR/"
+		"$D/html/" "$DEB_WEBDIR/"
 }
 
 function show() {
@@ -103,6 +100,7 @@ function show() {
 	echo "DEBDIR: $DEBDIR"
 	echo "DEB_WEBDIR: $DEB_WEBDIR"
 	echo "GPG_KEYNAME: $GPG_KEYNAME"
+	echo "GPG_PUBLIC_KEY_FILENAME: $GPG_PUBLIC_KEY_FILENAME"
 	echo "---"
 }
 
