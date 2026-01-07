@@ -6,22 +6,23 @@ driver:
 
 platforms:
   # deb
-  - name: debian-11  # EOL 2026-06-30
-    image: dokken/debian-11:latest
-    override_command: false
-    volumes:
-      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    cgroupns_mode: host
-    privileged: true
-  - name: debian-12  # EOL 2028-06-10
-    image: dokken/debian-12:latest
-    override_command: false
-    volumes:
-      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    cgroupns_mode: host
-    privileged: true
+  # TODO: restore older distributions when a temuring installation to retrieve jdk21 has been put in place
+  # - name: debian-11  # EOL 2026-06-30
+  #   image: dokken/debian-11:latest
+  #   override_command: false
+  #   volumes:
+  #     - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+  #     - /sys/fs/cgroup:/sys/fs/cgroup:rw
+  #   cgroupns_mode: host
+  #   privileged: true
+  # - name: debian-12  # EOL 2028-06-10
+  #   image: dokken/debian-12:latest
+  #   override_command: false
+  #   volumes:
+  #     - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+  #     - /sys/fs/cgroup:/sys/fs/cgroup:rw
+  #   cgroupns_mode: host
+  #   privileged: true
   - name: debian-13  # EOL 2030-06-30 (LTS)
     image: dokken/debian-13:latest
     override_command: false
