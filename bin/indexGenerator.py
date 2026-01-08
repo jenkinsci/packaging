@@ -60,6 +60,7 @@ class IndexGenerator:
         self.product_name = os.getenv("PRODUCTNAME", "Jenkins")
         self.distribution = os.getenv("OS_FAMILY", "debian")
         self.gpg_pub_key_info_file = os.getenv("GPGPUBKEYINFO", ".")
+        self.gpg_public_key_filename = os.getenv("GPG_PUBLIC_KEY_FILENAME", "jenkins.io.key")
         self.target_directory = "./target/" + self.distribution
 
         try:
@@ -107,6 +108,7 @@ class IndexGenerator:
         print("Root header generated: " + self.root_header)
         print("Root footer generated: " + self.root_footer)
         print("GPG Key Info File: " + self.gpg_pub_key_info_file)
+        print("GPG Public Key Filename: " + self.gpg_public_key_filename)
 
     def generate_root_header(self):
 
@@ -169,6 +171,7 @@ class IndexGenerator:
             "releaseline": self.releaseline,
             "web_url": self.web_url,
             "pub_key_info": self.fetch_pubkeyinfo(),
+            "gpg_public_key_filename": self.gpg_public_key_filename,
         }
 
         env = jinja2.Environment(
@@ -192,6 +195,7 @@ class IndexGenerator:
             "releaseline": self.releaseline,
             "web_url": self.web_url,
             "pub_key_info": self.fetch_pubkeyinfo(),
+            "gpg_public_key_filename": self.gpg_public_key_filename,
         }
 
         env = jinja2.Environment(
