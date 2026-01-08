@@ -18,9 +18,10 @@ export MSI_SHASUM:=${MSI}.sha256
 # where to generate Debian/Ubuntu DEB file?
 export DEB=${TARGET}/debian/${ARTIFACTNAME}_${VERSION}_all.deb
 
-# TODO: restore package build number from `-2` to `-1` (hotfix of 2.545, see https://github.com/jenkinsci/packaging/issues/729)
+# What is the RPM Build Number ("Release" in the RPM spec, also known as "package suffix"). Can be overriden by setting 'RPM_RELEASENUMBER' env. var .
+export RPM_RELEASENUMBER ?= 1
 # where to generate RHEL/CentOS RPM file?
-export RPM=${TARGET}/rpm/${ARTIFACTNAME}-${VERSION}-2.noarch.rpm
+export RPM=${TARGET}/rpm/${ARTIFACTNAME}-${VERSION}-${RPM_RELEASENUMBER}.noarch.rpm
 
 # anchored to the root of the repository
 export BASE:=$(CURDIR)
@@ -32,4 +33,3 @@ export LICENSE_TEXT_COMMENTED:=$(shell echo "$(LICENSE_TEXT_COLUMN)" | sed  's!^
 
 # Put a dot in place of an empty line, and prepend a space
 export LICENSE_TEXT_DEB:=$(shell echo "$(LICENSE_TEXT_COLUMN)" | sed -e 's!^$$!.!g' -e 's!^! !g' )
-
