@@ -18,7 +18,7 @@ export MSI_SHASUM:=${MSI}.sha256
 # where to generate Debian/Ubuntu DEB file?
 export DEB=${TARGET}/debian/${ARTIFACTNAME}_${VERSION}_all.deb
 
-# What is the RPM Build Number ("Release" in the RPM spec, also known as "package suffix"). Can be overriden by setting the env. var 'RPM_RELEASENUMBER'.
+# What is the RPM Build Number ("Release" in the RPM spec, also known as "package suffix"). Can be overriden by setting 'RPM_RELEASENUMBER' env. var .
 export RPM_RELEASENUMBER ?= 1
 # where to generate RHEL/CentOS RPM file?
 export RPM=${TARGET}/rpm/${ARTIFACTNAME}-${VERSION}-${RPM_RELEASENUMBER}.noarch.rpm
