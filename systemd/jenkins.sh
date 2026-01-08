@@ -69,7 +69,7 @@ infer_jenkins_opts() {
 	fi
 
 	if [ -n "${JENKINS_HTTPS_KEYSTORE_PASSWORD}" ]; then
-		inferred_jenkins_opts="${inferred_jenkins_opts} --httpsKeyStorePassword='${JENKINS_HTTPS_KEYSTORE_PASSWORD}'"
+		inferred_jenkins_opts="${inferred_jenkins_opts} --paramsFromStdIn"
 	fi
 
 	if [ -n "${JENKINS_HTTP2_PORT}" ]; then
@@ -109,6 +109,11 @@ main() {
 
 	infer_jenkins_opts
 
+	jenkins_secret_params=""
+	if [ -n "${JENKINS_HTTPS_KEYSTORE_PASSWORD}" ]; then
+		jenkins_secret_params="--httpsKeyStorePassword=${JENKINS_HTTPS_KEYSTORE_PASSWORD}"
+	fi
+
 	java_opts_tmp="${JAVA_OPTS}"
 	unset JAVA_OPTS
 	unset JENKINS_DEBUG_LEVEL
@@ -130,11 +135,20 @@ main() {
 	jenkins_war_tmp="${JENKINS_WAR}"
 	unset JENKINS_WAR
 	unset JENKINS_WEBROOT
-	eval exec \
-		"${java_cmd}" \
-		${java_opts_tmp} \
-		-jar "${jenkins_war_tmp}" \
-		${inferred_jenkins_opts}
+
+	if [ -n "${jenkins_secret_params}" ]; then
+		echo "${jenkins_secret_params}" | eval exec \
+			"${java_cmd}" \
+			${java_opts_tmp} \
+			-jar "${jenkins_war_tmp}" \
+			${inferred_jenkins_opts}
+	else
+		eval exec \
+			"${java_cmd}" \
+			${java_opts_tmp} \
+			-jar "${jenkins_war_tmp}" \
+			${inferred_jenkins_opts}
+	fi
 }
 
 if [ -z "${JENKINS_OPTS}" ]; then
