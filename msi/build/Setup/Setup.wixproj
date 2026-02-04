@@ -1,6 +1,6 @@
 ﻿<Project Sdk="WixToolSet.Sdk/6.0.2">
   <PropertyGroup>
-    <Platforms>x64</Platforms>
+    <Platforms>x64;arm64</Platforms>
     <Stable Condition=" '$(Stable)' == '' ">False</Stable>
     <OutputName Condition=" '$(Stable)' == 'False' ">jenkins-$(DisplayVersion)</OutputName>
     <OutputName Condition=" '$(Stable)' == 'True' ">jenkins-$(DisplayVersion)-stable</OutputName>
@@ -129,8 +129,8 @@
   </Target>
 
   <PropertyGroup>
-    <OutputPath Condition=" '$(OutputPath)' == '' ">bin\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <OutputPath Condition=" '$(OutputPath)' == '' ">bin\$(Configuration)\$(Platform)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\$(Platform)\</IntermediateOutputPath>
   </PropertyGroup>
 
   <ItemGroup>

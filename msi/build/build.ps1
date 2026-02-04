@@ -9,7 +9,8 @@ Param(
     [String] $ArtifactName = $env:ARTIFACTNAME,
     [String] $BannerBmp = '',
     [String] $DialogBmp = '',
-    [String] $InstallerIco = ''
+    [String] $InstallerIco = '',
+    [String[]] $Platforms = @('x64', 'arm64')
 )
 
 function Set-CodeSigningSignature {
@@ -119,7 +120,9 @@ if($MSBuildPath -ne '') {
 Copy-Item -Force -Path .\Additional\Update-JenkinsVersion.ps1 -Destination tmp
 Set-CodeSigningSignature -Path .\tmp\Update-JenkinsVersion.ps1 -JenkinsVersion $JenkinsVersion
 
-msbuild "jenkins.sln" /p:Stable="${isLts}" /p:WAR="${War}" /p:Configuration=Release /p:DisplayVersion=$JenkinsVersion /p:ProductName="${ProductName}" /p:ProductSummary="${ProductSummary}" /p:ProductVendor="${ProductVendor}" /p:ArtifactName="${ArtifactName}" /p:BannerBmp="${BannerBmp}" /p:DialogBmp="${DialogBmp}" /p:InstallerIco="${InstallerIco}" /t:Restore /t:Build
+$Platforms | ForEach-Object {
+    msbuild "jenkins.sln" /p:Stable="${isLts}" /p:WAR="${War}" /p:Configuration=Release /p:DisplayVersion=$JenkinsVersion /p:ProductName="${ProductName}" /p:ProductSummary="${ProductSummary}" /p:ProductVendor="${ProductVendor}" /p:ArtifactName="${ArtifactName}" /p:BannerBmp="${BannerBmp}" /p:DialogBmp="${DialogBmp}" /p:InstallerIco="${InstallerIco}" /t:Restore /t:Build /p:Platform="$_"
+}
 
 Get-ChildItem .\Setup\bin\Release -Filter *.msi -Recurse |
     Foreach-Object {
