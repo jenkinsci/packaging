@@ -20,9 +20,8 @@
     <!-- These lock down the permissions for the Jenkins directory (where it's installed) so that normal users can't mess with the files -->
 
     <!-- S-1-5-32-544 Local Administrators group -->
-    <SetProperty Id="SetDirectoryPermissionsServiceAccount" Before="SetDirectoryPermissionsServiceAccount" Sequence="execute" Value="&quot;[System64Folder]icacls.exe&quot; &quot;[JENKINSDIR_STRIPPED]&quot; /inheritance:r /grant *S-1-5-32-544:(OI)(CI)(F) /grant &quot;[SERVICE_USERNAME]&quot;:(OI)(CI)(F)" />
-
-    <CustomAction Id="SetDirectoryPermissionsServiceAccount" DllEntry="WixQuietExec64" Execute="deferred" Return="check" Impersonate="no" BinaryRef="Wix4UtilCA_$(sys.BUILDARCHSHORT)" />
+    <SetProperty Id="SetInstallDirectoryPermissionsServiceAccount" Before="SetInstallDirectoryPermissionsServiceAccount" Sequence="execute" Value="&quot;[System64Folder]icacls.exe&quot; &quot;[JENKINSDIR_STRIPPED]&quot; /inheritance:r /grant *S-1-5-32-544:(OI)(CI)(F) /grant &quot;[SERVICE_USERNAME]&quot;:(OI)(CI)(F)" />
+    <CustomAction Id="SetInstallDirectoryPermissionsServiceAccount" DllEntry="WixQuietExec64" Execute="deferred" Return="check" Impersonate="no" BinaryRef="Wix4UtilCA_$(sys.BUILDARCHSHORT)" />
 
     <!-- This will find the JRE/JDK directory either Java 21 or Java 25 (prefer 25 then 21) -->
     <!-- The list below is the REVERSE order of preference, the last successful search wins -->
@@ -38,6 +37,8 @@
     <Property Id="INSTALLLEVEL" Value="1" />
     <Property Id="PORTNUMBER" Value="8080" />
 
+    <Property Id="JENKINSROOT" Value="%LocalAppData%\Jenkins\" />
+
     <Upgrade Id="$(var.ProductCode)">
       <UpgradeVersion Minimum="0.0.0" Maximum="$(var.EncodedVersion)" Property="PREVIOUSVERSIONINSTALLED" />
     </Upgrade>
@@ -50,7 +51,7 @@
       <RemoveExistingProducts After="BackupJenkinsXmlFile" />
 
       <Custom Action="StripJenkinsDir" After="InstallFiles" Condition="NOT REMOVE" />
-      <Custom Action="SetDirectoryPermissionsServiceAccount" After="StripJenkinsDir" Condition="NOT REMOVE" />
+      <Custom Action="SetInstallDirectoryPermissionsServiceAccount" After="StripJenkinsDir" Condition="NOT REMOVE" />
     </InstallExecuteSequence>
 
     <Feature Id="Complete" Level="1" Title="Jenkins" TypicalDefault="install" InstallDefault="local" Display="expand" Description="The required Jenkins components" AllowAbsent="no">
@@ -82,13 +83,12 @@
           <File Id="Update_JenkinsVersion.ps1" Name="Update-JenkinsVersion.ps1" Source="$(SolutionDir)\tmp\Update-JenkinsVersion.ps1" DiskId="1" />
 
           <!-- Update the XML file with the values selected during install -->
-          <util:XmlFile Id="JenkinsXmlJenkinsData" Action="setValue" ElementPath="//service/env/@value" File="[#JenkinsXml]" Value="[JENKINS_ROOT].jenkins" Sequence="1" />
+          <util:XmlFile Id="JenkinsXmlJenkinsData" Action="setValue" ElementPath="//service/env/@value" File="[#JenkinsXml]" Value="[JENKINSROOT].jenkins" Sequence="1" />
           <util:XmlFile Id="JenkinsXmlExecutable" Action="setValue" ElementPath="//service/executable" File="[#JenkinsXml]" Value="[JAVA_HOME]\bin\java.exe" Sequence="1" />
-          <util:XmlFile Id="JenkinsXmlArguments" Action="setValue" ElementPath="//service/arguments" File="[#JenkinsXml]" Value="-Xrs -Xmx256m -Dhudson.lifecycle=hudson.lifecycle.WindowsServiceLifecycle -jar &quot;[JENKINSDIR]jenkins.war&quot; --httpPort=[PORTNUMBER] --webroot=&quot;[JENKINS_ROOT]war&quot;" Sequence="1" />
-          <util:XmlFile Id="JenkinsXmlExtensionsPidfile" Action="setValue" ElementPath="//service/extensions/extension/pidfile" File="[#JenkinsXml]" Value="[JENKINS_ROOT]jenkins.pid" Sequence="1" />
+          <util:XmlFile Id="JenkinsXmlArguments" Action="setValue" ElementPath="//service/arguments" File="[#JenkinsXml]" Value="-Xrs -Xmx256m -Dhudson.lifecycle=hudson.lifecycle.WindowsServiceLifecycle -jar &quot;[JENKINSDIR]jenkins.war&quot; --httpPort=[PORTNUMBER] --webroot=&quot;[JENKINSROOT]war&quot;" Sequence="1" />
+          <util:XmlFile Id="JenkinsXmlExtensionsPidfile" Action="setValue" ElementPath="//service/extensions/extension/pidfile" File="[#JenkinsXml]" Value="[JENKINSROOT]jenkins.pid" Sequence="1" />
           <ServiceInstall Id="$(var.ArtifactName)Service" Name="$(var.ArtifactName)" DisplayName="$(var.ProductName)" Type="ownProcess" Start="auto" ErrorControl="normal" Description="$(var.ProductSummary)" Account="[SERVICE_USERNAME]" Password="[SERVICE_PASSWORD]" />
         </Component>
-
 
         <Component Id="StartService" Guid="6F6925C0-4D1F-4A1E-A4A9-BC83EB88637A">
           <CreateFolder />
