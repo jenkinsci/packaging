@@ -4,3 +4,4 @@ packages/
 tmp/
 bin/
 obj/
+.vs/

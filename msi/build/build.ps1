@@ -9,7 +9,8 @@ Param(
     [String] $ArtifactName = $env:ARTIFACTNAME,
     [String] $BannerBmp = '',
     [String] $DialogBmp = '',
-    [String] $InstallerIco = ''
+    [String] $InstallerIco = '',
+    [String[]] $Platforms = @('x64', 'arm64')
 )
 
 function Set-CodeSigningSignature {
@@ -75,11 +76,6 @@ if(!(Test-Path $tmpDir)) {
     Get-ChildItem tmp\* | Remove-Item -Force
 }
 
-if(!(Test-Path (Join-Path $PSScriptRoot 'msiext-1.5/WixExtensions/WixCommonUiExtension.dll'))) {
-    Invoke-WebRequest -Uri "https://github.com/dblock/msiext/releases/download/1.5/msiext-1.5.zip" -OutFile (Join-Path $PSScriptRoot 'msiext-1.5.zip') -UseBasicParsing
-    [IO.Compression.ZipFile]::ExtractToDirectory((Join-Path $PSScriptRoot 'msiext-1.5.zip'), $PSScriptRoot)
-}
-
 Write-Host "Extracting components"
 if($UseTracing) { Set-PSDebug -Trace 0 }
 # get the components we need from the war file
@@ -105,10 +101,6 @@ if($UseTracing) { Set-PSDebug -Trace 1 }
 
 $isLts = $JenkinsVersion.Split('.').Length -gt 2
 
-Write-Host "Restoring packages before build"
-# restore the Wix package
-& "./nuget.exe" restore -PackagesDirectory "packages"
-
 Write-Host "Building MSI"
 if($MSBuildPath -ne '') {
     if($MSBuildPath.ToLower().EndsWith('msbuild.exe')) {
@@ -125,12 +117,14 @@ if($MSBuildPath -ne '') {
 }
 
 # Sign the Update-JenkinsVersion.ps1 script if we have PKCS files
-Copy-Item -Force -Path .\Update-JenkinsVersion.ps1 -Destination tmp
+Copy-Item -Force -Path .\Additional\Update-JenkinsVersion.ps1 -Destination tmp
 Set-CodeSigningSignature -Path .\tmp\Update-JenkinsVersion.ps1 -JenkinsVersion $JenkinsVersion
 
-msbuild "jenkins.wixproj" /p:Stable="${isLts}" /p:WAR="${War}" /p:Configuration=Release /p:DisplayVersion=$JenkinsVersion /p:ProductName="${ProductName}" /p:ProductSummary="${ProductSummary}" /p:ProductVendor="${ProductVendor}" /p:ArtifactName="${ArtifactName}" /p:BannerBmp="${BannerBmp}" /p:DialogBmp="${DialogBmp}" /p:InstallerIco="${InstallerIco}"
+$Platforms | ForEach-Object {
+    msbuild "jenkins.sln" /p:Stable="${isLts}" /p:WAR="${War}" /p:Configuration=Release /p:DisplayVersion=$JenkinsVersion /p:ProductName="${ProductName}" /p:ProductSummary="${ProductSummary}" /p:ProductVendor="${ProductVendor}" /p:ArtifactName="${ArtifactName}" /p:BannerBmp="${BannerBmp}" /p:DialogBmp="${DialogBmp}" /p:InstallerIco="${InstallerIco}" /t:Restore /t:Build /p:Platform="$_"
+}
 
-Get-ChildItem .\bin\Release -Filter *.msi -Recurse |
+Get-ChildItem .\Setup\bin\Release -Filter *.msi -Recurse |
     Foreach-Object {
         Set-CodeSigningSignature -Path $($_.FullName) -JenkinsVersion $JenkinsVersion
     

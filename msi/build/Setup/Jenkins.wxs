@@ -1,0 +1,114 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:fire="http://wixtoolset.org/schemas/v4/wxs/firewall"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="$(var.ProductName) $(var.ProductVersion)" UpgradeCode="$(var.ProductCode)" Language="1033" Codepage="1252" Version="$(var.EncodedVersion)" Manufacturer="$(var.ProductVendor)" InstallerVersion="500">
+    <SummaryInformation Keywords="Installer" Description="$(var.ProductName)" />
+    <Media Id="1" Cabinet="$(var.ArtifactName).cab" EmbedCab="yes" />
+
+    <Icon Id="installer.ico" SourceFile="$(var.InstallerIco)" />
+    <Binary Id="JenkinsCA" SourceFile="..\JenkinsCA\bin\Release\net48\JenkinsCA.CA.dll"/>
+    <Binary Id="SuccessIco" SourceFile="bitmaps\Success.ico" />
+    <Binary Id="ErrorIco" SourceFile="bitmaps\Error.ico" />
+
+    <CustomAction Id="Regex_Match" DllEntry="RegexMatch" BinaryRef="JenkinsCA" Execute="immediate" Return="check"/>
+    <CustomAction Id="Check_Credentials" DllEntry="CheckCredentials" BinaryRef="JenkinsCA" Execute="immediate" Return="check"/>
+    <CustomAction Id="Check_CredentialsWithPrivilege" DllEntry="CheckCredentials" BinaryRef="JenkinsCA" Execute="immediate" Return="check"/>
+    <CustomAction Id="Check_Membership" DllEntry="CheckMembership" BinaryRef="JenkinsCA" Execute="immediate" Return="check"/>
+    <CustomAction Id="ValidateJavaHome" DllEntry="ValidateJavaHome" BinaryRef="JenkinsCA" Execute="immediate" Return="check" />
+
+    <!-- These lock down the permissions for the Jenkins directory (where it's installed) so that normal users can't mess with the files -->
+
+    <!-- S-1-5-32-544 Local Administrators group -->
+    <SetProperty Id="SetInstallDirectoryPermissionsServiceAccount" Before="SetInstallDirectoryPermissionsServiceAccount" Sequence="execute" Value="&quot;[System64Folder]icacls.exe&quot; &quot;[JENKINSDIR_STRIPPED]&quot; /inheritance:r /grant *S-1-5-32-544:(OI)(CI)(F) /grant &quot;[SERVICE_USERNAME]&quot;:(OI)(CI)(F)" />
+    <CustomAction Id="SetInstallDirectoryPermissionsServiceAccount" DllEntry="WixQuietExec64" Execute="deferred" Return="check" Impersonate="no" BinaryRef="Wix4UtilCA_$(sys.BUILDARCHSHORT)" />
+
+    <!-- This will find the JRE/JDK directory either Java 21 or Java 25 (prefer 25 then 21) -->
+    <!-- The list below is the REVERSE order of preference, the last successful search wins -->
+    <Property Id="JAVA_HOME">
+      <RegistrySearch Id="JRE21_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JRE\21" Name="JavaHome" Type="raw" Bitness="always64" />
+      <RegistrySearch Id="JDK21_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK\21" Name="JavaHome" Type="raw" Bitness="always64" />
+      <RegistrySearch Id="JRE25_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JRE\25" Name="JavaHome" Type="raw" Bitness="always64" />
+      <RegistrySearch Id="JDK25_HOME_REGSEARCH" Root="HKLM" Key="SOFTWARE\JavaSoft\JDK\25" Name="JavaHome" Type="raw" Bitness="always64" />
+    </Property>
+
+    <Property Id="ARPPRODUCTICON" Value="installer.ico" />
+    <Property Id="ARPNOREPAIR" Value="yes" Secure="yes" />      <!-- Remove repair -->
+    <Property Id="INSTALLLEVEL" Value="1" />
+    <Property Id="PORTNUMBER" Value="8080" />
+
+    <Property Id="JENKINSROOT" Value="%LocalAppData%\Jenkins\" />
+
+    <Upgrade Id="$(var.ProductCode)">
+      <UpgradeVersion Minimum="0.0.0" Maximum="$(var.EncodedVersion)" Property="PREVIOUSVERSIONINSTALLED" />
+    </Upgrade>
+
+    <CustomAction Id="BackupJenkinsXmlFile" DllEntry="BackupJenkinsXmlFile" BinaryRef="JenkinsCA"/>
+    <CustomAction Id="StripJenkinsDir" DllEntry="StripJenkinsDir" BinaryRef="JenkinsCA" Return="check"/>
+
+    <InstallExecuteSequence>
+      <Custom Action="BackupJenkinsXmlFile" After="InstallInitialize" />
+      <RemoveExistingProducts After="BackupJenkinsXmlFile" />
+
+      <Custom Action="StripJenkinsDir" After="InstallFiles" Condition="NOT REMOVE" />
+      <Custom Action="SetInstallDirectoryPermissionsServiceAccount" After="StripJenkinsDir" Condition="NOT REMOVE" />
+    </InstallExecuteSequence>
+
+    <Feature Id="Complete" Level="1" Title="Jenkins" TypicalDefault="install" InstallDefault="local" Display="expand" Description="The required Jenkins components" AllowAbsent="no">
+      <ComponentRef Id="Main" />
+      <Feature Id="StartService" Level="1" Title="Start Service" Description="!(loc.StartJenkinsService_Description)">
+        <ComponentRef Id="StartService" />
+      </Feature>
+      <Feature Id="FirewallException" Level="10" Title="Firewall Exception" Description="!(loc.FirewallException_Description)">
+        <ComponentRef Id="FirewallException" />
+      </Feature>
+      <Feature Id="UninstallService" Display="hidden" Level="1" Title="Uninstall Service" Description="Uninstall the service on Jenkins uninstall" AllowAbsent="no">
+        <ComponentRef Id="UninstallService" />
+      </Feature>
+    </Feature>
+
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.DialogBmp)" />
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.BannerBmp)" />
+
+    <ui:WixUI Id="WixUI_Jenkins_InstallDir" InstallDirectory="JENKINSDIR" ExtendedPathValidation="yes" />
+
+    <StandardDirectory Id="ProgramFiles6432Folder">
+      <Directory Id="JENKINSDIR" Name="$(var.ArtifactName)" FileSource=".">
+        <Component Id="Main" Guid="e4a652bf-c210-4a45-95c4-5dc875b4880b" Bitness="always64">
+          <File Name="jenkins.exe" Source="$(SolutionDir)\tmp\jenkins.exe" KeyPath="yes" Id="JenkinsExe" />
+          <File Id="JenkinsXml" Name="jenkins.xml" Source="$(SolutionDir)\tmp\jenkins.xml" DiskId="1" />
+          <File Id="jenkins.exe.config" Name="jenkins.exe.config" Source="jenkins.exe.config" DiskId="1" />
+          <File Id="___var.ArtifactName_.war" Name="$(var.ArtifactName).war" Source="$(var.WAR)" DiskId="1" />
+          <File Id="Update_JenkinsVersion.ps1" Name="Update-JenkinsVersion.ps1" Source="$(SolutionDir)\tmp\Update-JenkinsVersion.ps1" DiskId="1" />
+
+          <!-- Update the XML file with the values selected during install -->
+          <util:XmlFile Id="JenkinsXmlJenkinsData" Action="setValue" ElementPath="//service/env/@value" File="[#JenkinsXml]" Value="[JENKINSROOT].jenkins" Sequence="1" />
+          <util:XmlFile Id="JenkinsXmlExecutable" Action="setValue" ElementPath="//service/executable" File="[#JenkinsXml]" Value="[JAVA_HOME]\bin\java.exe" Sequence="1" />
+          <util:XmlFile Id="JenkinsXmlArguments" Action="setValue" ElementPath="//service/arguments" File="[#JenkinsXml]" Value="-Xrs -Xmx256m -Dhudson.lifecycle=hudson.lifecycle.WindowsServiceLifecycle -jar &quot;[JENKINSDIR]jenkins.war&quot; --httpPort=[PORTNUMBER] --webroot=&quot;[JENKINSROOT]war&quot;" Sequence="1" />
+          <util:XmlFile Id="JenkinsXmlExtensionsPidfile" Action="setValue" ElementPath="//service/extensions/extension/pidfile" File="[#JenkinsXml]" Value="[JENKINSROOT]jenkins.pid" Sequence="1" />
+          <ServiceInstall Id="$(var.ArtifactName)Service" Name="$(var.ArtifactName)" DisplayName="$(var.ProductName)" Type="ownProcess" Start="auto" ErrorControl="normal" Description="$(var.ProductSummary)" Account="[SERVICE_USERNAME]" Password="[SERVICE_PASSWORD]" />
+        </Component>
+
+        <Component Id="StartService" Guid="6F6925C0-4D1F-4A1E-A4A9-BC83EB88637A">
+          <CreateFolder />
+          <ServiceControl Id="Control$(var.ArtifactName)Service" Name="$(var.ArtifactName)" Start="install" Stop="both" Wait="yes" Remove="uninstall" />
+        </Component>
+
+        <!--
+          We have this for the case if someone doesn't have the service started during install, if that component isn't installed, then the service will
+          not be uninstalled during uninstallation. This component makes sure that the service will be uninstalled correctly in this case.
+        -->
+        <Component Id="UninstallService" Guid="9D0DEE31-5560-4FDD-8A73-236A4102BFE0">
+          <CreateFolder />
+          <ServiceControl Id="Control$(var.ArtifactName)ServiceUninstall" Name="$(var.ArtifactName)" Stop="both" Wait="yes" Remove="uninstall" />
+        </Component>
+
+        <Component Id="FirewallException" Guid="">
+          <CreateFolder />
+          <fire:FirewallException Id="FwEx" Program="[JAVA_HOME]\bin\java.exe" Port="[PORTNUMBER]" Name="$(var.ArtifactName)" Scope="any" IgnoreFailure="yes" />
+        </Component>
+      </Directory>
+    </StandardDirectory>
+  </Package>
+</Wix>

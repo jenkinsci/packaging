@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-US" xmlns="http://wixtoolset.org/schemas/v4/wxl">
+  <!-- Java Home Dialog Strings -->
+  <String Id="JavaHomeDlgTitle" Value="[ProductName] Setup" />
+  <String Id="JavaHomeDlgDescription" Value="Select Java home directory (JDK or JRE)" />
+  <String Id="JavaHomeDlgLabel" Value="Please select the path of a Java Development Kit or Java Runtime Environment. Only Java 21 and 25 are supported by Jenkins." />
+  <String Id="JavaHomeDlgChange" Value="&amp;Change..." />
+  <String Id="JavaHomeDlgErrorTitle" Value="Invalid Java Directory" />
+  <String Id="JavaHomeDlgErrorMessage" Value="Failed to find compatible Java version (21 or 25) in [JAVA_HOME]" />
+
+  <!-- Java Browse Dialog Strings -->
+  <String Id="JavaBrowseDlgDescription" Value="Browse to the Java Home directory" />
+  <String Id="JavaBrowseDlgTitle" Value="{\WixUI_Font_Title}Select Java folder" />
+
+  <String Id="ServiceCredDlg_LocalSystemText" Value="Run service as LocalSystem (not recommended)" />
+  <String Id="FirewallException_Description" Value="Enables a firewall exception for the Java running Jenkins on port [PORTNUMBER] (not recommended)." />
+  <String Id="StartJenkinsService_Description" Value="Starts the Jenkins service after install." />
+
+  <String Id="ServiceCredDlg_Header" Value="[ProductName] Setup"/>
+  <String Id="ServiceCredDlg_Title" Value="{\WixUI_Font_Title}Service Logon Credentials"/>
+  <String Id="ServiceCredDlg_SubTitle" Value="Enter service credentials for the service."/>
+  <String Id="ServiceCredDlg_BannerBitmap" Value="WixUI_Bmp_Banner"/>
+  <String Id="ServiceCredDlg_Description" Value="[ProductName] installs and runs as an independent Windows service. To operate in this manner, you must supply the user account credentials for [ProductName] to run successfully."/>
+  <String Id="ServiceCredDlg_SelectorLabel" Value="{\WixUI_Font_Bold}Logon Details:"/>
+  <String Id="ServiceCredDlg_AccountText" Value="Run service as local or domain user:"/>
+  <String Id="ServiceCredDlg_UsernameLabel" Value="Account:"/>
+  <String Id="ServiceCredDlg_UsernameBrowse" Value="&amp;Browse ..."/>
+  <String Id="ServiceCredDlg_PasswordLabel" Value="Password:"/>
+  <String Id="ServiceCredDlg_AccountTestLabel" Value="&amp;Test Credentials"/>
+  <String Id="ServiceCredDlg_TestPrompt" Value="Credentials must be tested to continue"/>
+  <String Id="ServiceCredDlg_InvalidLogonErrorTitle" Value="Invalid Logon"/>
+  <String Id="ServiceCredDlg_InvalidLogonError" Value="Invalid user account or password."/>
+  <String Id="ServiceCredDlg_AccountDoesNotHaveLogonAsServiceRights" Value="This account either does not have the privilege to logon as a service or the account was unable to be verified."/>
+  <String Id="ServiceCredDlg_AccountNotInAdministratorsGroup" Value="This account does not belong to the Administrators group."/>
+
+  <String Id="ServicePortDlg_Header" Value="[ProductName] Setup"/>
+  <String Id="ServicePortDlg_Title" Value="{\WixUI_Font_Title}Port Selection"/>
+  <String Id="ServicePortDlg_SubTitle" Value="Choose a port for the service."/>
+  <String Id="ServicePortDlg_BannerBitmap" Value="WixUI_Bmp_Banner"/>
+  <String Id="ServicePortDlg_Description" Value="Please choose a port."/>
+  <String Id="ServicePortDlg_SelectorLabel" Value="{\WixUI_Font_Bold}Port Number (1-65535):"/>
+  <String Id="ServicePortDlg_Recomendation" Value="It is recommended that you accept the selected default port."/>
+  <String Id="ServicePortDlg_TestPortLabel" Value="Test Port"/>
+  <String Id="ServicePortDlg_TestPrompt" Value="Click 'Test Port' button to proceed"/>
+  <String Id="ServicePortDlg_ErrorTitle" Value="Invalid Information"/>
+  <String Id="ServicePortDlg_InvalidPortMessage" Value="You must enter a valid port value."/>
+  <String Id="ServicePortDlg_TestPortFailedMessage" Value="Failed to bind to port:"/>
+
+  <String Id="InvalidLoginError_Title" Value="Invalid Login"/>
+</WixLocalization>
