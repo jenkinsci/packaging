@@ -6,11 +6,6 @@
     update_cache: true
 - package:
     name:
-      - openjdk-17-jre
-    state: present
-  when: ansible_distribution == "Debian" and ansible_distribution_major_version < "13"
-- package:
-    name:
       - openjdk-21-jre
     state: present
   when: (ansible_distribution == "Debian" and ansible_distribution_major_version == "13") or ansible_distribution == "Ubuntu"
