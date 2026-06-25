@@ -5,6 +5,9 @@ set -euxo pipefail
 : "${AGENT_WORKDIR:=/tmp}"
 : "${WAR:?Require Jenkins War file}"
 : "${WARDIR:? Require where to put binary files}"
+: "${JENKINS_ASC:=${WAR}.asc}"
+: "${GPG_PUBLIC_KEY_FILENAME:="${ORGANIZATION}.key"}"
+: "${GPG_KEYNAME:?Require valid gpg keyname}"
 
 # $$ Contains current pid
 D="$AGENT_WORKDIR/$$"
@@ -21,54 +24,36 @@ function generateSite() {
 }
 
 function init() {
-	mkdir -p "$D"
-
-	mkdir -p "${WARDIR}/${VERSION}/"
-}
-
-function skipIfAlreadyPublished() {
-	if [[ -f "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war" ]]; then
-		echo "File already published, nothing else todo"
-		exit 0
-	fi
+	mkdir -p "$D" "${WARDIR}/${VERSION}/"
 }
 
 function uploadPackage() {
 	sha256sum "${WAR}" | sed "s, .*, ${ARTIFACTNAME}.war," >"${WAR_SHASUM}"
 	cat "${WAR_SHASUM}"
 
-	rsync \
-		--compress \
-		--times \
-		--recursive \
-		--verbose \
-		--ignore-existing \
-		--progress \
-		"${WAR}" "${WARDIR}/${VERSION}/${ARTIFACTNAME}.war"
+	gpg --export -a --output "${GPG_PUBLIC_KEY_FILENAME}" "${GPG_KEYNAME}"
 
-	rsync \
-		--compress \
-		--times \
-		--recursive \
+	rsync --archive \
 		--verbose \
-		--ignore-existing \
 		--progress \
-		"${WAR_SHASUM}" "${WARDIR}/${VERSION}/"
+		"${WAR}" "${WAR_SHASUM}" "${JENKINS_ASC}" "${GPG_PUBLIC_KEY_FILENAME}" `# Sources` \
+		"${WARDIR}/${VERSION}/" `# Destination`
 
-	# TODO: generate symlink like in windows
+	# Update the symlink to point to most recent WAR directory
+	pushd "${WARDIR}"
+	rm -rf latest # This is a safety measure just in case something was left there previously
+	ln -s "${VERSION}" latest
+	popd
 }
 
 # Site html need to be located in the binary directory
 function uploadSite() {
-	rsync \
-		--compress \
-		--times \
-		--recursive \
+	rsync --archive \
 		--verbose \
+		--progress \
 		--include "HEADER.html" \
 		--include "FOOTER.html" \
 		--exclude "*" \
-		--progress \
 		"${D}/" "${WARDIR// /\\ }/"
 }
 
@@ -80,7 +65,6 @@ function show() {
 }
 
 show
-skipIfAlreadyPublished
 init
 generateSite
 uploadPackage

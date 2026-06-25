@@ -1,30 +1,28 @@
 ---
 dependency:
   name: galaxy
-
 driver:
   name: docker
 
 platforms:
   # deb
-  - name: debian-11  # EOL 2026-06-30
-    image: dokken/debian-11:latest
-    override_command: false
-    volumes:
-      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    cgroupns_mode: host
-    privileged: true
-
-  - name: debian-12  # EOL 2028-06-10
-    image: dokken/debian-12:latest
-    override_command: false
-    volumes:
-      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    cgroupns_mode: host
-    privileged: true
-
+  # TODO: restore older distributions when a temuring installation to retrieve jdk21 has been put in place
+  # - name: debian-11  # EOL 2026-06-30
+  #   image: dokken/debian-11:latest
+  #   override_command: false
+  #   volumes:
+  #     - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+  #     - /sys/fs/cgroup:/sys/fs/cgroup:rw
+  #   cgroupns_mode: host
+  #   privileged: true
+  # - name: debian-12  # EOL 2028-06-10
+  #   image: dokken/debian-12:latest
+  #   override_command: false
+  #   volumes:
+  #     - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+  #     - /sys/fs/cgroup:/sys/fs/cgroup:rw
+  #   cgroupns_mode: host
+  #   privileged: true
   - name: debian-13  # EOL 2030-06-30 (LTS)
     image: dokken/debian-13:latest
     override_command: false
@@ -33,7 +31,6 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
-
   - name: ubuntu-22-04  # EOL 2027-04-01
     image: dokken/ubuntu-22.04:latest
     override_command: false
@@ -42,7 +39,6 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
-
   - name: ubuntu-24-04  # EOL 2029-04-01
     image: dokken/ubuntu-24.04:latest
     override_command: false
@@ -51,7 +47,6 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
-
   # rpm
   - name: almalinux-9  # EOL 2027-05-31
     image: dokken/almalinux-9:latest
@@ -61,7 +56,6 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
-
   - name: rockylinux-9  # 2032-05-31
     image: dokken/rockylinux-9:latest
     override_command: false
@@ -70,7 +64,6 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
-
   - name: amazonlinux-2023  # EOL 2029-06-30
     image: dokken/amazonlinux-2023:latest
     override_command: false
@@ -79,7 +72,6 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
-
   - name: centos-stream-9  # EOL 2027-05-31
     image: dokken/centos-stream-9:latest
     override_command: false
@@ -88,7 +80,6 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
-
   - name: centos-stream-10  # EOL 2030-01-01
     image: dokken/centos-stream-10:latest
     override_command: false
@@ -97,7 +88,6 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
-
   - name: fedora-41  # EOL 2025-11-19
     image: dokken/fedora-41:latest
     override_command: false
@@ -106,7 +96,6 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
-
   - name: oraclelinux-9  # EOL 2032-06-30
     image: dokken/oraclelinux-9:latest
     override_command: false
@@ -115,7 +104,6 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
-
   # suse
   - name: opensuse-leap-15.6  # EOL 2025-12-01
     image: dokken/opensuse-leap-15.6:latest
@@ -125,9 +113,7 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
-
 provisioner:
   name: ansible
-
 verifier:
   name: ansible

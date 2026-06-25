@@ -5,6 +5,7 @@ D=$(mktemp -d)
 trap 'rm -rf "${D}"' EXIT
 
 cp -R "$(dirname "$0")"/* "${D}"
+mkdir -p "${D}/SOURCES"
 cp "${BASE}/systemd/jenkins.service" "${D}/SOURCES"
 cp "${BASE}/systemd/jenkins.sh" "${D}/SOURCES"
 cp "${BASE}/systemd/migrate.sh" "${D}/SOURCES"

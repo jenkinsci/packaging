@@ -1,12 +1,11 @@
-# docker exec -i -t packaging_packaging_1 gpg --import --batch credentials/sandbox.gpg
-version: '3'
-volumes:
-  sshd:
-  pkgserver:
+# docker compose exec packaging gpg --import --batch credentials/sandbox.gpg
 services:
   packaging:
     image: jenkinsciinfra/packaging:latest
-    command: "sleep 99d"
+    platform: linux/amd64
+    entrypoint:
+      - "sleep"
+      - "99d"
     environment:
     - "BUILDENV=/srv/releases/jenkins/env/test.mk"
     - "BRANDING_DIR=/srv/releases/jenkins/branding"
@@ -19,25 +18,13 @@ services:
     - "MSI=/srv/releases/jenkins/jenkins.msi"
     - "RELEASELINE=-experimental"
     volumes:
-      - ".:/srv/releases/jenkins:z"
-      - "./credentials/ssh:/home/jenkins/.ssh:z"
-    working_dir: "/srv/releases/jenkins"
-
-  remote:
-    image: jenkinsciinfra/packaging:latest
-    user: root # In order to start, sshd needs to be root
-    command: "/usr/sbin/sshd -D"
-    ports:
-      - "2222:22"
-    volumes:
-      - "./credentials/ssh/id_rsa.pub:/home/jenkins/.ssh/authorized_keys:ro"
-      - sshd:/run/sshd
-      - "pkgserver:/srv/releases/jenkins"
+      - .:/srv/releases/jenkins:z
+    working_dir: /srv/releases/jenkins
 
   pkgserver:
-    image: httpd
+    image: nginx
     ports:
       - "80:80"
     volumes:
-      - "./pkgConfig/httpd.conf:/usr/local/apache2/conf/httpd.conf"
-      - "./target:/usr/local/apache2/htdocs"
+      - ./target:/usr/share/nginx/html:ro
+      - ./pkgserver/nginx-default-vhost.conf:/etc/nginx/conf.d/default.conf:ro

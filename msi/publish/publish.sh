@@ -21,76 +21,31 @@ function generateSite() {
 }
 
 function init() {
-	mkdir -p "$D"
-
-	mkdir -p "${MSIDIR}/${VERSION}/"
-}
-
-function skipIfAlreadyPublished() {
-	if [[ -f "${MSIDIR}/${VERSION}/$(basename "$MSI")" ]]; then
-		echo "File already published, nothing else todo"
-		exit 0
-
-	fi
+	mkdir -p "$D" "${MSIDIR}/${VERSION}"
 }
 
 function uploadPackage() {
 	cp "${ARTIFACTNAME}-${VERSION}${RELEASELINE}.msi" "${MSI}"
 
 	sha256sum "${MSI}" >"${MSI_SHASUM}"
-
 	cat "${MSI_SHASUM}"
 
-	# Local
-	rsync \
-		--compress \
-		--times \
+	rsync --archive \
 		--verbose \
-		--recursive \
-		--ignore-existing \
 		--progress \
-		"${MSI}" "${MSIDIR}/${VERSION}/"
+		"${MSI}" "${MSI_SHASUM}" "${MSIDIR}/${VERSION}/"
 
-	rsync \
-		--compress \
-		--times \
-		--ignore-existing \
-		--recursive \
-		--progress \
-		--verbose \
-		"${MSI_SHASUM}" "${MSIDIR}/${VERSION}/"
-
-	# Update the symlink to point to most recent Windows build
-	#
-	# Remove anything in current directory named 'latest'
-	# This is a safety measure just in case something was left there previously
-	rm -rf latest
-
-	# Create a local symlink pointing to the MSI file in the VERSION directory.
-	# Don't need VERSION directory or MSI locally, just the unresolved symlink.
-	# The jenkins.io page downloads http://mirrors.jenkins-ci.org/windows/latest
-	# and assumes it points to the most recent MSI file.
-	ln -s "${VERSION}/$(basename "$MSI")" latest
-
-	# Overwrites the existing symlink on the destination
-	rsync \
-		--times \
-		--archive \
-		--links \
-		--verbose \
-		latest "${MSIDIR}/"
-
-	# Remove the local symlink
-	rm latest
+	# Update the symlink to point to most recent MSI directory
+	pushd "${MSIDIR}"
+	rm -rf latest # This is a safety measure just in case something was left there previously
+	ln -s "${VERSION}" latest
+	popd
 }
 
 # The site need to be located in the binary directory
 function uploadSite() {
-	rsync \
-		--compress \
-		--times \
+	rsync --archive \
 		--verbose \
-		--recursive \
 		--progress \
 		"${D}/" "${MSIDIR// /\\ }/"
 }
@@ -103,7 +58,6 @@ function show() {
 }
 
 show
-skipIfAlreadyPublished
 init
 generateSite
 uploadPackage

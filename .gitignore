@@ -9,6 +9,10 @@ generated
 .iml
 .idea/
 *.orig
+*.war
+*.war.asc
+*.sha256
 
 venv/
 pkg.jenkins.io/
+jenkins.io.key
