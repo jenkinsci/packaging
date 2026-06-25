@@ -58,7 +58,7 @@ nodeWithTimeout('docker') {
         sh '''
             cat /proc/cpuinfo
             cat /proc/meminfo
-            python3 -m venv venv
+            python3.14 -m venv venv
             . venv/bin/activate
             pip install -U pip wheel
             pip install -r requirements.txt
