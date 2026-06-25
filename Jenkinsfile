@@ -55,17 +55,24 @@ nodeWithTimeout('docker') {
     unstash 'results'
     infra.withDockerCredentials {
       ansiColor('xterm') {
-        sh '''
-            cat /proc/cpuinfo
-            cat /proc/meminfo
-            python3.14 -m venv venv
-            . venv/bin/activate
-            pip install -U pip wheel
-            pip install -r requirements.txt
-            ANSIBLE_FORCE_COLOR=true molecule test
-            ANSIBLE_FORCE_COLOR=true molecule test -s servlet
-            deactivate
-        '''.stripIndent()
+        // TODO: remove ANSIBLE_INJECT_INVOCATION workaround when
+        // https://github.com/ansible-community/molecule-plugins/issues/ n°363 is resolved
+        withEnv([
+          "ANSIBLE_FORCE_COLOR=true",
+          "ANSIBLE_INJECT_INVOCATION=true",
+        ]) {
+          sh '''
+              cat /proc/cpuinfo
+              cat /proc/meminfo
+              python3.14 -m venv venv
+              . venv/bin/activate
+              pip install -U pip wheel
+              pip install -r requirements.txt
+              molecule test
+              molecule test -s servlet
+              deactivate
+          '''.stripIndent()
+        }
       }
     }
   }
