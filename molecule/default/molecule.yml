@@ -56,6 +56,14 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
     privileged: true
+  - name: almalinux-10  # EOL 2035-05-31
+    image: dokken/almalinux-10:latest
+    override_command: false
+    volumes:
+      - ${MOLECULE_PROJECT_DIRECTORY}/target:/var/tmp/target
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns_mode: host
+    privileged: true
   - name: rockylinux-9  # 2032-05-31
     image: dokken/rockylinux-9:latest
     override_command: false
