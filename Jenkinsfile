@@ -53,20 +53,19 @@ nodeWithTimeout('docker') {
   stage('Test') {
     checkout scm
     unstash 'results'
-    infra.withDockerCredentials {
-      ansiColor('xterm') {
-        sh '''
-            cat /proc/cpuinfo
-            cat /proc/meminfo
-            python3.14 -m venv venv
-            . venv/bin/activate
-            pip install -U pip wheel
-            pip install -r requirements.txt
-            ANSIBLE_FORCE_COLOR=true molecule test
-            ANSIBLE_FORCE_COLOR=true molecule test -s servlet
-            deactivate
-        '''.stripIndent()
-      }
+    
+    ansiColor('xterm') {
+      sh '''
+          cat /proc/cpuinfo
+          cat /proc/meminfo
+          python3.14 -m venv venv
+          . venv/bin/activate
+          pip install -U pip wheel
+          pip install -r requirements.txt
+          ANSIBLE_FORCE_COLOR=true molecule test
+          ANSIBLE_FORCE_COLOR=true molecule test -s servlet
+          deactivate
+      '''.stripIndent()
     }
   }
 }
