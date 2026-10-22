@@ -17,9 +17,13 @@
 
   <pre class="text-white bg-dark">
     <code>
-  echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
-    {{ web_url }} binary/ | sudo tee \
-    /etc/apt/sources.list.d/jenkins.list > /dev/null</code>
+  sudo tee /etc/apt/sources.list.d/jenkins.sources > /dev/null << 'EOF'
+  Types: deb
+  URIs: {{ web_url }}
+  Suites: binary/
+  Signed-By: /etc/apt/keyrings/jenkins-keyring.asc
+  EOF
+    </code>
   </pre>
 </p>
 
