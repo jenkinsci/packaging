@@ -58,10 +58,7 @@ nodeWithTimeout('docker') {
       sh '''
           cat /proc/cpuinfo
           cat /proc/meminfo
-          python3.14 -m venv venv
-          . venv/bin/activate
-          pip install -U pip wheel
-          pip install -r requirements.txt
+          . /usr/local/ansible-venv/bin/activate # Utilizes provided ansible installation
           ANSIBLE_FORCE_COLOR=true molecule test
           ANSIBLE_FORCE_COLOR=true molecule test -s servlet
           deactivate
