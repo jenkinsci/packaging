@@ -32,7 +32,6 @@ podTemplate(
       "WAR=${WORKSPACE}/jenkins.war",
       "MSI=${WORKSPACE}/jenkins.msi",
       "RELEASELINE=-experimental",
-      "PATH=${env.PATH}:/home/jenkins/.asdf/shims:/home/jenkins/.asdf/bin:/usr/local/ansible-venv/bin"]) {
     ]) {
       stage('Preparation') {
         checkout scm
